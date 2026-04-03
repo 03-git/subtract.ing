@@ -11,41 +11,103 @@
             background: #1a1a1a;
             height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            font-family: -apple-system, "Segoe UI", Helvetica, sans-serif;
         }
-        .prompt {
-            width: min(600px, 85vw);
+        .chat {
+            width: min(600px, 90vw);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .msg {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .user {
+            align-self: flex-end;
+            background: #2f2f2f;
+            color: #e0e0e0;
+            border-bottom-right-radius: 4px;
+        }
+        .system {
+            align-self: flex-start;
+            background: #252525;
+            color: #d0d0d0;
+            border-bottom-left-radius: 4px;
+        }
+        .system .tier {
+            color: #bd93f9;
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", monospace;
+            font-size: 0.8rem;
+        }
+        .system .codeblock {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-top: 8px;
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", monospace;
+            font-size: 0.82rem;
+            color: #f8f8f2;
+        }
+        .system .output {
+            color: #888;
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", monospace;
+            font-size: 0.82rem;
+            margin-top: 6px;
+        }
+        .input-bar {
+            width: min(600px, 90vw);
             background: #2a2a2a;
             border: 1px solid #3a3a3a;
             border-radius: 24px;
-            padding: 16px 24px;
+            padding: 14px 20px;
             display: flex;
             align-items: center;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.3);
         }
-        .text {
-            font-family: -apple-system, "Segoe UI", sans-serif;
-            font-size: 1.1rem;
-            color: #e0e0e0;
+        .input-text {
             flex: 1;
+            color: #666;
+            font-size: 0.95rem;
         }
         .cursor {
             width: 2px;
-            height: 1.3rem;
+            height: 1.2rem;
             background: #e0e0e0;
-            margin-left: 1px;
             animation: blink 1s step-end infinite;
         }
+        .footer {
+            margin-top: 16px;
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", monospace;
+            font-size: 0.7rem;
+            color: #333;
+        }
+        .footer a { color: #444; text-decoration: none; }
+        .footer a:hover { color: #8be9fd; }
         @keyframes blink {
             50% { opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <div class="prompt">
-        <span class="text">subtract.ing</span>
+    <div class="chat">
+        <div class="msg user">where's my budgeting file? can you open it?</div>
+        <div class="msg system">
+            <span class="tier">[T4]</span>
+            <div class="codeblock">find ~ -iname "*budget*" -exec xdg-open {} \;</div>
+            <div class="output">opening ~/Documents/budget-2026.xlsx</div>
+        </div>
+    </div>
+    <div class="input-bar">
+        <span class="input-text"></span>
         <span class="cursor"></span>
     </div>
+    <div class="footer"><a href="https://github.com/03-git/subtract">github.com/03-git/subtract</a></div>
 </body>
 </html>
