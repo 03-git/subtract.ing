@@ -8,106 +8,218 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #1a1a1a;
-            height: 100vh;
+            background: #111;
+            color: #d0d0d0;
+            font-family: -apple-system, "Segoe UI", Helvetica, sans-serif;
+            line-height: 1.6;
+        }
+
+        /* --- hero --- */
+        .hero {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-family: -apple-system, "Segoe UI", Helvetica, sans-serif;
+            padding: 2rem;
         }
-        .chat {
-            width: min(600px, 90vw);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .msg {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-        .user {
-            align-self: flex-end;
-            background: #2f2f2f;
+        .tagline {
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            font-weight: 300;
             color: #e0e0e0;
-            border-bottom-right-radius: 4px;
+            text-align: center;
+            max-width: 640px;
+            margin-bottom: 3rem;
+            letter-spacing: -0.01em;
         }
-        .system {
-            align-self: flex-start;
-            background: #252525;
-            color: #d0d0d0;
-            border-bottom-left-radius: 4px;
-        }
-        .system .tier {
-            color: #bd93f9;
-            font-family: "SF Mono", "Cascadia Code", "Fira Code", monospace;
-            font-size: 0.8rem;
-        }
-        .system .codeblock {
+
+        /* --- terminal demo --- */
+        .terminal {
+            width: min(640px, 90vw);
             background: #1a1a1a;
+            border: 1px solid #2a2a2a;
             border-radius: 8px;
+            overflow: hidden;
+        }
+        .terminal-bar {
+            background: #1e1e1e;
             padding: 8px 12px;
-            margin-top: 8px;
-            font-family: "SF Mono", "Cascadia Code", "Fira Code", monospace;
-            font-size: 0.82rem;
-            color: #f8f8f2;
-        }
-        .system .output {
-            color: #888;
-            font-family: "SF Mono", "Cascadia Code", "Fira Code", monospace;
-            font-size: 0.82rem;
-            margin-top: 6px;
-        }
-        .input-bar {
-            width: min(600px, 90vw);
-            background: #2a2a2a;
-            border: 1px solid #3a3a3a;
-            border-radius: 24px;
-            padding: 14px 20px;
             display: flex;
-            align-items: center;
+            gap: 6px;
+            border-bottom: 1px solid #2a2a2a;
         }
-        .input-text {
-            flex: 1;
-            color: #666;
+        .terminal-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #333;
+        }
+        .terminal-body {
+            padding: 16px 20px;
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
+            font-size: clamp(0.72rem, 1.8vw, 0.82rem);
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+        .prompt { color: #888; }
+        .typed { color: #e0e0e0; }
+        .tier-table { color: #999; margin: 0.4rem 0; }
+        .tier-label { color: #bd93f9; }
+        .match-line { color: #8be9fd; }
+        .dim { color: #555; }
+
+        /* --- one-liner --- */
+        .oneliner {
+            margin-top: 2rem;
             font-size: 0.95rem;
+            color: #888;
+            text-align: center;
         }
-        .cursor {
-            width: 2px;
-            height: 1.2rem;
-            background: #e0e0e0;
-            animation: blink 1s step-end infinite;
+
+        /* --- scroll hint --- */
+        .scroll-hint {
+            margin-top: 3rem;
+            color: #333;
+            font-size: 1.4rem;
+            animation: drift 2s ease-in-out infinite;
         }
-        .footer {
-            margin-top: 16px;
-            font-family: "SF Mono", "Cascadia Code", "Fira Code", monospace;
+        @keyframes drift {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
+        }
+
+        /* --- audience section --- */
+        .audience {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+        }
+        .card {
+            margin-bottom: 3rem;
+        }
+        .card-hook {
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: #e0e0e0;
+            margin-bottom: 0.5rem;
+        }
+        .card-body {
+            font-size: 0.92rem;
+            color: #888;
+            max-width: 560px;
+        }
+
+        /* --- install --- */
+        .install {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 4rem 2rem 6rem;
+            text-align: center;
+        }
+        .install-code {
+            display: inline-block;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 16px 24px;
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
+            font-size: 0.85rem;
+            color: #e0e0e0;
+            text-align: left;
+            line-height: 1.8;
+        }
+        .install-note {
+            margin-top: 1.2rem;
+            font-size: 0.82rem;
+            color: #555;
+        }
+
+        /* --- footer --- */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
             font-size: 0.7rem;
             color: #333;
         }
-        .footer a { color: #444; text-decoration: none; }
-        .footer a:hover { color: #8be9fd; }
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
+        footer a { color: #444; text-decoration: none; }
+        footer a:hover { color: #8be9fd; }
     </style>
 </head>
 <body>
-    <div class="chat">
-        <div class="msg user">where's my budgeting file? can you open it?</div>
-        <div class="msg system">
-            <span class="tier">[T4]</span>
-            <div class="codeblock">find ~ -iname "*budget*" -exec xdg-open {} \;</div>
-            <div class="output">opening ~/Documents/budget-2026.xlsx</div>
+
+<!-- hero -->
+<section class="hero">
+    <h1 class="tagline">The terminal that teaches you, then forgets it ever had to.</h1>
+
+    <div class="terminal">
+        <div class="terminal-bar">
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+        </div>
+        <div class="terminal-body">
+<span class="prompt">$</span> <span class="typed">subtract</span>
+<br>You typed "subtract". Your shell didn't recognize it as a command.
+<br>
+<br>bash called command_not_found_handle, a hook that has existed since 2009.
+<br>The handler checked five tiers to figure out what you meant:
+<br>
+<div class="tier-table">  <span class="tier-label">T0</span>  lookup table   &nbsp; exact match against ~/.subtract/lookup.tsv  &nbsp; &lt;5ms
+<br>  <span class="tier-label">T1</span>  embedding      &nbsp; semantic similarity over man page corpus   &nbsp; &lt;200ms
+<br>  <span class="tier-label">T2</span>  local model    &nbsp; reads the man page, constructs the command  &nbsp; 1-5s
+<br>  <span class="tier-label">T4</span>  cloud          &nbsp; remote model, only if you configured it    &nbsp; 1-30s
+<br>  <span class="dim">--</span>  honest failure &nbsp; "not found" &mdash; no fabrication              &nbsp; 0ms</div>
+<br><span class="match-line">T0 matched. This message is the result.</span>
         </div>
     </div>
-    <div class="input-bar">
-        <span class="input-text"></span>
-        <span class="cursor"></span>
+
+    <p class="oneliner">Runs inside your OS, not instead of it. No account required.</p>
+
+    <div class="scroll-hint">&darr;</div>
+</section>
+
+<!-- audience -->
+<section class="audience">
+
+    <div class="card">
+        <div class="card-hook">For people whose brain moves faster than their workflow.</div>
+        <div class="card-body">Sub-second response. No context switch. No tab to open, no search to run. Type what you mean, stay in flow.</div>
     </div>
-    <div class="footer">a concept being worked on at <a href="https://github.com/03-git/subtract">github.com/03-git/subtract</a></div>
+
+    <div class="card">
+        <div class="card-hook">For people who've bought the last version of something on purpose.</div>
+        <div class="card-body">No subscription. No sunset date. The documentation it reads has been stable since 1971. No account to delete when you're done.</div>
+    </div>
+
+    <div class="card">
+        <div class="card-hook">For people who know what they want to say but not what to type.</div>
+        <div class="card-body">The vocabulary gap is the only barrier between you and your computer. subtract bridges it, then fades as you learn the commands yourself.</div>
+    </div>
+
+    <div class="card">
+        <div class="card-hook">For people whose job title changed but whose skills didn't.</div>
+        <div class="card-body">Platform skills expire. The layer underneath them doesn't. Learn the stable layer once.</div>
+    </div>
+
+    <div class="card">
+        <div class="card-hook">For people who game, create, and don't want to leave what works.</div>
+        <div class="card-body">Keep Windows. Keep macOS. Keep everything. Open a terminal. subtract is there. Close it. Nothing changed.</div>
+    </div>
+
+</section>
+
+<!-- install -->
+<section class="install">
+    <div class="install-code">
+        git clone https://github.com/03-git/subtract.git<br>
+        cd subtract<br>
+        ./install.sh
+    </div>
+    <div class="install-note">That's the whole thing. Open a new terminal and type something.</div>
+</section>
+
+<footer>
+    <a href="https://github.com/03-git/subtract">github.com/03-git/subtract</a> &middot; GPL-3.0
+</footer>
+
 </body>
 </html>
