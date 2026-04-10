@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noai, noimageai">
+    <title>signing | subtract.ing</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #111;
+            color: #d0d0d0;
+            font-family: -apple-system, "Segoe UI", Helvetica, sans-serif;
+            line-height: 1.6;
+        }
+
+        /* --- nav --- */
+        nav {
+            padding: 1.5rem 2rem;
+            font-size: 0.85rem;
+        }
+        nav a {
+            color: #555;
+            text-decoration: none;
+        }
+        nav a:hover { color: #8be9fd; }
+
+        /* --- hero --- */
+        .hero {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 4rem 2rem 3rem;
+        }
+        .tagline {
+            font-size: clamp(1.4rem, 4vw, 2rem);
+            font-weight: 300;
+            color: #e0e0e0;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.01em;
+        }
+        .subtitle {
+            font-size: 1rem;
+            color: #888;
+            max-width: 560px;
+            margin-bottom: 2rem;
+        }
+
+        /* --- terminal demo --- */
+        .terminal {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+        .terminal-bar {
+            background: #1e1e1e;
+            padding: 8px 12px;
+            display: flex;
+            gap: 6px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .terminal-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #333;
+        }
+        .terminal-body {
+            padding: 16px 20px;
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
+            font-size: clamp(0.72rem, 1.8vw, 0.82rem);
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+        .prompt { color: #888; }
+        .cmd { color: #8be9fd; }
+        .comment { color: #6272a4; }
+        .output { color: #999; }
+        .success { color: #50fa7b; }
+
+        /* --- content sections --- */
+        .content {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+        .content h2 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #e0e0e0;
+            margin: 3rem 0 1rem;
+        }
+        .content h2:first-child {
+            margin-top: 0;
+        }
+        .content p {
+            font-size: 0.92rem;
+            color: #888;
+            margin-bottom: 1rem;
+            max-width: 600px;
+        }
+        .content ul {
+            font-size: 0.92rem;
+            color: #888;
+            margin: 1rem 0 1rem 1.5rem;
+        }
+        .content li {
+            margin-bottom: 0.5rem;
+        }
+        .content code {
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
+            font-size: 0.85em;
+            background: #1a1a1a;
+            padding: 0.15em 0.4em;
+            border-radius: 3px;
+            color: #bd93f9;
+        }
+
+        /* --- comparison table --- */
+        .comparison {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.85rem;
+        }
+        .comparison th {
+            text-align: left;
+            color: #555;
+            font-weight: 400;
+            padding: 0.5rem 1rem 0.5rem 0;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .comparison td {
+            color: #888;
+            padding: 0.5rem 1rem 0.5rem 0;
+            border-bottom: 1px solid #1a1a1a;
+        }
+        .comparison td:first-child {
+            color: #bd93f9;
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
+            font-size: 0.8rem;
+        }
+
+        /* --- footer --- */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
+            font-size: 0.7rem;
+            color: #333;
+        }
+        footer a { color: #444; text-decoration: none; }
+        footer a:hover { color: #8be9fd; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/">subtract.ing</a> / signing
+</nav>
+
+<section class="hero">
+    <h1 class="tagline">The same archaeological pattern, applied to trust.</h1>
+    <p class="subtitle">
+        <code>command_not_found_handle</code> is how subtract enters.
+        <code>ssh-keygen -Y</code> is how subtract trusts.
+        Both shipped years ago. Both were waiting.
+    </p>
+</section>
+
+<section class="content">
+
+    <h2>The primitive</h2>
+    <p>
+        OpenSSH 8.0 shipped in April 2019 with <code>ssh-keygen -Y sign</code> and <code>ssh-keygen -Y verify</code>.
+        The intended use case was signing git commits with SSH keys instead of GPG.
+    </p>
+    <p>
+        Almost nobody uses it. GPG had the mindshare. The use case (signing arbitrary files with keys you already have) is not taught.
+    </p>
+
+    <div class="terminal">
+        <div class="terminal-bar">
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+        </div>
+        <div class="terminal-body">
+<span class="comment"># Sign a file with your existing SSH key</span>
+<br><span class="prompt">$</span> <span class="cmd">ssh-keygen -Y sign -f ~/.ssh/id_ed25519 -n namespace &lt; file.txt &gt; file.txt.sig</span>
+<br>
+<br><span class="comment"># Verify the signature against a list of trusted keys</span>
+<br><span class="prompt">$</span> <span class="cmd">ssh-keygen -Y verify -f ~/.ssh/authorized_signers -I signer -n namespace -s file.txt.sig &lt; file.txt</span>
+<br><span class="success">Good "namespace" signature for signer with ED25519 key SHA256:...</span>
+        </div>
+    </div>
+
+    <p>
+        No PKI. No certificate authority. No cloud service. No library dependency.
+        One binary that ships with every Unix system, using keys you already have.
+    </p>
+
+    <h2>The parallel</h2>
+
+    <table class="comparison">
+        <tr>
+            <th></th>
+            <th>Entry</th>
+            <th>Trust</th>
+        </tr>
+        <tr>
+            <td>Primitive</td>
+            <td>command_not_found_handle</td>
+            <td>ssh-keygen -Y</td>
+        </tr>
+        <tr>
+            <td>Shipped</td>
+            <td>Bash 4.0, 2009</td>
+            <td>OpenSSH 8.0, 2019</td>
+        </tr>
+        <tr>
+            <td>Intended use</td>
+            <td>Error handling hook</td>
+            <td>Git commit signing</td>
+        </tr>
+        <tr>
+            <td>subtract use</td>
+            <td>Translation entry point</td>
+            <td>Agent governance layer</td>
+        </tr>
+        <tr>
+            <td>Awareness</td>
+            <td>Low</td>
+            <td>Lower</td>
+        </tr>
+    </table>
+
+    <p>
+        Same archaeological pattern: the kernel (or core userland) already ships the primitive.
+        The application is routing people to use it instead of reaching for frameworks.
+    </p>
+
+    <h2>The application</h2>
+    <p>
+        When an AI agent assists with system administration, who decides what the agent is allowed to treat as ground truth?
+    </p>
+    <p>
+        The typical answer involves JWTs, OAuth flows, cloud signing services, or "just trust the context window."
+        All of these add dependencies. All of them can be captured or rotated out from under you.
+    </p>
+    <p>
+        subtract's answer: sign the files the agent should trust with your SSH key.
+        The agent verifies the signature before acting on the content.
+    </p>
+
+    <ul>
+        <li><strong>Manifest of frame docs.</strong> Hash the configuration files, the protocol docs, the scripts. Write the hashes to a manifest. Sign the manifest.</li>
+        <li><strong>Pre-flight verification.</strong> Before the agent does anything, verify the manifest signature. If it fails, the session stops.</li>
+        <li><strong>Signed vs unsigned = authoritative vs advisory.</strong> The agent can read anything. It can only act on signed content.</li>
+        <li><strong>Bootstrap problem solved.</strong> The scripts that verify are themselves in the manifest. Verify the manifest signature first, then verify the scripts' hashes against manifest entries, then trust the scripts to verify everything else.</li>
+    </ul>
+
+    <h2>The authority model</h2>
+    <p>
+        In applied behavior analysis, a BCBA (board-certified behavior analyst) designs intervention programs.
+        An RBT (registered behavior technician) implements them under supervision.
+        The RBT observes everything but authors nothing without the BCBA's sign-off.
+    </p>
+    <p>
+        <code>ssh-keygen -Y</code> makes this mechanical. The human signs program changes.
+        The agent operates within signed boundaries.
+        The signature is the BCBA.
+    </p>
+
+    <h2>What this replaces</h2>
+    <p>
+        If you reach for a signing solution today, you find:
+    </p>
+    <ul>
+        <li>JWT libraries (requires runtime, parsing, key management)</li>
+        <li>Cloud signing services (requires account, network, trust in provider)</li>
+        <li>GPG (works, but heavier toolchain than SSH)</li>
+        <li>Nothing (trust the context window, hope for the best)</li>
+    </ul>
+    <p>
+        <code>ssh-keygen -Y</code> requires: the SSH binary you already have,
+        a key you already have, and one line in <code>~/.ssh/authorized_signers</code>.
+    </p>
+
+    <h2>Status</h2>
+    <p>
+        The architecture is designed but not yet ceremonially signed.
+        Hardware key migration (Yubikey) is in progress.
+        First signing ceremony follows, then this documentation reflects shipped state.
+    </p>
+    <p>
+        The primitive works today. Try it:
+    </p>
+
+    <div class="terminal">
+        <div class="terminal-bar">
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+        </div>
+        <div class="terminal-body">
+<span class="comment"># Create a test file</span>
+<br><span class="prompt">$</span> <span class="cmd">echo "hello" &gt; test.txt</span>
+<br>
+<br><span class="comment"># Sign it</span>
+<br><span class="prompt">$</span> <span class="cmd">ssh-keygen -Y sign -f ~/.ssh/id_ed25519 -n test &lt; test.txt &gt; test.txt.sig</span>
+<br>
+<br><span class="comment"># Create authorized_signers (your public key, any principal name)</span>
+<br><span class="prompt">$</span> <span class="cmd">echo "me $(cat ~/.ssh/id_ed25519.pub)" &gt; ~/.ssh/authorized_signers</span>
+<br>
+<br><span class="comment"># Verify</span>
+<br><span class="prompt">$</span> <span class="cmd">ssh-keygen -Y verify -f ~/.ssh/authorized_signers -I me -n test -s test.txt.sig &lt; test.txt</span>
+<br><span class="success">Good "test" signature for me with ED25519 key SHA256:...</span>
+        </div>
+    </div>
+
+</section>
+
+<footer>
+    <a href="/">subtract.ing</a> &middot; <a href="https://github.com/03-git/subtract">github</a> &middot; GPL-3.0
+</footer>
+
+</body>
+</html>
