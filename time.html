@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noai, noimageai">
+    <title>time | subtract.ing</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #111;
+            color: #d0d0d0;
+            font-family: -apple-system, "Segoe UI", Helvetica, sans-serif;
+            line-height: 1.6;
+        }
+
+        /* --- nav --- */
+        nav {
+            padding: 1.5rem 2rem;
+            font-size: 0.85rem;
+        }
+        nav a {
+            color: #555;
+            text-decoration: none;
+        }
+        nav a:hover { color: #8be9fd; }
+
+        /* --- hero --- */
+        .hero {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 4rem 2rem 3rem;
+        }
+        .tagline {
+            font-size: clamp(1.4rem, 4vw, 2rem);
+            font-weight: 300;
+            color: #e0e0e0;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.01em;
+        }
+        .subtitle {
+            font-size: 1rem;
+            color: #888;
+            max-width: 560px;
+            margin-bottom: 2rem;
+        }
+
+        /* --- terminal demo --- */
+        .terminal {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+        .terminal-bar {
+            background: #1e1e1e;
+            padding: 8px 12px;
+            display: flex;
+            gap: 6px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .terminal-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #333;
+        }
+        .terminal-body {
+            padding: 16px 20px;
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
+            font-size: clamp(0.72rem, 1.8vw, 0.82rem);
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+        .prompt { color: #888; }
+        .cmd { color: #8be9fd; }
+        .comment { color: #6272a4; }
+        .output { color: #999; }
+        .success { color: #50fa7b; }
+
+        /* --- content sections --- */
+        .content {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 2rem 4rem;
+        }
+        .content h2 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #e0e0e0;
+            margin: 3rem 0 1rem;
+        }
+        .content h2:first-child {
+            margin-top: 0;
+        }
+        .content p {
+            font-size: 0.92rem;
+            color: #888;
+            margin-bottom: 1rem;
+            max-width: 600px;
+        }
+        .content ul {
+            font-size: 0.92rem;
+            color: #888;
+            margin: 1rem 0 1rem 1.5rem;
+        }
+        .content li {
+            margin-bottom: 0.5rem;
+        }
+        .content code {
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
+            font-size: 0.85em;
+            background: #1a1a1a;
+            padding: 0.15em 0.4em;
+            border-radius: 3px;
+            color: #bd93f9;
+        }
+
+        /* --- comparison table --- */
+        .comparison {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.85rem;
+        }
+        .comparison th {
+            text-align: left;
+            color: #555;
+            font-weight: 400;
+            padding: 0.5rem 1rem 0.5rem 0;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .comparison td {
+            color: #888;
+            padding: 0.5rem 1rem 0.5rem 0;
+            border-bottom: 1px solid #1a1a1a;
+        }
+        .comparison td:first-child {
+            color: #bd93f9;
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
+            font-size: 0.8rem;
+        }
+
+        /* --- footer --- */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
+            font-size: 0.7rem;
+            color: #333;
+        }
+        footer a { color: #444; text-decoration: none; }
+        footer a:hover { color: #8be9fd; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/">subtract.ing</a> / time
+</nav>
+
+<section class="hero">
+    <h1 class="tagline">The scheduler is already running.</h1>
+    <p class="subtitle">
+        The kernel's <code>schedule()</code> decides which process runs when.
+        It runs regardless of what you do.
+        The question is whether you cooperate with it directly or through seventeen layers.
+    </p>
+</section>
+
+<section class="content">
+
+    <h2>The constant</h2>
+    <p>
+        Every Unix system has a scheduler. It has been running since boot.
+        It will run until shutdown. You cannot turn it off.
+        You cannot replace it. You can only speak to it.
+    </p>
+    <p>
+        The language it speaks is syscalls. When you call <code>sleep()</code>,
+        you are telling the scheduler: "don't schedule me for this long."
+        When you call <code>waitpid()</code>, you are saying: "don't schedule me
+        until this child exits." When you call <code>select()</code>, you are saying:
+        "don't schedule me until one of these file descriptors is ready."
+    </p>
+    <p>
+        These are not abstractions over scheduling. They are scheduling.
+        The scheduler understands them natively. Zero translation required.
+    </p>
+
+    <h2>The layers</h2>
+    <p>
+        When an AI agent needs to wait for something, the typical answer involves:
+    </p>
+
+    <table class="comparison">
+        <tr>
+            <th>Layer</th>
+            <th>What it does</th>
+            <th>What it costs</th>
+        </tr>
+        <tr>
+            <td>sleep 300</td>
+            <td>Tells kernel "don't schedule me for 5 min"</td>
+            <td>One syscall, zero CPU</td>
+        </tr>
+        <tr>
+            <td>asyncio.sleep()</td>
+            <td>Wraps the syscall, adds event loop</td>
+            <td>Runtime, memory, complexity</td>
+        </tr>
+        <tr>
+            <td>setTimeout()</td>
+            <td>Wraps the syscall, adds event loop</td>
+            <td>Runtime, memory, complexity</td>
+        </tr>
+        <tr>
+            <td>Kubernetes CronJob</td>
+            <td>Wraps cron, wraps kernel timers</td>
+            <td>Cluster, API server, etcd, YAML</td>
+        </tr>
+        <tr>
+            <td>SLURM</td>
+            <td>Wraps cgroups, wraps scheduler</td>
+            <td>Job queue, database, daemons</td>
+        </tr>
+    </table>
+
+    <p>
+        Each layer sits beside the previous one. Each adds scheduling semantics
+        on top of a scheduler that was already running. Each costs something.
+    </p>
+    <p>
+        subtract asks: what if the agent just called <code>sleep</code>?
+    </p>
+
+    <h2>The primitives</h2>
+    <p>
+        The kernel already exports the verbs that cooperate with <code>schedule()</code>:
+    </p>
+    <ul>
+        <li><code>sleep()</code> / <code>nanosleep()</code> — yield for a duration</li>
+        <li><code>pause()</code> — yield until a signal arrives</li>
+        <li><code>select()</code> / <code>poll()</code> / <code>epoll()</code> — yield until I/O is ready</li>
+        <li><code>waitpid()</code> — yield until a child process exits</li>
+        <li><code>inotify</code> — yield until a filesystem event occurs</li>
+    </ul>
+    <p>
+        These are not waiting. These are <em>not running</em>. The process is removed
+        from the run queue. No CPU cycles. No polling. No busy-wait.
+        The scheduler will wake you when the condition is met.
+    </p>
+
+    <div class="terminal">
+        <div class="terminal-bar">
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+        </div>
+        <div class="terminal-body">
+<span class="comment"># Wait for 5 minutes, using zero CPU</span>
+<br><span class="prompt">$</span> <span class="cmd">sleep 300</span>
+<br>
+<br><span class="comment"># Run a command at a specific time</span>
+<br><span class="prompt">$</span> <span class="cmd">echo "curl https://api.example.com/check" | at 3:00 PM</span>
+<br>
+<br><span class="comment"># Run a command every hour</span>
+<br><span class="prompt">$</span> <span class="cmd">crontab -e</span>
+<br><span class="output">0 * * * * /path/to/script.sh</span>
+<br>
+<br><span class="comment"># Wait for a file to appear</span>
+<br><span class="prompt">$</span> <span class="cmd">inotifywait -e create /path/to/directory</span>
+<br>
+<br><span class="comment"># Wait for a process to finish</span>
+<br><span class="prompt">$</span> <span class="cmd">wait $PID</span>
+        </div>
+    </div>
+
+    <h2>The third leg</h2>
+    <p>
+        subtract has three legs. Each is a kernel primitive that shipped years ago.
+        Each is underused because the corpus taught frameworks instead.
+    </p>
+
+    <table class="comparison">
+        <tr>
+            <th>Leg</th>
+            <th>Primitive</th>
+            <th>Purpose</th>
+        </tr>
+        <tr>
+            <td>Entry</td>
+            <td>command_not_found_handle</td>
+            <td>Agent intent enters bash</td>
+        </tr>
+        <tr>
+            <td>Trust</td>
+            <td>ssh-keygen -Y</td>
+            <td>Agent operates within signed boundaries</td>
+        </tr>
+        <tr>
+            <td>Time</td>
+            <td>sleep, at, cron, inotify</td>
+            <td>Agent yields to kernel scheduler</td>
+        </tr>
+    </table>
+
+    <p>
+        "Beside not instead" means: the scheduler is the constant.
+        Everything else is how clearly you ask it for what you need.
+    </p>
+
+    <h2>What this replaces</h2>
+    <p>
+        If an agent reaches for a "scheduling solution" today, it finds:
+    </p>
+    <ul>
+        <li>Message queues (Redis, RabbitMQ, SQS) — for "run this later"</li>
+        <li>Workflow orchestrators (Airflow, Temporal) — for "run this sequence"</li>
+        <li>Container schedulers (Kubernetes, Nomad) — for "run this somewhere"</li>
+        <li>Job schedulers (SLURM, PBS) — for "run this when resources free"</li>
+        <li>Polling loops — for "check repeatedly until done"</li>
+    </ul>
+    <p>
+        All of these wrap something that was already running.
+        The kernel scheduler doesn't need Redis to run a command in five minutes.
+        It needs <code>sleep 300 && command</code>.
+    </p>
+    <p>
+        The orchestration layers exist for cross-machine coordination, fault tolerance,
+        and resource management across clusters. If you have one machine and one task,
+        you have <code>at</code>. If you have a recurring task, you have <code>cron</code>.
+        If you need to wait for I/O, you have <code>select</code>.
+    </p>
+    <p>
+        The primitives are already there. The scheduler is already running.
+        The work is routing agents to speak to it directly.
+    </p>
+
+</section>
+
+<footer>
+    <a href="/">subtract.ing</a> &middot; <a href="/signing">signing</a> &middot; <a href="https://github.com/03-git/subtract">github</a> &middot; GPL-3.0
+</footer>
+
+</body>
+</html>
