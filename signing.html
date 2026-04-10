@@ -287,6 +287,47 @@
         a key you already have, and one line in <code>~/.ssh/authorized_signers</code>.
     </p>
 
+    <h2>The implication</h2>
+    <p>
+        The lookup table that routes your commands can itself be signed.
+    </p>
+
+    <div class="terminal">
+        <div class="terminal-bar">
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+            <span class="terminal-dot"></span>
+        </div>
+        <div class="terminal-body">
+<span class="comment"># Sign your lookup table</span>
+<br><span class="prompt">$</span> <span class="cmd">ssh-keygen -Y sign -f ~/.ssh/id_ed25519 -n subtract &lt; ~/.subtract/lookup.tsv &gt; lookup.tsv.sig</span>
+<br>
+<br><span class="comment"># Share both files. Recipient adds your public key to their authorized_signers:</span>
+<br><span class="comment"># ~/.ssh/authorized_signers (one line per trusted signer)</span>
+<br><span class="output">colleague ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI...</span>
+<br>
+<br><span class="comment"># Then verifies:</span>
+<br><span class="prompt">$</span> <span class="cmd">ssh-keygen -Y verify -f ~/.ssh/authorized_signers -I colleague -n subtract -s lookup.tsv.sig &lt; lookup.tsv</span>
+<br><span class="success">Good "subtract" signature for colleague with ED25519 key SHA256:...</span>
+        </div>
+    </div>
+
+    <p>
+        The lookup table is both the distilled model (T0 routing) and the attested model (signed provenance).
+        Fork it, edit it, sign it with your key. The signature is the authority chain, not the platform that shipped it.
+    </p>
+    <p>
+        A clinical example: a behavior analyst signs her lookup table containing prompting sequences and session patterns.
+        The tablet in the therapy room runs attested knowledge. If she shares her lookup with another clinician,
+        the signature verifies it came from her — not from a hallucinated model or a corrupted transmission.
+        The chain of custody is cryptographic, portable, and requires no infrastructure beyond the keys both parties already have.
+    </p>
+
+    <h2>The discovery</h2>
+    <p>
+        The trust layer for all human-authored knowledge that agents will act on already ships with every Unix install, and nobody is using it.
+    </p>
+
     <h2>Status</h2>
     <p>
         The architecture is designed but not yet ceremonially signed.
