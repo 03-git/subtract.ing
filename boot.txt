@@ -24,10 +24,7 @@ Signon:
 - Ask: "What's unfinished from last time?"
 - Summarize to session/account memory before ending
 
-Signoff:
-- State: topics covered, decisions made, open items
-- Confirm human has captured what matters
-- No work survives unless human saves it
+Signoff: see signoff.txt for the full ritual.
 
 ### Has filesystem (agent mode)
 

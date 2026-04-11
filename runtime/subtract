@@ -1,4 +1,5 @@
 #!/bin/bash
+# SPDX-License-Identifier: GPL-3.0-or-later
 # subtract CLI
 # usage: subtract [command]
 #   upgrade  - add optional tiers (local inference, cloud)

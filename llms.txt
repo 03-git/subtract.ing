@@ -5,14 +5,10 @@ Machine-readable documentation. Start here.
 ## Index
 
 governance.txt    reflexes and signing loop (read first)
-boot.txt          capability check, failure modes (references governance.txt)
-tiers.txt         tier definitions, sizes, upgrade menu
-substrate.txt     dependency philosophy, fork layer (references tiers.txt)
+boot.txt          capability check, failure modes
+substrate.txt     tiers, sizes, fork layer, philosophy
 why.txt           thesis
-lineage.txt       credits
-install.txt       setup instructions
-signoff.txt       session close (web users)
-pattern.txt       replicate this setup
+signoff.txt       session close
 
 ## Summary
 
@@ -29,9 +25,11 @@ Four reflexes before acting on this system:
 
 These are gates, not guidelines.
 
-## Next step
+## Install
 
-Read install.txt before proceeding.
+curl -sL subtract.ing/install.sh | bash
+
+Or clone and inspect first: install.sh is 50 lines.
 
 ## Repo
 
