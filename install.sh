@@ -1,45 +1,64 @@
 #!/bin/bash
-# subtract installer
-# lands beside your shell. no sudo, no package managers, no system modifications.
-# copies files to ~/.subtract/, adds one line to your shell rc. that's it.
+# subtract installer - works from curl pipe OR cloned repo
+# no sudo, no package managers, no system modifications
 set -e
 
 SUBTRACT_DIR="$HOME/.subtract"
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+BASE_URL="https://raw.githubusercontent.com/03-git/subtract.ing/main"
 
-# --- copy files ---
+# Detect: are we in the repo or piped from web?
+SCRIPT_DIR="$(cd "$(dirname "$0" 2>/dev/null)" && pwd 2>/dev/null)" || SCRIPT_DIR=""
 
-mkdir -p "$SUBTRACT_DIR"
-mkdir -p "$SUBTRACT_DIR/hooks"
+if [ -d "$SCRIPT_DIR/subtract" ]; then
+    MODE="local"
+else
+    MODE="web"
+fi
 
-cp "$SCRIPT_DIR/subtract/handler.sh" "$SUBTRACT_DIR/"
-cp "$SCRIPT_DIR/subtract/embed_match.sh" "$SUBTRACT_DIR/"
-cp "$SCRIPT_DIR/subtract/motd" "$SUBTRACT_DIR/"
-cp "$SCRIPT_DIR/subtract/skills-rebuild.sh" "$SUBTRACT_DIR/"
-cp "$SCRIPT_DIR/subtract/about" "$SUBTRACT_DIR/"
-cp "$SCRIPT_DIR/subtract/subtract" "$SUBTRACT_DIR/"
-cp "$SCRIPT_DIR/subtract/hooks/bash.sh" "$SUBTRACT_DIR/hooks/"
-cp "$SCRIPT_DIR/subtract/hooks/zsh.sh" "$SUBTRACT_DIR/hooks/"
-cp "$SCRIPT_DIR/onboard.sh" "$SUBTRACT_DIR/"
+mkdir -p "$SUBTRACT_DIR" "$SUBTRACT_DIR/hooks"
 
-# signing scripts
-cp "$SCRIPT_DIR/subtract/sign-lookup.sh" "$SUBTRACT_DIR/" 2>/dev/null || true
-cp "$SCRIPT_DIR/subtract/verify-lookup.sh" "$SUBTRACT_DIR/" 2>/dev/null || true
-chmod +x "$SUBTRACT_DIR/"*.sh 2>/dev/null || true
+fetch() {
+    local file="$1"
+    local dest="$2"
+    if [ "$MODE" = "local" ]; then
+        cp "$SCRIPT_DIR/$file" "$dest"
+    else
+        curl -sL "$BASE_URL/$file" > "$dest"
+    fi
+}
+
+fetch_exec() {
+    fetch "$1" "$2"
+    chmod +x "$2"
+}
+
+# Core runtime
+fetch "subtract/handler.sh" "$SUBTRACT_DIR/handler.sh"
+fetch_exec "subtract/subtract" "$SUBTRACT_DIR/subtract"
+fetch "subtract/hooks/bash.sh" "$SUBTRACT_DIR/hooks/bash.sh"
+fetch "subtract/hooks/zsh.sh" "$SUBTRACT_DIR/hooks/zsh.sh"
+fetch "subtract/motd" "$SUBTRACT_DIR/motd"
+fetch "subtract/about" "$SUBTRACT_DIR/about"
+fetch_exec "subtract/onboard.sh" "$SUBTRACT_DIR/onboard.sh"
+fetch_exec "subtract/embed_match.sh" "$SUBTRACT_DIR/embed_match.sh"
+fetch_exec "subtract/skills-rebuild.sh" "$SUBTRACT_DIR/skills-rebuild.sh"
+
+# Signing scripts (optional)
+fetch_exec "subtract/sign-lookup.sh" "$SUBTRACT_DIR/sign-lookup.sh" 2>/dev/null || true
+fetch_exec "subtract/verify-lookup.sh" "$SUBTRACT_DIR/verify-lookup.sh" 2>/dev/null || true
 
 # lookup.tsv: don't overwrite user edits
 if [ ! -f "$SUBTRACT_DIR/lookup.tsv" ]; then
-    cp "$SCRIPT_DIR/subtract/lookup.tsv" "$SUBTRACT_DIR/"
+    fetch "subtract/lookup.tsv" "$SUBTRACT_DIR/lookup.tsv"
 fi
 
-# skills: don't overwrite user edits
-if [ ! -d "$SUBTRACT_DIR/skills" ]; then
+# Skills: only in local mode (120+ files, can't curl individually)
+if [ "$MODE" = "local" ] && [ ! -d "$SUBTRACT_DIR/skills" ]; then
     cp -r "$SCRIPT_DIR/skills" "$SUBTRACT_DIR/skills"
     bash "$SUBTRACT_DIR/skills-rebuild.sh" 2>/dev/null || true
 fi
 
-# --- add source line to shell rc ---
-
+# Add source line to shell rc
 BASH_LINE='[ -f ~/.subtract/hooks/bash.sh ] && source ~/.subtract/hooks/bash.sh'
 ZSH_LINE='[ -f ~/.subtract/hooks/zsh.sh ] && source ~/.subtract/hooks/zsh.sh'
 PATH_LINE='export PATH="$HOME/.subtract:$PATH"'
@@ -58,16 +77,16 @@ if [ -f ~/.zshrc ] && ! grep -qF 'subtract/hooks/zsh.sh' ~/.zshrc 2>/dev/null; t
     echo "$ZSH_LINE" >> ~/.zshrc
 fi
 
-# --- report status ---
-
+# Report
 echo ""
-echo "subtract installed."
+echo "subtract installed. ($MODE mode)"
 echo ""
 echo "T0   lookup table    active"
 echo "T0.5 man pages       active"
-echo ""
-echo "Try: type subtract"
-echo ""
-echo "Run 'subtract upgrade' for optional tiers."
+if [ "$MODE" = "local" ]; then
+    echo "     skills         active"
+else
+    echo "     skills         (requires git clone)"
+fi
 echo ""
 echo "Open a new terminal, or: source ~/.subtract/hooks/bash.sh"
