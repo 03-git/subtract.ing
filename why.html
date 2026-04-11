@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noai, noimageai">
+    <title>why | subtract.ing</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #111;
+            color: #d0d0d0;
+            font-family: -apple-system, "Segoe UI", Helvetica, sans-serif;
+            line-height: 1.7;
+        }
+
+        nav {
+            padding: 1.5rem 2rem;
+            font-size: 0.85rem;
+        }
+        nav a { color: #555; text-decoration: none; }
+        nav a:hover { color: #8be9fd; }
+
+        .content {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 2rem 6rem;
+        }
+
+        h1 {
+            font-size: clamp(1.4rem, 4vw, 2rem);
+            font-weight: 300;
+            color: #e0e0e0;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: #e0e0e0;
+            margin: 2.5rem 0 1rem;
+        }
+
+        p {
+            font-size: 0.92rem;
+            color: #999;
+            margin-bottom: 1rem;
+        }
+
+        strong { color: #d0d0d0; }
+        code { color: #8be9fd; font-family: "SF Mono", monospace; font-size: 0.88em; }
+
+        .diagram {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-family: "SF Mono", "Cascadia Code", monospace;
+            font-size: 0.78rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            color: #999;
+        }
+        .diagram .keep { color: #50fa7b; }
+        .diagram .subtract { color: #555; }
+        .diagram .label { color: #6272a4; }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        table {
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        th { color: #888; font-weight: 500; }
+        td { color: #999; }
+        td code { color: #8be9fd; }
+
+        .energy {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            margin: 1.5rem 0;
+            font-family: "SF Mono", monospace;
+            font-size: 0.82rem;
+            color: #e0e0e0;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #2a2a2a;
+            margin: 3rem 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-family: "SF Mono", monospace;
+            font-size: 0.7rem;
+            color: #333;
+        }
+        footer a { color: #444; text-decoration: none; }
+        footer a:hover { color: #8be9fd; }
+    </style>
+</head>
+<body>
+
+<nav><a href="/">&larr; subtract.ing</a></nav>
+
+<div class="content">
+
+<h1>Why subtract</h1>
+
+<p>The translation layer is scaffolding. T2 shows you the command. T0 pattern-matches it. Eventually you type it yourself. The inference stops. That's the point — a system that you stop needing and start using.</p>
+
+<p>The telos is literacy, not dependency. You graduate from "show my files" to <code>ls</code>, from subtract to the commands themselves. No wrapper. No subscription. No intermediary between you and the machine.</p>
+
+<h2>Where it sits</h2>
+
+<div class="diagram">
+<span class="label">syscall</span>
+  │
+  ├─ <span class="keep">kernel (Linux, already there)</span>
+  │
+  ├─ <span class="keep">shell (bash, already there)</span>
+  │
+  ├─ <span class="keep">subtract (one function, one TSV, one hook from 2009)</span>
+  │
+  ├─ <span class="keep">busybox httpd (ships with the OS, CGI = shell scripts)</span>
+  │
+  ├─ <span class="keep">browser (already on every computer)</span>
+  │
+  │
+  │  <span class="label">── everything below this line is subtracted ──</span>
+  │
+  ├─ <span class="subtract">npm/pip/cargo</span>
+  ├─ <span class="subtract">language runtime (node, python, java)</span>
+  ├─ <span class="subtract">framework (react, django, spring)</span>
+  ├─ <span class="subtract">ORM</span>
+  ├─ <span class="subtract">database server</span>
+  ├─ <span class="subtract">API gateway</span>
+  ├─ <span class="subtract">auth service</span>
+  ├─ <span class="subtract">container runtime</span>
+  ├─ <span class="subtract">orchestrator</span>
+  ├─ <span class="subtract">cloud provider</span>
+  ├─ <span class="subtract">CI/CD pipeline</span>
+  ├─ <span class="subtract">CDN</span>
+  ├─ <span class="subtract">monitoring SaaS</span>
+  └─ <span class="subtract">billing SaaS</span>
+</div>
+
+<h2>Sovereignty</h2>
+
+<p>subtract rests on three primitives that already ship with Unix:</p>
+
+<div class="table-wrap">
+<table>
+    <tr><th>Leg</th><th>Primitive</th><th>Purpose</th></tr>
+    <tr><td>Entry</td><td><code>command_not_found_handle</code></td><td>Intent enters bash</td></tr>
+    <tr><td>Trust</td><td><code>ssh-keygen -Y</code></td><td>Signed provenance for knowledge</td></tr>
+    <tr><td>Time</td><td><code>sleep</code>, <code>at</code>, <code>cron</code></td><td>Yield to the kernel scheduler</td></tr>
+</table>
+</div>
+
+<p>No account. No API key. No terms of service from a foreign company. No usage meter that resets on someone else's schedule. The primitives work in any jurisdiction, on any hardware, offline.</p>
+
+<h2>Energy model</h2>
+
+<div class="energy">
+E<sub>subtract</sub>(t) → E<sub>syscall</sub> ≈ 10<sup>-5</sup> J &nbsp;&nbsp; as learned commands grow<br><br>
+E<sub>local</sub> = 10<sup>2</sup> J/request &nbsp;&nbsp; (flat, per inference)<br><br>
+E<sub>api</sub> ≥ 10<sup>4</sup> J/request &nbsp;&nbsp; (flat or increasing with orchestration)
+</div>
+
+<p>As you learn commands, energy cost approaches syscall. Local inference is flat. Cloud inference grows with orchestration. subtract's energy curve goes down over time. Everything else's goes up or stays flat.</p>
+
+<hr>
+
+<p>Full lineage: <a href="/lineage" style="color: #8be9fd;">subtract.ing/lineage</a></p>
+
+</div>
+
+<footer>
+    <a href="https://github.com/03-git/subtract">github</a> &middot; <a href="/signing">signing</a> &middot; <a href="/time">time</a> &middot; <a href="/lineage">lineage</a> &middot; <a href="/why">why</a> &middot; GPL-3.0
+</footer>
+
+</body>
+</html>
