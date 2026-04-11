@@ -179,11 +179,39 @@
             padding: 4rem 2rem 6rem;
             text-align: center;
         }
-        .install-code {
+        .install-box {
             display: inline-block;
             background: #1a1a1a;
             border: 1px solid #2a2a2a;
             border-radius: 8px;
+            overflow: hidden;
+        }
+        .install-header {
+            background: #1e1e1e;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: flex-end;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .copy-btn {
+            background: #2a2a2a;
+            border: none;
+            color: #888;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .copy-btn:hover {
+            background: #3a3a3a;
+            color: #ccc;
+        }
+        .copy-btn.copied {
+            background: #50fa7b;
+            color: #111;
+        }
+        .install-code {
             padding: 16px 24px;
             font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
             font-size: 0.85rem;
@@ -291,13 +319,30 @@
 
 <!-- install -->
 <section class="install">
-    <div class="install-code">
-        git clone https://github.com/03-git/subtract.git<br>
-        cd subtract<br>
-        ./install.sh
+    <div class="install-box">
+        <div class="install-header">
+            <button class="copy-btn" onclick="copyInstall()">Copy</button>
+        </div>
+        <div class="install-code" id="install-text">git clone https://github.com/03-git/subtract.git
+cd subtract
+./install.sh</div>
     </div>
-    <div class="install-note">That's the whole thing. Open a new terminal and type something.</div>
 </section>
+
+<script>
+function copyInstall() {
+    const text = document.getElementById('install-text').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.classList.remove('copied');
+        }, 2000);
+    });
+}
+</script>
 
 <footer>
     <a href="/">subtract.ing</a> &middot; <a href="/paste">paste</a> &middot; <a href="/why">why</a> &middot; <a href="/lineage">lineage</a> &middot; <a href="/substrate">substrate</a> &middot; <a href="/signing">signing</a> &middot; <a href="/time">time</a> &middot; <a href="/governance">governance</a> &middot; <a href="/discipline">discipline</a> &middot; <a href="https://github.com/03-git/subtract">github</a>
