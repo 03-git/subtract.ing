@@ -247,22 +247,19 @@
             <span class="terminal-dot"></span>
         </div>
         <div class="terminal-body">
-<span class="prompt">$</span> <span class="typed">subtract</span>
-<br>You said "subtract". Your shell didn't recognize it as a command.
+<span class="prompt">$</span> <span class="typed">type subtract</span>
+<br><span class="dim">subtract is /home/user/.subtract/subtract</span>
 <br>
-<br>bash called command_not_found_handle, a hook that has existed since 2009.
-<br>The handler checked five tiers to figure out what you meant:
+<br><span class="prompt">$</span> <span class="typed">file ~/.subtract/subtract</span>
+<br><span class="dim">Bourne-Again shell script, ASCII text executable</span>
 <br>
-<div class="tier-table">  <span class="tier-label">T0</span>  lookup table   &nbsp; exact match against ~/.subtract/lookup.tsv  &nbsp; &lt;5ms
-<br>  <span class="tier-label">T1</span>  embedding      &nbsp; semantic similarity over man page corpus   &nbsp; &lt;200ms
-<br>  <span class="tier-label">T2</span>  local model    &nbsp; reads the man page, constructs the command  &nbsp; 1-5s
-<br>  <span class="tier-label">T4</span>  cloud          &nbsp; remote model, only if you configured it    &nbsp; 1-30s
-<br>  <span class="dim">--</span>  honest failure &nbsp; "not found" &mdash; no fabrication              &nbsp; 0ms</div>
-<br><span class="match-line">T0 matched. This message is the result.</span>
+<br><span class="prompt">$</span> <span class="typed">show my files</span>
+<br><span class="match-line">[T0] ls -la</span>
+<br><span class="dim">[enter/n]</span>
         </div>
     </div>
 
-    <p class="demo-note">Runs beside your OS, not instead of it. No account required.</p>
+    <p class="demo-note">A text file you can read. Not a binary. Not a service. Just bash.</p>
 </section>
 
 <!-- audience -->
