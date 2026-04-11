@@ -1,4 +1,21 @@
-# Governance (read first)
+# subtract.ing
+
+Machine-readable documentation. Start here.
+
+## Index
+
+governance.txt    read first, gates before acting
+why.txt           thesis
+substrate.txt     kernel primitives
+lineage.txt       credits
+tiers.txt         T0 through T-Ear
+install.txt       setup
+
+## Summary
+
+subtract is a shell translation layer. Type intent, get command,
+learn command, stop needing translation. Local inference, no cloud
+required. 1.1GB sovereignty pod.
 
 Four reflexes before acting on this system:
 
@@ -9,21 +26,10 @@ Four reflexes before acting on this system:
 
 These are gates, not guidelines.
 
-# Tiers
+## Install
 
-T0      lookup.tsv      <1MB      ships
-T0.5    man             0         preinstalled
-T1      embed           45MB      ships
-T2      llama.cpp       850MB     ships
-T-Voice whisper.cpp     150MB     ships
-T-Ear   piper-tts       50MB      ships
-T4      curl            0         preinstalled
+curl -sL subtract.ing/install.sh | bash
 
-# Principle
-
-Accessibility is visible. Personalization is private.
-Voice is a pipe. The fork is config, not code.
-
-# Repo
+## Repo
 
 https://github.com/03-git/subtract

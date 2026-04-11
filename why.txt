@@ -1,0 +1,65 @@
+# Why subtract
+
+subtract is software as a besides. It represents the primal translation layer native to computers.
+
+T2 shows you the command. T0 pattern-matches it. Eventually you type it yourself. The AI isn't needed. That's the point.
+
+The hope is literacy, not dependency. You graduate from "show my files" to ls, from subtract to the commands themselves. No wrapper. No subscription. No intermediary between you and the machine.
+
+## Sovereignty
+
+subtract rests on three primitives that already ship with Unix:
+
+| Leg | Primitive | Purpose |
+|-----|-----------|---------|
+| Entry | command_not_found_handle | Intent enters bash |
+| Trust | ssh-keygen -Y | Signed provenance for knowledge |
+| Time | sleep, at, cron | Yield to the kernel scheduler |
+
+No account. No API key. No terms of service from a foreign company. No usage meter that resets on someone else's schedule. The primitives work in any jurisdiction, on any hardware, offline.
+
+## Energy model
+
+```
+E_subtract(t) -> E_syscall ~ 10^-5 J   as learned commands grow
+E_local = 10^2 J/request               (flat, per inference)
+E_api >= 10^4 J/request                (flat or increasing with orchestration)
+```
+
+As you learn commands, energy cost approaches syscall. Local inference is flat. Cloud inference grows with orchestration. subtract's energy curve goes down over time. Everything else's goes up or stays flat.
+
+## Where it sits
+
+```
+syscall
+  |
+  +-- kernel (Linux, already there)
+  |
+  +-- shell (bash, already there)
+  |
+  +-- subtract (one function, one TSV, one hook from 2009)
+  |
+  +-- busybox httpd (ships with the OS, CGI = shell scripts)
+  |
+  +-- browser (already on every computer)
+  |
+  |   -- everything below this line is subtracted --
+  |
+  +-- npm/pip/cargo
+  +-- language runtime (node, python, java)
+  +-- framework (react, django, spring)
+  +-- ORM
+  +-- database server
+  +-- API gateway
+  +-- auth service
+  +-- container runtime
+  +-- orchestrator
+  +-- cloud provider
+  +-- CI/CD pipeline
+  +-- CDN
+  +-- monitoring SaaS
+  +-- billing SaaS
+```
+
+Full lineage: subtract.ing/lineage.txt
+Full substrate: subtract.ing/substrate.txt

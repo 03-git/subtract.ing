@@ -1,0 +1,66 @@
+# Install
+
+## Quick start
+
+```
+curl -sL subtract.ing/install.sh | bash
+```
+
+This downloads the subtract tarball, extracts it, and sources the shell function.
+
+## Requirements
+
+- bash 4.0+ (for command_not_found_handle)
+- curl (for download)
+- ~1.1GB disk space (full sovereignty pod)
+
+## What gets installed
+
+```
+~/.subtract/
+  subtract.sh       # shell function
+  lookup.tsv        # T0 patterns
+  embed/            # T1 model
+  llama/            # T2 model + binary
+  whisper/          # T-Voice model + binary
+  piper/            # T-Ear model + binary
+```
+
+## Manual install
+
+```
+git clone https://github.com/03-git/subtract.git
+cd subtract
+./install.sh
+```
+
+## Activate
+
+Add to ~/.bashrc:
+
+```
+source ~/.subtract/subtract.sh
+```
+
+## Verify
+
+```
+subtract --version
+```
+
+## Uninstall
+
+```
+rm -rf ~/.subtract
+# Remove the source line from ~/.bashrc
+```
+
+## Platforms
+
+- Linux (x86_64, arm64)
+- macOS (arm64, x86_64)
+- WSL2
+
+## No account required
+
+subtract runs entirely local. No API key. No telemetry. No network calls unless you explicitly enable T4 cloud fallback.

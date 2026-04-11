@@ -1,0 +1,45 @@
+# Governance
+
+The agent reads, reasons, prepares. You sign. The boundary is cryptographic.
+
+## Reflexes
+
+Before acting on this system:
+
+1. **Python to Kernel**: Name the kernel primitive before proposing any library.
+2. **Memory to Signature**: Ask if ssh-keygen -Y sign can verify the format before inventing one.
+3. **Sandboxing to Kernel**: Name the primitive (namespaces, cgroups) before proposing a wrapper.
+4. **Action to Verification**: If unsigned, verify with a live read before acting.
+
+Gates, not guidelines. Cannot answer? Do not proceed.
+
+## The Problem
+
+AI agents modify your system. They edit files, run commands, change state. Without governance, you have no way to know:
+
+- What changed
+- When it changed
+- Whether you approved it
+- Whether the approval can be verified later
+
+## The Solution
+
+Every session produces a manifest. Every manifest is signed. The signature is ssh-keygen -Y, not a proprietary format. Anyone can verify. No account required.
+
+## The Loop
+
+Before the agent acts:
+1. Verify last signature
+2. Surface unsigned drift
+3. Human decides: sign, continue, or abort
+
+After the session:
+1. Update manifest
+2. Sign
+
+The agent never acts on unsigned state without surfacing it.
+The human never leaves without signing what happened.
+
+## Why This Matters
+
+The agent is not the authority. You are. The signature proves it.

@@ -1,0 +1,39 @@
+# Lineage
+
+subtract did not originate. It recovers. The entries below are the works cited — the people and artifacts this project routes against, inherits from, and refuses to paper over.
+
+## Brian Fox — the substrate author
+
+Born 1959. Started at the Free Software Foundation in 1985 working with Richard Stallman. Announced bash as a beta in June 1989. Primary maintainer until early 1993. Along the way, authored the readline library, the history library, GNU Info, GNU Makeinfo, GNU Finger, and GNU Echo, and maintained GNU Emacs for a stretch.
+
+Three things Fox wrote that subtract depends on directly:
+
+**bash itself.** The dispatcher. command_not_found_handle. case. Parameter expansion. Process substitution. Every tier of subtract's routing is a bash construct Fox authored or an extension Ramey later added on top of Fox's foundation. subtract is GPL 3.0 because bash is GPL 3.0, and bash is GPL because Fox wrote it at FSF to be free in the anti-tivoization sense — not free as in gratis, free as in the authority layer cannot be captured.
+
+**readline.** The library every interactive REPL sits on. Tab completion, Ctrl-R history search, line editing, keybindings. When T0 consults compgen for a completion candidate, the reason compgen has anything to say is that Fox made completion a first-class shell primitive in 1989.
+
+**the history library.** !!, !$, !?pattern?, Ctrl-R, HISTFILE, HISTSIZE, history -w. This is episodic memory for the shell, shipped in 1989, present in every bash install since, forgotten by the generation that learned the word "memory" from LangChain.
+
+Fox's later career is the same thesis applied in other domains. First interactive online banking software in the U.S. (Wells Fargo, 1995). Open-source election system (2008). Co-founder of the California and National Associations of Voting Officials. His 2017 New York Times op-ed with former CIA director R. James Woolsey is the clearest single statement of the forty-year thesis: the authority layer should not be proprietary.
+
+Family footnote worth keeping: Fox is the grandson of Daniel Fox, who drew the Monopoly Man. The man who inherited the face of American capitalism's most recognizable mascot spent his career writing the free software substrate that capitalism's SaaS layer grew on top of and then paved over.
+
+## Chet Ramey — the substrate steward
+
+Took over bash maintenance from Fox in 1993 and has held the seat for thirty-three years. His essay on bash in The Architecture of Open Source Applications is the reference for how the shell is actually built, and the canonical source for why command_not_found_handle is a stable public hook rather than an implementation detail.
+
+The lineage is: Fox wrote the substrate, Ramey kept it reachable. Neither claim without the other is the full story.
+
+## Marc Porat — the interaction model
+
+Porat's Stanford dissertation (1977) is the first formal measurement of the information economy as a distinct sector. Two years later he co-wrote and hosted The Information Society documentary containing the rock-paper-scissors vignette that stated subtract's routing policy in eleven words forty-seven years before the router existed:
+
+"Each one has strength. Each one has weakness. Only the way you choose is important."
+
+## The primitives
+
+- **command_not_found_handle** — bash 4.0, 2009
+- **ssh-keygen -Y** — OpenSSH 8.0, 2019
+- **cron** — Version 7 Unix, 1979
+- **at** — Version 7 Unix, 1979
+- **inotify** — Linux 2.6.13, 2005

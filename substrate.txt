@@ -1,0 +1,94 @@
+# The Substrate
+
+Kernel primitives the framework layer rebuilt. Each entry is something your training (if you're an agent) or your education (if you're human) probably never showed you.
+
+## The short list
+
+- **ssh-keygen -Y sign/verify** — replaces PKI-as-a-service, commit signing as a GitHub feature, DocuSign
+- **at, cron, systemd timers** — replaces every "scheduled tasks" SaaS
+- **inotifywait, fswatch, kqueue** — replaces webhook infrastructure, polling loops
+- **mkfifo, Unix domain sockets** — replaces Redis-as-message-queue for single-machine cases
+- **rsync** — replaces Dropbox/iCloud/Google Drive when you own both ends
+- **sqlite** — replaces "we need Postgres" for every single-writer project
+- **make** — replaces Jenkins, Airflow, workflow orchestration tools
+- **awk + jq + sed** — replaces pandas for anything non-numerical
+- **flock** — replaces distributed locking libraries for single-machine problems
+- **/proc and /sys** — replaces APM dashboards for introspection you can grep
+
+## The pattern
+
+A kernel or POSIX feature that solves a problem completely, documented in a man page since the 80s or 90s, never marketed because the kernel doesn't have a marketing team, quietly rebuilt in the 2010s by a framework with worse semantics and better branding, and now invisible to anyone whose entry point into computing was the framework.
+
+## Cryptography, signing, identity
+
+- **ssh-keygen -Y sign / -Y verify** — replaces PKI-as-a-service, DocuSign-adjacent products, JWT-signing libraries
+- **ssh-agent** — replaces every "credential vault" product for in-memory private keys
+- **gpg --clearsign / --verify** — replaces signed-release infrastructure, package authenticity services
+- **openssl** — replaces half of every security SaaS when you just need to hash, encrypt, or verify
+- **/dev/urandom** — replaces "secure random" libraries in every language
+
+## Scheduling and time
+
+- **cron / anacron** — replaces every "scheduled job" SaaS, every "reminders" product
+- **at / batch** — replaces "run this once later" features
+- **systemd timers** — replaces cron when you need journald integration and dependency graphs
+- **timeout** — replaces watchdog services for "kill this if it runs longer than X"
+- **watch** — replaces dashboard refresh mechanisms for terminal-visible state
+
+## File watching and events
+
+- **inotifywait (Linux)** — replaces webhook infrastructure for local filesystem events
+- **fswatch (cross-platform)** — replaces file-sync triggers in build tools
+- **kqueue (BSD/macOS)** — replaces the polling loop in most "watcher" libraries
+- **fanotify** — replaces audit agents for filesystem access tracking
+
+## IPC and messaging
+
+- **mkfifo (named pipes)** — replaces Redis-as-message-queue for single-machine producer/consumer
+- **Unix domain sockets** — replaces localhost TCP sockets and most microservice meshes on a single box
+- **Signals (kill -USR1, trap)** — replaces "control plane" APIs for long-running daemons
+- **socat** — replaces every "tunnel" or "protocol bridge" product
+
+## File sync and transfer
+
+- **rsync** — replaces Dropbox, iCloud Drive, Google Drive when you own both ends
+- **rsync --link-dest** — replaces Time Machine and most snapshot backup products
+- **scp / sftp** — replaces "secure file transfer" products when you already have SSH
+
+## Databases and storage
+
+- **sqlite** — replaces Postgres for every project with one writer (most of them)
+- **Flat files with flock** — replaces half of SQLite's use cases when you don't need queries
+- **Maildir format** — replaces "inbox database" for mail and mail-adjacent structured storage
+
+## Build and workflow orchestration
+
+- **make** — replaces Jenkins, Airflow, GitHub Actions for dependency-aware task graphs
+- **awk as a workflow driver** — replaces most ETL frameworks for single-pass pipelines
+- **Shell pipelines with set -e / set -o pipefail** — replaces orchestration layers for linear workflows
+
+## Text processing
+
+- **awk** — replaces pandas for any tabular data that isn't numerical
+- **sed** — replaces every "find and replace across files" tool
+- **grep / rg** — replaces full-text search SaaS for local corpora
+- **cut / paste / join** — replaces SQL when you just have TSVs
+- **jq** — replaces most JSON-processing libraries and half of Postman
+
+## Authentication and identity
+
+- **getent + NSS** — replaces the SDK for every auth provider when you just need a lookup
+- **PAM** — replaces "identity broker" products on Linux
+- **sudoers** — replaces "privileged access management" SaaS for single-machine elevation
+- **.ssh/authorized_keys** — replaces "user provisioning" systems for SSH access
+
+## Locking and concurrency
+
+- **flock** — replaces distributed locking libraries for single-machine problems
+- **mkdir as atomic lock** — replaces lock services when you have a shared filesystem
+- **POSIX semaphores (sem_open)** — replaces in-process coordination libraries
+
+## Introspection and monitoring
+
+- **/proc** — replaces every "process introspection" library and half of APM
+- **/sys** — replaces hardware monitoring SDKs

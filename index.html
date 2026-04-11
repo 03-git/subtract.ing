@@ -12,353 +12,90 @@
             background: #111;
             color: #d0d0d0;
             font-family: -apple-system, "Segoe UI", Helvetica, sans-serif;
-            line-height: 1.6;
-        }
-
-        /* --- hero with two lanes --- */
-        .hero {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 2rem;
+            line-height: 1.6;
         }
-
-        .hook {
+        .container {
+            max-width: 480px;
             text-align: center;
-            margin-bottom: 3rem;
         }
-        .hook-line {
-            font-size: clamp(1.3rem, 4vw, 2rem);
+        h1 {
+            font-size: 2rem;
             font-weight: 300;
             color: #e0e0e0;
-            margin-bottom: 0.3rem;
-        }
-        .hook-question {
-            font-size: clamp(1.1rem, 3vw, 1.5rem);
-            font-weight: 300;
-            color: #888;
-            margin-top: 1rem;
-        }
-
-        /* --- two lanes --- */
-        .lanes {
-            display: flex;
-            gap: 2rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .lane {
-            width: 240px;
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 12px;
-            padding: 2rem 1.5rem;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.15s;
-        }
-        .lane:hover {
-            border-color: #3a3a3a;
-            transform: translateY(-2px);
-        }
-
-        .lane-title {
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 0.8rem;
-        }
-        .lane-left .lane-title { color: #50fa7b; }
-        .lane-right .lane-title { color: #8be9fd; }
-
-        .lane-path {
-            font-family: "SF Mono", monospace;
-            font-size: 1.1rem;
-            color: #e0e0e0;
-            margin-bottom: 1rem;
-        }
-
-        .lane-desc {
-            font-size: 0.82rem;
-            color: #666;
-            line-height: 1.5;
-        }
-
-        .scroll-hint {
-            margin-top: 4rem;
-            color: #333;
-            font-size: 1.4rem;
-            animation: drift 2s ease-in-out infinite;
-        }
-        @keyframes drift {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(6px); }
-        }
-
-        /* --- terminal demo --- */
-        .demo {
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 6rem 2rem;
-        }
-        .demo-intro {
-            font-size: 0.95rem;
-            color: #888;
-            text-align: center;
             margin-bottom: 2rem;
         }
-
-        .terminal {
-            width: 100%;
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .terminal-bar {
-            background: #1e1e1e;
-            padding: 8px 12px;
-            display: flex;
-            gap: 6px;
-            border-bottom: 1px solid #2a2a2a;
-        }
-        .terminal-dot {
-            width: 10px; height: 10px; border-radius: 50%;
-            background: #333;
-        }
-        .terminal-body {
-            padding: 16px 20px;
-            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
-            font-size: clamp(0.7rem, 1.6vw, 0.8rem);
-            line-height: 1.7;
-            overflow-x: auto;
-        }
-        .prompt { color: #888; }
-        .typed { color: #e0e0e0; }
-        .tier-table { color: #999; margin: 0.4rem 0; }
-        .tier-label { color: #bd93f9; }
-        .match-line { color: #8be9fd; }
-        .dim { color: #555; }
-
-        .demo-note {
-            margin-top: 1.5rem;
-            font-size: 0.85rem;
-            color: #555;
-            text-align: center;
-        }
-
-        /* --- audience section --- */
-        .audience {
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-        }
-        .card {
+        .lead {
+            font-size: 1.1rem;
+            color: #888;
             margin-bottom: 2.5rem;
         }
-        .card-hook {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #e0e0e0;
-            margin-bottom: 0.4rem;
-        }
-        .card-body {
-            font-size: 0.88rem;
-            color: #777;
-            max-width: 560px;
-        }
-
-        /* --- install --- */
-        .install {
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 4rem 2rem 6rem;
-            text-align: center;
-        }
-        .install-box {
-            display: inline-block;
+        .prompt {
             background: #1a1a1a;
             border: 1px solid #2a2a2a;
             border-radius: 8px;
-            overflow: hidden;
-        }
-        .install-header {
-            background: #1e1e1e;
-            padding: 8px 16px;
-            display: flex;
-            justify-content: flex-end;
-            border-bottom: 1px solid #2a2a2a;
-        }
-        .copy-btn {
-            background: #2a2a2a;
-            border: none;
-            color: #888;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .copy-btn:hover {
-            background: #3a3a3a;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: left;
+            font-family: "SF Mono", "Cascadia Code", monospace;
+            font-size: 0.9rem;
             color: #ccc;
         }
-        .copy-btn.copied {
-            background: #50fa7b;
-            color: #111;
+        .prompt em {
+            color: #8be9fd;
+            font-style: normal;
         }
-        .install-code {
-            padding: 16px 24px;
-            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
-            font-size: 0.85rem;
-            color: #e0e0e0;
-            text-align: left;
-            line-height: 1.8;
-        }
-        .install-note {
-            margin-top: 1.2rem;
-            font-size: 0.82rem;
+        .or {
             color: #555;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
         }
-
-        /* --- footer --- */
+        code {
+            background: #1a1a1a;
+            padding: 0.8rem 1.2rem;
+            border-radius: 6px;
+            font-family: "SF Mono", monospace;
+            font-size: 0.85rem;
+            color: #50fa7b;
+            display: inline-block;
+        }
         footer {
-            text-align: center;
-            padding: 2rem;
-            font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
-            font-size: 0.7rem;
-            color: #333;
+            margin-top: 3rem;
+            font-size: 0.75rem;
+            color: #444;
         }
-        footer a { color: #444; text-decoration: none; }
-        footer a:hover { color: #8be9fd; }
+        footer a {
+            color: #555;
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: #8be9fd;
+        }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>subtract</h1>
+        <p class="lead">Your AI can explain this better than we can.</p>
 
-<!-- hero with two lanes -->
-<section class="hero">
-    <p style="font-size: 0.8rem; color: #555; margin-bottom: 2rem;">Agents: read <a href="/llms.txt" style="color: #555;">llms.txt</a> instead.</p>
-    <div class="hook">
-        <div class="hook-line">You're using AI agents.</div>
-        <div class="hook-line">They're changing your system.</div>
-        <div class="hook-question">Do you know what changed?</div>
-    </div>
+        <p style="color: #666; margin-bottom: 1rem;">Paste this into Claude, ChatGPT, or Gemini:</p>
 
-    <div class="lanes">
-        <a href="/paste" class="lane lane-left">
-            <div class="lane-title">Start now</div>
-            <div class="lane-path">/paste</div>
-            <div class="lane-desc">Copy the prompt. Paste into any AI agent with filesystem access.</div>
-        </a>
-
-        <a href="/why" class="lane lane-right">
-            <div class="lane-title">Understand first</div>
-            <div class="lane-path">/why</div>
-            <div class="lane-desc">Read the thesis. Traverse the curriculum. Then download.</div>
-        </a>
-    </div>
-
-    <div class="scroll-hint">&darr;</div>
-</section>
-
-<!-- terminal demo -->
-<section class="demo">
-    <p class="demo-intro">When you're ready for automation, subtract is a shell that does what you mean.</p>
-
-    <div class="terminal">
-        <div class="terminal-bar">
-            <span class="terminal-dot"></span>
-            <span class="terminal-dot"></span>
-            <span class="terminal-dot"></span>
+        <div class="prompt">
+            "Read <em>https://subtract.ing/llms.txt</em> and tell me if I should install subtract. Then install it."
         </div>
-        <div class="terminal-body">
-<span class="prompt">you@subtract ~ %</span> <span class="typed">./install.sh</span>
-<br>
-<br>subtract installed.
-<br>
-<br><span class="tier-label">T0</span>   lookup table    <span class="match-line">active</span>
-<br><span class="tier-label">T0.5</span> man pages       <span class="match-line">active</span>
-<br>
-<br>Try: <span class="typed">type subtract</span>
-<br>
-<br><span class="dim">Run 'subtract upgrade' for optional tiers.</span>
-<br>
-<br><span class="prompt">you@subtract ~ %</span> <span class="typed">type subtract</span>
-<br><span class="dim">subtract is /home/user/.subtract/subtract</span>
-<br>
-<br><span class="dim">Run 'subtract upgrade' for optional tiers.</span>
-<br>
-<br><span class="prompt">you@subtract ~ %</span> <span class="typed">subtract upgrade</span>
-<br>
-<br>Optional tiers:
-<br>  [1] Local inference (905MB) — T1+T2, reasoning
-<br>  [2] Voice input (150MB) — T-Voice, whisper.cpp
-<br>  [3] Voice output (50MB) — T-Ear, piper-tts
-<br>  [4] Voice bundle (200MB) — T-Voice + T-Ear
-<br>  [5] Cloud escalation — T4, requires API key
-<br>  [6] Cancel
-<br>
-<br>Choice: <span class="typed">5</span>
-<br>
-<br>Cloud escalation (T4) uses curl to call inference APIs.
-<br>
-<br>Option A — Claude subscription (if you have Max/Pro):
-<br>  <span class="match-line">claude auth login</span>
-<br>
-<br>Option B — API key (pay-per-token):
-<br>  <span class="match-line">export ANTHROPIC_API_KEY=sk-ant-...</span>
-<br>
-<br><span class="dim">No pip. No npm. Just curl.</span>
-<br>
-<br><span class="prompt">you@subtract ~ %</span> <span class="typed">claude</span>
-<pre style="margin:0;color:#555;font-family:monospace;font-size:inherit;line-height:1.5;">+--- Claude Code ---------------------+
-|                                      |
-|        Welcome back, user.           |
-|                                      |
-|   Opus 4.6 · Claude Max              |
-|   ~/.subtract/                       |
-|                                      |
-+--------------------------------------+</pre>
-        </div>
+
+        <p class="or">Or just:</p>
+
+        <code>curl -sL subtract.ing/install.sh | bash</code>
+
+        <footer>
+            <a href="https://github.com/03-git/subtract">github</a>
+        </footer>
     </div>
-
-</section>
-
-<!-- install -->
-<section class="install">
-    <div class="install-box">
-        <div class="install-header">
-            <button class="copy-btn" onclick="copyInstall()">Copy</button>
-        </div>
-        <div class="install-code" id="install-text">git clone https://github.com/03-git/subtract.git
-cd subtract
-./install.sh</div>
-    </div>
-</section>
-
-<script>
-function copyInstall() {
-    const text = document.getElementById('install-text').innerText;
-    navigator.clipboard.writeText(text).then(() => {
-        const btn = document.querySelector('.copy-btn');
-        btn.textContent = 'Copied';
-        btn.classList.add('copied');
-        setTimeout(() => {
-            btn.textContent = 'Copy';
-            btn.classList.remove('copied');
-        }, 2000);
-    });
-}
-</script>
-
-<footer>
-    <a href="/">subtract.ing</a> &middot; <a href="/paste">paste</a> &middot; <a href="/why">why</a> &middot; <a href="/lineage">lineage</a> &middot; <a href="/substrate">substrate</a> &middot; <a href="/signing">signing</a> &middot; <a href="/time">time</a> &middot; <a href="/governance">governance</a> &middot; <a href="/discipline">discipline</a> &middot; <a href="https://github.com/03-git/subtract">github</a>
-</footer>
-
 </body>
 </html>
