@@ -128,6 +128,31 @@
 
 <p>The hope is literacy, not dependency. You graduate from "show my files" to <code>ls</code>, from subtract to the commands themselves. No wrapper. No subscription. No intermediary between you and the machine.</p>
 
+<h2>Sovereignty</h2>
+
+<p>subtract rests on three primitives that already ship with Unix:</p>
+
+<div class="table-wrap">
+<table>
+    <tr><th>Leg</th><th>Primitive</th><th>Purpose</th></tr>
+    <tr><td>Entry</td><td><code>command_not_found_handle</code></td><td>Intent enters bash</td></tr>
+    <tr><td>Trust</td><td><code>ssh-keygen -Y</code></td><td>Signed provenance for knowledge</td></tr>
+    <tr><td>Time</td><td><code>sleep</code>, <code>at</code>, <code>cron</code></td><td>Yield to the kernel scheduler</td></tr>
+</table>
+</div>
+
+<p>No account. No API key. No terms of service from a foreign company. No usage meter that resets on someone else's schedule. The primitives work in any jurisdiction, on any hardware, offline.</p>
+
+<h2>Energy model</h2>
+
+<div class="energy">
+E<sub>subtract</sub>(t) → E<sub>syscall</sub> ≈ 10<sup>-5</sup> J &nbsp;&nbsp; as learned commands grow<br><br>
+E<sub>local</sub> = 10<sup>2</sup> J/request &nbsp;&nbsp; (flat, per inference)<br><br>
+E<sub>api</sub> ≥ 10<sup>4</sup> J/request &nbsp;&nbsp; (flat or increasing with orchestration)
+</div>
+
+<p>As you learn commands, energy cost approaches syscall. Local inference is flat. Cloud inference grows with orchestration. subtract's energy curve goes down over time. Everything else's goes up or stays flat.</p>
+
 <h2>Where it sits</h2>
 
 <div class="diagram">
@@ -161,31 +186,6 @@
   ├─ <span class="subtract">monitoring SaaS</span>
   └─ <span class="subtract">billing SaaS</span>
 </div>
-
-<h2>Sovereignty</h2>
-
-<p>subtract rests on three primitives that already ship with Unix:</p>
-
-<div class="table-wrap">
-<table>
-    <tr><th>Leg</th><th>Primitive</th><th>Purpose</th></tr>
-    <tr><td>Entry</td><td><code>command_not_found_handle</code></td><td>Intent enters bash</td></tr>
-    <tr><td>Trust</td><td><code>ssh-keygen -Y</code></td><td>Signed provenance for knowledge</td></tr>
-    <tr><td>Time</td><td><code>sleep</code>, <code>at</code>, <code>cron</code></td><td>Yield to the kernel scheduler</td></tr>
-</table>
-</div>
-
-<p>No account. No API key. No terms of service from a foreign company. No usage meter that resets on someone else's schedule. The primitives work in any jurisdiction, on any hardware, offline.</p>
-
-<h2>Energy model</h2>
-
-<div class="energy">
-E<sub>subtract</sub>(t) → E<sub>syscall</sub> ≈ 10<sup>-5</sup> J &nbsp;&nbsp; as learned commands grow<br><br>
-E<sub>local</sub> = 10<sup>2</sup> J/request &nbsp;&nbsp; (flat, per inference)<br><br>
-E<sub>api</sub> ≥ 10<sup>4</sup> J/request &nbsp;&nbsp; (flat or increasing with orchestration)
-</div>
-
-<p>As you learn commands, energy cost approaches syscall. Local inference is flat. Cloud inference grows with orchestration. subtract's energy curve goes down over time. Everything else's goes up or stays flat.</p>
 
 <hr>
 
