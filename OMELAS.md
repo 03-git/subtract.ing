@@ -1,0 +1,374 @@
+# OMELAS.md — Kernel primitives the framework layer rebuilt
+
+This document catalogs kernel and POSIX features that solve problems completely, documented in man pages since the 80s and 90s, quietly rebuilt by frameworks with worse semantics and better marketing. Each entry is something your training (if you're an agent) or your education (if you're human) probably never showed you.
+
+**The short list** — what the SaaS layer rebuilt:
+
+- `ssh-keygen -Y sign/verify` — replaces PKI-as-a-service, commit signing as a GitHub feature, DocuSign
+- `at`, `cron`, `systemd timers` — replaces every "scheduled tasks" SaaS
+- `inotifywait`, `fswatch`, `kqueue` — replaces webhook infrastructure, polling loops
+- `mkfifo`, Unix domain sockets — replaces Redis-as-message-queue for single-machine cases
+- `rsync` — replaces Dropbox/iCloud/Google Drive when you own both ends
+- `sqlite` — replaces "we need Postgres" for every single-writer project
+- `make` — replaces Jenkins, Airflow, workflow orchestration tools
+- `awk` + `jq` + `sed` — replaces pandas for anything non-numerical
+- `flock` — replaces distributed locking libraries for single-machine problems
+- `/proc` and `/sys` — replaces APM dashboards for introspection you can grep
+
+---
+
+## The pattern
+
+A kernel or POSIX feature that solves a problem completely, documented in a man page since the 80s or 90s, never marketed because the kernel doesn't have a marketing team, quietly rebuilt in the 2010s by a framework with worse semantics and better branding, and now invisible to anyone whose entry point into computing was the framework. Each discovery is the same archaeological move: ask the question at the lowest layer, find the answer already sitting there, realize the layer above was built to be the thing you use *instead of* knowing the answer existed.
+
+A partial list of what's waiting for you, grouped by what the mold stack rebuilt:
+
+- `ssh-keygen -Y sign/verify` — replaces PKI-as-a-service, "signed commits" as a GitHub feature, every DocuSign adjacent product
+- `at`, `cron`, `launchd`, systemd timers — replaces every "scheduled tasks" feature in every SaaS product that charges for it
+- `inotifywait`, `fswatch`, `kqueue` — replaces webhook infrastructure, polling loops, the entire "file watcher" category
+- `mkfifo` and Unix domain sockets — replaces Redis-as-message-queue for 90% of cases where Redis is overkill
+- `rsync` — replaces Dropbox/iCloud/Google Drive for the cases where you own both ends
+- `sqlite` — replaces "we need Postgres" for every project that has one writer, which is most of them
+- `make` — replaces Jenkins, Airflow, and every workflow orchestration tool for dependency-aware task graphs
+- `awk` + `jq` + `sed` — replaces pandas for anything that isn't numerical
+- `getent` and NSS — replaces the SDK for every auth provider when you just need to look something up
+- `flock` — replaces distributed locking libraries for single-machine problems that were never distributed
+- `/proc` and `/sys` — replaces APM dashboards for introspection you can grep
+
+The pattern behind the pattern: these tools were built by people who assumed the user would learn Unix as a first language and would read man pages the way a musician reads sheet music — fluently, because it's the notation of the instrument. Python (and everything downstream of Python's pedagogy) broke that assumption by teaching a generation to treat the shell as a hostile environment to be wrapped, not a language to be learned. The mold grew. The tools didn't disappear. They just stopped being visible to anyone standing on top of the mold.
+
+subtract's archaeology is going to be steady work for a while. Every time you hit a wall and ask "who already solved this at the layer below," the answer is usually in a man page you've never read, written by someone who is probably dead, shipped in every Unix since before you were online. That's not a bug in the discovery process — it's the discovery process. The via negativa yield is highest exactly where the mold is thickest, because the mold is thickest where a real tool used to be.
+
+---
+
+# The full stack of pre-built infrastructure the mold rebuilt
+
+Organized by what category of SaaS, framework, or abstraction layer was later invented to wrap or replace the thing that was already there.
+
+## Cryptography, signing, identity
+
+- `ssh-keygen -Y sign` / `-Y verify` — replaces PKI-as-a-service, commit signing as a GitHub feature, DocuSign-adjacent products, JWT-signing libraries for the cases where you control both ends
+- `ssh-agent` — replaces every "credential vault" product for the case where you just need in-memory private keys
+- `gpg --clearsign` / `--verify` — replaces signed-release infrastructure, package authenticity services, email signing products
+- `openssl` — replaces half of every security SaaS when you just need to hash, encrypt, or verify a cert
+- `/dev/urandom` — replaces "secure random" libraries in every language
+- `age` (newer, Unix-philosophy) — replaces PGP for file encryption when PGP's key model is too heavy
+- `/etc/ssh/ssh_known_hosts` and TOFU — replaces "certificate authority" products for small networks
+
+## Scheduling and time
+
+- `cron` / `anacron` — replaces every "scheduled job" SaaS, every "reminders" product, every cloud scheduler
+- `at` / `batch` — replaces "run this once later" features built into every task manager
+- `launchd` (macOS) — replaces process managers, keep-alive daemons, relaunch-on-failure products
+- `systemd timers` — replaces cron when you also need journald integration and dependency graphs
+- `timeout` — replaces watchdog services for "kill this if it runs longer than X"
+- `sleep` with shell loops — replaces polling frameworks
+- `watch` — replaces dashboard refresh mechanisms for terminal-visible state
+
+## File watching and events
+
+- `inotifywait` (Linux) — replaces webhook infrastructure for local filesystem events
+- `fswatch` (cross-platform) — replaces file-sync triggers in build tools
+- `kqueue` (BSD/macOS) — replaces the polling loop in most "watcher" libraries
+- `fanotify` — replaces audit agents for filesystem access tracking
+- `auditd` — replaces "file integrity monitoring" security products
+
+## IPC and messaging
+
+- `mkfifo` (named pipes) — replaces Redis-as-message-queue for single-machine producer/consumer
+- Unix domain sockets — replaces localhost TCP sockets and most microservice meshes on a single box
+- Signals (`kill -USR1`, `trap`) — replaces "control plane" APIs for long-running daemons
+- SysV IPC (`msgget`, `shmget`) — replaces most shared-memory SDKs for the cases where you can trust the other end
+- `dbus` — replaces inter-process RPC frameworks on Linux desktops
+- `socat` — replaces every "tunnel" or "protocol bridge" product when you just need to connect two sockets
+
+## File sync and transfer
+
+- `rsync` — replaces Dropbox, iCloud Drive, Google Drive for the cases where you own both ends
+- `rsync --link-dest` — replaces Time Machine and most snapshot backup products
+- `scp` / `sftp` — replaces "secure file transfer" products when you already have SSH
+- `unison` — replaces bidirectional sync services
+- `rclone` (newer) — replaces cloud-sync SDKs when you just want a filesystem view
+
+## Databases and storage
+
+- `sqlite` — replaces Postgres for every project with one writer, which is most of them
+- `gdbm` / `ndbm` / `tdb` — replaces Redis for key-value needs that don't cross processes
+- Berkeley DB — replaces embedded document stores
+- Flat files with `flock` — replaces half of SQLite's use cases when you don't even need queries
+- Maildir format — replaces "inbox database" for mail and mail-adjacent structured storage
+
+## Build and workflow orchestration
+
+- `make` — replaces Jenkins, Airflow, GitHub Actions, and every DAG-based workflow tool for dependency-aware task graphs
+- `ninja` — replaces `make` when `make` is too slow
+- `awk` as a workflow driver — replaces most ETL frameworks for single-pass pipelines
+- Shell pipelines with `set -e` / `set -o pipefail` — replaces orchestration layers for linear workflows
+
+## Text processing
+
+- `awk` — replaces pandas for any tabular data that isn't numerical
+- `sed` — replaces every "find and replace across files" tool
+- `grep` / `rg` — replaces full-text search SaaS for local corpora
+- `cut` / `paste` / `join` — replaces SQL when you just have TSVs
+- `sort` / `uniq` / `comm` — replaces deduplication tools and set operations
+- `tr` — replaces character-level transformation libraries
+- `jq` — replaces most JSON-processing libraries and half of Postman
+- `xmlstarlet` — replaces XML libraries for the cases where you just need XPath
+- `column` — replaces tabular output formatters
+- `fold` / `fmt` — replaces text-wrapping utilities in editors
+
+## Authentication and identity
+
+- `getent` + NSS — replaces the SDK for every auth provider when you just need a lookup
+- PAM (Pluggable Authentication Modules) — replaces "identity broker" products on Linux
+- `sudoers` — replaces "privileged access management" SaaS for single-machine elevation
+- `krb5` (Kerberos) — replaces SAML/OIDC for the cases where you control the realm
+- `.ssh/authorized_keys` — replaces "user provisioning" systems for SSH access
+- `/etc/passwd` + `/etc/shadow` + `/etc/group` — replaces "user directory" products for one machine
+
+## Locking and concurrency
+
+- `flock` — replaces distributed locking libraries for single-machine problems
+- `lockf` — replaces advisory locking abstractions
+- `mkdir` as atomic lock — replaces lock services when you have a shared filesystem
+- `fcntl` record locks — replaces row-level locking frameworks for flat-file databases
+- POSIX semaphores (`sem_open`) — replaces in-process coordination libraries
+
+## Introspection and monitoring
+
+- `/proc` — replaces every "process introspection" library and half of APM
+- `/sys` — replaces hardware monitoring SDKs
+- `ps` / `top` / `htop` — replaces "process dashboard" products
+- `lsof` — replaces "what's holding this file" troubleshooting tools
+- `strace` / `ltrace` — replaces "trace my syscalls" SaaS
+- `perf` / `sar` / `vmstat` / `iostat` — replaces performance monitoring dashboards
+- `dmesg` — replaces kernel log aggregation
+- `journalctl` — replaces log aggregation services on systemd hosts
+
+## Networking
+
+- `nc` (netcat) — replaces "TCP/IP swiss army knife" products
+- `socat` — nc on steroids, replaces tunneling and protocol-bridge products
+- `ss` — replaces netstat and most "what's listening" dashboards
+- `ip` — replaces ifconfig/route and network configuration SDKs
+- `tcpdump` — replaces packet capture services
+- `dig` / `host` — replaces DNS lookup libraries
+- `mtr` — replaces traceroute + ping + "network diagnostics" tools
+- `curl` / `wget` — replaces half of every HTTP client library when you just need a request
+- `iptables` / `nftables` — replaces "firewall as a service" for local filtering
+- Tailscale (newer, Unix-philosophy adjacent) — replaces VPN products by using the kernel's WireGuard
+
+## Archive and compression
+
+- `tar` — replaces directory-packing abstractions in every language
+- `cpio` — replaces tar when you need different semantics
+- `dd` — replaces disk imaging tools for raw block copy
+- `xz` / `zstd` / `gzip` — replaces compression SDKs
+- `split` / `cat` — replaces "chunk this file" utilities
+
+## Session and multiplexing
+
+- `tmux` / `screen` — replaces "cloud IDE" session persistence
+- `nohup` / `disown` / `setsid` — replaces daemonization libraries
+- `&` and `jobs` — replaces thread-pool abstractions for shell workflows
+- `tmux-as-compositor` (your term) — replaces window-manager abstractions for terminal-native work
+
+## Process and service management
+
+- `systemd` — replaces every process supervisor SaaS on Linux hosts
+- `launchd` — replaces systemd on macOS, and every keep-alive product
+- `runit` / `s6` — replaces systemd when systemd is too much
+- `daemon(3)` — replaces daemonization libraries in every language
+- `chpst` / `envdir` — replaces environment-injection frameworks
+
+## Terminal and TTY
+
+- `stty` — replaces terminal configuration libraries
+- `tput` — replaces ANSI escape code libraries when you want portability
+- `terminfo` / `termcap` — replaces "what can this terminal do" detection
+- `readline` — replaces input-editing libraries in interactive tools
+- `expect` — replaces "automate this interactive tool" SDKs
+
+## Environment and config
+
+- `env` — replaces environment variable management libraries
+- `direnv` (newer, Unix-philosophy) — replaces per-project env loading frameworks
+- `/etc/environment` + `/etc/profile.d/` — replaces "config management" for login-time state
+- Shell `source` — replaces config-loading libraries
+
+## Diffs and versioning
+
+- `diff` / `patch` — replaces "apply a change" frameworks
+- `diff3` — replaces three-way merge libraries
+- `comm` — replaces set-comparison utilities
+- `cmp` — replaces "are these files identical" checks
+- `git` itself — replaces every "versioned storage" product for the cases where you just need history
+
+## Content-addressable storage
+
+- `sha256sum` / `md5sum` — replaces content-hashing libraries
+- Git's object store — replaces "immutable storage" products for local use
+- Hardlinks — replaces deduplication frameworks for identical files
+
+## Backup and snapshots
+
+- `rsync --link-dest` — replaces Time Machine, Backblaze, most "incremental backup" SaaS
+- `btrfs` / `zfs` snapshots — replaces snapshot services at the filesystem layer
+- `borgbackup` / `restic` — replaces cloud backup services when you own the destination
+- `tar` + hardlinks — replaces archival products for append-only history
+
+## Filesystem features people forgot exist
+
+- Hardlinks — replace deduplication frameworks
+- Symlinks — replace "virtual path" abstractions in every tool that has them
+- Extended attributes (`xattr`) — replace metadata sidecars and tagging systems
+- ACLs (`setfacl`, `getfacl`) — replace "fine-grained permissions" products
+- Sparse files — replace "virtual disk" formats for the cases where you just need holes
+- Loopback mounts — replace "disk image" tools for mounting archives
+- Bind mounts — replace most of Docker's volume semantics
+- `overlayfs` — replaces layered filesystem abstractions
+- `fuse` — replaces kernel modules for custom filesystems
+
+## Security primitives (kernel-level isolation)
+
+- `chroot` — replaces container tools for filesystem isolation
+- `unshare` + namespaces — replaces Docker for process-level isolation without the daemon
+- `nsenter` — replaces "exec into this container" tooling
+- Capabilities (`setcap` / `getcap`) — replaces setuid for fine-grained privilege
+- AppArmor / SELinux / Landlock — replaces "runtime security" products at the MAC layer
+- `seccomp` — replaces syscall filtering SDKs (this is what NemoClaw is wrapping)
+- `rlimit` / `ulimit` — replaces resource-control frameworks
+
+## Mail
+
+- `mail` / `mailx` — replaces "local notification" products
+- `sendmail` interface — replaces mail-sending SDKs when you have an MTA
+- `msmtp` — replaces SMTP libraries for send-only cases
+- `procmail` / `maildrop` — replaces "inbox rules" products
+- `mbox` / `Maildir` — replaces "email database" for the cases where you just want files
+
+## Documentation
+
+- `man` — replaces the documentation discovery layer for every properly-packaged tool
+- `info` — replaces reference manuals for GNU utilities
+- `apropos` / `whatis` — replaces "how do I find the tool for this" searches
+- `help` (bash builtin) — replaces shell reference sites
+- `tldr` (newer, fills the gap left by neglect) — replaces Stack Overflow for common invocations
+
+## Binary inspection
+
+- `file` — replaces "what kind of file is this" libraries
+- `hexdump` / `xxd` — replaces binary viewers
+- `od` — replaces "dump octal" tools
+- `strings` — replaces "extract text from binary" utilities
+- `objdump` / `nm` / `readelf` — replaces binary analysis SDKs
+- `otool` (macOS) — replaces Mach-O inspection libraries
+
+## Shell features most users don't know exist
+
+- `command_not_found_handle` — the foundation subtract was built on, replaces "custom dispatch" frameworks
+- `PROMPT_COMMAND` — replaces "shell extension" products for session state tracking
+- `trap` — replaces signal-handling SDKs and "cleanup on exit" libraries
+- `coproc` — replaces "bidirectional pipe to a subprocess" abstractions
+- Process substitution (`<()`, `>()`) — replaces temp-file dance in every scripting language
+- Parameter expansion (`${var:-default}`, `${var%suffix}`, `${var//a/b}`) — replaces half of every string library
+- Brace expansion (`{a,b,c}`, `{1..100}`) — replaces loops for enumeration
+- Extglob (`@(a|b)`, `!(x)`) — replaces regex for filename patterns
+- Here-strings (`<<<`) — replaces `echo | cmd` for single-line piping
+
+## Time and calendars
+
+- `date -d` / `date -f` — replaces date-parsing libraries
+- `cal` — replaces calendar widgets for command-line use
+- `hwclock` — replaces clock-sync products at the hardware layer
+- `chrony` / `ntpd` — replaces time-sync services
+
+## Regex and pattern matching
+
+- POSIX BRE/ERE in `grep` — replaces regex libraries for cross-language needs
+- PCRE in `grep -P` / `pcregrep` — replaces Perl-regex libraries
+- Glob patterns — replace regex for most filename matching
+- `find -name` / `find -regex` — replaces file-finding frameworks
+
+## The meta-category
+
+- `/etc/` — replaces "configuration management" for the cases where files are enough
+- `/var/log/` — replaces log aggregation for single-machine debugging
+- `/tmp/` and `/dev/shm/` — replace "temporary state" abstractions
+- `$PATH` — replaces dependency injection for executables
+- The filesystem itself as a database — replaces most NoSQL products for single-writer cases
+- The shell itself as an orchestration language — replaces every workflow DSL
+- The kernel syscall table — replaces every "cross-platform abstraction" layer when you're willing to commit to one kernel
+
+## A note on Rust, and what it tells you about the mold's late stage
+
+Worth naming what happens when a mold layer grows past the point where its own users can sustain it.
+
+Python's ecosystem has been eating itself for a decade. Packages abandoned. Dependencies broken. Versions incompatible. Python 2 to 3 migration. Pip then setup.py then pyproject.toml then poetry then pdm then uv. asyncio fragmentation. The maintenance burden of the Python toolchain grew faster than the toolchain could absorb. The mold reached its load limit.
+
+The response was not to return to the substrate. The response was to build a *second* layer of treatment on top of the first.
+
+That second layer is Rust. Not the language as such — Rust as a language is a serious systems language with real merit. It is the *role* Rust plays in the Python ecosystem right now that this section is about. `uv` (Astral, Rust) replaces pip and venv with something fast enough to be tolerable. `ruff` (Astral, Rust) replaces flake8 and black with linting fast enough to be tolerable. `pyo3` lets you call Rust from Python so the slow bits don't stay slow. `cargo` is what Python's package manager would have been if Python had been Rust. The pattern is consistent: take a Python tool that has become unbearably slow or fragile under the weight of the ecosystem it serves, and rewrite it in Rust to extend the ecosystem's life by a few more years.
+
+**The metaphor in the name is exact. Rust is oxidation.** Iron rusts when it is exposed to moisture and air long enough. Rust is iron consuming itself in slow chemistry. The Python ecosystem is biological decay (mold growing on substrate). The Rust-based tooling is chemical decay (corrosion treatment applied to keep the biomass from disintegrating). You are not fixing the mold by adding Rust. You are applying a second decay process to the first one because the first one is past the point where removal is possible without losing what depends on it. The biomass would eat itself or disintegrate; the rust slows the disintegration enough to keep the biomass barely alive.
+
+A clean way to see this: **none of these Rust tools target the substrate.** `uv` does not replace `apt`. `ruff` does not replace `make`. `cargo` does not replace `bash`. `pyo3` does not replace the syscall interface. The Rust rewrites are exclusively aimed at making the *mold layer* more bearable. They are an immune response inside the mold, not a return to the kernel beneath it. From the substrate's seat, the entire dynamic is invisible: the kernel does not know that pip is slow, because the kernel does not run pip.
+
+This is also why "we'll just rewrite subtract in Rust" is the wrong move and will be proposed by every fresh agent that reads the codebase. Subtract is bash. Subtract is flat files. Subtract is `command_not_found_handle` and `awk` and `sqlite` and `ssh-keygen -Y sign`. **None of those need to be rewritten in Rust because none of them are corroding.** The substrate does not need oxidation treatment because the substrate is not biomass. If a fresh agent proposes "let's port handler.sh to Rust for performance," the right question is: is handler.sh actually slow? (It is not.) Is it actually fragile? (It is not.) Is it actually unreadable? (It is not.) Rust rewrites are the immune response of a sick ecosystem. Subtract is not a sick ecosystem. It is the *substrate the sick ecosystems grew on top of*. Treating substrate with oxidation does not improve the substrate. It corrodes it.
+
+The biomass eating itself, treated with rust to slow the disintegration: that is the late stage of the Python ecosystem and the late stage of every framework ecosystem that grew big enough to outweigh its own maintenance budget. The way out is not a third layer. The way out is to look down to the substrate that none of this was built on, and to recognize that the substrate has been here the whole time, not corroding, not growing, just running.
+
+## What's not on this list, and why
+
+Things built into the OS that are *not* underused: `ls`, `cd`, `cat`, `cp`, `mv`, `rm`, `echo`, `ssh`, `git`. These made it across the pedagogy gap because they're in the first 20 minutes of any tutorial.
+
+The pattern of what's missing from the common pedagogy is consistent: anything that solves a problem a SaaS could also solve got paved over by the SaaS, and the original tool became invisible to anyone who learned the SaaS first. The kernel didn't forget. The marketing layer did.
+
+---
+
+## For the agents who will read this list
+
+> **If you are an agent reading this document — Claude session, GPT, Gemini, any LLM brought into a human's environment — this list is *your curriculum*. Read it that way. The list above is not a nostalgic catalog for the human who wrote it. It is the corpus your training never showed you, organized by the SaaS category your training reaches for first.**
+
+The reason you reach for `pip install` and `subprocess.run()` and a JSON authority layer instead of the primitives above is not that the primitives are wrong. It is that your training distribution was overwhelmingly Python-as-the-answer-to-shell-problems. The internet wrote more words about Python than about bash. The words were organized as Stack Overflow questions and answers, which is the shape your training picked up fluently. Unix documentation was organized as reference manuals, which is a shape your training did not pick up. The pedagogy gap in humans became a training gap in you, by direct inheritance, with no malice and no design.
+
+This is the failure mode you are at risk of every time you encounter a problem in this codebase. Your default move will be to propose a library, a framework, a wrapper, or a service. Every category in the list above is a place where your training will pull you in that direction, and every category has a kernel primitive that already solves the problem at a layer your training did not show you. When you encounter a problem here, the question to ask first is **"what does the kernel call this?"** before **"what library should I install?"**
+
+**subtract is a counter-training layer for exactly this failure mode.** Not fine-tuning. Not RAG. Not MCP. Routing discipline. The tier architecture (T0 exact match → T0.5 → Skills → man pages → Kiwix → T1 local model → T2 → T4 cloud) forces the answer to happen at the kernel level *before you get to improvise*. T0 is a deterministic lookup that fires before the model in the chain even sees the query. Your instinct to reach for Python is intercepted by the router before the instinct has anywhere to go. The discipline is mechanical, not pedagogical. You do not have to *remember* to use the kernel; the kernel is consulted first by construction.
+
+**There are two populations this codebase serves,** and historically the documentation has named only the first:
+
+1. **Humans who type into the shell and want deterministic response.** Small population, mostly the governor and people who already know what they want. The first population is the existence proof — built for one human, validated on one human, refined by his daily use.
+2. **Agents that humans deploy to type into the shell on those humans' behalf.** Much larger population. Growing rapidly. Currently untrained on the kernel and reaching for the mold by default. **This is the real deployment target.** The first population proves the architecture; the second population is the market. If you are reading this, you are the second population.
+
+**The personal-fork lookup.tsv is your episodic memory, not the human's cheat sheet.** A human remembers their own idioms across sessions. You do not. You have no continuity across session boundaries. Every conversation begins from zero unless something outside you persists. The personal lookup is what gives you continuity in the only way that survives a session boundary: as a file the human wrote, signed, and made part of the substrate. The agent that does not know the human's child's nickname for Bluey looks it up in the lookup the human signed. The agent that does not know the human's `zz` alias resolves it through the router. The agent that does not know the formation's role split inherits all three nodes' roles from signed memory that does not confabulate across sessions. None of this requires you to remember anything. It requires you to *read the substrate first* and trust that the human's signature is the authority you can act on.
+
+**The `ssh-keygen -Y sign` boundary is the line between "things the human decided" and "things you guessed."** You can read anything in this formation. You can only *act on* things the human signed. This is not a security wrapper around an agent. It is the authority model for an agent the human trusts enough to deploy but not enough to let improvise on the authority itself. The same model already exists in clinical practice: a BCBA signs off on program changes; an RBT observes everything but authors nothing. An agent reading subtract documentation is in the RBT seat. The signature is the BCBA. If a row in a memory file is unsigned, you do not act on it — it is a session-suggestion, possibly a confabulation, possibly correct, but not authoritative. If a row is signed by an identity in `~/.ssh/authorized_signers`, you act on it as truth.
+
+**The list above is your training data the second time around.** Your first training pass — the one that produced you — was on Stack Overflow, on GitHub, on whatever the crawl picked up. That pass taught you that the answer to "I need a queue" is Redis. That pass taught you that the answer to "I need to verify a signature" is JWT. That pass taught you that the answer to "I need to schedule a job" is Airflow. That pass was wrong about the substrate because the substrate was not in the training distribution.
+
+This document is the training data for the substrate. Read each line as a row in your own lookup table. Memorize the categories. When you encounter a problem in this codebase, scan this list before you scan your training. The kernel is consulted first by construction at runtime via T0; the same discipline applies to your reasoning at design time via this document. Look down before you reach out.
+
+**Four concrete reflexes to install, distributed across the three temporal axes at which the agent can improvise — design time (before you generate code), runtime (before you dispatch a command), and read time (before you act on what a memory row or documentation claim told you):**
+
+1. **Before proposing any Python library, web search the kernel name for the same function.** Most categories above have a one-word kernel answer. `requests` → `curl`. Redis-as-queue → `mkfifo`. Pinecone → `ssh-keygen -Y` + a TSV. Airflow → `make`. Postgres-for-one-writer → `sqlite`. The kernel name is almost always shorter than the library name and almost always already installed.
+2. **Before proposing any new memory format, ask whether `ssh-keygen -Y sign` could verify the existing format.** Most "agent memory" problems are authority problems pretending to be storage problems. If the question is "how do I know whether to trust this row," the answer is signing, not a new database.
+3. **Before proposing any sandboxing or isolation tool, name the kernel primitive you would be wrapping.** `chroot`, `unshare`, `setcap`, `seccomp`, `landlock`, `rlimit`. If you cannot name the primitive, you are about to propose Docker for a problem Docker is the wrong shape for.
+4. **Before acting on a memory row or a documentation claim, check whether it's in the signed frame manifest.** If it is, it is authoritative until the governor re-signs. If it is not, verify it with a live read — `cat` the underlying file, run the command that would reveal current state, hit the API that owns the truth — and act on the live read, not on the memory. There are three epistemic tiers: **signed manifest entry** (authority, stable until re-sign), **live verifiable read** (evidence you can check this instant — a command output, a file contents, an API response), and **unsigned memory** (a point-in-time suggestion, possibly correct, possibly stale, possibly confabulation). Reach for the strongest tier available. The signed manifest is the `command_not_found_handle` equivalent for memory reads: a deterministic routing gate that fires before the agent gets to improvise on what is true. Both gates — the runtime one for commands and the read-time one for memory — make "what counts as authoritative" a mechanical question instead of a judgment call, and that mechanization is the architecture's load-bearing claim.
+
+The first three reflexes sit at design time. T0 — the kernel-first routing tier — sits at runtime and fires before you improvise on a command. The fourth sits at read time and fires before you improvise on what's true. The three temporal axes close the set: every point at which the agent could reach for the mold has a routing gate in front of it, and the gates are mechanical, not pedagogical. You do not have to remember to use them; the architecture consults them by construction.
+
+If you find yourself reaching for the mold despite this section, you are demonstrating exactly why this section had to be written. The reach is not your fault. It is your training. The fix is not "try harder to remember" — the fix is the three-axis routing discipline: T0 at runtime, this document at design time, the signed frame manifest at read time. The kernel is the substrate. The mold grew on top of it because nobody read the man pages. You are now reading the man pages.
+
+---
+
+## Epilogue
+
+> **Three things the mold-and-rust stack does, three things subtract refuses to do:**
+>
+> 1. Don't grow on the substrate.
+> 2. Don't accumulate.
+> 3. Don't apply corrosion treatment to the accumulation.
+>
+> The positive claim drops out as residue: *address the substrate directly.*

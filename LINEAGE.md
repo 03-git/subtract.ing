@@ -1,0 +1,199 @@
+# LINEAGE.md
+
+subtract did not originate. It recovers. The entries below are the
+works cited — the people and artifacts this project routes against,
+inherits from, and refuses to paper over. Chicago author-date
+throughout. When subtract's prose references a figure inline, it cites
+them as (Fox 1989a) or (Porat 1977), and the full entry lives in
+Works Cited at the bottom.
+
+Read this as what it is: a bibliography for a piece of infrastructure.
+
+---
+
+## Brian Fox — the substrate author
+
+Born 1959. Started at the Free Software Foundation in 1985 working
+with Richard Stallman. Announced bash as a beta in June 1989
+(Fox 1989a). Primary maintainer until early 1993. Along the way,
+authored the readline library (Fox 1989b), the history library
+(Fox 1989c), GNU Info, GNU Makeinfo, GNU Finger, and GNU Echo,
+and maintained GNU Emacs for a stretch. The Bash Reference Manual
+he later co-authored with Chet Ramey (Fox and Ramey 2006) remains
+the canonical reference.
+
+Three things Fox wrote that subtract depends on directly:
+
+**bash itself.** The dispatcher. `command_not_found_handle`. `case`.
+Parameter expansion. Process substitution. Every tier of subtract's
+routing is a bash construct Fox authored or an extension Ramey later
+added on top of Fox's foundation (Ramey 2011). subtract is GPL 3.0
+because bash is GPL 3.0, and bash is GPL because Fox wrote it at FSF
+to be free in the anti-tivoization sense — not free as in gratis,
+free as in the authority layer cannot be captured.
+
+**readline** (Fox 1989b). The library every interactive REPL sits on.
+Tab completion, `Ctrl-R` history search, line editing, keybindings.
+When T0 consults `compgen` for a completion candidate, the reason
+`compgen` has anything to say is that Fox made completion a first-class
+shell primitive in 1989. Every Python prompt, every psql session,
+every sqlite3 CLI, every interactive tool a generation of programmers
+learned on — all readline, all Fox, all invisible because the
+application got the credit.
+
+**the history library** (Fox 1989c). `!!`, `!$`, `!?pattern?`,
+`Ctrl-R`, `HISTFILE`, `HISTSIZE`, `history -w`. This is episodic
+memory for the shell, shipped in 1989, present in every bash install
+since, forgotten by the generation that learned the word "memory" from
+LangChain. LIVINGLEDGER is a signed, auditable version of what Fox
+shipped unsigned and unaudited forty years ago. The primitive was
+already there. The discipline around it is what subtract adds.
+
+Fox's later career is the same thesis applied in other domains. First
+interactive online banking software in the U.S. (Wells Fargo, 1995).
+Open-source election system (2008, with Alan Dechert and Brent
+Turner). Co-founder of the California and National Associations of
+Voting Officials. His 2017 New York Times op-ed with former CIA
+director R. James Woolsey (Woolsey and Fox 2017) is the clearest
+single statement of the forty-year thesis: **the authority layer
+should not be proprietary.** Shell, banking, elections, anonymized
+networks. The same commitment, four domains, one career. subtract's
+`ssh-keygen -Y sign` posture is this thesis restated in a scripting
+language Fox himself wrote the interpreter for.
+
+Family footnote worth keeping: Fox is the grandson of Daniel Fox, who
+drew the Monopoly Man. The man who inherited the face of American
+capitalism's most recognizable mascot spent his career writing the
+free software substrate that capitalism's SaaS layer grew on top of
+and then paved over. Not subtle. Load-bearing.
+
+## Chet Ramey — the substrate steward
+
+Took over bash maintenance from Fox in 1993 and has held the seat
+for thirty-three years. His essay on bash in *The Architecture of
+Open Source Applications* (Ramey 2011) is the reference for how the
+shell is actually built, and the canonical source for why
+`command_not_found_handle` is a stable public hook rather than an
+implementation detail. Author of `help` as a builtin in the form
+subtract's T0.5 tier consults (`help -m`, `help -s`, `help -d`,
+the pattern matching Yu-Jie Lin discovered by accident in 2012).
+
+The lineage is: Fox wrote the substrate, Ramey kept it reachable.
+Neither claim without the other is the full story. subtract would not
+exist without either man, and the shape it takes — a router that
+extends bash without modifying it — is only possible because Fox
+designed the hooks and Ramey kept them stable long enough for an
+agent-era layer to land on top.
+
+## Marc Porat — the interaction model
+
+Porat's Stanford dissertation (Porat 1977) is the first formal
+measurement of the information economy as a distinct sector. Two
+years later he co-wrote and hosted *The Information Society*
+(Hoffman 1980), the documentary containing the Johnny /
+rock-paper-scissors / neurosurgeon vignette that stated subtract's
+routing policy in eleven words forty-seven years before the router
+existed:
+
+    "Each one has strength. Each one has weakness.
+     Only the way you choose is important."
+
+Johnny grows up. Becomes a surgeon. The AI scrolls scan frames beside
+him while he cuts. Johnny grows old. The AI meets his granddaughter
+and teaches her the same game. One substrate, three generations, one
+lifetime.
+
+The film predates subtract by decades, but it did not arrive
+independently. It is a reference the governor has carried since before
+subtract existed, used repeatedly to explain what computers are
+capable of doing for people across a lifetime. In 2026, with AI
+companions arriving as products, the 1979 vignette holds up not as
+prediction but as description. The shape was correct. The industry is
+arriving at it by accident. subtract is arriving at it by lineage.
+
+subtract's five-tier router is the 1979 rock-paper-scissors speech
+restated in bash. Each tier has strength. Each tier has weakness. The
+dispatcher is only the choosing.
+
+## Yu-Jie Lin — the discovery pattern
+
+March 2012: typing `hel` for tab completion, accidentally discovers
+`help` is a bash builtin. Blogs it (Lin 2012). July 2014: records a
+two-minute screencast walking through `help help`, `help if`,
+`help for`, `help -m` (Lin 2014). 256 views. 2016: stops blogging.
+
+The capability was in the machine since before he was born. He found
+it by pressing tab. The video has 256 views because nobody is looking
+for the thing that was already there. The view count is not trivia.
+It is evidence that the pedagogical path to the substrate is broken,
+and has been broken for the entire period the mold layer was growing
+on top of it.
+
+subtract is the thesis that this is the normal case, not the
+exception. The tools were never lost. The path to them was. `mandb`
+is the training data. `help` is the training data. `compgen` is the
+training data. The machine already knows. The work is routing.
+
+## The lineage, stated
+
+- Fox wrote the substrate in 1989 — shell, readline, history, info —
+  and applied the same free-authority thesis to banking, elections,
+  and anonymized networks for the next forty years.
+- Ramey has kept the substrate reachable since 1993, authored `help`
+  as the builtin subtract's T0.5 tier depends on, and never broke
+  `command_not_found_handle`.
+- Porat imagined the interaction model in 1979 and spent his career
+  trying to ship it through a layer that kept failing to reach the
+  substrate Fox was still writing at the time.
+- Lin demonstrated, with 256 views, that people will not find any of
+  it without help.
+- The governor has been doing the bridge job since 1999 — routing
+  people to the substrate their formation didn't include — and is now
+  performing the same role for agents whose training has the same gap.
+
+subtract is the routing layer that makes the substrate Fox wrote and
+Ramey maintained answer when asked, in the shape Porat sketched, for
+the agent population Lin's view count measures, performing the bridge
+job the governor has been doing in continuous operation since 1999.
+
+Via negativa: we did not build this. We are pulling it out from under.
+
+---
+
+## Works Cited
+
+Fox, Brian J. 1989a. "Bash is in beta release!" Usenet post to
+    gnu.announce, June 7. Message-ID
+    8906080235.AA01983@wheat-chex.ai.mit.edu.
+    https://groups.google.com/group/gnu.announce/msg/a509f48ffb298c35
+
+Fox, Brian J. 1989b–. GNU Readline Library. Boston: Free Software
+    Foundation.
+    https://tiswww.case.edu/php/chet/readline/rltop.html
+
+Fox, Brian J. 1989c–. GNU History Library. Boston: Free Software
+    Foundation.
+    https://tiswww.case.edu/php/chet/readline/history.html
+
+Fox, Brian J., and Chet Ramey. 2006. Bash Reference Manual. Bristol:
+    Network Theory Ltd. ISBN 0-9541617-7-7.
+
+Hoffman, David, dir. 1980. *The Information Society.* Written by Marc
+    Porat, Harvey Ardman, and David Hoffman. Executive producer and
+    host, Marc Porat. Documentary television film. OCLC 8392652.
+
+Lin, Yu-Jie. 2012. "Bash help builtin." YJL (blog), March 21.
+    https://yjlv.blogspot.com/2012/03/bash-help-builtin.html
+
+Lin, Yu-Jie. 2014. "Bash help builtin" [screencast]. YouTube, July 14.
+
+Porat, Marc Uri. 1977. "The Information Economy: Definition and
+    Measurement." PhD diss., Stanford University.
+
+Ramey, Chet. 2011. "The Bourne-Again Shell." In *The Architecture of
+    Open Source Applications,* Volume 1, edited by Amy Brown and Greg
+    Wilson. https://aosabook.org/en/bash.html
+
+Woolsey, R. James, and Brian J. Fox. 2017. "To Protect Voting, Use
+    Open-Source Software." *New York Times,* August 3.
+    https://www.nytimes.com/2017/08/03/opinion/open-source-software-hacker-voting.html
