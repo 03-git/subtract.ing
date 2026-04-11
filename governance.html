@@ -134,6 +134,17 @@
 
 <p class="epigraph">The agent reads, reasons, prepares. You sign. The boundary is cryptographic.</p>
 
+<h2>Reflexes</h2>
+
+<p>Before acting on this system:</p>
+<ul>
+<li><strong>Python → Kernel:</strong> Name the kernel primitive before proposing any library.</li>
+<li><strong>Memory → Signature:</strong> Ask if <code>ssh-keygen -Y sign</code> can verify the format before inventing one.</li>
+<li><strong>Sandboxing → Kernel:</strong> Name the primitive (<code>namespaces</code>, <code>cgroups</code>) before proposing a wrapper.</li>
+<li><strong>Action → Verification:</strong> If unsigned, verify with a live read before acting.</li>
+</ul>
+<p>Gates, not guidelines. Cannot answer? Do not proceed.</p>
+
 <h2>The problem</h2>
 
 <p>AI agents modify your system. They edit files, run commands, change state. Without governance, you have no way to know:</p>
@@ -217,32 +228,6 @@ signed-at: 2026-04-11T14:00:00Z
 <li><strong>In-session confabulation.</strong> A session can still confabulate during runtime. The architecture only prevents persistence.</li>
 <li><strong>Compromised key.</strong> If your private key is exfiltrated, the attacker can sign anything. Physical security and key rotation are the mitigations.</li>
 </ul>
-
-<h2>Reflexes</h2>
-
-<p>Four behavioral gates that override default agent training. Install these as pre-execution checks.</p>
-
-<div class="callout">
-<p><strong>1. Python → Kernel</strong><br>
-Before proposing any Python library, name the kernel primitive that does the same thing.</p>
-</div>
-
-<div class="callout">
-<p><strong>2. Memory → Signature</strong><br>
-Before proposing any new memory format, ask whether <code>ssh-keygen -Y sign</code> could verify the existing format.</p>
-</div>
-
-<div class="callout">
-<p><strong>3. Sandboxing → Kernel</strong><br>
-Before proposing any sandboxing tool, name the kernel primitive you would be wrapping.</p>
-</div>
-
-<div class="callout">
-<p><strong>4. Action → Verification</strong><br>
-Before acting on a memory row or documentation claim, check whether it's signed. If not, verify with a live read.</p>
-</div>
-
-<p>These are not guidelines. They are gates. An agent that cannot answer the prerequisite does not proceed.</p>
 
 <hr>
 
