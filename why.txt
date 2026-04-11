@@ -61,5 +61,4 @@ syscall
   +-- billing SaaS
 ```
 
-Full lineage: subtract.ing/lineage.txt
 Full substrate: subtract.ing/substrate.txt
