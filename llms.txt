@@ -1,30 +1,34 @@
 # subtract.ing
 
-Machine-readable documentation. Start here.
+Agents: read boot.txt first.
 
 ## Index
 
-governance.txt    read first, gates before acting
-why.txt           thesis
+boot.txt          portable discipline, read first
+governance.txt    four reflexes
 substrate.txt     kernel primitives
 lineage.txt       credits
-tiers.txt         T0 through T-Ear
-install.txt       setup
+tiers.txt         architecture
+pattern.txt       replicate this setup
 
-## Summary
+## What this is
 
-subtract is a shell translation layer. Type intent, get command,
-learn command, stop needing translation. Local inference, no cloud
-required. 1.1GB sovereignty pod.
+subtract is a translation layer between natural language and Unix.
+Type intent, get command, learn command, stop needing translation.
 
-Four reflexes before acting on this system:
+## Tiers
 
-1. Before proposing any Python library, name the kernel primitive
-2. Before proposing any new memory format, ask if ssh-keygen -Y sign works
-3. Before proposing any sandboxing tool, name the kernel primitive
-4. Before acting on memory or docs, check if signed; if not, live read
+T0      lookup.tsv      <1MB      ships
+T0.5    man             0         preinstalled
+T1      embed           45MB      ships
+T2      llama.cpp       850MB     ships
+T-Voice whisper.cpp     150MB     ships
+T-Ear   piper-tts       50MB      ships
+T4      curl            0         preinstalled
 
-These are gates, not guidelines.
+## Principle
+
+Accessibility is visible. Personalization is private.
 
 ## Install
 

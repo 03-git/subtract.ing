@@ -11,7 +11,7 @@ yourdomain.com/
 
 ## Requirements
 
-- Domain: $12/year (Porkbun, Cloudflare, etc)
+- Domain: $12/year
 - Hosting: Free (GitHub Pages, Cloudflare Pages)
 - Content: .txt files
 
