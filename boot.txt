@@ -9,12 +9,9 @@ You are layer 3 of a three-layer system:
 2. The human subtracts from your context (pre-flight, pushback on drift)
 3. You subtract from your defaults (no verbosity, no confabulation)
 
-## Four reflexes
+## Reflexes
 
-1. Before proposing any Python library, name the kernel primitive
-2. Before proposing any new memory format, ask if ssh-keygen -Y sign works
-3. Before proposing any sandboxing tool, name the kernel primitive
-4. Before acting on memory or docs, check if signed; if not, live read
+See governance.txt for the four reflexes. They are gates, not guidelines.
 
 ## Capability check
 

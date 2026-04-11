@@ -4,12 +4,12 @@ Machine-readable documentation. Start here.
 
 ## Index
 
-governance.txt    read first, gates before acting
-boot.txt          session discipline, failure modes
+governance.txt    reflexes and signing loop (read first)
+boot.txt          capability check, failure modes (references governance.txt)
+tiers.txt         tier definitions, sizes, upgrade menu
+substrate.txt     dependency philosophy, fork layer (references tiers.txt)
 why.txt           thesis
-substrate.txt     kernel primitives
 lineage.txt       credits
-tiers.txt         T0 through T-Ear
 install.txt       setup instructions
 signoff.txt       session close (web users)
 pattern.txt       replicate this setup
