@@ -9,7 +9,7 @@ BASE_URL="https://raw.githubusercontent.com/03-git/subtract.ing/main"
 # Detect: are we in the repo or piped from web?
 SCRIPT_DIR="$(cd "$(dirname "$0" 2>/dev/null)" && pwd 2>/dev/null)" || SCRIPT_DIR=""
 
-if [ -d "$SCRIPT_DIR/subtract" ]; then
+if [ -d "$SCRIPT_DIR/runtime" ]; then
     MODE="local"
 else
     MODE="web"
@@ -33,23 +33,23 @@ fetch_exec() {
 }
 
 # Core runtime
-fetch "subtract/handler.sh" "$SUBTRACT_DIR/handler.sh"
-fetch_exec "subtract/subtract" "$SUBTRACT_DIR/subtract"
-fetch "subtract/hooks/bash.sh" "$SUBTRACT_DIR/hooks/bash.sh"
-fetch "subtract/hooks/zsh.sh" "$SUBTRACT_DIR/hooks/zsh.sh"
-fetch "subtract/motd" "$SUBTRACT_DIR/motd"
-fetch "subtract/about" "$SUBTRACT_DIR/about"
-fetch_exec "subtract/onboard.sh" "$SUBTRACT_DIR/onboard.sh"
-fetch_exec "subtract/embed_match.sh" "$SUBTRACT_DIR/embed_match.sh"
-fetch_exec "subtract/skills-rebuild.sh" "$SUBTRACT_DIR/skills-rebuild.sh"
+fetch "runtime/handler.sh" "$SUBTRACT_DIR/handler.sh"
+fetch_exec "runtime/subtract" "$SUBTRACT_DIR/subtract"
+fetch "runtime/hooks/bash.sh" "$SUBTRACT_DIR/hooks/bash.sh"
+fetch "runtime/hooks/zsh.sh" "$SUBTRACT_DIR/hooks/zsh.sh"
+fetch "runtime/motd" "$SUBTRACT_DIR/motd"
+fetch "runtime/about" "$SUBTRACT_DIR/about"
+fetch_exec "runtime/onboard.sh" "$SUBTRACT_DIR/onboard.sh"
+fetch_exec "runtime/embed_match.sh" "$SUBTRACT_DIR/embed_match.sh"
+fetch_exec "runtime/skills-rebuild.sh" "$SUBTRACT_DIR/skills-rebuild.sh"
 
 # Signing scripts (optional)
-fetch_exec "subtract/sign-lookup.sh" "$SUBTRACT_DIR/sign-lookup.sh" 2>/dev/null || true
-fetch_exec "subtract/verify-lookup.sh" "$SUBTRACT_DIR/verify-lookup.sh" 2>/dev/null || true
+fetch_exec "runtime/sign-lookup.sh" "$SUBTRACT_DIR/sign-lookup.sh" 2>/dev/null || true
+fetch_exec "runtime/verify-lookup.sh" "$SUBTRACT_DIR/verify-lookup.sh" 2>/dev/null || true
 
 # lookup.tsv: don't overwrite user edits
 if [ ! -f "$SUBTRACT_DIR/lookup.tsv" ]; then
-    fetch "subtract/lookup.tsv" "$SUBTRACT_DIR/lookup.tsv"
+    fetch "runtime/lookup.tsv" "$SUBTRACT_DIR/lookup.tsv"
 fi
 
 # Skills: only in local mode (120+ files, can't curl individually)
