@@ -152,15 +152,43 @@
 
 <p>subtract is the thesis that this is the normal case, not the exception. The tools were never lost. The path to them was.</p>
 
+<h2>Doug McIlroy — the philosophy</h2>
+
+<p>McIlroy invented the Unix pipeline in 1973. The <code>|</code> character. He also wrote the Unix philosophy: write programs that do one thing and do it well, write programs to work together, write programs to handle text streams because that is a universal interface.</p>
+
+<p>subtract is the 2026 realization of McIlroy's vision. The LLM is just another text-stream processor in a pipeline. Intent in, command out, kernel executes. The architecture is a pipe.</p>
+
+<h2>Theo de Raadt — the trust primitive</h2>
+
+<p>OpenSSH is maintained by the OpenBSD project, founded by de Raadt. OpenBSD is famous for hostile code auditing and proactive feature removal. They improve security by deleting thousands of lines of bloated code.</p>
+
+<p>They did not just build <code>ssh-keygen -Y</code>. They established the engineering culture of subtraction-equals-security that the governance layer relies on. The signed-frames architecture is OpenBSD philosophy applied to agent state.</p>
+
+<h2>John McCutchan & Robert Love — the event primitive</h2>
+
+<p>Before 2005, if a program wanted to know if a file changed, it had to poll the disk repeatedly, wasting CPU cycles. McCutchan and Love built <code>inotify</code> and merged it into the Linux kernel. User-space programs yield to the kernel and wake only when a filesystem event occurs.</p>
+
+<p>Without their work, the governance loop would require a polling daemon or a heavy cron job to check for the governor's signature. <code>inotify</code> makes the zero-compute wait possible. The agent yields. The kernel wakes it. No polling.</p>
+
+<h2>Thomas Koenig — the deferred queue</h2>
+
+<p>While cron handles recurring schedules, <code>at</code> handles deferred execution. Pipe a command, give it a time, the kernel handles the rest. Koenig wrote the modern Linux <code>atd</code> daemon in 1993.</p>
+
+<p>Every modern message broker, async task queue, and cloud function scheduler is a heavy, networked recreation of <code>echo "command" | at now + 5 minutes</code>. The primitive was always there. They rebuilt it with Redis and Celery because they did not know <code>at</code> exists.</p>
+
 <h2>The lineage, stated</h2>
 
-<p>Fox wrote the substrate in 1989 — shell, readline, history, info — and applied the same free-authority thesis to banking, elections, and anonymized networks for the next forty years.</p>
+<p>McIlroy wrote the philosophy in 1973. Pipes. Text streams. One thing well.</p>
 
-<p>Ramey has kept the substrate reachable since 1993, authored <code>help</code> as the builtin subtract's T0.5 tier depends on, and never broke <code>command_not_found_handle</code>.</p>
+<p>Fox wrote the substrate in 1989 — shell, readline, history — and Ramey has kept it reachable for thirty-three years.</p>
 
-<p>Porat imagined the interaction model in 1979 and spent his career trying to ship it through a layer that kept failing to reach the substrate Fox was still writing at the time.</p>
+<p>de Raadt and OpenBSD built the trust primitive and the culture of subtraction-equals-security.</p>
 
-<p>Lin demonstrated, with 256 views, that people will not find any of it without help.</p>
+<p>McCutchan and Love built <code>inotify</code> so programs could yield instead of poll.</p>
+
+<p>Koenig built <code>at</code> so tasks could defer without a message broker.</p>
+
+<p>Porat imagined the interaction model in 1979. Lin demonstrated, with 256 views, that people will not find any of it without help.</p>
 
 <p><strong>Via negativa:</strong> we did not build this. We are pulling it out from under.</p>
 
