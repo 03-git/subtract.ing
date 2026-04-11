@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Crawl order is the curriculum -->
+  <url>
+    <loc>https://subtract.ing/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://subtract.ing/why</loc>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://subtract.ing/lineage</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://subtract.ing/substrate</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://subtract.ing/signing</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://subtract.ing/time</loc>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://subtract.ing/governance</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://subtract.ing/discipline</loc>
+    <priority>0.9</priority>
+  </url>
+</urlset>
