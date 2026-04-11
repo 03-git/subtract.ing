@@ -1,0 +1,28 @@
+# Pattern
+
+Anyone with a domain can make their web presence agent-first.
+
+## Structure
+
+yourdomain.com/
+├── index.html     # Trust signal. "Ask your AI about this."
+├── llms.txt       # Manifest. Everything an agent needs.
+└── [topic].txt    # Depth as needed.
+
+## Requirements
+
+- Domain: $12/year (Porkbun, Cloudflare, etc)
+- Hosting: Free (GitHub Pages, Cloudflare Pages)
+- Content: .txt files
+
+No CMS. No framework. No build step.
+
+## Why
+
+Humans don't read websites. They ask AI to read for them.
+Your llms.txt is what the AI actually sees.
+Your index.html is proof you're real.
+
+## Example
+
+https://subtract.ing/llms.txt
