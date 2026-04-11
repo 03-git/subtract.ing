@@ -61,33 +61,28 @@ case "${1:-help}" in
         case "$choice" in
             1)
                 echo ""
-                echo "Installing local inference..."
+                echo "Installing local inference (T1+T2)..."
                 echo ""
-
-                # check for ollama
-                if ! command -v ollama &>/dev/null; then
-                    echo "ollama not found."
-                    echo ""
-                    echo "Install ollama first:"
-                    echo "  macOS:  brew install ollama"
-                    echo "  Linux:  curl -fsSL https://ollama.com/install.sh | sh"
-                    echo ""
-                    exit 1
-                fi
-
-                # pull models
-                echo "Pulling embedding model (nomic-embed-text, ~274MB)..."
-                ollama pull nomic-embed-text
-
+                echo "T1+T2 requires llama.cpp and two models."
                 echo ""
-                echo "Pulling reasoning model (qwen2.5:1.5b, ~935MB)..."
-                ollama pull qwen2.5:1.5b
-
-                # record model choice
-                echo "qwen2.5:1.5b" > "$SUBTRACT_DIR/model"
-
+                echo "Get llama.cpp:"
+                echo "  https://github.com/ggerganov/llama.cpp/releases"
                 echo ""
-                echo "T1+T2 ready. Local inference active."
+                echo "Download models:"
+                echo "  mkdir -p ~/.subtract/models"
+                echo ""
+                echo "  # T1 embedding (~45MB)"
+                echo "  curl -L -o ~/.subtract/models/nomic-embed.gguf \\"
+                echo "    https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF/resolve/main/nomic-embed-text-v1.5.Q4_K_M.gguf"
+                echo ""
+                echo "  # T2 reasoning (~850MB)"
+                echo "  curl -L -o ~/.subtract/models/qwen2.5-1.5b.gguf \\"
+                echo "    https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf"
+                echo ""
+                mkdir -p "$SUBTRACT_DIR/models"
+                echo "qwen2.5-1.5b.gguf" > "$SUBTRACT_DIR/model"
+                echo "nomic-embed.gguf" > "$SUBTRACT_DIR/embed"
+                echo "T1+T2 configured. Install llama.cpp and models to activate."
                 ;;
             2)
                 echo ""
@@ -95,17 +90,17 @@ case "${1:-help}" in
                 echo ""
                 echo "T-Voice requires whisper.cpp and a model."
                 echo ""
-                echo "Install whisper.cpp:"
-                echo "  macOS:  brew install whisper-cpp"
-                echo "  Linux:  see https://github.com/ggerganov/whisper.cpp"
+                echo "Get whisper.cpp:"
+                echo "  https://github.com/ggerganov/whisper.cpp/releases"
                 echo ""
-                echo "Download base.en model (~150MB):"
+                echo "Download model (~150MB):"
+                echo "  mkdir -p ~/.subtract/models"
                 echo "  curl -L -o ~/.subtract/models/ggml-base.en.bin \\"
                 echo "    https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin"
                 echo ""
                 mkdir -p "$SUBTRACT_DIR/models"
                 echo "whisper" > "$SUBTRACT_DIR/voice"
-                echo "T-Voice configured. Install whisper.cpp and model to activate."
+                echo "T-Voice configured. Download whisper.cpp and model to activate."
                 ;;
             3)
                 echo ""
@@ -113,17 +108,17 @@ case "${1:-help}" in
                 echo ""
                 echo "T-Ear requires piper-tts."
                 echo ""
-                echo "Install piper:"
-                echo "  macOS:  brew install piper"
-                echo "  Linux:  see https://github.com/rhasspy/piper"
+                echo "Get piper:"
+                echo "  https://github.com/rhasspy/piper/releases"
                 echo ""
-                echo "Download a voice model (~50MB):"
+                echo "Download voice model (~50MB):"
+                echo "  mkdir -p ~/.subtract/models"
                 echo "  curl -L -o ~/.subtract/models/en_US-lessac-medium.onnx \\"
                 echo "    https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx"
                 echo ""
                 mkdir -p "$SUBTRACT_DIR/models"
                 echo "piper" > "$SUBTRACT_DIR/ear"
-                echo "T-Ear configured. Install piper and model to activate."
+                echo "T-Ear configured. Download piper and model to activate."
                 ;;
             4)
                 echo ""
@@ -131,9 +126,9 @@ case "${1:-help}" in
                 echo ""
                 echo "Voice bundle requires whisper.cpp and piper-tts."
                 echo ""
-                echo "Install both:"
-                echo "  macOS:  brew install whisper-cpp piper"
-                echo "  Linux:  see GitHub repos for each"
+                echo "Get binaries:"
+                echo "  https://github.com/ggerganov/whisper.cpp/releases"
+                echo "  https://github.com/rhasspy/piper/releases"
                 echo ""
                 echo "Download models (~200MB total):"
                 echo "  mkdir -p ~/.subtract/models"
@@ -145,7 +140,7 @@ case "${1:-help}" in
                 mkdir -p "$SUBTRACT_DIR/models"
                 echo "whisper" > "$SUBTRACT_DIR/voice"
                 echo "piper" > "$SUBTRACT_DIR/ear"
-                echo "Voice bundle configured. Install tools and models to activate."
+                echo "Voice bundle configured. Download binaries and models to activate."
                 ;;
             5)
                 echo ""
