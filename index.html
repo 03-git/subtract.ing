@@ -14,7 +14,7 @@
             line-height: 1.6;
         }
 
-        /* --- hero --- */
+        /* --- hero with two lanes --- */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -23,19 +23,97 @@
             justify-content: center;
             padding: 2rem;
         }
-        .tagline {
-            font-size: clamp(1.4rem, 4vw, 2.2rem);
+
+        .hook {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .hook-line {
+            font-size: clamp(1.3rem, 4vw, 2rem);
             font-weight: 300;
             color: #e0e0e0;
+            margin-bottom: 0.3rem;
+        }
+        .hook-question {
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            font-weight: 300;
+            color: #888;
+            margin-top: 1rem;
+        }
+
+        /* --- two lanes --- */
+        .lanes {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .lane {
+            width: 240px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
             text-align: center;
-            max-width: 640px;
-            margin-bottom: 3rem;
-            letter-spacing: -0.01em;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+        .lane:hover {
+            border-color: #3a3a3a;
+            transform: translateY(-2px);
+        }
+
+        .lane-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.8rem;
+        }
+        .lane-left .lane-title { color: #50fa7b; }
+        .lane-right .lane-title { color: #8be9fd; }
+
+        .lane-path {
+            font-family: "SF Mono", monospace;
+            font-size: 1.1rem;
+            color: #e0e0e0;
+            margin-bottom: 1rem;
+        }
+
+        .lane-desc {
+            font-size: 0.82rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .scroll-hint {
+            margin-top: 4rem;
+            color: #333;
+            font-size: 1.4rem;
+            animation: drift 2s ease-in-out infinite;
+        }
+        @keyframes drift {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
         }
 
         /* --- terminal demo --- */
+        .demo {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+        }
+        .demo-intro {
+            font-size: 0.95rem;
+            color: #888;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
         .terminal {
-            width: min(640px, 90vw);
+            width: 100%;
             background: #1a1a1a;
             border: 1px solid #2a2a2a;
             border-radius: 8px;
@@ -55,7 +133,7 @@
         .terminal-body {
             padding: 16px 20px;
             font-family: "SF Mono", "Cascadia Code", "Fira Code", "Consolas", monospace;
-            font-size: clamp(0.72rem, 1.8vw, 0.82rem);
+            font-size: clamp(0.7rem, 1.6vw, 0.8rem);
             line-height: 1.7;
             overflow-x: auto;
         }
@@ -66,44 +144,31 @@
         .match-line { color: #8be9fd; }
         .dim { color: #555; }
 
-        /* --- one-liner --- */
-        .oneliner {
-            margin-top: 2rem;
-            font-size: 0.95rem;
-            color: #888;
+        .demo-note {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #555;
             text-align: center;
-        }
-
-        /* --- scroll hint --- */
-        .scroll-hint {
-            margin-top: 3rem;
-            color: #333;
-            font-size: 1.4rem;
-            animation: drift 2s ease-in-out infinite;
-        }
-        @keyframes drift {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(6px); }
         }
 
         /* --- audience section --- */
         .audience {
             max-width: 720px;
             margin: 0 auto;
-            padding: 6rem 2rem;
+            padding: 4rem 2rem;
         }
         .card {
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
         }
         .card-hook {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 500;
             color: #e0e0e0;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
         }
         .card-body {
-            font-size: 0.92rem;
-            color: #888;
+            font-size: 0.88rem;
+            color: #777;
             max-width: 560px;
         }
 
@@ -146,9 +211,34 @@
 </head>
 <body>
 
-<!-- hero -->
+<!-- hero with two lanes -->
 <section class="hero">
-    <h1 class="tagline">The computer that teaches you, then you subtract it.</h1>
+    <div class="hook">
+        <div class="hook-line">You're using AI agents.</div>
+        <div class="hook-line">They're changing your system.</div>
+        <div class="hook-question">Do you know what changed?</div>
+    </div>
+
+    <div class="lanes">
+        <a href="/paste" class="lane lane-left">
+            <div class="lane-title">Start now</div>
+            <div class="lane-path">/paste</div>
+            <div class="lane-desc">Copy one prompt. Paste into ChatGPT or Claude. Feel the difference.</div>
+        </a>
+
+        <a href="/why" class="lane lane-right">
+            <div class="lane-title">Understand first</div>
+            <div class="lane-path">/why</div>
+            <div class="lane-desc">Read the thesis. Traverse the curriculum. Then download.</div>
+        </a>
+    </div>
+
+    <div class="scroll-hint">&darr;</div>
+</section>
+
+<!-- terminal demo -->
+<section class="demo">
+    <p class="demo-intro">When you're ready for automation, subtract is a shell that does what you mean.</p>
 
     <div class="terminal">
         <div class="terminal-bar">
@@ -172,44 +262,30 @@
         </div>
     </div>
 
-    <p class="oneliner">Runs beside your OS, not instead of it. No account required.</p>
-
-    <div class="scroll-hint">&darr;</div>
+    <p class="demo-note">Runs beside your OS, not instead of it. No account required.</p>
 </section>
 
 <!-- audience -->
 <section class="audience">
-
-    <div class="card">
-        <div class="card-hook">You're using AI agents. They're changing your system.</div>
-        <div class="card-body">Do you know what changed? subtract surfaces the diff. You sign to authorize. Unsigned drift is the anomaly. One tarball. Learn bash. Stay sovereign.</div>
-    </div>
-
     <div class="card">
         <div class="card-hook">For people whose brain moves faster than their workflow.</div>
-        <div class="card-body">Sub-second response. No context switch. No tab to open, no search to run. Type what you mean, stay in flow.</div>
+        <div class="card-body">Sub-second response. No context switch. Type what you mean, stay in flow.</div>
     </div>
 
     <div class="card">
         <div class="card-hook">For people who've bought the last version of something on purpose.</div>
-        <div class="card-body">No subscription. No sunset date. The documentation it reads has been stable since 1971. No account to delete when you're done.</div>
+        <div class="card-body">No subscription. No sunset date. The documentation it reads has been stable since 1971.</div>
     </div>
 
     <div class="card">
         <div class="card-hook">For people who know what they want to do but not what to type.</div>
-        <div class="card-body">The vocabulary gap is the only barrier between you and your computer. subtract bridges it, then fades as you learn the commands yourself.</div>
+        <div class="card-body">The vocabulary gap is the only barrier. subtract bridges it, then fades as you learn.</div>
     </div>
 
     <div class="card">
         <div class="card-hook">For people who want their computer to do exactly what they told it to.</div>
-        <div class="card-body">Add one line to a text file. It works immediately. No build step, no deploy, no restart. Your machine, your vocabulary.</div>
+        <div class="card-body">Add one line to a text file. It works immediately. Your machine, your vocabulary.</div>
     </div>
-
-    <div class="card">
-        <div class="card-hook">For people who game, create, and don't want to leave what works.</div>
-        <div class="card-body">Keep Windows. Keep macOS. Keep everything. Open a terminal. subtract is there. Close it. Nothing changed.</div>
-    </div>
-
 </section>
 
 <!-- install -->
@@ -223,7 +299,7 @@
 </section>
 
 <footer>
-    <a href="https://github.com/03-git/subtract">github</a> &middot; <a href="/signing">signing</a> &middot; <a href="/time">time</a> &middot; <a href="/lineage">lineage</a> &middot; <a href="/why">why</a> &middot; GPL-3.0
+    <a href="/">subtract.ing</a> &middot; <a href="/paste">paste</a> &middot; <a href="/why">why</a> &middot; <a href="/substrate">substrate</a> &middot; <a href="/governance">governance</a> &middot; <a href="/discipline">discipline</a> &middot; <a href="https://github.com/03-git/subtract">github</a>
 </footer>
 
 </body>
