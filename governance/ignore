@@ -1,0 +1,14 @@
+# Governance ignore patterns
+# Files that change but don't need tracking
+
+# Session state (ephemeral)
+*.log
+*.tmp
+sessions/
+
+# Cache
+cache/
+.cache/
+
+# User-specific (not subtract's state)
+personal/

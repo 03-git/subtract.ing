@@ -1,0 +1,175 @@
+# subtract -- intent lookup table
+# format: glob_pattern<TAB>[tag]<TAB>command
+#   tags: [stdout] (default), [canvas], [player]
+#   two-column lines (no tag) default to [stdout] for backwards compat
+# first match wins. specific before general.
+# edit this file to teach your machine new intents.
+# languages: add a section. translate the intents, keep the commands.
+#
+# --- files ---
+what*in*this*directory	ls .
+what*in*current*directory	ls .
+what*files*are*here	ls .
+list*files	ls .
+show*files	ls .
+show*hidden*files	ls -la
+show*all*files	ls -la
+show*file*sizes	ls -lh
+list*home	ls ~/
+what*in*home*directory	ls ~/
+# desktop/downloads: remove these if your system doesn't have them
+show*desktop	ls ~/Desktop/
+show*downloads	ls ~/Downloads/
+#
+# --- navigation ---
+go*home	cd ~/
+go*to*home	cd ~/
+go*back	cd ..
+go*up	cd ..
+#
+# --- disk ---
+how*much*disk*space	df -h
+disk*space	df -h
+disk*space*left	df -h
+check*disk*space	df -h
+show*disk*usage	df -h
+how*much*space	df -h
+how*big*is*this*folder	du -sh .
+disk*usage	du -sh *
+#
+# --- processes ---
+show*running*processes	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
+show*processes	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
+what*is*running	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
+kill*process	echo "usage: kill <PID>"
+#
+# --- time ---
+what*time*is*it	date +%T
+what*is*the*time	date +%T
+what*day*is*it	date +%A
+what*is*the*date	date +%Y-%m-%d
+what*is*today	date "+%A %Y-%m-%d"
+#
+# --- network ---
+what*is*my*ip	hostname -I
+show*my*ip	hostname -I
+am*i*online	ping -c1 -W2 8.8.8.8 && echo "yes" || echo "no"
+#
+# --- system ---
+how*much*memory	free -h
+how*much*ram	free -h
+show*memory	free -h
+who*am*i	whoami
+what*is*my*username	whoami
+what*machine*is*this	hostname
+show*system*info	uname -a
+what*os*is*this	cat /etc/os-release
+#
+# --- history ---
+show*command*history	history
+what*did*i*do	history 20
+last*commands	history 20
+#
+# --- tools ---
+claude	claude
+open*claude	claude
+launch*claude	claude
+terminal	bash
+open*terminal	bash
+shell	bash
+#
+# --- cleanup ---
+clear*screen	clear
+clear*terminal	clear
+#
+# --- reconfigure ---
+reconfigure*	rm -f $HOME/.subtract/.onboarded && echo "type anything to re-onboard"
+#
+# --- media ---
+show*videos	ls /mnt/media/movies/ /mnt/media/tv/
+list*movies	ls /mnt/media/movies/
+list*tv*shows	ls /mnt/media/tv/
+list*tv	ls /mnt/media/tv/
+list*music	ls /mnt/media/music/
+#
+# --- español ---
+# same commands, Spanish intents. specific before general.
+#
+# archivos
+lista*archivos	ls .
+listar*archivos	ls .
+mostrar*archivos	ls .
+qué*hay*en*este*directorio	ls .
+qué*hay*aquí	ls .
+archivos*ocultos	ls -la
+mostrar*archivos*ocultos	ls -la
+tamaño*de*archivos	ls -lh
+#
+# navegación
+ir*a*inicio	cd ~/
+ir*a*casa	cd ~/
+ir*atrás	cd ..
+ir*arriba	cd ..
+#
+# disco
+cuánto*espacio	df -h
+espacio*en*disco	df -h
+espacio*disponible	df -h
+uso*de*disco	du -sh *
+qué*tan*grande*es*esta*carpeta	du -sh .
+tamaño*de*carpeta	du -sh .
+#
+# procesos
+procesos*activos	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
+mostrar*procesos	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
+qué*está*corriendo	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
+matar*proceso	echo "uso: kill <PID>"
+#
+# hora/fecha
+qué*hora*es	date +%T
+qué*día*es	date +%A
+qué*fecha*es	date +%Y-%m-%d
+fecha*de*hoy	date "+%A %Y-%m-%d"
+#
+# red
+cuál*es*mi*ip	hostname -I
+mi*dirección*ip	hostname -I
+estoy*conectado	ping -c1 -W2 8.8.8.8 && echo "sí" || echo "no"
+tengo*internet	ping -c1 -W2 8.8.8.8 && echo "sí" || echo "no"
+#
+# sistema
+cuánta*memoria	free -h
+cuánta*ram	free -h
+mostrar*memoria	free -h
+quién*soy	whoami
+qué*máquina*es*esta	hostname
+información*del*sistema	uname -a
+qué*sistema*operativo	cat /etc/os-release
+#
+# historial
+mostrar*historial	history
+qué*hice	history 20
+últimos*comandos	history 20
+#
+# limpieza
+limpiar*pantalla	clear
+limpiar*terminal	clear
+#
+# --- canvas (HTML rendered fullscreen via subtract-canvas) ---
+# two patterns use [canvas]:
+#   1. web-as-apps: command IS subtract-canvas (renders URL directly)
+#   2. generators: command produces HTML, handler pipes it to subtract-canvas
+# the handler's pipe logic only fires for case 2 (command output is non-empty)
+subtract	cat ~/.subtract/about
+home	[canvas]	subtract-canvas https://subtract.ing
+*youtube*	[canvas]	subtract-canvas https://youtube.com
+*doordash*	[canvas]	subtract-canvas https://doordash.com
+*netflix*	[canvas]	subtract-canvas https://netflix.com
+*my*email*	[canvas]	subtract-canvas https://mail.google.com
+*spotify*	[canvas]	subtract-canvas https://open.spotify.com
+#
+# --- player (media rendered fullscreen via mpv) ---
+# add media entries as: play*<name>	[player]	mpv --fs --no-terminal --no-osd-bar --osd-level=0 /path/to/file
+#
+# --- mixed (canvas generates grid, tap action triggers mpv directly) ---
+show*movies	[canvas]	find /mnt/media/movies/ -maxdepth 2 -type f \( -name '*.mkv' -o -name '*.mp4' -o -name '*.avi' \) | sort | generate_grid.sh

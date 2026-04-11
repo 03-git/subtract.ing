@@ -1,0 +1,204 @@
+#!/bin/bash
+# subtract CLI
+# usage: subtract [command]
+#   upgrade  - add optional tiers (local inference, cloud)
+#   about    - what subtract is
+#   help     - this message
+
+SUBTRACT_DIR="$HOME/.subtract"
+
+STATE_FILE="$SUBTRACT_DIR/.state"
+
+__state_write() {
+    local key="$1" value="$2"
+    mkdir -p "$(dirname "$STATE_FILE")"
+    if [ -f "$STATE_FILE" ]; then
+        grep -v "^${key}=" "$STATE_FILE" > "${STATE_FILE}.tmp" 2>/dev/null || true
+        mv "${STATE_FILE}.tmp" "$STATE_FILE"
+    fi
+    echo "${key}=${value}" >> "$STATE_FILE"
+}
+
+case "${1:-help}" in
+    config)
+        case "${2:-}" in
+            --no-nags)
+                __state_write "no_nags" "true"
+                echo "Upgrade suggestions silenced."
+                ;;
+            --reset-nags)
+                __state_write "no_nags" "false"
+                __state_write "suggested" "false"
+                __state_write "misses" "0"
+                echo "Upgrade suggestion state reset."
+                ;;
+            *)
+                echo "subtract config"
+                echo ""
+                echo "Options:"
+                echo "  --no-nags     Silence upgrade suggestions"
+                echo "  --reset-nags  Reset suggestion state"
+                ;;
+        esac
+        ;;
+    upgrade)
+        echo ""
+        echo "subtract upgrade"
+        echo ""
+        echo "Current: T0 (lookup table) + T0.5 (man pages)"
+        echo ""
+        echo "Optional tiers:"
+        echo "  [1] Local inference (905MB) — T1+T2, reasoning"
+        echo "  [2] Voice input (150MB) — T-Voice, whisper.cpp"
+        echo "  [3] Voice output (50MB) — T-Ear, piper-tts"
+        echo "  [4] Voice bundle (200MB) — T-Voice + T-Ear"
+        echo "  [5] Cloud escalation — T4, requires API key"
+        echo "  [6] Cancel"
+        echo ""
+        read -p "Choice: " choice
+
+        case "$choice" in
+            1)
+                echo ""
+                echo "Installing local inference..."
+                echo ""
+
+                # check for ollama
+                if ! command -v ollama &>/dev/null; then
+                    echo "ollama not found."
+                    echo ""
+                    echo "Install ollama first:"
+                    echo "  macOS:  brew install ollama"
+                    echo "  Linux:  curl -fsSL https://ollama.com/install.sh | sh"
+                    echo ""
+                    exit 1
+                fi
+
+                # pull models
+                echo "Pulling embedding model (nomic-embed-text, ~274MB)..."
+                ollama pull nomic-embed-text
+
+                echo ""
+                echo "Pulling reasoning model (qwen2.5:1.5b, ~935MB)..."
+                ollama pull qwen2.5:1.5b
+
+                # record model choice
+                echo "qwen2.5:1.5b" > "$SUBTRACT_DIR/model"
+
+                echo ""
+                echo "T1+T2 ready. Local inference active."
+                ;;
+            2)
+                echo ""
+                echo "Installing voice input (T-Voice)..."
+                echo ""
+                echo "T-Voice requires whisper.cpp and a model."
+                echo ""
+                echo "Install whisper.cpp:"
+                echo "  macOS:  brew install whisper-cpp"
+                echo "  Linux:  see https://github.com/ggerganov/whisper.cpp"
+                echo ""
+                echo "Download base.en model (~150MB):"
+                echo "  curl -L -o ~/.subtract/models/ggml-base.en.bin \\"
+                echo "    https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin"
+                echo ""
+                mkdir -p "$SUBTRACT_DIR/models"
+                echo "whisper" > "$SUBTRACT_DIR/voice"
+                echo "T-Voice configured. Install whisper.cpp and model to activate."
+                ;;
+            3)
+                echo ""
+                echo "Installing voice output (T-Ear)..."
+                echo ""
+                echo "T-Ear requires piper-tts."
+                echo ""
+                echo "Install piper:"
+                echo "  macOS:  brew install piper"
+                echo "  Linux:  see https://github.com/rhasspy/piper"
+                echo ""
+                echo "Download a voice model (~50MB):"
+                echo "  curl -L -o ~/.subtract/models/en_US-lessac-medium.onnx \\"
+                echo "    https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx"
+                echo ""
+                mkdir -p "$SUBTRACT_DIR/models"
+                echo "piper" > "$SUBTRACT_DIR/ear"
+                echo "T-Ear configured. Install piper and model to activate."
+                ;;
+            4)
+                echo ""
+                echo "Installing voice bundle (T-Voice + T-Ear)..."
+                echo ""
+                echo "Voice bundle requires whisper.cpp and piper-tts."
+                echo ""
+                echo "Install both:"
+                echo "  macOS:  brew install whisper-cpp piper"
+                echo "  Linux:  see GitHub repos for each"
+                echo ""
+                echo "Download models (~200MB total):"
+                echo "  mkdir -p ~/.subtract/models"
+                echo "  curl -L -o ~/.subtract/models/ggml-base.en.bin \\"
+                echo "    https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin"
+                echo "  curl -L -o ~/.subtract/models/en_US-lessac-medium.onnx \\"
+                echo "    https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx"
+                echo ""
+                mkdir -p "$SUBTRACT_DIR/models"
+                echo "whisper" > "$SUBTRACT_DIR/voice"
+                echo "piper" > "$SUBTRACT_DIR/ear"
+                echo "Voice bundle configured. Install tools and models to activate."
+                ;;
+            5)
+                echo ""
+                echo "Cloud escalation (T4) uses curl to call inference APIs."
+                echo ""
+                echo "Option A — Claude subscription (if you have Max/Pro):"
+                echo "  claude auth login"
+                echo ""
+                echo "Option B — API key (pay-per-token):"
+                echo "  export ANTHROPIC_API_KEY=sk-ant-..."
+                echo ""
+                echo "  # T4 calls the API directly:"
+                echo "  curl -s https://api.anthropic.com/v1/messages \\"
+                echo "    -H \"x-api-key: \$ANTHROPIC_API_KEY\" \\"
+                echo "    -H \"anthropic-version: 2023-06-01\" \\"
+                echo "    -H \"content-type: application/json\" \\"
+                echo "    -d '{\"model\":\"claude-sonnet-4-20250514\",\"max_tokens\":256,\"messages\":[{\"role\":\"user\",\"content\":\"translate to bash: show my files\"}]}'"
+                echo ""
+                echo "No pip. No npm. Just curl."
+                echo ""
+                echo "T4 activates when T0/T1/T2 can't handle the query."
+                mkdir -p "$SUBTRACT_DIR"
+                echo "curl" > "$SUBTRACT_DIR/cloud"
+                echo "T4 configured."
+                ;;
+            6|*)
+                echo "Cancelled."
+                ;;
+        esac
+        ;;
+    about)
+        if [ -f "$SUBTRACT_DIR/about" ]; then
+            cat "$SUBTRACT_DIR/about"
+        else
+            echo "subtract: a shell that does what you mean"
+            echo "https://subtract.ing"
+        fi
+        ;;
+    help|*)
+        echo "subtract — type what you want, see the command, confirm"
+        echo ""
+        echo "Commands:"
+        echo "  upgrade  Add optional tiers (inference, voice, cloud)"
+        echo "  config   Settings (--no-nags, --reset-nags)"
+        echo "  about    What subtract is"
+        echo "  help     This message"
+        echo ""
+        echo "Tiers:"
+        echo "  T0      Lookup table (active)"
+        echo "  T0.5    Man pages (active)"
+        echo "  T1      Embedding similarity (subtract upgrade)"
+        echo "  T2      Local model (subtract upgrade)"
+        echo "  T-Voice Voice input (subtract upgrade)"
+        echo "  T-Ear   Voice output (subtract upgrade)"
+        echo "  T4      Cloud escalation (subtract upgrade)"
+        ;;
+esac

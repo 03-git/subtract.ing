@@ -32,4 +32,4 @@ curl -sL subtract.ing/install.sh | bash
 
 ## Repo
 
-https://github.com/03-git/subtract
+https://github.com/03-git/subtract.ing

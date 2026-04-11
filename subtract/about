@@ -1,0 +1,23 @@
+You said "subtract". Your shell didn't recognize it as a command.
+
+bash called command_not_found_handle -- a hook that has existed since 2009.
+The handler checked five tiers to figure out what you meant:
+
+  T0  lookup table     exact match against ~/.subtract/lookup.tsv    <5ms
+  T1  embedding        semantic similarity against man page corpus   <200ms
+  T2  local model      7B parameter model reads the man page         1-5s
+  T4  cloud            remote model, only if configured              1-30s
+  --  honest failure   "not found" -- no fabrication                 0ms
+
+T0 matched "subtract" in the lookup table. This message is the result.
+
+That's the entire product. Natural language at a bash prompt, resolved
+through the tiers above. The handler is six lines. The knowledge base
+is the man pages that already ship with your system.
+
+This runs beside your OS, not instead of it. Windows (WSL), macOS
+(Terminal.app), or any Linux. Your existing tools stay. subtract is
+the layer underneath -- and it fades as you learn the commands yourself.
+
+https://subtract.ing
+https://github.com/03-git/subtract
