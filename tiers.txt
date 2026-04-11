@@ -1,78 +1,38 @@
 # Tiers
 
-subtract routes intent through five tiers. Each tier is a complete system. Lower tiers are faster and smaller. Higher tiers have more capability.
-
 ## Architecture
 
-| Tier | Component | Size | Ships |
-|------|-----------|------|-------|
-| T0 | lookup.tsv | <1MB | yes |
-| T0.5 | man | 0 | preinstalled |
-| T1 | embed | 45MB | yes |
-| T2 | llama.cpp | 850MB | yes |
-| T-Voice | whisper.cpp | 150MB | yes |
-| T-Ear | piper-tts | 50MB | yes |
-| T4 | curl | 0 | preinstalled |
+T0      bash function     already there
+T0.5    man               already there
+T1      embed binary      ships
+T2      llama binary      ships
+T-Voice whisper binary    ships
+T-Ear   piper binary      ships
+T4      curl              already there
 
-Total sovereignty pod: ~1.1GB
+Every tier is either "already there" or "single binary + model."
 
-## T0: Lookup
+## Upgrade menu
 
-Pattern matching against a TSV file. No inference. If your intent matches a known pattern, T0 returns the command instantly.
+subtract upgrade
+[1] Local inference (905MB) — T1+T2, reasoning
+[2] Voice input (150MB) — T-Voice, whisper.cpp
+[3] Voice output (50MB) — T-Ear, piper-tts
+[4] Voice bundle (200MB) — T-Voice + T-Ear
+[5] Cloud escalation — T4, API key
+[6] Cancel
 
-Example: "show my files" → ls
+All tiers visible. Opt-in. No tier hidden behind another.
 
-T0 is the graduation target. Every command you learn moves from T2 to T0. Eventually T0 handles everything and inference is unnecessary.
+## Sizes
 
-## T0.5: Man Pages
-
-If T0 doesn't match and the input looks like a command name, route to man. The documentation is already on the system. No fetch required.
-
-## T1: Embed
-
-Semantic similarity search. If T0 misses, T1 finds the closest known intent using a small embedding model. Local, fast, no network.
-
-## T2: Reasoning
-
-Local LLM via llama.cpp. When T0 and T1 both miss, T2 reasons about intent and generates a command. Shows the command before executing. You learn the command. Next time, T0 handles it.
-
-## T-Voice: Speech to Text
-
-whisper.cpp for voice input. Speak intent, get command. The keyboard is subtracted.
-
-## T-Ear: Text to Speech
-
-piper-tts for spoken output. The screen is subtracted for accessibility.
-
-## T4: Cloud Fallback
-
-curl to external API. Only used when local tiers cannot satisfy the request. Requires explicit opt-in. Default is local-only.
-
-## The Cascade
-
-```
-intent
-  |
-  v
-T0 (lookup) -- hit? --> command
-  |
-  | miss
-  v
-T0.5 (man) -- command name? --> man page
-  |
-  | no
-  v
-T1 (embed) -- similar? --> command
-  |
-  | no match
-  v
-T2 (llama.cpp) -- reason --> command
-  |
-  v
-[show command, learn, add to T0]
-```
+T0 + T0.5    <1MB      default install
+T1           45MB      embedding
+T2           850MB     local inference
+T-Voice      150MB     whisper.cpp
+T-Ear        50MB      piper-tts
+Full local   ~1.1GB    sovereignty pod
 
 ## Principle
 
 Accessibility is visible. Personalization is private.
-Voice is a pipe. The fork is config, not code.
