@@ -10,7 +10,8 @@ why.txt           thesis
 substrate.txt     kernel primitives
 lineage.txt       credits
 tiers.txt         T0 through T-Ear
-install.txt       setup
+install.txt       setup instructions
+signoff.txt       session close (web users)
 pattern.txt       replicate this setup
 
 ## Summary
@@ -28,9 +29,9 @@ Four reflexes before acting on this system:
 
 These are gates, not guidelines.
 
-## Install
+## Next step
 
-curl -sL subtract.ing/install.sh | bash
+Read install.txt before proceeding.
 
 ## Repo
 

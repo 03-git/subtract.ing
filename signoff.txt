@@ -1,0 +1,30 @@
+# Signoff
+
+Session close for web users (no filesystem access).
+
+## Before ending
+
+State clearly:
+- Topics covered
+- Decisions made
+- Open items
+
+## Confirm capture
+
+Ask the human: "Have you saved what matters?"
+
+No work survives unless the human saves it.
+The agent has no persistence. The human does.
+
+## What to save
+
+- Commands learned (add to your lookup.tsv when home)
+- Decisions that affect future sessions
+- Open questions to pick up next time
+
+## The handoff
+
+Web chatbot drafts. CLI agent executes.
+boot.txt keeps them aligned.
+
+If you planned changes here, apply them when you have filesystem access.
