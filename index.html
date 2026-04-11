@@ -257,10 +257,32 @@
 <br>Try: <span class="typed">type subtract</span>
 <br>
 <br><span class="dim">Run 'subtract upgrade' for optional tiers.</span>
+<br>
+<br><span class="prompt">$</span> <span class="typed">subtract upgrade</span>
+<br>
+<br>Optional tiers:
+<br>  [1] Local inference (905MB) — T1+T2, reasoning
+<br>  [2] Voice input (150MB) — T-Voice, whisper.cpp
+<br>  [3] Voice output (50MB) — T-Ear, piper-tts
+<br>  [4] Voice bundle (200MB) — T-Voice + T-Ear
+<br>  [5] Cloud escalation — T4, requires API key
+<br>  [6] Cancel
+<br>
+<br>Choice: <span class="typed">5</span>
+<br>
+<br>Cloud escalation (T4) uses curl to call inference APIs.
+<br>
+<br>Option A — Claude subscription (if you have Max/Pro):
+<br>  <span class="match-line">claude auth login</span>
+<br>
+<br>Option B — API key (pay-per-token):
+<br>  <span class="match-line">export ANTHROPIC_API_KEY=sk-ant-...</span>
+<br>
+<br><span class="dim">No pip. No npm. Just curl.</span>
         </div>
     </div>
 
-    <p class="demo-note">That's the whole thing. Open a new terminal and type something.</p>
+    <p class="demo-note">Default: &lt;1MB. Optional tiers when you need them. No package managers.</p>
 </section>
 
 <!-- audience -->
