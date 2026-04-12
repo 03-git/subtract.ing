@@ -14,7 +14,7 @@ A substrate honors the pattern if and only if all six hold:
 
 4. **Non-subtraction has zero residue.** A user who never invokes subtract has a substrate bit-identical to one without subtract installed.
 
-5. **Successful subtractions train toward direct expression.** The translation is visible. Over time, users internalize the direct form and stop subtracting. Usage decays per user per command-family. Intentional, not accidental.
+5. **Successful subtractions train toward direct expression.** The translation is visible. Over time, users internalize the direct form and stop subtracting.
 
 6. **The router is modality-blind.** String in, string out. Same engine handles all substrates. Modality enters via which corpus and which trigger, not the router itself.
 

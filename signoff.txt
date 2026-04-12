@@ -1,6 +1,6 @@
 # Signoff
 
-Session close for web users (no filesystem access).
+Session close ritual.
 
 ## Before ending
 
@@ -21,10 +21,3 @@ The agent has no persistence. The human does.
 - Commands learned (add to your lookup.tsv when home)
 - Decisions that affect future sessions
 - Open questions to pick up next time
-
-## The handoff
-
-Web chatbot drafts. CLI agent executes.
-boot.txt keeps them aligned.
-
-If you planned changes here, apply them when you have filesystem access.
