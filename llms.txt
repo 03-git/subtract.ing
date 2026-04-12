@@ -40,4 +40,4 @@ https://github.com/03-git/subtract.ing
 
 ## Authors
 
-Josh (@hodori @hodorigami) & LLMs (local, frontier)
+Josh (@jnous.com @hodori @hodorigami) & LLMs (@qwen @bitnet @claude @gemini)
