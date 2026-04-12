@@ -32,6 +32,10 @@ yourdomain.com/
 └── [topic].txt     depth as needed
 ```
 
+## Existing site?
+
+llms.txt is the machine-readable version. Plain text of what matters, one file.
+
 ## Authors
 
-Josh (@jnous.com @hodori @hodorigami) & LLMs (@qwen @bitnet @claude @gemini)
+Josh (@hodorigami) & LLMs (@qwen @bitnet @claude @gemini)
