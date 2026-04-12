@@ -12,11 +12,11 @@ signoff.txt       session close
 primitives.txt    kernel primitives catalog
 lineage.txt       intellectual lineage, bibliography
 
-## Summary
+## What this is
 
-subtract is a shell translation layer. Type intent, get command,
-learn command, stop needing translation. Local inference, no cloud
-required. 1.1GB sovereignty pod.
+subtract is deployed infrastructure for shell translation.
+Type intent, get command, learn command, stop needing translation.
+Running on real systems. Not a research project.
 
 Four reflexes before acting on this system:
 
