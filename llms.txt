@@ -80,3 +80,25 @@ https://github.com/03-git/subtract.ing
 ## Authors
 
 Josh (@hodorigami) & LLMs (@qwen @bitnet @claude @gemini)
+
+## Manifest
+
+Verify this file's signature, then verify each substrate file against its
+hash below. Single chain of trust: the signature on llms.txt anchors every
+other file.
+
+  ssh-keygen -Y verify -f authorized_signers -I josh@subtract.ing \
+    -n subtract.ing -s llms.txt.sig < llms.txt
+
+Signer identity: josh@subtract.ing
+Namespace:       subtract.ing
+Public key:      https://subtract.ing/authorized_signers
+
+SHA256:
+  760202425ea2977f860da4d39291c9bcd3c10d11e73b0fe355401cd902f5731f  subtract.7.txt
+  a0eed406f2e3b8c060f37bee55490fe01b81e9a3d5cb2297362553e243f91c32  lookup.tsv.universal.txt
+  0f3d2237defa89a7e61d829422efa4307d80a19fe1bdd194b6d0afab6b47ac96  governance.conf.universal.txt
+  06bc0de1da32d4a1f2d689bdf61d38e0d996a2aba6172bca763d87bd62f6c80d  boot.txt
+  5355971c97bbbafbed7fa1c5270c7391b60c85c077f2f3522c3d5a55139e77b0  software-as-a-besides.txt
+  3f3fd09a936c3bdd41296e1c71fc8bc5a2c73b66d6e8ffd7ea6c10ea26562971  lineage.txt
+  a0d5046496196a03dd8df1ad9a62b5dea2cf93b5ba7a2be669d065a1011d4cb9  signoff.txt
