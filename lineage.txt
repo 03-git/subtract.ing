@@ -45,7 +45,7 @@ application got the credit.
 `Ctrl-R`, `HISTFILE`, `HISTSIZE`, `history -w`. This is episodic
 memory for the shell, shipped in 1989, present in every bash install
 since, forgotten by the generation that learned the word "memory" from
-LangChain. LIVINGLEDGER is a signed, auditable version of what Fox
+LangChain. subtract.ing is a signed, auditable version of what Fox
 shipped unsigned and unaudited forty years ago. The primitive was
 already there. The discipline around it is what subtract adds.
 
