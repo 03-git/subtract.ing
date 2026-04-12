@@ -1,6 +1,6 @@
 # invariants.txt
 
-The buffer-consult pattern. Subtract's interface contract across modalities.
+The buffer-subtract pattern. Subtract's interface contract across modalities.
 
 ## The six invariants
 
@@ -8,13 +8,13 @@ A substrate honors the pattern if and only if all six hold:
 
 1. **Native modality owns the buffer.** Subtract never owns it. Existing editing affordances (cursor keys, backspace-tile, "scratch that") work unchanged.
 
-2. **Consultation is explicit.** A specific gesture (keystroke, tile, wake phrase, HTTP call) hands the buffer to subtract. No polling, no ambient observation, no keystroke-by-keystroke.
+2. **Subtraction is explicit.** A specific gesture (keystroke, tile, wake phrase, HTTP call) hands the buffer to subtract. No polling, no ambient observation, no keystroke-by-keystroke.
 
 3. **Subtract reads, translates, writes back.** It does not commit. The user's commit gesture (enter, speak-tile, endpoint) remains the only path to action.
 
-4. **Non-consultation has zero residue.** A user who never invokes the consult has a substrate bit-identical to one without subtract installed.
+4. **Non-subtraction has zero residue.** A user who never invokes subtract has a substrate bit-identical to one without subtract installed.
 
-5. **Successful consultations train toward direct expression.** The translation is visible. Over time, users internalize the direct form and stop consulting. Usage decays per user per command-family. Intentional, not accidental.
+5. **Successful subtractions train toward direct expression.** The translation is visible. Over time, users internalize the direct form and stop subtracting. Usage decays per user per command-family. Intentional, not accidental.
 
 6. **The router is modality-blind.** String in, string out. Same engine handles all substrates. Modality enters via which corpus and which trigger, not the router itself.
 
@@ -22,11 +22,11 @@ A substrate honors the pattern if and only if all six hold:
 
 The buffer must be inspectable without committing.
 
-Modalities where intent commits as it accumulates (streaming execution, direct-manipulation gestures, ambient sensors without human gates) have no buffer to consult. The pattern does not apply there.
+Modalities where intent commits as it accumulates (streaming execution, direct-manipulation gestures, ambient sensors without human gates) have no buffer to subtract. The pattern does not apply there.
 
 ## Where it applies
 
-| Substrate | Buffer | Consult gesture | Commit gesture |
+| Substrate | Buffer | Subtract gesture | Commit gesture |
 |-----------|--------|-----------------|----------------|
 | Shell (bash/zsh) | readline buffer | bound keystroke | enter |
 | AAC tile grid | sentence strip | expand tile | speak tile |
@@ -43,6 +43,6 @@ Modalities where intent commits as it accumulates (streaming execution, direct-m
 
 ## The line
 
-Subtract is invoked, never imposed. The user's existing competence is untouched. The translation is a consult, not a takeover. A user who never asks has a substrate bit-identical to one without subtract installed.
+Subtract is invoked, never imposed. The user's existing competence is untouched. The translation is a subtraction, not a takeover. A user who never asks has a substrate bit-identical to one without subtract installed.
 
 That property is verifiable, not aspirational.
