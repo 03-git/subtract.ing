@@ -13,9 +13,9 @@ Agents read llms.txt. Humans see an inventory.
 root/                       interface (GitHub Pages serves from here)
 ├── index.html              landing
 ├── llms.txt                agent boot path
-├── subtract.7              man(7) frame
-├── lookup.tsv.universal    concept → man page
-├── governance.conf.universal  reflexes, authority, loop
+├── subtract.7.txt              man(7) frame
+├── lookup.tsv.universal.txt    concept → man page
+├── governance.conf.universal.txt  reflexes, authority, loop
 ├── *.txt                   boot, why, lineage, signoff
 ├── install.sh              entry point
 │
