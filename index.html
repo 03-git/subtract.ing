@@ -46,8 +46,8 @@
             display: inline-block;
         }
         footer { margin-top: 3rem; font-size: 0.75rem; color: #444; }
-        footer a { color: #555; text-decoration: none; }
-        footer a:hover { color: #8be9fd; }
+        footer a, nav a { color: #555; text-decoration: none; }
+        footer a:hover, nav a:hover { color: #8be9fd; }
         .agent-note { color: #666; font-size: 0.85rem; margin-bottom: 1.5rem; }
         .agent-note a { color: #8be9fd; }
     </style>
@@ -63,6 +63,17 @@
         <div class="prompt">
             "Read <em>subtract.ing/llms.txt</em> and explain what subtract is."
         </div>
+
+        <nav style="margin-top: 2rem; font-size: 0.8rem;">
+            <a href="/llms.txt">llms</a> ·
+            <a href="/governance.txt">governance</a> ·
+            <a href="/boot.txt">boot</a> ·
+            <a href="/substrate.txt">substrate</a> ·
+            <a href="/why.txt">why</a> ·
+            <a href="/signoff.txt">signoff</a> ·
+            <a href="/primitives.txt">primitives</a> ·
+            <a href="/lineage.txt">lineage</a>
+        </nav>
 
         <footer>
             <a href="https://github.com/03-git/subtract.ing">github</a>
