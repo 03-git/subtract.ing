@@ -7,75 +7,71 @@
     <link rel="alternate" type="text/markdown" href="/llms.txt" title="Machine-readable version">
     <title>subtract.ing</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #111;
-            color: #d0d0d0;
-            font-family: "SF Mono", "Cascadia Code", monospace;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            line-height: 1.6;
+            color: #c0c0c0;
+            font-family: monospace;
+            max-width: 72ch;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            line-height: 1.5;
         }
-        .container { max-width: 520px; }
-        h1 { font-size: 1.4rem; font-weight: 400; color: #e0e0e0; margin-bottom: 1.5rem; }
-        .lead { color: #888; margin-bottom: 2rem; }
-        section { margin-bottom: 1.5rem; }
-        h2 { font-size: 0.9rem; font-weight: 400; color: #666; margin-bottom: 0.5rem; }
-        .grid { display: grid; grid-template-columns: auto auto 1fr; gap: 0.2rem 1.5rem; }
-        .grid a { color: #8be9fd; text-decoration: none; }
-        .grid a:hover { text-decoration: underline; }
-        .grid span { color: #888; }
-        .files { display: grid; grid-template-columns: auto 1fr; gap: 0.2rem 1.5rem; }
-        .files a { color: #8be9fd; text-decoration: none; }
-        .files a:hover { text-decoration: underline; }
-        .files span { color: #888; }
-        .repo a { color: #8be9fd; text-decoration: none; }
-        .repo a:hover { text-decoration: underline; }
-        .author { color: #666; font-size: 0.85rem; }
+        header { margin-bottom: 2rem; }
+        header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+        h1 { font-size: 1rem; font-weight: normal; margin: 0; }
+        p { margin: 0.5rem 0; }
+        hr { border: none; color: #555; margin: 1.5rem 0; }
+        hr::before { content: "* * *"; display: block; text-align: center; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+        .dim { color: #666; }
+        pre { margin: 0.5rem 0; }
     </style>
 </head>
 <body>
-    <div class="container">
+    <header>
+        <img src="https://avatars.githubusercontent.com/u/270117742?v=4" alt="hodori">
         <h1>subtract.ing</h1>
-        <p class="lead">
-            Shell translation infrastructure. Type intent, get command,<br>
-            learn command, stop needing translation. Deployed on real systems.
-        </p>
+        <p>Shell translation infrastructure. Type intent, get command,<br>
+        learn command, stop needing translation.</p>
+    </header>
 
-        <section>
-            <h2>Tiers:</h2>
-            <div class="grid">
-                <span>T0</span><span>lookup.tsv</span><span>instant match</span>
-                <span>T0.5</span><span>man</span><span>already there</span>
-                <span>T1</span><span>embedding</span><span>semantic similarity</span>
-                <span>T2</span><span>llama.cpp</span><span>local inference</span>
-                <span>T-Voice</span><span>whisper.cpp</span><span>voice input</span>
-                <span>T-Ear</span><span>piper-tts</span><span>voice output</span>
-                <span>T4</span><span>curl</span><span>cloud escalation</span>
-            </div>
-        </section>
+    <hr>
 
-        <section>
-            <h2>Files:</h2>
-            <div class="files">
-                <a href="/llms.txt">llms.txt</a><span>manifest</span>
-                <a href="/boot.txt">boot.txt</a><span>agent discipline</span>
-                <a href="/governance.txt">governance.txt</a><span>reflexes</span>
-                <a href="/invariants.txt">invariants.txt</a><span>six invariants</span>
-                <a href="/substrate.txt">substrate.txt</a><span>tiers, primitives</span>
-                <a href="/why.txt">why.txt</a><span>thesis</span>
-                <a href="/signoff.txt">signoff.txt</a><span>session close</span>
-                <a href="/primitives.txt">primitives.txt</a><span>kernel catalog</span>
-                <a href="/lineage.txt">lineage.txt</a><span>credits</span>
-            </div>
-        </section>
+    <p><strong>Tiers</strong></p>
+<pre>
+T0       lookup.tsv    <span class="dim">instant match</span>
+T0.5     man           <span class="dim">already there</span>
+T1       embedding     <span class="dim">semantic similarity</span>
+T2       llama.cpp     <span class="dim">local inference</span>
+T-Voice  whisper.cpp   <span class="dim">voice input</span>
+T-Ear    piper-tts     <span class="dim">voice output</span>
+T4       curl          <span class="dim">cloud escalation</span>
+</pre>
 
-        <p class="repo">Repo: <a href="https://github.com/03-git/subtract.ing">github.com/03-git/subtract.ing</a></p>
-        <p class="author">Authors: Josh (@jnous.com @hodori @hodorigami) & LLMs (@qwen @bitnet @claude @gemini)</p>
-    </div>
+    <hr>
+
+    <p><strong>Files</strong></p>
+<pre>
+<a href="/llms.txt">llms.txt</a>        <span class="dim">manifest</span>
+<a href="/boot.txt">boot.txt</a>        <span class="dim">agent discipline</span>
+<a href="/governance.txt">governance.txt</a>  <span class="dim">reflexes</span>
+<a href="/invariants.txt">invariants.txt</a>  <span class="dim">six invariants</span>
+<a href="/substrate.txt">substrate.txt</a>   <span class="dim">tiers, primitives</span>
+<a href="/why.txt">why.txt</a>         <span class="dim">thesis</span>
+<a href="/signoff.txt">signoff.txt</a>     <span class="dim">session close</span>
+<a href="/primitives.txt">primitives.txt</a>  <span class="dim">kernel catalog</span>
+<a href="/lineage.txt">lineage.txt</a>     <span class="dim">credits</span>
+</pre>
+
+    <hr>
+
+    <p>Repo: <a href="https://github.com/03-git/subtract.ing">github.com/03-git/subtract.ing</a></p>
+    <p class="dim">Authors: Josh (<a href="https://jnous.com">@jnous.com</a> <a href="https://bsky.app/profile/hodori.bsky.social">@hodori</a> <a href="https://x.com/hodorigami">@hodorigami</a>) & LLMs (@qwen @bitnet @claude @gemini)</p>
 </body>
 </html>
