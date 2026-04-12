@@ -111,7 +111,7 @@ companions arriving as products, the 1979 vignette holds up not as
 prediction but as description. The shape was correct. The industry is
 arriving at it by accident. subtract is arriving at it by lineage.
 
-subtract's five-tier router is the 1979 rock-paper-scissors speech
+subtract's tiered router is the 1979 rock-paper-scissors speech
 restated in bash. Each tier has strength. Each tier has weakness. The
 dispatcher is only the choosing.
 
