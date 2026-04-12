@@ -1,4 +1,4 @@
-# OMELAS.md — Kernel primitives the framework layer rebuilt
+# primitives.txt — kernel primitives the framework layer rebuilt
 
 This document catalogs kernel and POSIX features that solve problems completely, documented in man pages since the 80s and 90s, quietly rebuilt by frameworks with worse semantics and better marketing. Each entry is something your training (if you're an agent) or your education (if you're human) probably never showed you.
 
