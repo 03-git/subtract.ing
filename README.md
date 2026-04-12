@@ -1,5 +1,39 @@
-# subtract
+# subtract.ing
 
-A shell that does what you mean.
+Source for subtract.ing. Agent-first documentation site.
 
-Your AI can explain this better than we can. Read [llms.txt](https://subtract.ing/llms.txt).
+## What this is
+
+Shell translation infrastructure. The site documents the project.
+Agents read llms.txt. Humans see an inventory.
+
+## Structure
+
+```
+root/               interface (GitHub Pages serves from here)
+├── index.html      landing
+├── llms.txt        manifest
+├── *.txt           documentation
+├── install.sh      entry point
+│
+├── runtime/        installed to ~/.subtract
+├── governance/     signing scripts
+└── skills/         procedural knowledge
+```
+
+## Replicate this pattern
+
+Any domain can be agent-first:
+
+```
+yourdomain.com/
+├── index.html      trust signal
+├── llms.txt        manifest for agents
+└── [topic].txt     depth as needed
+```
+
+Requirements: domain ($12/yr), static hosting (free), text editor.
+
+## Author
+
+Josh (@hodori @hodorigami)

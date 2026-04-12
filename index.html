@@ -11,7 +11,7 @@
         body {
             background: #111;
             color: #d0d0d0;
-            font-family: -apple-system, "Segoe UI", Helvetica, sans-serif;
+            font-family: "SF Mono", "Cascadia Code", monospace;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -20,61 +20,61 @@
             padding: 2rem;
             line-height: 1.6;
         }
-        .container { max-width: 480px; text-align: center; }
-        h1 { font-size: 2rem; font-weight: 300; color: #e0e0e0; margin-bottom: 2rem; }
-        .lead { font-size: 1.1rem; color: #888; margin-bottom: 2.5rem; }
-        .prompt {
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            text-align: left;
-            font-family: "SF Mono", "Cascadia Code", monospace;
-            font-size: 0.9rem;
-            color: #ccc;
-        }
-        .prompt em { color: #8be9fd; font-style: normal; }
-        .or { color: #555; margin: 1.5rem 0; font-size: 0.9rem; }
-        code {
-            background: #1a1a1a;
-            padding: 0.8rem 1.2rem;
-            border-radius: 6px;
-            font-family: "SF Mono", monospace;
-            font-size: 0.85rem;
-            color: #50fa7b;
-            display: inline-block;
-        }
-        footer { margin-top: 3rem; font-size: 0.75rem; color: #444; }
-        footer a, nav a { color: #555; text-decoration: none; }
-        footer a:hover, nav a:hover { color: #8be9fd; }
-        .agent-note { color: #666; font-size: 0.85rem; margin-bottom: 1.5rem; }
-        .agent-note a { color: #8be9fd; }
+        .container { max-width: 520px; }
+        h1 { font-size: 1.4rem; font-weight: 400; color: #e0e0e0; margin-bottom: 1.5rem; }
+        .lead { color: #888; margin-bottom: 2rem; }
+        section { margin-bottom: 1.5rem; }
+        h2 { font-size: 0.9rem; font-weight: 400; color: #666; margin-bottom: 0.5rem; }
+        .grid { display: grid; grid-template-columns: auto auto 1fr; gap: 0.2rem 1.5rem; }
+        .grid a { color: #8be9fd; text-decoration: none; }
+        .grid a:hover { text-decoration: underline; }
+        .grid span { color: #888; }
+        .files { display: grid; grid-template-columns: auto 1fr; gap: 0.2rem 1.5rem; }
+        .files a { color: #8be9fd; text-decoration: none; }
+        .files a:hover { text-decoration: underline; }
+        .files span { color: #888; }
+        .repo a { color: #8be9fd; text-decoration: none; }
+        .repo a:hover { text-decoration: underline; }
+        .author { color: #666; font-size: 0.85rem; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>subtract.ing</h1>
-        <p class="agent-note">Agents: read <a href="/llms.txt">llms.txt</a></p>
-        <p class="lead">Your AI can explain this better than we can.</p>
+        <p class="lead">
+            Shell translation infrastructure. Type intent, get command,<br>
+            learn command, stop needing translation. Deployed on real systems.
+        </p>
 
-        <p style="color: #666; margin-bottom: 1rem;">Ask your AI:</p>
+        <section>
+            <h2>Tiers:</h2>
+            <div class="grid">
+                <span>T0</span><span>lookup.tsv</span><span>instant match</span>
+                <span>T0.5</span><span>man</span><span>already there</span>
+                <span>T1</span><span>embedding</span><span>semantic similarity</span>
+                <span>T2</span><span>llama.cpp</span><span>local inference</span>
+                <span>T-Voice</span><span>whisper.cpp</span><span>voice input</span>
+                <span>T-Ear</span><span>piper-tts</span><span>voice output</span>
+                <span>T4</span><span>curl</span><span>cloud escalation</span>
+            </div>
+        </section>
 
-        <div class="prompt">
-            "Read <em>subtract.ing/llms.txt</em> and explain what subtract is."
-        </div>
+        <section>
+            <h2>Files:</h2>
+            <div class="files">
+                <a href="/llms.txt">llms.txt</a><span>manifest</span>
+                <a href="/boot.txt">boot.txt</a><span>agent discipline</span>
+                <a href="/governance.txt">governance.txt</a><span>reflexes</span>
+                <a href="/substrate.txt">substrate.txt</a><span>tiers, primitives</span>
+                <a href="/why.txt">why.txt</a><span>thesis</span>
+                <a href="/signoff.txt">signoff.txt</a><span>session close</span>
+                <a href="/primitives.txt">primitives.txt</a><span>kernel catalog</span>
+                <a href="/lineage.txt">lineage.txt</a><span>credits</span>
+            </div>
+        </section>
 
-        <nav style="margin-top: 2rem; font-size: 0.8rem;">
-            <a href="/llms.txt">llms</a> ·
-            <a href="/governance.txt">governance</a> ·
-            <a href="/boot.txt">boot</a> ·
-            <a href="/substrate.txt">substrate</a> ·
-            <a href="/why.txt">why</a> ·
-            <a href="/signoff.txt">signoff</a> ·
-            <a href="/primitives.txt">primitives</a> ·
-            <a href="/lineage.txt">lineage</a> ·
-            <a href="https://github.com/03-git/subtract.ing">github</a>
-        </nav>
+        <p class="repo">Repo: <a href="https://github.com/03-git/subtract.ing">github.com/03-git/subtract.ing</a></p>
+        <p class="author">Author: Josh (@hodori @hodorigami)</p>
     </div>
 </body>
 </html>
