@@ -32,8 +32,6 @@ yourdomain.com/
 └── [topic].txt     depth as needed
 ```
 
-Requirements: domain ($12/yr), static hosting (free), text editor.
+## Authors
 
-## Author
-
-Josh (@hodori @hodorigami)
+Josh (@jnous.com @hodori @hodorigami) & LLMs (@qwen @bitnet @claude @gemini)
