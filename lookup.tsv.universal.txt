@@ -1,6 +1,5 @@
 # lookup.tsv.universal — routing data, not prose
 # Format: key<TAB>man-page<TAB>replaces
-# Personal overrides live in ~/.subtract/lookup.tsv (same format)
 # Each row points to a primitive documented in a man page: kernel, POSIX,
 # bash builtin, or single-binary userland tool that ships as one file.
 # The man page is the documentation that outlived the wrappers. This file is routing.
