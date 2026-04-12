@@ -51,3 +51,5 @@ Accessibility is visible. Personalization is private.
 Voice isn't an accessibility "feature" gated behind a fork. It's a tier like any other, visible in the same menu as local inference. Same menu, same dignity, same opt-in.
 
 The fork layer handles how you use voice (trigger, transcription rules), not whether you can access it.
+
+Full primitives: subtract.ing/primitives.txt

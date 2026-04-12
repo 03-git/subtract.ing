@@ -62,3 +62,5 @@ syscall
 ```
 
 Full substrate: subtract.ing/substrate.txt
+
+Full lineage: subtract.ing/lineage.txt
