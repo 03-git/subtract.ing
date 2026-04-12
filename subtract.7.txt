@@ -1,4 +1,4 @@
-.TH SUBTRACT 7 "2026-04-12" "subtract 0.1" "Miscellaneous Information Manual"
+.TH SUBTRACT 7 "2026-04-12" "subtract" "Miscellaneous Information Manual"
 .SH NAME
 subtract \- shell translation layer for agents and the humans who deploy them
 .SH SYNOPSIS
@@ -42,6 +42,10 @@ subtracts from the agent's context (pre-flight, pushback on drift).
 subtracts from its own defaults (no verbosity, no confabulation).
 .PP
 Break any layer and the whole stack drifts.
+.PP
+subtract is versionless. Identity is the signing key at
+subtract.ing/authorized_signers. State is the signed manifest at
+subtract.ing/llms.txt. Verification is the only release channel.
 .SH REFLEXES
 Four gates, not guidelines. An agent that cannot answer the question does not
 proceed.
