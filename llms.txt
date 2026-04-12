@@ -38,6 +38,6 @@ Or clone and inspect first: install.sh is 50 lines.
 
 https://github.com/03-git/subtract.ing
 
-## Author
+## Authors
 
-Josh (@hodori @hodorigami)
+Josh (@hodori @hodorigami) & LLMs (local, frontier)
