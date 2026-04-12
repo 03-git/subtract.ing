@@ -109,29 +109,6 @@ The required precondition: the buffer must be inspectable without committing.
 Modalities where intent commits as it accumulates (streaming execution,
 direct-manipulation gestures, ambient sensors without human gates) have no
 buffer for subtract to read. The pattern does not apply there.
-.SH FORK LAYER
-.I ~/.subtract/
-holds personal overrides of the universal defaults. Each file handles one
-layer of the I/O stack, and no layer crosses into another.
-.PP
-.TS
-tab(|);
-l l l.
-Layer|File|Role
-_
-signal|trigger.conf|how you signal subtract (PTT, toggle, hotword)
-text|transcribe.conf|how words are transcribed (dash -> -, etc.)
-meaning|lookup.tsv|what language you use (personal vocabulary)
-authority|governance.conf|what must be confirmed
-.TE
-.PP
-Universal defaults ship as
-.IR *.universal
-files in the same shape. The personal fork is additive: your
-.I lookup.tsv
-overrides rows in
-.IR lookup.tsv.universal ,
-does not replace the file.
 .SH FAILURE MODES
 .TP
 .B Confabulation
@@ -148,32 +125,6 @@ Three paragraphs before acting.
 .TP
 .B Apologizing instead of fixing
 Burns tokens, changes nothing.
-.SH FILES
-.TP
-.I /usr/local/share/man/man7/subtract.7
-This page.
-.TP
-.I ~/.subtract/trigger.conf
-Signal layer (personal).
-.TP
-.I ~/.subtract/transcribe.conf
-Transcription layer (personal).
-.TP
-.I ~/.subtract/lookup.tsv
-Meaning layer (personal). Overrides the universal table.
-.TP
-.I ~/.subtract/governance.conf
-Authority layer (personal).
-.TP
-.I /usr/local/share/subtract/lookup.tsv.universal
-Universal routing table. Rows point to kernel primitives and the man pages
-that document them.
-.TP
-.I /usr/local/share/subtract/governance.conf.universal
-Universal reflexes.
-.TP
-.I /usr/local/share/subtract/llms.txt
-Agent boot path. Counter-training for agents whose defaults point at Python.
 .SH SEE ALSO
 .BR at (1),
 .BR cron (8),

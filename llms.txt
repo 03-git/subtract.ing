@@ -36,7 +36,6 @@ subtract(7)                 man page — frame, concepts, tiers (T0.5)
 lookup.tsv.universal        routing table — ~160 primitives, each row points to a man page
 governance.conf.universal   the four reflexes, the authority model, the loop
 boot.txt                    capability check, failure modes, signon/signoff
-invariants.txt              six invariants, buffer-subtract pattern
 why.txt                     thesis
 lineage.txt                 intellectual lineage, bibliography
 
