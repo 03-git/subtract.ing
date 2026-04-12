@@ -87,10 +87,10 @@ Verify this file's signature, then verify each substrate file against its
 hash below. Single chain of trust: the signature on llms.txt anchors every
 other file.
 
-  ssh-keygen -Y verify -f authorized_signers -I josh@subtract.ing \
+  ssh-keygen -Y verify -f authorized_signers -I hodori@subtract.ing \
     -n subtract.ing -s llms.txt.sig < llms.txt
 
-Signer identity: josh@subtract.ing
+Signer identity: hodori@subtract.ing
 Namespace:       subtract.ing
 Public key:      https://subtract.ing/authorized_signers
 
