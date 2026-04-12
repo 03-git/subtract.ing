@@ -10,15 +10,18 @@ Agents read llms.txt. Humans see an inventory.
 ## Structure
 
 ```
-root/               interface (GitHub Pages serves from here)
-├── index.html      landing
-├── llms.txt        manifest
-├── *.txt           documentation
-├── install.sh      entry point
+root/                       interface (GitHub Pages serves from here)
+├── index.html              landing
+├── llms.txt                agent boot path
+├── subtract.7              man(7) frame
+├── lookup.tsv.universal    concept → man page
+├── governance.conf.universal  reflexes, authority, loop
+├── *.txt                   boot, why, lineage, signoff
+├── install.sh              entry point
 │
-├── runtime/        installed to ~/.subtract
-├── governance/     signing scripts
-└── skills/         procedural knowledge
+├── runtime/                installed to ~/.subtract
+├── governance/             signing scripts
+└── skills/                 procedural knowledge
 ```
 
 ## Replicate this pattern
