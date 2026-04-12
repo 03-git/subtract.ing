@@ -36,7 +36,7 @@ subtract(7)                 man page — frame, concepts, tiers (T0.5)
 lookup.tsv.universal        routing table — ~160 primitives, each row points to a man page
 governance.conf.universal   the four reflexes, the authority model, the loop
 boot.txt                    capability check, failure modes, signon/signoff
-software-as-a-besides.txt   thesis
+software-as-a-besides.txt   why?
 lineage.txt                 intellectual lineage, bibliography
 
 ## What this is

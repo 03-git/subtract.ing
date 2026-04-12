@@ -39,6 +39,10 @@ yourdomain.com/
 
 llms.txt is the machine-readable version. Plain text of what matters, one file.
 
+## License
+
+GPLv3. See [LICENSE](LICENSE).
+
 ## Authors
 
 Josh (@hodorigami) & LLMs (@qwen @bitnet @claude @gemini)
