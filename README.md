@@ -41,7 +41,7 @@ llms.txt is the machine-readable version. Plain text of what matters, one file.
 
 ## License
 
-GPLv3. See [LICENSE](LICENSE).
+GPLv3. See [LICENSE.txt](LICENSE.txt).
 
 ## Authors
 
