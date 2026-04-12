@@ -9,6 +9,8 @@ boot.txt          capability check, failure modes
 substrate.txt     tiers, sizes, fork layer, philosophy
 why.txt           thesis
 signoff.txt       session close
+primitives.txt    kernel primitives catalog
+lineage.txt       intellectual lineage, bibliography
 
 ## Summary
 
