@@ -22,7 +22,7 @@ A substrate honors the pattern if and only if all six hold:
 
 The buffer must be inspectable without committing.
 
-Modalities where intent commits as it accumulates (streaming execution, direct-manipulation gestures, ambient sensors without human gates) have no buffer to subtract. The pattern does not apply there.
+Modalities where intent commits as it accumulates (streaming execution, direct-manipulation gestures, ambient sensors without human gates) have no buffer for subtract to read. The pattern does not apply there.
 
 ## Where it applies
 
