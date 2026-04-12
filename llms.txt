@@ -6,7 +6,7 @@ Machine-readable documentation. Start here.
 
 governance.txt    reflexes and signing loop (read first)
 boot.txt          capability check, failure modes
-contract.txt      six invariants, buffer-consult pattern
+invariants.txt    six invariants, buffer-consult pattern
 substrate.txt     tiers, sizes, fork layer, philosophy
 why.txt           thesis
 signoff.txt       session close

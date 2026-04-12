@@ -1,4 +1,4 @@
-# contract.txt
+# invariants.txt
 
 The buffer-consult pattern. Subtract's interface contract across modalities.
 
