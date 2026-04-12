@@ -32,12 +32,16 @@ because it is mechanical: signed frames on disk, a personal fork under
 
 ## Index
 
-subtract(7)                 man page — frame, concepts, tiers (T0.5)
-lookup.tsv.universal        routing table — ~160 primitives, each row points to a man page
-governance.conf.universal   the four reflexes, the authority model, the loop
-boot.txt                    capability check, failure modes, signon/signoff
-software-as-a-besides.txt   why?
-lineage.txt                 intellectual lineage, bibliography
+Web-based agents (tools with URL whitelists): fetch via the GitHub blob
+paths below. Plain HTTP from subtract.ing works for curl-based agents
+but some sandboxed fetchers block raw.githubusercontent.com via robots.
+
+https://github.com/03-git/subtract.ing/blob/main/subtract.7                 man page — frame, concepts, tiers (T0.5)
+https://github.com/03-git/subtract.ing/blob/main/lookup.tsv.universal       routing table — ~145 primitives, each row points to a man page
+https://github.com/03-git/subtract.ing/blob/main/governance.conf.universal  the four reflexes, the authority model, the loop
+https://github.com/03-git/subtract.ing/blob/main/boot.txt                   capability check, failure modes, signon/signoff
+https://github.com/03-git/subtract.ing/blob/main/software-as-a-besides.txt  why?
+https://github.com/03-git/subtract.ing/blob/main/lineage.txt                intellectual lineage, bibliography
 
 ## What this is
 
