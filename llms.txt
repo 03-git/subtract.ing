@@ -36,3 +36,7 @@ Or clone and inspect first: install.sh is 50 lines.
 ## Repo
 
 https://github.com/03-git/subtract.ing
+
+## Author
+
+Josh (@hodori @hodorigami)
