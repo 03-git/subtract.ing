@@ -7,6 +7,14 @@ Source for subtract.ing. Agent-first documentation site.
 Shell translation infrastructure. The site documents the project.
 Agents read llms.txt. Humans see an inventory.
 
+## Install
+
+```bash
+curl -sL https://subtract.ing/install.sh | bash
+```
+
+Then open a new terminal, or `source ~/.subtract/hooks/bash.sh` (or `zsh.sh`).
+
 ## Structure
 
 ```
