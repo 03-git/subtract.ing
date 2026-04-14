@@ -2,7 +2,7 @@
 # type what you mean. the computer figures out the command.
 #
 # T0: lookup table. instant, local, no dependencies.
-# T0.5: man page routing. input contains a real command but isn't a valid invocation.
+# T0.5: man page routing (direct command match) + apropos fallback (discovery queries).
 # T1: embedding similarity (optional).
 # T2: local generative model (optional). requires ollama + a pulled model.
 # T4: cloud escalation (optional). requires claude CLI.
@@ -311,6 +311,72 @@ __subtract_manpage() {
     return 1
 }
 
+# T0.5 fallback: apropos for discovery-shaped queries
+# "what tool compresses files" -> apropos compress -> list of commands
+__subtract_apropos() {
+    local input_lower
+    input_lower=$(__subtract_lower "$1")
+
+    # fire on discovery and definitional patterns
+    case "$input_lower" in
+        what*tool*|what*command*|how*find*tool*|find*tool*|command*for*|tool*for*) ;;
+        what*is*|what*are*|define*|explain*) ;;
+        *) return 1 ;;
+    esac
+
+    # extract search terms: skip filler, keep action words
+    local -a words search_terms
+    __subtract_to_words words "$input_lower"
+    local word
+    local stopwords=" a an and are at be by can could do does for from have how i if in is it me my no not of on or so that the them there to up us was we what which will with would you your tool tools command commands find "
+    for word in "${words[@]}"; do
+        [ ${#word} -lt 3 ] && continue
+        case "$stopwords" in *" $word "*) continue ;; esac
+        search_terms+=("$word")
+    done
+    [ ${#search_terms[@]} -eq 0 ] && return 1
+
+    # try apropos with each term, section 1 only
+    local term results
+    for term in "${search_terms[@]}"; do
+        results=$(apropos -s 1 "$term" 2>/dev/null | head -5)
+        [ -n "$results" ] && break
+    done
+
+    # no results: still answer for definitional queries
+    if [ -z "$results" ]; then
+        case "$input_lower" in
+            what*is*|what*are*|define*|explain*)
+                echo "none:${search_terms[*]}"
+                return 0
+                ;;
+        esac
+        return 1
+    fi
+
+    # count and format
+    local count
+    count=$(echo "$results" | wc -l | tr -d ' ')
+    rm -f "${TMPDIR:-/tmp}/.subtract-apropos-lastmatch.${USER:-$$}"
+
+    local list="" n=1
+    while IFS= read -r line; do
+        local cmd_name desc
+        cmd_name=$(echo "$line" | awk '{print $1}')
+        desc=$(echo "$line" | sed 's/^[^-]*- //')
+        list="${list}${n}. ${cmd_name} - ${desc}"$'\n'
+        echo "$cmd_name" >> "${TMPDIR:-/tmp}/.subtract-apropos-lastmatch.${USER:-$$}"
+        n=$((n+1))
+    done <<< "$results"
+
+    if [ "$count" -eq 1 ]; then
+        echo "single:$(echo "$results" | awk '{print $1}')"
+    else
+        echo "list:${count}"$'\n'"${list}"
+    fi
+    return 0
+}
+
 # --- T1: embedding similarity (optional) ---
 
 __subtract_embed() {
@@ -366,39 +432,90 @@ __subtract_embed() {
     echo "$result"
 }
 
+# --- ask llama.cpp/cloud: direct answers (not command translation) ---
+
+__subtract_ask_local() {
+    local inference_host inference_port
+    inference_host=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null)
+    inference_port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
+    [ -z "$inference_port" ] && inference_port="8081"
+
+    local input="$1"
+    local prompt="Answer concisely. /no_think ${input}"
+    local payload result
+
+    payload=$(printf '{"messages":[{"role":"user","content":"%s"}],"max_tokens":500}' "$prompt")
+
+    if [ -n "$inference_host" ] && [ "$inference_host" != "localhost" ]; then
+        result=$(ssh -o ConnectTimeout=5 "$inference_host" \
+            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' -d '${payload}'" 2>/dev/null)
+    else
+        curl -s --connect-timeout 1 "http://localhost:${inference_port}/v1/models" &>/dev/null || return 1
+        result=$(curl -s --connect-timeout 10 -X POST -H "Content-Type: application/json" \
+            -d "$payload" "http://localhost:${inference_port}/v1/chat/completions" 2>/dev/null)
+    fi
+
+    [ -z "$result" ] && return 1
+    result=$(echo "$result" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+    [ -z "$result" ] && return 1
+    echo "$result"
+}
+
+__subtract_ask_cloud() {
+    local cloud_ai
+    cloud_ai=$(cat "$SUBTRACT_DIR/cloud_ai" 2>/dev/null)
+    [ -z "$cloud_ai" ] && return 1
+
+    local input="$1"
+    local result
+
+    case "$cloud_ai" in
+        claude)
+            command -v claude &>/dev/null || [ -x "$HOME/.local/bin/claude" ] || return 1
+            result=$(claude -p "Answer concisely: $input" 2>/dev/null)
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+
+    [ -z "$result" ] && return 1
+    echo "$result"
+}
+
 # --- T2: local generative model (optional) ---
 
 __subtract_generate() {
-    # requires: ollama running on localhost:11434, curl, jq
-    curl -s --connect-timeout 1 http://localhost:11434/api/tags &>/dev/null || return 1
-    command -v jq &>/dev/null || return 1
+    # requires: llama-server (local or remote via inference_host)
+    local inference_host inference_port
+    inference_host=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null)
+    inference_port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
+    [ -z "$inference_port" ] && inference_port="8081"
 
     local input="$1"
-    local context=""
-    if [ -n "$SUBTRACT_LAST_OUTPUT" ]; then
-        context=$(__subtract_truncate "$SUBTRACT_LAST_OUTPUT")
+    local prompt="Translate to a single bash command. Output ONLY the command, nothing else. No explanation. No markdown. No code fences. /no_think Input: ${input}"
+    local payload result
+
+    payload=$(printf '{"messages":[{"role":"user","content":"%s"}],"max_tokens":500}' "$prompt")
+
+    # remote inference: SSH to host and curl llama-server there
+    if [ -n "$inference_host" ] && [ "$inference_host" != "localhost" ]; then
+        result=$(ssh -o ConnectTimeout=5 "$inference_host" \
+            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' -d '${payload}'" 2>/dev/null)
+    else
+        # local inference: llama-server on localhost
+        curl -s --connect-timeout 1 "http://localhost:${inference_port}/v1/models" &>/dev/null || return 1
+        result=$(curl -s --connect-timeout 10 -X POST -H "Content-Type: application/json" \
+            -d "$payload" "http://localhost:${inference_port}/v1/chat/completions" 2>/dev/null)
     fi
 
-    local model
-    model=$(/usr/bin/head -1 "$SUBTRACT_DIR/model" 2>/dev/null)
-    [ -z "$model" ] && model="qwen2.5:7b"
-
-    local ctx_str=""
-    [ -n "$context" ] && ctx_str=" Context: $context."
-
-    local prompt="Translate to a single bash command. Output ONLY the command, nothing else. No explanation. No markdown. No code fences.${ctx_str} Input: ${input}"
-
-    local payload result
-    payload=$(jq -n --arg model "$model" --arg prompt "$prompt" \
-        '{model: $model, prompt: $prompt, stream: false}')
-    result=$(curl -s --connect-timeout 3 -X POST -H "Content-Type: application/json" \
-        -d "$payload" http://localhost:11434/api/generate 2>/dev/null)
     [ -z "$result" ] && return 1
 
-    result=$(echo "$result" | jq -r '.response // empty')
+    # extract response from OpenAI-compatible format
+    result=$(echo "$result" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
     [ -z "$result" ] && return 1
 
-    # strip markdown fences if model ignores the instruction
+    # strip markdown fences
     result="${result//\`\`\`bash/}"
     result="${result//\`\`\`/}"
     result=$(echo "$result" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
@@ -638,9 +755,67 @@ TMPL
             _SUBTRACT_FROM_HANDLER=1
             return 0
             ;;
+        "man "[0-9]*)
+            local num="${input_lower#man }"
+            if ! [[ "$num" =~ ^[0-9]+$ ]]; then
+                echo "usage: man N (select from apropos results)"
+                _SUBTRACT_FROM_HANDLER=1
+                return 0
+            fi
+            local lastmatch="${TMPDIR:-/tmp}/.subtract-apropos-lastmatch.${USER:-$$}"
+            if [ -f "$lastmatch" ]; then
+                local match
+                match=$(sed -n "${num}p" "$lastmatch")
+                if [ -n "$match" ]; then
+                    echo "[T0.5] man $match"
+                    man "$match"
+                    SUBTRACT_LAST_OUTPUT="man page for '$match' (from apropos selection)"
+                else
+                    echo "no match at position $num"
+                fi
+            else
+                echo "no recent apropos search to select from"
+            fi
+            _SUBTRACT_FROM_HANDLER=1
+            return 0
+            ;;
+        "ask llama.cpp "*)
+            local query="${input#ask llama.cpp }"
+            if [ -z "$query" ]; then
+                echo "usage: ask llama.cpp <your question>"
+                _SUBTRACT_FROM_HANDLER=1
+                return 0
+            fi
+            local answer
+            answer=$(__subtract_ask_local "$query")
+            if [ -n "$answer" ]; then
+                echo "$answer"
+            else
+                echo "local model not available"
+            fi
+            _SUBTRACT_FROM_HANDLER=1
+            return 0
+            ;;
+        "ask curl "*)
+            local query="${input#ask curl }"
+            if [ -z "$query" ]; then
+                echo "usage: ask curl <your question>"
+                _SUBTRACT_FROM_HANDLER=1
+                return 0
+            fi
+            local answer
+            answer=$(__subtract_ask_cloud "$query")
+            if [ -n "$answer" ]; then
+                echo "$answer"
+            else
+                echo "cloud model not available"
+            fi
+            _SUBTRACT_FROM_HANDLER=1
+            return 0
+            ;;
     esac
 
-    # --- routing chain: T0(raw) > T0(stripped) > Skills > T0.5(man) > Kiwix > T1 > T2 > T4 ---
+    # --- routing chain: T0(raw) > T0(stripped) > Skills > T0.5(man) > T0.5(apropos) > Kiwix > T1 > T2 > T4 ---
 
     # T0 pass 1: exact lookup on raw input
     result=$(__subtract_lookup "$input")
@@ -704,6 +879,39 @@ TMPL
             SUBTRACT_LAST_OUTPUT="man page for '$man_cmd' (from: '$input')"
             _SUBTRACT_FROM_HANDLER=1
             return 0
+        fi
+    fi
+
+    # T0.5 fallback: apropos for discovery queries ("what tool", "command for")
+    if [ -z "$cmd" ]; then
+        local apropos_result
+        apropos_result=$(__subtract_apropos "$input")
+        if [ -n "$apropos_result" ]; then
+            if [[ "$apropos_result" == single:* ]]; then
+                local cmd_name="${apropos_result#single:}"
+                echo "[T0.5] man $cmd_name"
+                man "$cmd_name"
+                SUBTRACT_LAST_OUTPUT="man page for '$cmd_name' (from apropos: '$input')"
+                _SUBTRACT_FROM_HANDLER=1
+                return 0
+            elif [[ "$apropos_result" == list:* ]]; then
+                local header="${apropos_result%%$'\n'*}"
+                local count="${header#list:}"
+                echo "[apropos] ${count} matches:"
+                echo "$apropos_result" | tail -n +2
+                echo "(man N | ask llama.cpp ... | ask curl ...)"
+                SUBTRACT_LAST_OUTPUT="apropos for '$input' returned ${count} matches"
+                _SUBTRACT_FROM_HANDLER=1
+                return 0
+            elif [[ "$apropos_result" == none:* ]]; then
+                local terms="${apropos_result#none:}"
+                echo "UNIX has a tool called apropos that searches for commands."
+                echo "It did not recognize: $terms"
+                echo "(try different words | ask llama.cpp ... | ask curl ...)"
+                SUBTRACT_LAST_OUTPUT="apropos found nothing for '$input'"
+                _SUBTRACT_FROM_HANDLER=1
+                return 0
+            fi
         fi
     fi
 
