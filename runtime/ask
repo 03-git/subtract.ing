@@ -5,6 +5,47 @@
 SUBTRACT_DIR="${SUBTRACT_DIR:-$HOME/.subtract}"
 ASK_CONFIG="$SUBTRACT_DIR/ask_backend"
 
+# --- T0: check lookup.tsv first ---
+
+__ask_try_lookup() {
+    local query="$1"
+    local lookup_file="$SUBTRACT_DIR/lookup.tsv"
+    [ ! -f "$lookup_file" ] && return 1
+    
+    local query_lower
+    query_lower=$(printf '%s' "$query" | tr '[:upper:]' '[:lower:]')
+    
+    # read lookup.tsv, try glob patterns
+    while IFS=$'\t' read -r pattern rest || [ -n "$pattern" ]; do
+        # skip comments and empty lines
+        case "$pattern" in
+            '#'*|'') continue ;;
+        esac
+        
+        # extract command (handle 2 or 3 column format)
+        local cmd
+        cmd=$(printf '%s' "$rest" | cut -f1)
+        [ -z "$cmd" ] && cmd="$rest"
+        # if rest has a second field, that's the actual command
+        local maybe_cmd
+        maybe_cmd=$(printf '%s' "$rest" | cut -f2)
+        [ -n "$maybe_cmd" ] && cmd="$maybe_cmd"
+        
+        local pattern_lower
+        pattern_lower=$(printf '%s' "$pattern" | tr '[:upper:]' '[:lower:]')
+        
+        # glob match using case (portable)
+        case "$query_lower" in
+            $pattern_lower)
+                eval "$cmd"
+                return 0
+                ;;
+        esac
+    done < "$lookup_file"
+    
+    return 1
+}
+
 # --- detection ---
 
 __ask_detect_ollama() {
@@ -23,7 +64,6 @@ __ask_detect_lm_studio() {
 }
 
 __ask_detect() {
-    # returns first detected backend
     __ask_detect_ollama && echo "ollama" && return 0
     __ask_detect_llama_cpp && echo "llama.cpp" && return 0
     __ask_detect_lm_studio && echo "lm-studio" && return 0
@@ -75,7 +115,6 @@ __ask_lm_studio() {
 
 __ask_curl() {
     local query="$1"
-    # cloud escalation via claude CLI
     if command -v claude &>/dev/null; then
         claude -p "Answer concisely: $query" 2>/dev/null
     elif [ -n "$ANTHROPIC_API_KEY" ]; then
@@ -95,46 +134,6 @@ __ask_curl() {
         echo "ask curl: no cloud credentials. Run 'claude auth login' or set ANTHROPIC_API_KEY." >&2
         return 1
     fi
-}
-
-# --- discovery: try apropos first for definitional queries ---
-
-__ask_is_definitional() {
-    local q="$1"
-    # patterns that apropos can answer (portable regex without grouping)
-    case "$q" in
-        "what command "*)  return 0 ;;
-        "what tool "*)     return 0 ;;
-        "what program "*)  return 0 ;;
-        "which command "*) return 0 ;;
-        "which tool "*)    return 0 ;;
-        "which program "*) return 0 ;;
-        *" compresses "*)  return 0 ;;
-        *" extracts "*)    return 0 ;;
-        *" finds "*)       return 0 ;;
-        *" lists "*)       return 0 ;;
-        *" shows "*)       return 0 ;;
-        *" creates "*)     return 0 ;;
-        *" deletes "*)     return 0 ;;
-        *" copies "*)      return 0 ;;
-        *" moves "*)       return 0 ;;
-    esac
-    return 1
-}
-
-__ask_try_apropos() {
-    local q="$1"
-    # extract keyword for apropos
-    local kw
-    kw=$(echo "$q" | sed -E 's/^(what|which) (command|tool|program) //i; s/\?$//; s/ /_/g')
-    [ -z "$kw" ] && return 1
-    
-    local result
-    result=$(apropos "$kw" 2>/dev/null | head -5)
-    [ -z "$result" ] && return 1
-    
-    echo "apropos $kw:"
-    echo "$result"
 }
 
 # --- setup ---
@@ -182,12 +181,8 @@ __ask_setup() {
     else
         echo "No local backend detected."
         echo ""
-        echo "Options:"
-        echo "  1. Install ollama: https://ollama.ai"
-        echo "  2. Run llama.cpp server: llama-server -m model.gguf"
-        echo "  3. Start LM Studio server"
-        echo ""
-        echo "Then run: ask --setup"
+        echo "T0 lookup still works (290 common queries answered instantly)."
+        echo "For novel queries, start ollama/llama.cpp/lm-studio, then: ask --setup"
     fi
 }
 
@@ -202,7 +197,7 @@ case "${1:-}" in
         echo "ask - query your local model"
         echo ""
         echo "Usage:"
-        echo "  ask \"query\"              Query configured backend"
+        echo "  ask \"query\"              Query (T0 lookup first, then model)"
         echo "  ask ollama \"query\"       Query ollama explicitly"
         echo "  ask llama.cpp \"query\"    Query llama.cpp explicitly"
         echo "  ask lm-studio \"query\"    Query LM Studio explicitly"
@@ -210,6 +205,7 @@ case "${1:-}" in
         echo "  ask local \"query\"        Alias for configured backend"
         echo "  ask --setup              Detect and configure backend"
         echo ""
+        echo "T0 answers 290 common queries instantly without model invocation."
         echo "Man page: https://subtract.ing/ask.1.txt"
         exit 0
         ;;
@@ -243,7 +239,6 @@ case "${1:-}" in
         ;;
     local)
         shift
-        # fall through to default handling
         ;;
 esac
 
@@ -251,16 +246,14 @@ esac
 query="$*"
 [ -z "$query" ] && { echo "Usage: ask \"query\"" >&2; echo "Run 'ask --setup' to configure." >&2; exit 1; }
 
-# discovery: try apropos for definitional queries
-if __ask_is_definitional "$query"; then
-    result=$(__ask_try_apropos "$query")
-    if [ -n "$result" ]; then
-        echo "$result"
-        exit 0
-    fi
+# T0: try lookup.tsv first (instant, no model)
+result=$(__ask_try_lookup "$query")
+if [ -n "$result" ]; then
+    echo "$result"
+    exit 0
 fi
 
-# get configured backend or auto-detect
+# No T0 match - need model
 backend=""
 if [ -f "$ASK_CONFIG" ]; then
     backend=$(cat "$ASK_CONFIG")
@@ -269,13 +262,12 @@ fi
 if [ -z "$backend" ]; then
     backend=$(__ask_detect)
     if [ -z "$backend" ]; then
-        echo "No local backend running." >&2
+        echo "No answer in lookup.tsv and no local backend running." >&2
         echo "Run 'ask --setup' to configure, or start ollama/llama.cpp/lm-studio." >&2
         exit 1
     fi
 fi
 
-# route to backend
 case "$backend" in
     ollama)
         __ask_ollama "$query"
