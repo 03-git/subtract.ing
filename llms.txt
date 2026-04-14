@@ -97,7 +97,7 @@ Namespace:       subtract.ing
 Public key:      https://subtract.ing/authorized_signers
 
 SHA256:
-  e17231cec71f329d5f319e8c333b967cbb1c3473ba4b4e5245739a35cbb12d7e  README.txt
+  35843173167e2c9c6419f0d86c1d0aea95d0c5023ba4dbc950b4f0c45b487ae0  README.txt
   ad88d16fbfacff252ab3f791e71a55090b1f08fc768e0a5bd981c37dbde32ea3  subtract.7.txt
   c816b306d504671be8c4f4a5d310ba573ad30774c79ad1a11b565ab88af1743b  ask.1.txt
   424a09e79755d2c6621109143ace2ea8509c5cb9d16be1d3f415bec23c08b125  lookup.tsv.universal.txt

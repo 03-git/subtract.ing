@@ -22,12 +22,12 @@ No login. No API key. No rate limit. Runs on your machine.
 
 ## What you'll discover
 
-| Where you start | What you hit | What you find |
-|-----------------|--------------|---------------|
-| GUI (Claude Code, Codex) | rate limit, latency, cost | `ask llama.cpp` works offline |
-| local model running | "wait, it's on my machine?" | no login because nothing to log into |
-| asking definitional questions | model invocation feels slow | `apropos` answers without inference |
-| pattern recognition | you know the command | you type it directly |
+  WHERE YOU START             WHAT YOU HIT                WHAT YOU FIND
+  -------------------------   -------------------------   -------------------------
+  GUI (Claude Code, Codex)    rate limit, latency, cost   ask llama.cpp works offline
+  local model running         "wait, it's on my machine?" no login - nothing to log into
+  asking definitional queries model invocation feels slow apropos answers without inference
+  pattern recognition         you know the command        you type it directly
 
 You graduate down. You discover the computer again.
 
