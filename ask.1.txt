@@ -2,90 +2,130 @@
 .SH NAME
 ask \- query your local model (Claude without the browser)
 .SH SYNOPSIS
-.B ask llama.cpp
+.B ask
 .I query
 .br
-.B ask curl
-.I query
+.B ask
+.I backend query
 .SH DESCRIPTION
 .B ask
-sends a question to an inference backend and prints the answer.
-You name the backend in the command.
+sends a question to your local inference model and prints the answer.
 .PP
 If you are here, you probably got tired of browser latency, rate limits,
-or paying per token. This is the same capability, minus the browser.
-.SH BACKENDS
-.TP
-.B ask llama.cpp
-Local inference via llama.cpp server. No network. No account. No rate limit.
-Requires llama.cpp running locally (see
-.BR llama.cpp (1)).
-.TP
-.B ask curl
-External API call. Crosses a network boundary you do not control.
-Use for live data or when you intentionally want a remote model.
-.TP
-.B ask local
-Alias for
-.BR "ask llama.cpp" .
-.SH EXAMPLES
-Query local model:
+or paying per token. This is the same capability, running on your machine,
+with no network round-trip.
+.PP
+The simplest usage:
 .PP
 .RS
 .nf
-ask llama.cpp "what system call creates a child process?"
+ask "what system call creates a child process?"
 .fi
 .RE
 .PP
-Query external API:
+This routes to your configured local backend (ollama, llama.cpp, lm studio)
+and returns the answer. No account. No API key. No outage.
+.SH SETUP
+First run will prompt for your local backend:
 .PP
 .RS
 .nf
-ask curl "current weather in Chicago"
+ask --setup
 .fi
 .RE
 .PP
-Use the alias:
+Supported backends:
+.TP
+.B ollama
+Easiest. If you have ollama installed, ask detects it.
+.TP
+.B llama.cpp
+Direct llama.cpp server. Lowest latency if already running.
+.TP
+.B lm-studio
+LM Studio's local server endpoint.
+.PP
+Once configured, ask just works. You do not need to specify the backend.
+.SH EXPLICIT ROUTING
+After you understand the stack, you can name the backend explicitly:
 .PP
 .RS
 .nf
-ask local "how do I resize an image?"
+ask llama.cpp "what compresses files?"
+ask ollama "explain namespaces"
+ask curl "weather in Chicago"
 .fi
 .RE
+.PP
+.B curl
+is special: it routes externally, crossing a network boundary you
+do not control. Use it when you need live data or intentionally
+want to query a remote API.
+.PP
+Naming the backend is optional but makes the mechanism visible.
+When something breaks, the command itself shows you where.
 .SH DISCOVERY
-Many queries do not need inference. subtract routes definitional
-queries to
-.BR apropos (1)
-first:
+Many questions do not need inference at all.
+.B ask
+checks if your query is definitional before hitting the model:
 .PP
 .RS
 .nf
-"what compresses files?"
-  \(-> apropos: gzip, bzip2, xz
+ask "what compresses files?"
+  \(-> apropos compression  # T0.5: man pages answer this
+  \(-> gzip, bzip2, xz...
 .fi
 .RE
 .PP
-Faster, offline, free. If apropos answers, the model is not invoked.
-.SH WHY THE BACKEND IS IN THE COMMAND
-The command names its mechanism. This matters when:
-.IP \(bu 2
-Debugging: the command shows where it routes
-.IP \(bu 2
-Teaching: a child sees exactly what is invoked
-.IP \(bu 2
-Trust: a command that names its primitive cannot lie
+This is faster, works offline, and costs nothing.
+If apropos has the answer, you get it without model invocation.
+.SH EXAMPLES
+Basic query (uses configured default):
 .PP
-.B ask chatgpt
-would hide whether it hits a local model or a remote API.
-.B ask llama.cpp
-cannot lie about what it does.
-.SH PLANNED
-A future version will support bare
+.RS
+.nf
+ask "how do I resize an image?"
+.fi
+.RE
+.PP
+Explicit local backend:
+.PP
+.RS
+.nf
+ask llama.cpp "what system call forks a process?"
+.fi
+.RE
+.PP
+Explicit external query:
+.PP
+.RS
+.nf
+ask curl "current bitcoin price"
+.fi
+.RE
+.PP
+Let discovery route first:
+.PP
+.RS
+.nf
+ask "what tool finds files by name?"
+  \(-> apropos: find(1)
+.fi
+.RE
+.SH WHY THIS EXISTS
+You arrived here because the GUI got in the way.
+Latency, rate limits, cost, or outage pushed you to the terminal.
+.PP
 .B ask
-.I query
-with auto-detection of the local backend (ollama, llama.cpp, lm-studio).
-Until then, name the backend explicitly.
+is what remains when you subtract the browser.
+Same capability. No friction. Runs on hardware you own.
+.PP
+The backend naming (llama.cpp, ollama, curl) exists so the command
+shows its mechanism. This matters when debugging, when teaching,
+or when you want a child to see exactly what is being invoked.
+A command that names its primitive cannot lie about what it does.
 .SH SEE ALSO
+.BR ollama (1),
 .BR llama.cpp (1),
 .BR curl (1),
 .BR apropos (1),

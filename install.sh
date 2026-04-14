@@ -28,9 +28,10 @@ fetch() {
 # T0 core
 fetch "runtime/handler.sh" "$SUBTRACT_DIR/handler.sh"
 fetch "runtime/subtract" "$SUBTRACT_DIR/subtract"
+fetch "runtime/ask" "$SUBTRACT_DIR/ask"
 fetch "runtime/hooks/bash.sh" "$SUBTRACT_DIR/hooks/bash.sh"
 fetch "runtime/hooks/zsh.sh" "$SUBTRACT_DIR/hooks/zsh.sh"
-chmod +x "$SUBTRACT_DIR/subtract"
+chmod +x "$SUBTRACT_DIR/subtract" "$SUBTRACT_DIR/ask"
 
 # Base lookup.tsv (don't overwrite user's fork)
 [ ! -f "$SUBTRACT_DIR/lookup.tsv" ] && fetch "runtime/lookup.tsv" "$SUBTRACT_DIR/lookup.tsv"
@@ -48,4 +49,11 @@ if [ -f ~/.zshrc ] && ! grep -qF 'subtract/hooks' ~/.zshrc; then
     echo -e "\n# subtract\n$PATH_LINE\n$ZSH_LINE" >> ~/.zshrc
 fi
 
-echo "subtract T0 installed. Open new terminal or: source ~/.subtract/hooks/bash.sh"
+echo ""
+echo "subtract installed."
+echo ""
+echo "Open a new terminal, then try:"
+echo "  show my files"
+echo "  ask \"what compresses files?\""
+echo ""
+echo "More: https://subtract.ing"

@@ -1,0 +1,279 @@
+#!/bin/bash
+# ask - query your local model (Claude without the browser)
+# https://subtract.ing/ask.1.txt
+
+SUBTRACT_DIR="${SUBTRACT_DIR:-$HOME/.subtract}"
+ASK_CONFIG="$SUBTRACT_DIR/ask_backend"
+
+# --- detection ---
+
+__ask_detect_ollama() {
+    curl -s --connect-timeout 1 http://localhost:11434/api/tags &>/dev/null
+}
+
+__ask_detect_llama_cpp() {
+    local port
+    port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
+    [ -z "$port" ] && port="8081"
+    curl -s --connect-timeout 1 "http://localhost:${port}/v1/models" &>/dev/null
+}
+
+__ask_detect_lm_studio() {
+    curl -s --connect-timeout 1 "http://localhost:1234/v1/models" &>/dev/null
+}
+
+__ask_detect() {
+    # returns first detected backend
+    __ask_detect_ollama && echo "ollama" && return 0
+    __ask_detect_llama_cpp && echo "llama.cpp" && return 0
+    __ask_detect_lm_studio && echo "lm-studio" && return 0
+    return 1
+}
+
+# --- query backends ---
+
+__ask_ollama() {
+    local query="$1"
+    local model
+    model=$(head -1 "$SUBTRACT_DIR/model" 2>/dev/null)
+    [ -z "$model" ] && model="qwen2.5:7b"
+    
+    local payload result
+    payload=$(printf '{"model":"%s","prompt":"Answer concisely: %s","stream":false}' "$model" "$query")
+    result=$(curl -s --connect-timeout 10 -X POST -H "Content-Type: application/json" \
+        -d "$payload" http://localhost:11434/api/generate 2>/dev/null)
+    
+    [ -z "$result" ] && return 1
+    echo "$result" | jq -r '.response // empty' 2>/dev/null
+}
+
+__ask_llama_cpp() {
+    local query="$1"
+    local port
+    port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
+    [ -z "$port" ] && port="8081"
+    
+    local payload result
+    payload=$(printf '{"messages":[{"role":"user","content":"Answer concisely: %s"}],"max_tokens":500}' "$query")
+    result=$(curl -s --connect-timeout 10 -X POST -H "Content-Type: application/json" \
+        -d "$payload" "http://localhost:${port}/v1/chat/completions" 2>/dev/null)
+    
+    [ -z "$result" ] && return 1
+    echo "$result" | jq -r '.choices[0].message.content // empty' 2>/dev/null
+}
+
+__ask_lm_studio() {
+    local query="$1"
+    local payload result
+    payload=$(printf '{"messages":[{"role":"user","content":"Answer concisely: %s"}],"max_tokens":500}' "$query")
+    result=$(curl -s --connect-timeout 10 -X POST -H "Content-Type: application/json" \
+        -d "$payload" "http://localhost:1234/v1/chat/completions" 2>/dev/null)
+    
+    [ -z "$result" ] && return 1
+    echo "$result" | jq -r '.choices[0].message.content // empty' 2>/dev/null
+}
+
+__ask_curl() {
+    local query="$1"
+    # cloud escalation via claude CLI
+    if command -v claude &>/dev/null; then
+        claude -p "Answer concisely: $query" 2>/dev/null
+    elif [ -n "$ANTHROPIC_API_KEY" ]; then
+        local payload result
+        payload=$(jq -n --arg q "$query" '{
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 500,
+            messages: [{role: "user", content: ("Answer concisely: " + $q)}]
+        }')
+        result=$(curl -s -X POST https://api.anthropic.com/v1/messages \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -d "$payload" 2>/dev/null)
+        echo "$result" | jq -r '.content[0].text // empty' 2>/dev/null
+    else
+        echo "ask curl: no cloud credentials. Run 'claude auth login' or set ANTHROPIC_API_KEY." >&2
+        return 1
+    fi
+}
+
+# --- discovery: try apropos first for definitional queries ---
+
+__ask_is_definitional() {
+    local q="$1"
+    # patterns that apropos can answer
+    [[ "$q" =~ ^what\ (command|tool|program)\ ]] && return 0
+    [[ "$q" =~ ^which\ (command|tool|program)\ ]] && return 0
+    [[ "$q" =~ what\ (compresses|extracts|finds|lists|shows|displays|prints|creates|deletes|removes|copies|moves|renames) ]] && return 0
+    return 1
+}
+
+__ask_try_apropos() {
+    local q="$1"
+    # extract keyword for apropos
+    local kw
+    kw=$(echo "$q" | sed -E 's/^(what|which) (command|tool|program) //i; s/\?$//; s/ /_/g')
+    [ -z "$kw" ] && return 1
+    
+    local result
+    result=$(apropos "$kw" 2>/dev/null | head -5)
+    [ -z "$result" ] && return 1
+    
+    echo "apropos $kw:"
+    echo "$result"
+}
+
+# --- setup ---
+
+__ask_setup() {
+    echo ""
+    echo "ask setup"
+    echo ""
+    echo "Detecting local backends..."
+    echo ""
+    
+    local detected=""
+    if __ask_detect_ollama; then
+        echo "  [✓] ollama (localhost:11434)"
+        detected="ollama"
+    else
+        echo "  [ ] ollama"
+    fi
+    
+    if __ask_detect_llama_cpp; then
+        local port
+        port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
+        [ -z "$port" ] && port="8081"
+        echo "  [✓] llama.cpp (localhost:${port})"
+        [ -z "$detected" ] && detected="llama.cpp"
+    else
+        echo "  [ ] llama.cpp"
+    fi
+    
+    if __ask_detect_lm_studio; then
+        echo "  [✓] lm-studio (localhost:1234)"
+        [ -z "$detected" ] && detected="lm-studio"
+    else
+        echo "  [ ] lm-studio"
+    fi
+    
+    echo ""
+    
+    if [ -n "$detected" ]; then
+        echo "Detected: $detected"
+        echo "$detected" > "$ASK_CONFIG"
+        echo "Saved to $ASK_CONFIG"
+        echo ""
+        echo "Try: ask \"what system call creates a child process?\""
+    else
+        echo "No local backend detected."
+        echo ""
+        echo "Options:"
+        echo "  1. Install ollama: https://ollama.ai"
+        echo "  2. Run llama.cpp server: llama-server -m model.gguf"
+        echo "  3. Start LM Studio server"
+        echo ""
+        echo "Then run: ask --setup"
+    fi
+}
+
+# --- main ---
+
+case "${1:-}" in
+    --setup|-s)
+        __ask_setup
+        exit 0
+        ;;
+    --help|-h)
+        echo "ask - query your local model"
+        echo ""
+        echo "Usage:"
+        echo "  ask \"query\"              Query configured backend"
+        echo "  ask ollama \"query\"       Query ollama explicitly"
+        echo "  ask llama.cpp \"query\"    Query llama.cpp explicitly"
+        echo "  ask lm-studio \"query\"    Query LM Studio explicitly"
+        echo "  ask curl \"query\"         Query cloud (claude CLI)"
+        echo "  ask local \"query\"        Alias for configured backend"
+        echo "  ask --setup              Detect and configure backend"
+        echo ""
+        echo "Man page: https://subtract.ing/ask.1.txt"
+        exit 0
+        ;;
+    ollama)
+        shift
+        query="$*"
+        [ -z "$query" ] && { echo "Usage: ask ollama \"query\"" >&2; exit 1; }
+        __ask_ollama "$query"
+        exit $?
+        ;;
+    llama.cpp|llama)
+        shift
+        query="$*"
+        [ -z "$query" ] && { echo "Usage: ask llama.cpp \"query\"" >&2; exit 1; }
+        __ask_llama_cpp "$query"
+        exit $?
+        ;;
+    lm-studio|lmstudio)
+        shift
+        query="$*"
+        [ -z "$query" ] && { echo "Usage: ask lm-studio \"query\"" >&2; exit 1; }
+        __ask_lm_studio "$query"
+        exit $?
+        ;;
+    curl|cloud)
+        shift
+        query="$*"
+        [ -z "$query" ] && { echo "Usage: ask curl \"query\"" >&2; exit 1; }
+        __ask_curl "$query"
+        exit $?
+        ;;
+    local)
+        shift
+        # fall through to default handling
+        ;;
+esac
+
+# bare ask "query" or ask local "query"
+query="$*"
+[ -z "$query" ] && { echo "Usage: ask \"query\"" >&2; echo "Run 'ask --setup' to configure." >&2; exit 1; }
+
+# discovery: try apropos for definitional queries
+if __ask_is_definitional "$query"; then
+    result=$(__ask_try_apropos "$query")
+    if [ -n "$result" ]; then
+        echo "$result"
+        exit 0
+    fi
+fi
+
+# get configured backend or auto-detect
+backend=""
+if [ -f "$ASK_CONFIG" ]; then
+    backend=$(cat "$ASK_CONFIG")
+fi
+
+if [ -z "$backend" ]; then
+    backend=$(__ask_detect)
+    if [ -z "$backend" ]; then
+        echo "No local backend running." >&2
+        echo "Run 'ask --setup' to configure, or start ollama/llama.cpp/lm-studio." >&2
+        exit 1
+    fi
+fi
+
+# route to backend
+case "$backend" in
+    ollama)
+        __ask_ollama "$query"
+        ;;
+    llama.cpp|llama)
+        __ask_llama_cpp "$query"
+        ;;
+    lm-studio|lmstudio)
+        __ask_lm_studio "$query"
+        ;;
+    *)
+        echo "Unknown backend: $backend" >&2
+        exit 1
+        ;;
+esac
