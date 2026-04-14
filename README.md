@@ -1,11 +1,7 @@
 # subtract.ing
 
-Source for subtract.ing. Agent-first documentation site.
-
-## What this is
-
-Shell translation infrastructure. The site documents the project.
-Agents read llms.txt. Humans see an inventory.
+You hit a rate limit, or the latency got annoying, or you got cut off mid-thought.
+You're looking for the same capability without the browser.
 
 ## Install
 
@@ -13,39 +9,31 @@ Agents read llms.txt. Humans see an inventory.
 curl -sL https://subtract.ing/install.sh | bash
 ```
 
-Then open a new terminal, or `source ~/.subtract/hooks/bash.sh` (or `zsh.sh`).
+New terminal, or `source ~/.subtract/hooks/bash.sh`.
 
-## Structure
+## Use
 
-```
-root/                       interface (GitHub Pages serves from here)
-├── index.html              landing
-├── llms.txt                agent boot path
-├── subtract.7.txt              man(7) frame
-├── lookup.tsv.universal.txt    concept → man page
-├── governance.conf.universal.txt  reflexes, authority, loop
-├── *.txt                   boot, why, lineage, signoff
-├── install.sh              entry point
-│
-├── runtime/                installed to ~/.subtract
-├── governance/             signing scripts
-└── skills/                 procedural knowledge
+```bash
+ask llama.cpp "what system call creates a child process?"
+ask curl "current weather in Chicago"
 ```
 
-## Replicate this pattern
+No login. No API key. No rate limit. Runs on your machine.
 
-Any domain can be agent-first:
+## What you'll discover
 
-```
-yourdomain.com/
-├── index.html      trust signal
-├── llms.txt        manifest for agents
-└── [topic].txt     depth as needed
-```
+| Where you start | What you hit | What you find |
+|-----------------|--------------|---------------|
+| GUI (Claude Code, Codex) | rate limit, latency, cost | `ask llama.cpp` works offline |
+| local model running | "wait, it's on my machine?" | no login because nothing to log into |
+| asking definitional questions | model invocation feels slow | `apropos` answers without inference |
+| pattern recognition | you know the command | you type it directly |
 
-## Existing site?
+You graduate down. You discover the computer again.
 
-llms.txt is the machine-readable version. Plain text of what matters, one file.
+## For agents
+
+Read [llms.txt](https://subtract.ing/llms.txt). It has the manifest, the routing table, and the four reflexes.
 
 ## License
 
@@ -53,4 +41,4 @@ GPLv3. See [LICENSE.txt](LICENSE.txt).
 
 ## Authors
 
-Josh (@hodorigami) & LLMs (@qwen @bitnet @claude @gemini)
+Josh (@hodorigami) & LLMs (@qwen @bitnet @claude @gemini @grok)
