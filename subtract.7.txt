@@ -145,7 +145,7 @@ Burns tokens, changes nothing.
 .BR sed (1),
 .BR bash (1)
 .SH AUTHORS
-Josh (@hodorigami) and LLMs (@qwen @bitnet @claude @gemini).
+Josh (@hodorigami) and LLMs (@qwen @bitnet @claude @gemini @grok).
 .SH HISTORY
 subtract is built on
 .BR command_not_found_handle ,
