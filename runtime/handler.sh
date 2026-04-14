@@ -768,7 +768,7 @@ TMPL
                 match=$(sed -n "${num}p" "$lastmatch")
                 if [ -n "$match" ]; then
                     echo "[T0.5] man $match"
-                    man "$match"
+                    LC_ALL=C man "$match"
                     SUBTRACT_LAST_OUTPUT="man page for '$match' (from apropos selection)"
                 else
                     echo "no match at position $num"
@@ -778,6 +778,31 @@ TMPL
             fi
             _SUBTRACT_FROM_HANDLER=1
             return 0
+            ;;
+        [0-9]|[0-9][0-9])
+            # bare number: select from apropos results
+            local num="$input_lower"
+            local lastmatch="${TMPDIR:-/tmp}/.subtract-apropos-lastmatch.${USER:-$$}"
+            if [ -f "$lastmatch" ]; then
+                local match
+                match=$(sed -n "${num}p" "$lastmatch")
+                if [ -n "$match" ]; then
+                    echo "[T0.5] man $match"
+                    LC_ALL=C man "$match"
+                    SUBTRACT_LAST_OUTPUT="man page for '$match' (from apropos selection)"
+                else
+                    echo "no match at position $num"
+                fi
+            else
+                echo "not found: $input"
+            fi
+            _SUBTRACT_FROM_HANDLER=1
+            return 0
+            ;;
+        "ask local "*)
+            # backwards compat alias
+            __subtract_handle "ask llama.cpp ${input#ask local }"
+            return
             ;;
         "ask llama.cpp "*)
             local query="${input#ask llama.cpp }"
@@ -875,7 +900,7 @@ TMPL
         man_cmd=$(__subtract_manpage "$input")
         if [ -n "$man_cmd" ]; then
             echo "[T0.5] man $man_cmd"
-            man "$man_cmd"
+            LC_ALL=C man "$man_cmd"
             SUBTRACT_LAST_OUTPUT="man page for '$man_cmd' (from: '$input')"
             _SUBTRACT_FROM_HANDLER=1
             return 0
