@@ -26,20 +26,8 @@ case "${1:-start}" in
         # Attach to existing session if present
         tmux attach -t "$session" 2>/dev/null && exit 0
 
-        # Determine docs URL (degrade to local Kiwix if subtract.ing unreachable)
-        if curl -s --head --connect-timeout 2 https://subtract.ing &>/dev/null; then
-            URL="https://subtract.ing"
-        elif pgrep -x kiwix-serve &>/dev/null; then
-            BOOK=$(curl -s http://localhost:8080/nojs 2>/dev/null | grep -oE '/content/[^"]+' | head -1)
-            URL="http://localhost:8080${BOOK:-/nojs}"
-        elif [[ -d "$SUBTRACT_DIR/zim" ]] && ls "$SUBTRACT_DIR/zim"/*.zim &>/dev/null; then
-            kiwix-serve --port 8080 "$SUBTRACT_DIR/zim"/*.zim &>/dev/null &
-            sleep 1
-            BOOK=$(curl -s http://localhost:8080/nojs 2>/dev/null | grep -oE '/content/[^"]+' | head -1)
-            URL="http://localhost:8080${BOOK:-/nojs}"
-        else
-            URL="http://localhost:8080/nojs"  # will fail gracefully in lynx
-        fi
+        # Docs: local navigation cheatsheet (user presses 'g' to go elsewhere)
+        URL="$SUBTRACT_DIR/index.html"
 
         # Get terminal dimensions
         COLS=$(tput cols)
