@@ -65,7 +65,53 @@ __state_write() {
     echo "${key}=${value}" >> "$STATE_FILE"
 }
 
-case "${1:-help}" in
+__launch_env() {
+    # Launch subtract environment: tmux with shell + claude panes
+    local session="subtract"
+
+    # Check for tmux
+    if ! command -v tmux &>/dev/null; then
+        echo "subtract requires tmux"
+        echo "  macOS: brew install tmux"
+        echo "  Linux: apt install tmux"
+        return 1
+    fi
+
+    # Check for claude
+    if ! command -v claude &>/dev/null; then
+        echo "subtract environment requires claude CLI"
+        echo "  https://docs.anthropic.com/en/docs/claude-code"
+        return 1
+    fi
+
+    # Kill existing session if present
+    tmux kill-session -t "$session" 2>/dev/null
+
+    # Create session with two panes
+    tmux new-session -d -s "$session"
+    tmux split-window -h -t "$session"
+
+    # Enable mouse mode (click to switch panes)
+    tmux set-option -t "$session" mouse on
+
+    # Right pane: launch claude
+    tmux send-keys -t "$session:0.1" 'claude' C-m
+
+    # Left pane: show cheatsheet, drop to prompt
+    if [ -f "$SUBTRACT_DIR/cheatsheet.txt" ]; then
+        tmux send-keys -t "$session:0.0" "clear && cat $SUBTRACT_DIR/cheatsheet.txt && echo ''" C-m
+    elif [ -f "${BASH_SOURCE%/*}/cheatsheet.txt" ]; then
+        tmux send-keys -t "$session:0.0" "clear && cat ${BASH_SOURCE%/*}/cheatsheet.txt && echo ''" C-m
+    fi
+
+    # Attach
+    tmux attach -t "$session"
+}
+
+case "${1:-start}" in
+    start|"")
+        __launch_env
+        ;;
     config)
         case "${2:-}" in
             --no-nags)
@@ -293,14 +339,15 @@ case "${1:-help}" in
             echo "https://subtract.ing"
         fi
         ;;
-    help|*)
-        echo "subtract — type what you want, see the command, confirm"
+    help)
+        echo "subtract — shell + oracle, side by side"
         echo ""
-        echo "Commands:"
-        echo "  upgrade  Add optional tiers (inference, voice, cloud)"
-        echo "  config   Settings (--no-nags, --reset-nags)"
-        echo "  about    What subtract is"
-        echo "  help     This message"
+        echo "Usage:"
+        echo "  subtract         Launch environment (tmux: shell | claude)"
+        echo "  subtract upgrade Add optional tiers (inference, voice, cloud)"
+        echo "  subtract config  Settings (--no-nags, --reset-nags)"
+        echo "  subtract about   What subtract is"
+        echo "  subtract help    This message"
         echo ""
         echo "Tiers:"
         echo "  T0      Lookup table (active)"
@@ -310,5 +357,9 @@ case "${1:-help}" in
         echo "  T-Voice Voice input (subtract upgrade)"
         echo "  T-Ear   Voice output (subtract upgrade)"
         echo "  T4      Cloud escalation (subtract upgrade)"
+        ;;
+    *)
+        echo "subtract: unknown command '$1'"
+        echo "Run 'subtract help' for usage."
         ;;
 esac

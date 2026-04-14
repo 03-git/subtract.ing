@@ -1,0 +1,6 @@
+ctrl-b →   right pane (claude)
+ctrl-b ←   left pane (shell)
+
+pwd        where am I
+ls         what's here
+ctrl-c     stop

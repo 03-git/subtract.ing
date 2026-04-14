@@ -29,6 +29,7 @@ fetch() {
 fetch "runtime/handler.sh" "$SUBTRACT_DIR/handler.sh"
 fetch "runtime/subtract" "$SUBTRACT_DIR/subtract"
 fetch "runtime/ask" "$SUBTRACT_DIR/ask"
+fetch "runtime/cheatsheet.txt" "$SUBTRACT_DIR/cheatsheet.txt"
 fetch "runtime/hooks/bash.sh" "$SUBTRACT_DIR/hooks/bash.sh"
 fetch "runtime/hooks/zsh.sh" "$SUBTRACT_DIR/hooks/zsh.sh"
 chmod +x "$SUBTRACT_DIR/subtract" "$SUBTRACT_DIR/ask"
