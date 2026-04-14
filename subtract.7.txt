@@ -79,7 +79,7 @@ l l l l.
 Tier|Component|Size|State
 _
 T0|bash function|<1MB|already there
-T0.5|man pages|\[em]|already there
+T0.5|apropos|\[em]|already there
 T1|embed binary|45MB|ships
 T2|llama binary|850MB|ships
 T-Ear|whisper.cpp|150MB|ships
