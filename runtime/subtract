@@ -1,365 +1,52 @@
 #!/bin/bash
 # SPDX-License-Identifier: GPL-3.0-or-later
-# subtract CLI
-# usage: subtract [command]
-#   upgrade  - add optional tiers (local inference, cloud)
-#   about    - what subtract is
-#   help     - this message
+# subtract - shell + oracle, side by side
 
 SUBTRACT_DIR="$HOME/.subtract"
-MODELS_DIR="$SUBTRACT_DIR/models"
-STATE_FILE="$SUBTRACT_DIR/.state"
-
-# Detection helpers
-__has_binary() {
-    command -v "$1" &>/dev/null && return 0
-    [ -x "$2" ] 2>/dev/null && return 0
-    return 1
-}
-
-__has_model() {
-    [ -f "$MODELS_DIR/$1" ] && return 0
-    return 1
-}
-
-# Component status checks
-__check_t1t2() {
-    local bin_ok=0 embed_ok=0 model_ok=0
-    __has_binary "llama-cli" "$HOME/repos/llama.cpp/llama-cli" && bin_ok=1
-    __has_model "nomic-embed.gguf" && embed_ok=1
-    __has_model "qwen2.5-1.5b.gguf" && model_ok=1
-    [ $bin_ok -eq 1 ] && [ $embed_ok -eq 1 ] && [ $model_ok -eq 1 ]
-}
-
-__check_voice() {
-    local bin_ok=0 model_ok=0
-    __has_binary "whisper" "$HOME/repos/whisper.cpp/build/bin/whisper-cli" && bin_ok=1
-    __has_model "ggml-base.en.bin" && model_ok=1
-    [ $bin_ok -eq 1 ] && [ $model_ok -eq 1 ]
-}
-
-__check_ear() {
-    local bin_ok=0 model_ok=0
-    __has_binary "piper" "$HOME/repos/piper/piper" && bin_ok=1
-    __has_model "en_US-lessac-medium.onnx" && model_ok=1
-    [ $bin_ok -eq 1 ] && [ $model_ok -eq 1 ]
-}
-
-__check_cloud() {
-    [ -n "$ANTHROPIC_API_KEY" ] && return 0
-    command -v claude &>/dev/null && claude auth status &>/dev/null && return 0
-    return 1
-}
-
-__status() {
-    if "$1"; then echo "[✓]"; else echo "[ ]"; fi
-}
-
-__state_write() {
-    local key="$1" value="$2"
-    mkdir -p "$(dirname "$STATE_FILE")"
-    if [ -f "$STATE_FILE" ]; then
-        grep -v "^${key}=" "$STATE_FILE" > "${STATE_FILE}.tmp" 2>/dev/null || true
-        mv "${STATE_FILE}.tmp" "$STATE_FILE"
-    fi
-    echo "${key}=${value}" >> "$STATE_FILE"
-}
-
-__launch_env() {
-    # Launch subtract environment: tmux with shell + claude panes
-    local session="subtract"
-
-    # Check for tmux
-    if ! command -v tmux &>/dev/null; then
-        echo "subtract requires tmux"
-        echo "  macOS: brew install tmux"
-        echo "  Linux: apt install tmux"
-        return 1
-    fi
-
-    # Check for claude
-    if ! command -v claude &>/dev/null; then
-        echo "subtract environment requires claude CLI"
-        echo "  https://docs.anthropic.com/en/docs/claude-code"
-        return 1
-    fi
-
-    # Kill existing session if present
-    tmux kill-session -t "$session" 2>/dev/null
-
-    # Create session with two panes
-    tmux new-session -d -s "$session"
-    tmux split-window -h -t "$session"
-
-    # Enable mouse mode (click to switch panes)
-    tmux set-option -t "$session" mouse on
-
-    # Right pane: launch claude
-    tmux send-keys -t "$session:0.1" 'claude' C-m
-
-    # Left pane: show cheatsheet, drop to prompt
-    if [ -f "$SUBTRACT_DIR/cheatsheet.txt" ]; then
-        tmux send-keys -t "$session:0.0" "clear && cat $SUBTRACT_DIR/cheatsheet.txt && echo ''" C-m
-    elif [ -f "${BASH_SOURCE%/*}/cheatsheet.txt" ]; then
-        tmux send-keys -t "$session:0.0" "clear && cat ${BASH_SOURCE%/*}/cheatsheet.txt && echo ''" C-m
-    fi
-
-    # Attach
-    tmux attach -t "$session"
-}
 
 case "${1:-start}" in
     start|"")
-        __launch_env
-        ;;
-    config)
-        case "${2:-}" in
-            --no-nags)
-                __state_write "no_nags" "true"
-                echo "Upgrade suggestions silenced."
-                ;;
-            --reset-nags)
-                __state_write "no_nags" "false"
-                __state_write "suggested" "false"
-                __state_write "misses" "0"
-                echo "Upgrade suggestion state reset."
-                ;;
-            *)
-                echo "subtract config"
-                echo ""
-                echo "Options:"
-                echo "  --no-nags     Silence upgrade suggestions"
-                echo "  --reset-nags  Reset suggestion state"
-                ;;
-        esac
-        ;;
-    upgrade)
-        echo ""
-        echo "subtract upgrade"
-        echo ""
-        echo "Current: T0 (lookup table) + T0.5 (man pages)"
-        echo ""
-
-        # Check status of each tier
-        t1t2_status=$(__status __check_t1t2)
-        voice_status=$(__status __check_voice)
-        ear_status=$(__status __check_ear)
-        cloud_status=$(__status __check_cloud)
-
-        echo "Optional tiers:"
-        echo "  $t1t2_status [1] Local inference (905MB) — T1+T2, reasoning"
-        echo "  $voice_status [2] Voice input (150MB) — T-Voice, whisper.cpp"
-        echo "  $ear_status [3] Voice output (50MB) — T-Ear, piper-tts"
-        if __check_voice && __check_ear; then
-            echo "  [✓] [4] Voice bundle (200MB) — T-Voice + T-Ear"
-        elif __check_voice || __check_ear; then
-            echo "  [~] [4] Voice bundle (200MB) — T-Voice + T-Ear (partial)"
-        else
-            echo "  [ ] [4] Voice bundle (200MB) — T-Voice + T-Ear"
+        # Check for tmux
+        if ! command -v tmux &>/dev/null; then
+            echo "subtract requires tmux"
+            echo "  macOS: brew install tmux"
+            echo "  Linux: apt install tmux"
+            exit 1
         fi
-        echo "  $cloud_status [5] Cloud escalation — T4, requires API key"
-        echo "  [6] Cancel"
-        echo ""
-        read -p "Choice: " choice
 
-        case "$choice" in
-            1)
-                echo ""
-                echo "T1+T2 status:"
-                echo ""
-                if __has_binary "llama-cli" "$HOME/repos/llama.cpp/llama-cli"; then
-                    echo "  [✓] llama.cpp binary"
-                else
-                    echo "  [ ] llama.cpp binary"
-                    echo "      Get: https://github.com/ggerganov/llama.cpp/releases"
-                    echo "      Or build: git clone https://github.com/ggerganov/llama.cpp && cd llama.cpp && make"
-                fi
-                echo ""
-                if __has_model "nomic-embed.gguf"; then
-                    echo "  [✓] T1 embedding model (nomic-embed.gguf)"
-                else
-                    echo "  [ ] T1 embedding model (~45MB)"
-                    echo "      curl -L -o ~/.subtract/models/nomic-embed.gguf \\"
-                    echo "        https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF/resolve/main/nomic-embed-text-v1.5.Q4_K_M.gguf"
-                fi
-                echo ""
-                if __has_model "qwen2.5-1.5b.gguf"; then
-                    echo "  [✓] T2 reasoning model (qwen2.5-1.5b.gguf)"
-                else
-                    echo "  [ ] T2 reasoning model (~850MB)"
-                    echo "      curl -L -o ~/.subtract/models/qwen2.5-1.5b.gguf \\"
-                    echo "        https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf"
-                fi
-                echo ""
-                mkdir -p "$SUBTRACT_DIR/models"
-                echo "qwen2.5-1.5b.gguf" > "$SUBTRACT_DIR/model"
-                echo "nomic-embed.gguf" > "$SUBTRACT_DIR/embed"
-                if __check_t1t2; then
-                    echo "T1+T2 ready."
-                else
-                    echo "T1+T2 configured. Install missing components above to activate."
-                fi
-                ;;
-            2)
-                echo ""
-                echo "T-Voice status:"
-                echo ""
-                if __has_binary "whisper" "$HOME/repos/whisper.cpp/build/bin/whisper-cli"; then
-                    echo "  [✓] whisper.cpp binary"
-                else
-                    echo "  [ ] whisper.cpp binary"
-                    echo "      Get: https://github.com/ggerganov/whisper.cpp/releases"
-                    echo "      Or build: git clone https://github.com/ggerganov/whisper.cpp && cd whisper.cpp && make"
-                fi
-                echo ""
-                if __has_model "ggml-base.en.bin"; then
-                    echo "  [✓] whisper model (ggml-base.en.bin)"
-                else
-                    echo "  [ ] whisper model (~150MB)"
-                    echo "      curl -L -o ~/.subtract/models/ggml-base.en.bin \\"
-                    echo "        https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin"
-                fi
-                echo ""
-                mkdir -p "$SUBTRACT_DIR/models"
-                echo "whisper" > "$SUBTRACT_DIR/voice"
-                if __check_voice; then
-                    echo "T-Voice ready."
-                else
-                    echo "T-Voice configured. Install missing components above to activate."
-                fi
-                ;;
-            3)
-                echo ""
-                echo "T-Ear status:"
-                echo ""
-                if __has_binary "piper" "$HOME/repos/piper/piper"; then
-                    echo "  [✓] piper binary"
-                else
-                    echo "  [ ] piper binary"
-                    echo "      Get: https://github.com/rhasspy/piper/releases"
-                    echo "      Linux: curl -L https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz | tar xz"
-                fi
-                echo ""
-                if __has_model "en_US-lessac-medium.onnx"; then
-                    echo "  [✓] piper voice model (en_US-lessac-medium.onnx)"
-                else
-                    echo "  [ ] piper voice model (~50MB)"
-                    echo "      curl -L -o ~/.subtract/models/en_US-lessac-medium.onnx \\"
-                    echo "        https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx"
-                fi
-                echo ""
-                mkdir -p "$SUBTRACT_DIR/models"
-                echo "piper" > "$SUBTRACT_DIR/ear"
-                if __check_ear; then
-                    echo "T-Ear ready."
-                else
-                    echo "T-Ear configured. Install missing components above to activate."
-                fi
-                ;;
-            4)
-                echo ""
-                echo "Voice bundle status:"
-                echo ""
-                echo "T-Voice (input):"
-                if __has_binary "whisper" "$HOME/repos/whisper.cpp/build/bin/whisper-cli"; then
-                    echo "  [✓] whisper.cpp binary"
-                else
-                    echo "  [ ] whisper.cpp binary"
-                    echo "      git clone https://github.com/ggerganov/whisper.cpp && cd whisper.cpp && make"
-                fi
-                if __has_model "ggml-base.en.bin"; then
-                    echo "  [✓] whisper model"
-                else
-                    echo "  [ ] whisper model (~150MB)"
-                    echo "      curl -L -o ~/.subtract/models/ggml-base.en.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin"
-                fi
-                echo ""
-                echo "T-Ear (output):"
-                if __has_binary "piper" "$HOME/repos/piper/piper"; then
-                    echo "  [✓] piper binary"
-                else
-                    echo "  [ ] piper binary"
-                    echo "      curl -L https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz | tar xz"
-                fi
-                if __has_model "en_US-lessac-medium.onnx"; then
-                    echo "  [✓] piper voice model"
-                else
-                    echo "  [ ] piper voice model (~50MB)"
-                    echo "      curl -L -o ~/.subtract/models/en_US-lessac-medium.onnx https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/lessac/medium/en_US-lessac-medium.onnx"
-                fi
-                echo ""
-                mkdir -p "$SUBTRACT_DIR/models"
-                echo "whisper" > "$SUBTRACT_DIR/voice"
-                echo "piper" > "$SUBTRACT_DIR/ear"
-                if __check_voice && __check_ear; then
-                    echo "Voice bundle ready."
-                else
-                    echo "Voice bundle configured. Install missing components above to activate."
-                fi
-                ;;
-            5)
-                echo ""
-                echo "T4 (Cloud) status:"
-                echo ""
-                if [ -n "$ANTHROPIC_API_KEY" ]; then
-                    echo "  [✓] ANTHROPIC_API_KEY set"
-                elif command -v claude &>/dev/null && claude auth status &>/dev/null 2>&1; then
-                    echo "  [✓] Claude CLI authenticated"
-                else
-                    echo "  [ ] No API credentials found"
-                    echo ""
-                    echo "Option A — Claude subscription (if you have Max/Pro):"
-                    echo "  claude auth login"
-                    echo ""
-                    echo "Option B — API key (pay-per-token):"
-                    echo "  export ANTHROPIC_API_KEY=sk-ant-..."
-                fi
-                echo ""
-                echo "T4 uses curl to call inference APIs. No pip. No npm."
-                echo "Activates when T0/T1/T2 can't handle the query."
-                echo ""
-                mkdir -p "$SUBTRACT_DIR"
-                echo "curl" > "$SUBTRACT_DIR/cloud"
-                if __check_cloud; then
-                    echo "T4 ready."
-                else
-                    echo "T4 configured. Set credentials above to activate."
-                fi
-                ;;
-            6|*)
-                echo "Cancelled."
-                ;;
-        esac
-        ;;
-    about)
-        if [ -f "$SUBTRACT_DIR/about" ]; then
-            cat "$SUBTRACT_DIR/about"
-        else
-            echo "subtract: a shell that does what you mean"
-            echo "https://subtract.ing"
+        # Check for claude
+        if ! command -v claude &>/dev/null; then
+            echo "subtract requires claude CLI"
+            echo "  https://docs.anthropic.com/en/docs/claude-code"
+            exit 1
         fi
+
+        session="subtract"
+
+        # Kill existing session if present
+        tmux kill-session -t "$session" 2>/dev/null
+
+        # Create session with two panes
+        tmux new-session -d -s "$session"
+        tmux split-window -h -t "$session"
+
+        # Enable mouse mode
+        tmux set-option -t "$session" mouse on
+
+        # Right pane: launch claude
+        tmux send-keys -t "$session:0.1" 'claude' C-m
+
+        # Left pane: show cheatsheet
+        if [ -f "$SUBTRACT_DIR/cheatsheet.txt" ]; then
+            tmux send-keys -t "$session:0.0" "clear && cat $SUBTRACT_DIR/cheatsheet.txt && echo ''" C-m
+        fi
+
+        # Attach
+        tmux attach -t "$session"
         ;;
-    help)
+    help|*)
         echo "subtract — shell + oracle, side by side"
-        echo ""
-        echo "Usage:"
-        echo "  subtract         Launch environment (tmux: shell | claude)"
-        echo "  subtract upgrade Add optional tiers (inference, voice, cloud)"
-        echo "  subtract config  Settings (--no-nags, --reset-nags)"
-        echo "  subtract about   What subtract is"
-        echo "  subtract help    This message"
-        echo ""
-        echo "Tiers:"
-        echo "  T0      Lookup table (active)"
-        echo "  T0.5    Man pages (active)"
-        echo "  T1      Embedding similarity (subtract upgrade)"
-        echo "  T2      Local model (subtract upgrade)"
-        echo "  T-Voice Voice input (subtract upgrade)"
-        echo "  T-Ear   Voice output (subtract upgrade)"
-        echo "  T4      Cloud escalation (subtract upgrade)"
-        ;;
-    *)
-        echo "subtract: unknown command '$1'"
-        echo "Run 'subtract help' for usage."
+        echo "  subtract      launch environment"
+        echo "  subtract help this message"
         ;;
 esac
