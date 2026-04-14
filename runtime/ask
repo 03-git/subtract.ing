@@ -12,6 +12,8 @@ __ask_try_lookup() {
     local lookup_file="$SUBTRACT_DIR/lookup.tsv"
     [ ! -f "$lookup_file" ] && return 1
     
+    # strip trailing punctuation
+    query=$(printf '%s' "$query" | sed 's/[?!.]*$//')
     local query_lower
     query_lower=$(printf '%s' "$query" | tr '[:upper:]' '[:lower:]')
     
