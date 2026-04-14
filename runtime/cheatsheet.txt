@@ -3,4 +3,6 @@ ctrl-b ←   left pane (shell)
 
 pwd        where am I
 ls         what's here
+kiwix           local docs (offline)
+kiwix-search X  search local docs
 ctrl-c     stop

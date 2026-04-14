@@ -1,6 +1,6 @@
 #!/bin/bash
 # SPDX-License-Identifier: GPL-3.0-or-later
-# subtract - shell + oracle, side by side
+# subtract - shell + API + docs, side by side
 
 SUBTRACT_DIR="$HOME/.subtract"
 
@@ -23,29 +23,71 @@ case "${1:-start}" in
 
         session="subtract"
 
-        # Kill existing session if present
-        tmux kill-session -t "$session" 2>/dev/null
+        # Attach to existing session if present
+        tmux attach -t "$session" 2>/dev/null && exit 0
 
-        # Create session with two panes
-        tmux new-session -d -s "$session"
-        tmux split-window -h -t "$session"
+        # Determine docs URL (degrade to local Kiwix if subtract.ing unreachable)
+        if curl -s --head --connect-timeout 2 https://subtract.ing &>/dev/null; then
+            URL="https://subtract.ing"
+        elif pgrep -x kiwix-serve &>/dev/null; then
+            BOOK=$(curl -s http://localhost:8080/nojs 2>/dev/null | grep -oE '/content/[^"]+' | head -1)
+            URL="http://localhost:8080${BOOK:-/nojs}"
+        elif [[ -d "$SUBTRACT_DIR/zim" ]] && ls "$SUBTRACT_DIR/zim"/*.zim &>/dev/null; then
+            kiwix-serve --port 8080 "$SUBTRACT_DIR/zim"/*.zim &>/dev/null &
+            sleep 1
+            BOOK=$(curl -s http://localhost:8080/nojs 2>/dev/null | grep -oE '/content/[^"]+' | head -1)
+            URL="http://localhost:8080${BOOK:-/nojs}"
+        else
+            URL="http://localhost:8080/nojs"  # will fail gracefully in lynx
+        fi
+
+        # Get terminal dimensions
+        COLS=$(tput cols)
+
+        # Create session with three panes
+        if [[ $COLS -lt 100 ]]; then
+            # Narrow: stack vertical
+            tmux new-session -d -s "$session"
+            tmux split-window -v -t "$session"
+            tmux split-window -v -t "$session"
+        else
+            # Wide: horizontal thirds
+            tmux new-session -d -s "$session"
+            tmux split-window -h -p 66 -t "$session"
+            tmux split-window -h -p 50 -t "$session"
+        fi
 
         # Enable mouse mode
         tmux set-option -t "$session" mouse on
 
-        # Right pane: launch claude
-        tmux send-keys -t "$session:0.1" 'claude' C-m
+        # Pane bindings: ctrl-b 1/2/3
+        tmux bind-key -T prefix 1 select-pane -t 0
+        tmux bind-key -T prefix 2 select-pane -t 1
+        tmux bind-key -T prefix 3 select-pane -t 2
 
-        # Left pane: show cheatsheet
+        # WSL clipboard integration: Ctrl+C to copy, Ctrl+V to paste
+        if [ -f /mnt/c/Windows/System32/clip.exe ]; then
+            tmux bind-key -T copy-mode C-c send-keys -X copy-pipe-and-cancel "/mnt/c/Windows/System32/clip.exe"
+            tmux bind-key -T copy-mode-vi C-c send-keys -X copy-pipe-and-cancel "/mnt/c/Windows/System32/clip.exe"
+            tmux bind-key -n C-v run "tmux set-buffer \"\$(/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -command '[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-Clipboard' | tr -d '\\r')\" && tmux paste-buffer"
+        fi
+
+        # Pane 0 (shell): cheatsheet then prompt
         if [ -f "$SUBTRACT_DIR/cheatsheet.txt" ]; then
             tmux send-keys -t "$session:0.0" "clear && cat $SUBTRACT_DIR/cheatsheet.txt && echo ''" C-m
         fi
+
+        # Pane 1 (API): launch claude
+        tmux send-keys -t "$session:0.1" 'claude' C-m
+
+        # Pane 2 (docs): lynx to docs URL
+        tmux send-keys -t "$session:0.2" "lynx $URL" C-m
 
         # Attach
         tmux attach -t "$session"
         ;;
     help|*)
-        echo "subtract — shell + oracle, side by side"
+        echo "subtract — shell + API + docs, side by side"
         echo "  subtract      launch environment"
         echo "  subtract help this message"
         ;;

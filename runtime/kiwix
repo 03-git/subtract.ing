@@ -1,0 +1,19 @@
+#!/bin/bash
+# kiwix - open local Kiwix in lynx
+
+SUBTRACT_DIR="$HOME/.subtract"
+
+# Start kiwix-serve if not running
+if ! pgrep -x kiwix-serve &>/dev/null; then
+    if [[ -d "$SUBTRACT_DIR/zim" ]] && ls "$SUBTRACT_DIR/zim"/*.zim &>/dev/null; then
+        kiwix-serve --port 8080 "$SUBTRACT_DIR/zim"/*.zim &>/dev/null &
+        sleep 1
+    else
+        echo "No ZIM files in $SUBTRACT_DIR/zim/"
+        exit 1
+    fi
+fi
+
+# Get first available book from nojs page
+BOOK=$(curl -s http://localhost:8080/nojs 2>/dev/null | grep -oE '/content/[^"]+' | head -1)
+lynx "http://localhost:8080${BOOK:-/nojs}"

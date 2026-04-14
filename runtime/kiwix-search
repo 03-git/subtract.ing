@@ -1,0 +1,28 @@
+#!/bin/bash
+# kiwix-search - search local Kiwix content
+
+if [[ -z "$1" ]]; then
+    echo "usage: kiwix-search <query>"
+    exit 1
+fi
+
+SUBTRACT_DIR="$HOME/.subtract"
+
+# Start kiwix-serve if not running
+if ! pgrep -x kiwix-serve &>/dev/null; then
+    if [[ -d "$SUBTRACT_DIR/zim" ]] && ls "$SUBTRACT_DIR/zim"/*.zim &>/dev/null; then
+        kiwix-serve --port 8080 "$SUBTRACT_DIR/zim"/*.zim &>/dev/null &
+        sleep 1
+    else
+        echo "No ZIM files in $SUBTRACT_DIR/zim/"
+        exit 1
+    fi
+fi
+
+# Get book name
+BOOK=$(curl -s http://localhost:8080/nojs 2>/dev/null | grep -oE '/content/[^"]+' | head -1 | sed 's|/content/||')
+
+# URL-encode the query (simple: spaces to +)
+QUERY=$(echo "$*" | tr ' ' '+')
+
+lynx "http://localhost:8080/search?pattern=${QUERY}&books.name=${BOOK:-wikipedia_en_simple}"
