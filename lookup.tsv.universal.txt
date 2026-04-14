@@ -1,212 +1,389 @@
-# lookup.tsv.universal — routing data, not prose
-# Format: key<TAB>man-page<TAB>replaces
-# Each row points to a primitive documented in a man page: kernel, POSIX,
-# bash builtin, or single-binary userland tool that ships as one file.
-# The man page is the documentation that outlived the wrappers. This file is routing.
-# Reflexes, tiers, authority, failure modes, and fork structure live elsewhere:
-# governance.conf.universal (authority) and subtract.7 (frame).
-
-# === cryptography, signing, identity ===
-sign	ssh-keygen(1)	PKI-as-a-service, commit signing as a GitHub feature, DocuSign
-verify	ssh-keygen(1)	signature verification SaaS, JWT libraries
-key.vault	ssh-agent(1)	every credential vault product
-sign.clear	gpg(1)	signed-release infrastructure, package authenticity services
-crypto.misc	openssl(1)	half of every security SaaS
-random	urandom(4)	secure random libraries in every language
-encrypt.file	age(1)	PGP for file encryption when key model is too heavy
-host.trust	ssh_known_hosts(5)	certificate authority products for small networks
-namespace.sign	ssh-keygen(1)	domain isolation for signatures, replaces JWT audience
-
-# === scheduling, time ===
-schedule.recurring	cron(8)	every scheduled job SaaS, reminders products, cloud schedulers
-schedule.once	at(1)	run-this-once-later features in every task manager
-schedule.darwin	launchd(8)	process managers, keep-alive daemons, relaunch-on-failure
-schedule.systemd	systemd.timer(5)	cron when journald integration and dependency graphs are needed
-watchdog	timeout(1)	watchdog services for "kill this if it runs longer than X"
-poll	sleep(1)	polling frameworks
-dashboard.terminal	watch(1)	dashboard refresh mechanisms
-
-# === file watching, events ===
-watch.linux	inotifywait(1)	webhook infrastructure for local filesystem events
-watch.cross	fswatch(1)	file-sync triggers in build tools
-watch.bsd	kqueue(2)	polling loop in most watcher libraries
-audit.fs	fanotify(7)	file integrity monitoring security products
-audit.sys	auditd(8)	file integrity monitoring products
-
-# === IPC, messaging ===
-queue	mkfifo(1)	Redis-as-message-queue for single-machine producer/consumer
-socket.local	unix(7)	localhost TCP sockets and most microservice meshes on a single box
-control.plane	signal(7)	"control plane" APIs for long-running daemons
-ipc.sysv	msgget(2)	shared-memory SDKs
-ipc.desktop	dbus(1)	inter-process RPC frameworks on Linux desktops
-tunnel	socat(1)	tunnel or protocol-bridge products
-
-# === file sync, transfer ===
-sync	rsync(1)	Dropbox, iCloud Drive, Google Drive for cases where you own both ends
-backup.snap	rsync(1)	Time Machine, Backblaze, most incremental backup SaaS
-transfer	scp(1)	secure file transfer products when you already have SSH
-sync.bi	unison(1)	bidirectional sync services
-cloud.fs	rclone(1)	cloud-sync SDKs when you just want a filesystem view
-
-# === databases, storage ===
-db	sqlite3(1)	Postgres for every project with one writer
-kv	gdbm(3)	Redis for key-value needs that don't cross processes
-doc.store	db(3)	embedded document stores
-lock.row	fcntl(2)	row-level locking frameworks for flat-file databases
-mail.store	maildir(5)	inbox database for mail-adjacent structured storage
-
-# === build, workflow orchestration ===
-orchestrate	make(1)	Jenkins, Airflow, GitHub Actions, every DAG workflow tool
-build.fast	ninja(1)	make when make is too slow
-etl	awk(1)	ETL frameworks for single-pass pipelines
-pipeline	bash(1)	orchestration layers for linear workflows (set -e, set -o pipefail)
-
-# === text processing ===
-json	jq(1)	most JSON-processing libraries, half of Postman
-tabular	awk(1)	pandas for any tabular data that isn't numerical
-replace	sed(1)	every find-and-replace-across-files tool
-search	grep(1)	full-text search SaaS for local corpora
-columns	cut(1)	SQL when you just have TSVs
-join.rel	join(1)	relational joins on sorted files
-dedupe	sort(1)	deduplication tools
-set.ops	comm(1)	set operations on sorted files
-translate	tr(1)	character-level transformation libraries
-xml	xmlstarlet(1)	XML libraries for XPath cases
-format.cols	column(1)	tabular output formatters
-wrap	fmt(1)	text-wrapping utilities
-
-# === auth, identity ===
-lookup.user	getent(1)	SDK for every auth provider when you need a lookup
-sudo	sudoers(5)	privileged access management SaaS
-kerberos	kinit(1)	SAML/OIDC for cases where you control the realm
-ssh.grant	authorized_keys(5)	user provisioning systems for SSH
-passwd	passwd(5)	user directory products for one machine
-
-# === locking ===
-lock.file	flock(1)	distributed locking libraries for single-machine problems
-lock.adv	lockf(3)	advisory locking abstractions
-lock.mkdir	mkdir(1)	atomic lock when filesystem is shared
-
-# === introspection, monitoring ===
-proc	proc(5)	every process introspection library and half of APM
-sys	sysfs(5)	hardware monitoring SDKs
-ps	ps(1)	process dashboard products
-lsof	lsof(8)	"what's holding this file" troubleshooting
-strace	strace(1)	syscall tracing SaaS
-perf	perf(1)	performance monitoring dashboards
-dmesg	dmesg(1)	kernel log aggregation
-log	journalctl(1)	log aggregation services on systemd hosts
-
-# === network ===
-nc	nc(1)	TCP/IP swiss army knife products
-listen	ss(8)	netstat and most "what's listening" dashboards
-ifcfg	ip(8)	ifconfig/route and network configuration SDKs
-pcap	tcpdump(8)	packet capture services
-dns	dig(1)	DNS lookup libraries
-diag.net	mtr(8)	traceroute + ping + "network diagnostics" tools
-http	curl(1)	half of every HTTP client library
-firewall	nftables(8)	firewall-as-a-service for local filtering
-
-# === archive, compression ===
-archive	tar(1)	directory-packing abstractions
-archive.alt	cpio(1)	tar when you need different semantics
-block.copy	dd(1)	disk imaging tools for raw block copy
-compress	zstd(1)	compression SDKs
-split	split(1)	"chunk this file" utilities
-
-# === terminal multiplex ===
-session.persist	tmux(1)	cloud IDE session persistence
-daemonize	nohup(1)	daemonization libraries
-background	bash(1)	thread-pool abstractions for shell workflows
-
-# === process supervision ===
-supervise	systemd(1)	every process supervisor SaaS on Linux
-supervise.alt	runit(8)	systemd when systemd is too much
-daemon	daemon(3)	daemonization libraries in every language
-env.inject	envdir(8)	environment-injection frameworks
-
-# === terminal control ===
-tty	stty(1)	terminal configuration libraries
-term.caps	tput(1)	ANSI escape code libraries
-term.info	terminfo(5)	"what can this terminal do" detection
-readline	readline(3)	input-editing libraries
-expect	expect(1)	"automate this interactive tool" SDKs
-
-# === env, config ===
-env	env(1)	environment variable management libraries
-env.dir	direnv(1)	per-project env loading frameworks
-login.env	profile(5)	config management for login-time state
-config	hier(7)	configuration management when files are enough
-
-# === diff, patch, sync ===
-diff	diff(1)	"apply a change" frameworks
-diff.three	diff3(1)	three-way merge libraries
-cmp	cmp(1)	"are these files identical" checks
-history	git(1)	versioned storage products when you just need history
-patch	patch(1)	patch-application libraries
-
-# === hashing ===
-hash	sha256sum(1)	content-hashing libraries
-hash.md5	md5sum(1)	content-hashing libraries (legacy)
-
-# === backup ===
-backup.fs	zfs(8)	snapshot services at the filesystem layer
-backup.dedup	restic(1)	cloud backup services when you own the destination
-backup.append	tar(1)	archival products for append-only history
-
-# === filesystem ===
-overlay	overlayfs(5)	layered filesystem abstractions
-fuse	fuse(4)	kernel modules for custom filesystems
-fs.layout	hier(7)	"where does this go" conventions
-tmp.ram	tmpfs(5)	in-memory temporary state
-
-# === file inspection ===
-stat	stat(1)	"what is this file" libraries
-which	which(1)	"where is this command" resolvers
-link	ln(1)	symlink abstractions
-
-# === isolation, sandboxing ===
-chroot	chroot(2)	container tools for filesystem isolation
-namespace	unshare(1)	Docker for process-level isolation without the daemon
-exec.ns	nsenter(1)	"exec into this container" tooling
-seccomp	seccomp(2)	syscall filtering SDKs
-rlimit	ulimit(1)	resource-control frameworks
-
-# === mail ===
-mail.local	mail(1)	local notification products
-smtp	msmtp(1)	SMTP libraries for send-only cases
-mail.filter	procmail(1)	inbox rules products
-mail.box	mbox(5)	email database for cases where you just want files
-notify	mail(1)	notification-as-a-service for local events
-
-# === documentation ===
-doc	man(1)	documentation discovery layer
-info	info(1)	reference manuals for GNU utilities
-find.tool	apropos(1)	"how do I find the tool for this" searches
-help	bash(1)	shell reference sites (help is a bash builtin)
-
-# === binary analysis ===
-filetype	file(1)	"what kind of file is this" libraries
-hex	xxd(1)	binary viewers
-strings	strings(1)	"extract text from binary" utilities
-objdump	objdump(1)	binary analysis SDKs
-symbols	nm(1)	binary analysis SDKs
-elf	readelf(1)	binary analysis SDKs
-
-# === shell extension ===
-cnf	bash(1)	command_not_found_handle dispatch (the foundation subtract was built on)
-prompt.hook	bash(1)	PROMPT_COMMAND session state tracking
-cleanup	trap(1)	signal-handling SDKs and cleanup-on-exit libraries
-coprocess	bash(1)	coproc bidirectional pipe to a subprocess abstractions
-
-# === date, time ===
-date	date(1)	date-parsing libraries
-cal	cal(1)	calendar widgets for command-line use
-ntp	chrony(1)	time-sync services
-
-# === finding ===
-find	find(1)	file-finding frameworks
-find.fast	locate(1)	file-finding frameworks (indexed)
-
-# === parallelism ===
-parallel	xargs(1)	Celery and parallel-execution frameworks
+# subtract -- intent lookup table
+# format: glob_pattern<TAB>[tag]<TAB>command
+#   tags: [stdout] (default), [canvas], [player]
+#   two-column lines (no tag) default to [stdout] for backwards compat
+# first match wins. specific before general.
+# edit this file to teach your machine new intents.
+# languages: add a section. translate the intents, keep the commands.
+#
+# --- files ---
+what*in*this*directory	ls .
+what*in*current*directory	ls .
+what*files*are*here	ls .
+list*files	ls .
+show*files	ls .
+show*hidden*files	ls -la
+show*all*files	ls -la
+show*file*sizes	ls -lh
+list*home	ls ~/
+what*in*home*directory	ls ~/
+# desktop/downloads: remove these if your system doesn't have them
+show*desktop	ls ~/Desktop/
+show*downloads	ls ~/Downloads/
+#
+# --- navigation ---
+go*home	cd ~/
+go*to*home	cd ~/
+go*back	cd ..
+go*up	cd ..
+#
+# --- disk ---
+how*much*disk*space	df -h
+disk*space	df -h
+disk*space*left	df -h
+check*disk*space	df -h
+show*disk*usage	df -h
+how*much*space	df -h
+how*big*is*this*folder	du -sh .
+disk*usage	du -sh *
+#
+# --- processes ---
+show*running*processes	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
+show*processes	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
+what*is*running	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
+kill*process	echo "usage: kill <PID>"
+#
+# --- time ---
+what*time*is*it	date +%T
+what*is*the*time	date +%T
+what*day*is*it	date +%A
+what*is*the*date	date +%Y-%m-%d
+what*is*today	date "+%A %Y-%m-%d"
+#
+# --- network ---
+what*is*my*ip	hostname -I
+show*my*ip	hostname -I
+am*i*online	ping -c1 -W2 8.8.8.8 && echo "yes" || echo "no"
+#
+# --- system ---
+how*much*memory	free -h
+how*much*ram	free -h
+show*memory	free -h
+who*am*i	whoami
+what*is*my*username	whoami
+what*machine*is*this	hostname
+show*system*info	uname -a
+what*os*is*this	cat /etc/os-release
+#
+# --- history ---
+show*command*history	history
+what*did*i*do	history 20
+last*commands	history 20
+#
+# --- tools ---
+claude	claude
+open*claude	claude
+launch*claude	claude
+terminal	bash
+open*terminal	bash
+shell	bash
+#
+# --- cleanup ---
+clear*screen	clear
+clear*terminal	clear
+#
+# --- reconfigure ---
+reconfigure*	rm -f $HOME/.subtract/.onboarded && echo "type anything to re-onboard"
+#
+# --- media ---
+show*videos	ls /mnt/media/movies/ /mnt/media/tv/
+list*movies	ls /mnt/media/movies/
+list*tv*shows	ls /mnt/media/tv/
+list*tv	ls /mnt/media/tv/
+list*music	ls /mnt/media/music/
+#
+# --- español ---
+# same commands, Spanish intents. specific before general.
+#
+# archivos
+lista*archivos	ls .
+listar*archivos	ls .
+mostrar*archivos	ls .
+qué*hay*en*este*directorio	ls .
+qué*hay*aquí	ls .
+archivos*ocultos	ls -la
+mostrar*archivos*ocultos	ls -la
+tamaño*de*archivos	ls -lh
+#
+# navegación
+ir*a*inicio	cd ~/
+ir*a*casa	cd ~/
+ir*atrás	cd ..
+ir*arriba	cd ..
+#
+# disco
+cuánto*espacio	df -h
+espacio*en*disco	df -h
+espacio*disponible	df -h
+uso*de*disco	du -sh *
+qué*tan*grande*es*esta*carpeta	du -sh .
+tamaño*de*carpeta	du -sh .
+#
+# procesos
+procesos*activos	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
+mostrar*procesos	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
+qué*está*corriendo	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
+matar*proceso	echo "uso: kill <PID>"
+#
+# hora/fecha
+qué*hora*es	date +%T
+qué*día*es	date +%A
+qué*fecha*es	date +%Y-%m-%d
+fecha*de*hoy	date "+%A %Y-%m-%d"
+#
+# red
+cuál*es*mi*ip	hostname -I
+mi*dirección*ip	hostname -I
+estoy*conectado	ping -c1 -W2 8.8.8.8 && echo "sí" || echo "no"
+tengo*internet	ping -c1 -W2 8.8.8.8 && echo "sí" || echo "no"
+#
+# sistema
+cuánta*memoria	free -h
+cuánta*ram	free -h
+mostrar*memoria	free -h
+quién*soy	whoami
+qué*máquina*es*esta	hostname
+información*del*sistema	uname -a
+qué*sistema*operativo	cat /etc/os-release
+#
+# historial
+mostrar*historial	history
+qué*hice	history 20
+últimos*comandos	history 20
+#
+# limpieza
+limpiar*pantalla	clear
+limpiar*terminal	clear
+#
+# --- canvas (HTML rendered fullscreen via subtract-canvas) ---
+# two patterns use [canvas]:
+#   1. web-as-apps: command IS subtract-canvas (renders URL directly)
+#   2. generators: command produces HTML, handler pipes it to subtract-canvas
+# the handler's pipe logic only fires for case 2 (command output is non-empty)
+subtract	cat ~/.subtract/about
+home	[canvas]	subtract-canvas https://subtract.ing
+*youtube*	[canvas]	subtract-canvas https://youtube.com
+*doordash*	[canvas]	subtract-canvas https://doordash.com
+*netflix*	[canvas]	subtract-canvas https://netflix.com
+*my*email*	[canvas]	subtract-canvas https://mail.google.com
+*spotify*	[canvas]	subtract-canvas https://open.spotify.com
+#
+# --- player (media rendered fullscreen via mpv) ---
+# add media entries as: play*<name>	[player]	mpv --fs --no-terminal --no-osd-bar --osd-level=0 /path/to/file
+#
+# --- mixed (canvas generates grid, tap action triggers mpv directly) ---
+show*movies	[canvas]	find /mnt/media/movies/ -maxdepth 2 -type f \( -name '*.mkv' -o -name '*.mp4' -o -name '*.avi' \) | sort | generate_grid.sh
+#
+# === SYSCALLS (kernel primitives curriculum) ===
+# These answer "what system call does X" without hitting T2
+#
+*system*call*creates*child*process*	echo "fork() - creates child process by duplicating the calling process"
+*system*call*fork*	echo "fork() - creates child process by duplicating the calling process"
+*create*child*process*	echo "fork() - creates child process by duplicating the calling process"
+what*is*fork	echo "fork() - system call that creates a child process by duplicating the calling process"
+*create*pipe*between*processes*	echo "pipe() - creates a unidirectional data channel for IPC"
+*system*call*pipe*	echo "pipe() - creates a unidirectional data channel for IPC"
+what*is*pipe	echo "pipe() - system call creating unidirectional data channel between processes"
+*replace*current*process*	echo "exec() family (execl, execv, execve, execvp) - replaces current process image"
+*system*call*exec*	echo "exec() family (execl, execv, execve, execvp) - replaces current process image"
+what*is*exec	echo "exec() family - replaces current process image with a new program"
+*wait*for*child*	echo "wait() or waitpid() - suspends execution until a child process terminates"
+*system*call*wait*	echo "wait() or waitpid() - suspends execution until a child process terminates"
+what*is*wait	echo "wait()/waitpid() - blocks parent until child process terminates"
+*map*file*into*memory*	echo "mmap() - maps files or devices into memory"
+*system*call*mmap*	echo "mmap() - maps files or devices into memory"
+what*is*mmap	echo "mmap() - maps files or devices into memory for efficient I/O"
+*system*call*open*	echo "open() - opens a file and returns a file descriptor"
+what*is*open	echo "open() - system call that opens a file and returns a file descriptor"
+*system*call*close*	echo "close() - closes a file descriptor"
+what*is*close	echo "close() - system call that releases a file descriptor"
+*system*call*read*	echo "read() - reads data from a file descriptor into a buffer"
+what*is*read	echo "read() - reads bytes from file descriptor into buffer"
+*system*call*write*	echo "write() - writes data from a buffer to a file descriptor"
+what*is*write	echo "write() - writes bytes from buffer to file descriptor"
+*system*call*dup*	echo "dup()/dup2() - duplicates a file descriptor"
+what*is*dup	echo "dup()/dup2() - duplicates file descriptor, used for I/O redirection"
+*system*call*socket*	echo "socket() - creates an endpoint for communication"
+what*is*socket	echo "socket() - creates network communication endpoint"
+*system*call*bind*	echo "bind() - assigns an address to a socket"
+*system*call*listen*	echo "listen() - marks socket as passive, accepting incoming connections"
+*system*call*accept*	echo "accept() - extracts first connection request from queue"
+*system*call*connect*	echo "connect() - initiates connection on a socket"
+*system*call*select*	echo "select() - monitors multiple file descriptors for I/O readiness"
+*system*call*poll*	echo "poll() - waits for events on file descriptors"
+*system*call*epoll*	echo "epoll - Linux scalable I/O event notification (epoll_create, epoll_ctl, epoll_wait)"
+*system*call*signal*	echo "signal()/sigaction() - sets disposition of a signal"
+*system*call*kill*	echo "kill() - sends signal to a process"
+what*is*kill	echo "kill() - system call that sends a signal to a process or process group"
+*system*call*stat*	echo "stat()/fstat()/lstat() - retrieves file metadata"
+what*is*stat	echo "stat() - retrieves file metadata (size, permissions, timestamps)"
+*system*call*chdir*	echo "chdir() - changes current working directory"
+*system*call*getcwd*	echo "getcwd() - gets current working directory"
+*system*call*mkdir*	echo "mkdir() - creates a directory"
+*system*call*rmdir*	echo "rmdir() - removes an empty directory"
+*system*call*unlink*	echo "unlink() - removes a file (deletes directory entry)"
+*system*call*chmod*	echo "chmod() - changes file permissions"
+*system*call*chown*	echo "chown() - changes file owner and group"
+#
+# === FILE OPERATIONS (expanded) ===
+#
+make*executable	chmod +x
+make*file*executable	chmod +x
+*executable*permission*	chmod +x
+who*owns*this*file	ls -l
+who*owns*file	ls -l
+change*owner	chown
+change*file*owner	chown
+copy*file	cp
+copy*files	cp -r
+copy*directory	cp -r
+move*file	mv
+rename*file	mv
+delete*file	rm
+remove*file	rm
+delete*directory	rm -r
+remove*directory	rm -r
+create*directory	mkdir
+make*directory	mkdir
+make*folder	mkdir
+create*folder	mkdir
+create*file	touch
+make*empty*file	touch
+#
+# === SEARCH (find and grep patterns) ===
+#
+find*file*by*name	find . -name
+find*files*named	find . -name
+find*file*called	find . -name
+search*for*file	find . -name
+where*is*file	find . -name
+search*inside*files	grep -r
+search*file*contents	grep -r
+find*text*in*files	grep -r
+grep*recursive	grep -r
+find*files*containing	grep -rl
+find*files*modified*today	find . -mtime 0
+find*files*modified*yesterday	find . -mtime 1
+find*large*files	find . -size +100M
+find*empty*files	find . -empty
+find*directories	find . -type d
+find*files*only	find . -type f
+#
+# === NETWORK ===
+#
+am*i*connected	ping -c 1 8.8.8.8 && echo "yes" || echo "no"
+test*internet	ping -c 1 8.8.8.8 && echo "yes" || echo "no"
+check*internet	ping -c 1 8.8.8.8 && echo "yes" || echo "no"
+what*is*my*ip	hostname -I 2>/dev/null || ipconfig getifaddr en0
+my*ip*address	hostname -I 2>/dev/null || ipconfig getifaddr en0
+show*ip	hostname -I 2>/dev/null || ipconfig getifaddr en0
+*listening*on*port*	lsof -i
+what*is*using*port	lsof -i
+show*open*ports	netstat -tuln 2>/dev/null || lsof -i -P
+show*connections	netstat -an 2>/dev/null || lsof -i
+check*dns	nslookup
+resolve*hostname	nslookup
+download*file	curl -O
+fetch*url	curl
+#
+# === COMPRESSION ===
+#
+compress*file	gzip
+compress*files	tar -czvf archive.tar.gz
+create*tar	tar -cvf
+create*tarball	tar -czvf
+extract*tar	tar -xvf
+extract*tarball	tar -xzvf
+unzip*file	unzip
+extract*zip	unzip
+create*zip	zip -r
+list*tar*contents	tar -tvf
+list*zip*contents	unzip -l
+what*compresses*files	echo "gzip, bzip2, xz for single files; tar -czvf for directories; zip -r for cross-platform"
+#
+# === TEXT PROCESSING ===
+#
+show*file*contents	cat
+print*file	cat
+show*first*lines	head
+show*last*lines	tail
+follow*log	tail -f
+watch*file	tail -f
+count*lines	wc -l
+count*words	wc -w
+count*characters	wc -c
+sort*file	sort
+sort*lines	sort
+unique*lines	sort | uniq
+remove*duplicates	sort | uniq
+#
+# === PERMISSIONS ===
+#
+show*permissions	ls -l
+check*permissions	ls -l
+make*readable	chmod +r
+make*writable	chmod +w
+remove*write*permission	chmod -w
+make*private	chmod 600
+make*public*readable	chmod 644
+make*executable*by*all	chmod 755
+#
+# === GIT ===
+#
+git*status	git status
+show*git*status	git status
+what*changed	git diff
+show*changes	git diff
+git*log	git log --oneline -10
+show*commits	git log --oneline -10
+recent*commits	git log --oneline -10
+which*branch	git branch
+current*branch	git branch --show-current
+#
+# === SYSTEM INFO ===
+#
+show*memory	free -h 2>/dev/null || vm_stat
+memory*usage	free -h 2>/dev/null || vm_stat
+show*cpu	top -l 1 2>/dev/null || top -bn1 | head -5
+cpu*usage	top -l 1 2>/dev/null || top -bn1 | head -5
+system*info	uname -a
+kernel*version	uname -r
+which*os	cat /etc/os-release 2>/dev/null || sw_vers
+uptime	uptime
+how*long*running	uptime
+#
+# === META ===
+#
+what*does*subtract*do	cat ~/.subtract/about
+subtract*help	subtract help
+subtract*upgrade	subtract upgrade
+how*do*i*use*subtract	echo "Type what you want. subtract translates to the command."
+#
+# === DEFINITIONAL (what is X) ===
+#
+what*is*ls	echo "ls - list directory contents"
+what*is*cd	echo "cd - change directory"
+what*is*cat	echo "cat - concatenate and print files"
+what*is*grep	echo "grep - search for patterns in files"
+what*is*find	echo "find - search for files in directory hierarchy"
+what*is*chmod	echo "chmod - change file permissions"
+what*is*chown	echo "chown - change file owner and group"
+what*is*ps	echo "ps - report process status"
+what*is*top	echo "top - display Linux processes"
+what*is*kill	echo "kill - send signal to process (default: SIGTERM)"
+what*is*tar	echo "tar - archive utility"
+what*is*gzip	echo "gzip - compress files"
+what*is*curl	echo "curl - transfer data from/to servers"
+what*is*wget	echo "wget - non-interactive network downloader"
+what*is*ssh	echo "ssh - secure shell remote login"
+what*is*scp	echo "scp - secure copy over ssh"
+what*is*rsync	echo "rsync - fast incremental file transfer"
+what*is*awk	echo "awk - pattern scanning and text processing"
+what*is*sed	echo "sed - stream editor for text transformation"
+what*is*xargs	echo "xargs - build and execute commands from stdin"
+what*is*tee	echo "tee - read stdin, write to stdout and files"
+what*is*diff	echo "diff - compare files line by line"
+what*is*patch	echo "patch - apply diff output to files"
+what*is*make	echo "make - build automation tool"
+what*is*man	echo "man - display manual pages"
+what*is*apropos	echo "apropos - search manual page names and descriptions"

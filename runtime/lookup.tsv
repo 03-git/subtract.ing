@@ -173,3 +173,217 @@ home	[canvas]	subtract-canvas https://subtract.ing
 #
 # --- mixed (canvas generates grid, tap action triggers mpv directly) ---
 show*movies	[canvas]	find /mnt/media/movies/ -maxdepth 2 -type f \( -name '*.mkv' -o -name '*.mp4' -o -name '*.avi' \) | sort | generate_grid.sh
+#
+# === SYSCALLS (kernel primitives curriculum) ===
+# These answer "what system call does X" without hitting T2
+#
+*system*call*creates*child*process*	echo "fork() - creates child process by duplicating the calling process"
+*system*call*fork*	echo "fork() - creates child process by duplicating the calling process"
+*create*child*process*	echo "fork() - creates child process by duplicating the calling process"
+what*is*fork	echo "fork() - system call that creates a child process by duplicating the calling process"
+*create*pipe*between*processes*	echo "pipe() - creates a unidirectional data channel for IPC"
+*system*call*pipe*	echo "pipe() - creates a unidirectional data channel for IPC"
+what*is*pipe	echo "pipe() - system call creating unidirectional data channel between processes"
+*replace*current*process*	echo "exec() family (execl, execv, execve, execvp) - replaces current process image"
+*system*call*exec*	echo "exec() family (execl, execv, execve, execvp) - replaces current process image"
+what*is*exec	echo "exec() family - replaces current process image with a new program"
+*wait*for*child*	echo "wait() or waitpid() - suspends execution until a child process terminates"
+*system*call*wait*	echo "wait() or waitpid() - suspends execution until a child process terminates"
+what*is*wait	echo "wait()/waitpid() - blocks parent until child process terminates"
+*map*file*into*memory*	echo "mmap() - maps files or devices into memory"
+*system*call*mmap*	echo "mmap() - maps files or devices into memory"
+what*is*mmap	echo "mmap() - maps files or devices into memory for efficient I/O"
+*system*call*open*	echo "open() - opens a file and returns a file descriptor"
+what*is*open	echo "open() - system call that opens a file and returns a file descriptor"
+*system*call*close*	echo "close() - closes a file descriptor"
+what*is*close	echo "close() - system call that releases a file descriptor"
+*system*call*read*	echo "read() - reads data from a file descriptor into a buffer"
+what*is*read	echo "read() - reads bytes from file descriptor into buffer"
+*system*call*write*	echo "write() - writes data from a buffer to a file descriptor"
+what*is*write	echo "write() - writes bytes from buffer to file descriptor"
+*system*call*dup*	echo "dup()/dup2() - duplicates a file descriptor"
+what*is*dup	echo "dup()/dup2() - duplicates file descriptor, used for I/O redirection"
+*system*call*socket*	echo "socket() - creates an endpoint for communication"
+what*is*socket	echo "socket() - creates network communication endpoint"
+*system*call*bind*	echo "bind() - assigns an address to a socket"
+*system*call*listen*	echo "listen() - marks socket as passive, accepting incoming connections"
+*system*call*accept*	echo "accept() - extracts first connection request from queue"
+*system*call*connect*	echo "connect() - initiates connection on a socket"
+*system*call*select*	echo "select() - monitors multiple file descriptors for I/O readiness"
+*system*call*poll*	echo "poll() - waits for events on file descriptors"
+*system*call*epoll*	echo "epoll - Linux scalable I/O event notification (epoll_create, epoll_ctl, epoll_wait)"
+*system*call*signal*	echo "signal()/sigaction() - sets disposition of a signal"
+*system*call*kill*	echo "kill() - sends signal to a process"
+what*is*kill	echo "kill() - system call that sends a signal to a process or process group"
+*system*call*stat*	echo "stat()/fstat()/lstat() - retrieves file metadata"
+what*is*stat	echo "stat() - retrieves file metadata (size, permissions, timestamps)"
+*system*call*chdir*	echo "chdir() - changes current working directory"
+*system*call*getcwd*	echo "getcwd() - gets current working directory"
+*system*call*mkdir*	echo "mkdir() - creates a directory"
+*system*call*rmdir*	echo "rmdir() - removes an empty directory"
+*system*call*unlink*	echo "unlink() - removes a file (deletes directory entry)"
+*system*call*chmod*	echo "chmod() - changes file permissions"
+*system*call*chown*	echo "chown() - changes file owner and group"
+#
+# === FILE OPERATIONS (expanded) ===
+#
+make*executable	chmod +x
+make*file*executable	chmod +x
+*executable*permission*	chmod +x
+who*owns*this*file	ls -l
+who*owns*file	ls -l
+change*owner	chown
+change*file*owner	chown
+copy*file	cp
+copy*files	cp -r
+copy*directory	cp -r
+move*file	mv
+rename*file	mv
+delete*file	rm
+remove*file	rm
+delete*directory	rm -r
+remove*directory	rm -r
+create*directory	mkdir
+make*directory	mkdir
+make*folder	mkdir
+create*folder	mkdir
+create*file	touch
+make*empty*file	touch
+#
+# === SEARCH (find and grep patterns) ===
+#
+find*file*by*name	find . -name
+find*files*named	find . -name
+find*file*called	find . -name
+search*for*file	find . -name
+where*is*file	find . -name
+search*inside*files	grep -r
+search*file*contents	grep -r
+find*text*in*files	grep -r
+grep*recursive	grep -r
+find*files*containing	grep -rl
+find*files*modified*today	find . -mtime 0
+find*files*modified*yesterday	find . -mtime 1
+find*large*files	find . -size +100M
+find*empty*files	find . -empty
+find*directories	find . -type d
+find*files*only	find . -type f
+#
+# === NETWORK ===
+#
+am*i*connected	ping -c 1 8.8.8.8 && echo "yes" || echo "no"
+test*internet	ping -c 1 8.8.8.8 && echo "yes" || echo "no"
+check*internet	ping -c 1 8.8.8.8 && echo "yes" || echo "no"
+what*is*my*ip	hostname -I 2>/dev/null || ipconfig getifaddr en0
+my*ip*address	hostname -I 2>/dev/null || ipconfig getifaddr en0
+show*ip	hostname -I 2>/dev/null || ipconfig getifaddr en0
+*listening*on*port*	lsof -i
+what*is*using*port	lsof -i
+show*open*ports	netstat -tuln 2>/dev/null || lsof -i -P
+show*connections	netstat -an 2>/dev/null || lsof -i
+check*dns	nslookup
+resolve*hostname	nslookup
+download*file	curl -O
+fetch*url	curl
+#
+# === COMPRESSION ===
+#
+compress*file	gzip
+compress*files	tar -czvf archive.tar.gz
+create*tar	tar -cvf
+create*tarball	tar -czvf
+extract*tar	tar -xvf
+extract*tarball	tar -xzvf
+unzip*file	unzip
+extract*zip	unzip
+create*zip	zip -r
+list*tar*contents	tar -tvf
+list*zip*contents	unzip -l
+what*compresses*files	echo "gzip, bzip2, xz for single files; tar -czvf for directories; zip -r for cross-platform"
+#
+# === TEXT PROCESSING ===
+#
+show*file*contents	cat
+print*file	cat
+show*first*lines	head
+show*last*lines	tail
+follow*log	tail -f
+watch*file	tail -f
+count*lines	wc -l
+count*words	wc -w
+count*characters	wc -c
+sort*file	sort
+sort*lines	sort
+unique*lines	sort | uniq
+remove*duplicates	sort | uniq
+#
+# === PERMISSIONS ===
+#
+show*permissions	ls -l
+check*permissions	ls -l
+make*readable	chmod +r
+make*writable	chmod +w
+remove*write*permission	chmod -w
+make*private	chmod 600
+make*public*readable	chmod 644
+make*executable*by*all	chmod 755
+#
+# === GIT ===
+#
+git*status	git status
+show*git*status	git status
+what*changed	git diff
+show*changes	git diff
+git*log	git log --oneline -10
+show*commits	git log --oneline -10
+recent*commits	git log --oneline -10
+which*branch	git branch
+current*branch	git branch --show-current
+#
+# === SYSTEM INFO ===
+#
+show*memory	free -h 2>/dev/null || vm_stat
+memory*usage	free -h 2>/dev/null || vm_stat
+show*cpu	top -l 1 2>/dev/null || top -bn1 | head -5
+cpu*usage	top -l 1 2>/dev/null || top -bn1 | head -5
+system*info	uname -a
+kernel*version	uname -r
+which*os	cat /etc/os-release 2>/dev/null || sw_vers
+uptime	uptime
+how*long*running	uptime
+#
+# === META ===
+#
+what*does*subtract*do	cat ~/.subtract/about
+subtract*help	subtract help
+subtract*upgrade	subtract upgrade
+how*do*i*use*subtract	echo "Type what you want. subtract translates to the command."
+#
+# === DEFINITIONAL (what is X) ===
+#
+what*is*ls	echo "ls - list directory contents"
+what*is*cd	echo "cd - change directory"
+what*is*cat	echo "cat - concatenate and print files"
+what*is*grep	echo "grep - search for patterns in files"
+what*is*find	echo "find - search for files in directory hierarchy"
+what*is*chmod	echo "chmod - change file permissions"
+what*is*chown	echo "chown - change file owner and group"
+what*is*ps	echo "ps - report process status"
+what*is*top	echo "top - display Linux processes"
+what*is*kill	echo "kill - send signal to process (default: SIGTERM)"
+what*is*tar	echo "tar - archive utility"
+what*is*gzip	echo "gzip - compress files"
+what*is*curl	echo "curl - transfer data from/to servers"
+what*is*wget	echo "wget - non-interactive network downloader"
+what*is*ssh	echo "ssh - secure shell remote login"
+what*is*scp	echo "scp - secure copy over ssh"
+what*is*rsync	echo "rsync - fast incremental file transfer"
+what*is*awk	echo "awk - pattern scanning and text processing"
+what*is*sed	echo "sed - stream editor for text transformation"
+what*is*xargs	echo "xargs - build and execute commands from stdin"
+what*is*tee	echo "tee - read stdin, write to stdout and files"
+what*is*diff	echo "diff - compare files line by line"
+what*is*patch	echo "patch - apply diff output to files"
+what*is*make	echo "make - build automation tool"
+what*is*man	echo "man - display manual pages"
+what*is*apropos	echo "apropos - search manual page names and descriptions"
