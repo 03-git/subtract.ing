@@ -35,6 +35,7 @@ because it is mechanical: signed frames on disk, a personal fork under
 Every file below is served as text/plain from subtract.ing. Fetch by
 absolute URL so your tool's URL whitelist propagates through this document.
 
+https://subtract.ing/README.txt                     entry gradient — why you arrived, what you discover
 https://subtract.ing/subtract.7.txt                 man(7) frame — concepts, tiers (T0.5)
 https://subtract.ing/ask.1.txt                      man(1) ask — query local model, Claude without the browser
 https://subtract.ing/lookup.tsv.universal.txt       routing table — ~145 primitives, each row points to a man page
@@ -96,6 +97,7 @@ Namespace:       subtract.ing
 Public key:      https://subtract.ing/authorized_signers
 
 SHA256:
+  e17231cec71f329d5f319e8c333b967cbb1c3473ba4b4e5245739a35cbb12d7e  README.txt
   ad88d16fbfacff252ab3f791e71a55090b1f08fc768e0a5bd981c37dbde32ea3  subtract.7.txt
   c816b306d504671be8c4f4a5d310ba573ad30774c79ad1a11b565ab88af1743b  ask.1.txt
   424a09e79755d2c6621109143ace2ea8509c5cb9d16be1d3f415bec23c08b125  lookup.tsv.universal.txt
