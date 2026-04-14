@@ -28,7 +28,7 @@ case "${1:-start}" in
 
         # Determine docs URL (degrade to local Kiwix if subtract.ing unreachable)
         if curl -s --head --connect-timeout 2 https://subtract.ing &>/dev/null; then
-            URL="https://subtract.ing/narrow.html"
+            URL="https://subtract.ing"
         elif pgrep -x kiwix-serve &>/dev/null; then
             BOOK=$(curl -s http://localhost:8080/nojs 2>/dev/null | grep -oE '/content/[^"]+' | head -1)
             URL="http://localhost:8080${BOOK:-/nojs}"
