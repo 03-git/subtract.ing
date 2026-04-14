@@ -33,6 +33,7 @@ fetch "runtime/cheatsheet.txt" "$SUBTRACT_DIR/cheatsheet.txt"
 fetch "runtime/index.html" "$SUBTRACT_DIR/index.html"
 fetch "runtime/hooks/bash.sh" "$SUBTRACT_DIR/hooks/bash.sh"
 fetch "runtime/hooks/zsh.sh" "$SUBTRACT_DIR/hooks/zsh.sh"
+fetch "runtime/nav.html" "$SUBTRACT_DIR/index.html"
 chmod +x "$SUBTRACT_DIR/subtract" "$SUBTRACT_DIR/ask"
 
 # mark as onboarded (fat lookdown.tsv makes interactive setup unnecessary)
