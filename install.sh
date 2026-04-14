@@ -33,11 +33,11 @@ fetch "runtime/hooks/bash.sh" "$SUBTRACT_DIR/hooks/bash.sh"
 fetch "runtime/hooks/zsh.sh" "$SUBTRACT_DIR/hooks/zsh.sh"
 chmod +x "$SUBTRACT_DIR/subtract" "$SUBTRACT_DIR/ask"
 
-# mark as onboarded (fat lookup.tsv makes interactive setup unnecessary)
+# mark as onboarded (fat lookdown.tsv makes interactive setup unnecessary)
 touch "$SUBTRACT_DIR/.onboarded"
 
-# Base lookup.tsv (don't overwrite user's fork)
-[ ! -f "$SUBTRACT_DIR/lookup.tsv" ] && fetch "runtime/lookup.tsv" "$SUBTRACT_DIR/lookup.tsv"
+# Base lookdown.tsv (don't overwrite user's fork)
+[ ! -f "$SUBTRACT_DIR/lookdown.tsv" ] && fetch "runtime/lookdown.tsv" "$SUBTRACT_DIR/lookdown.tsv"
 
 # Shell integration
 BASH_LINE='[ -f ~/.subtract/hooks/bash.sh ] && source ~/.subtract/hooks/bash.sh'

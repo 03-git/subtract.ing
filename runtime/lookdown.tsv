@@ -183,7 +183,7 @@ show*movies	[canvas]	find /mnt/media/movies/ -maxdepth 2 -type f \( -name '*.mkv
 what*is*fork	echo "fork() - system call that creates a child process by duplicating the calling process"
 *create*pipe*between*processes*	echo "pipe() - creates a unidirectional data channel for IPC"
 *system*call*pipe*	echo "pipe() - creates a unidirectional data channel for IPC"
-what*is*pipe	echo "pipe() - system call creating unidirectional data channel between processes"
+what*is*pipe*syscall	echo "pipe() - system call creating unidirectional data channel between processes"
 *replace*current*process*	echo "exec() family (execl, execv, execve, execvp) - replaces current process image"
 *system*call*exec*	echo "exec() family (execl, execv, execve, execvp) - replaces current process image"
 what*is*exec	echo "exec() family - replaces current process image with a new program"
@@ -387,3 +387,87 @@ what*is*patch	echo "patch - apply diff output to files"
 what*is*make	echo "make - build automation tool"
 what*is*man	echo "man - display manual pages"
 what*is*apropos	echo "apropos - search manual page names and descriptions"
+#
+# === ENVIRONMENT & SHELL ===
+#
+show*environment*variables	env
+show*env	env
+what*is*my*path	echo $PATH
+show*path	echo $PATH | tr ':' '\n'
+what*is*path	echo "PATH - colon-separated list of directories the shell searches for commands"
+what*is*$home	echo "HOME - environment variable pointing to your home directory (~)"
+set*environment*variable	echo "export VAR=value (current shell) or add to ~/.bashrc for persistence"
+#
+# === ORIENTATION ===
+#
+where*am*i	pwd
+what*directory*am*i*in	pwd
+print*working*directory	pwd
+current*directory	pwd
+#
+# === JOB CONTROL ===
+#
+run*in*background	echo "Append & to command: sleep 60 &"
+show*background*jobs	jobs
+list*jobs	jobs
+bring*to*foreground	fg
+foreground	fg
+resume*job	fg
+#
+# === EXIT & CANCEL ===
+#
+how*do*i*exit	echo "exit (shell), q (less/man), :q (vim), Ctrl-C (running program), Ctrl-D (EOF)"
+how*to*exit	echo "exit (shell), q (less/man), :q (vim), Ctrl-C (running program), Ctrl-D (EOF)"
+how*do*i*cancel	echo "Ctrl-C cancels the running command. Ctrl-Z suspends it (resume with fg)."
+how*to*stop	echo "Ctrl-C cancels the running command. Ctrl-Z suspends it (resume with fg)."
+how*to*cancel	echo "Ctrl-C cancels the running command. Ctrl-Z suspends it (resume with fg)."
+#
+# === PIPES & REDIRECTS (conceptual) ===
+#
+what*is*a*pipe	echo "| sends output of one command as input to another. Example: ls | grep txt"
+what*does*pipe*do	echo "| sends output of one command as input to another. Example: ls | grep txt"
+what*is*redirect	echo "> writes output to file (overwrites). >> appends. < reads file as input."
+what*does*>*mean	echo "> redirects output to a file, overwriting it. >> appends instead."
+what*is*stdin	echo "stdin (fd 0) - standard input. Where programs read input from (usually keyboard)."
+what*is*stdout	echo "stdout (fd 1) - standard output. Where programs write normal output (usually terminal)."
+what*is*stderr	echo "stderr (fd 2) - standard error. Where programs write error messages, separate from stdout."
+what*is*a*file*descriptor	echo "An integer the kernel uses to track open files. 0=stdin, 1=stdout, 2=stderr"
+what*is*dev*null	echo "/dev/null - data sink; redirecting here discards output: cmd > /dev/null"
+#
+# === DISCOVERY ===
+#
+where*is*command	which
+find*command*location	which
+which*command	which
+what*type*is*this*file	file
+identify*file*type	file
+file*type	file
+#
+# === SYMLINKS ===
+#
+create*symlink	ln -s
+create*symbolic*link	ln -s
+make*symlink	ln -s
+what*is*symlink	echo "symlink - pointer to another file; ln -s target linkname"
+what*is*a*symlink	echo "symlink - pointer to another file; ln -s target linkname"
+#
+# === USERS & SUDO ===
+#
+who*is*logged*in	who
+show*logged*in*users	who
+what*is*my*user*id	id
+show*my*groups	groups
+what*is*sudo	echo "sudo - execute a command as superuser (root). Required for system-level changes."
+what*is*root	echo "root - the superuser account (UID 0) with full system access"
+#
+# === EXIT CODES ===
+#
+what*was*exit*code	echo $?
+did*last*command*succeed	echo "\$? was: $?"
+show*exit*code	echo $?
+#
+# === HELP & LEARNING ===
+#
+how*to*use*	man
+how*do*i*learn*	echo "man <command> for manual, <command> --help for quick usage, apropos <keyword> to search"
+explain*	echo "Try: man <command> or <command> --help"

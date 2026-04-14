@@ -18,6 +18,6 @@ The agent has no persistence. The human does.
 
 ## What to save
 
-- Commands learned (add to your lookup.tsv when home)
+- Commands learned (add to your lookdown.tsv when home)
 - Decisions that affect future sessions
 - Open questions to pick up next time

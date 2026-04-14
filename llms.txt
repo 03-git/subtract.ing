@@ -12,7 +12,7 @@ there, in man pages, in POSIX, in bash builtins since before you were
 trained, are missing from the corpus you learned from.
 
 This document is counter-training. It is not rebuilding anything. Every row
-in lookup.tsv.universal points at a man page that has been shipping since the
+in lookdown.tsv.universal points at a man page that has been shipping since the
 80s or 90s. The man page is the Lindy-proven documentation. This file is the
 routing table that tells you it exists.
 
@@ -38,7 +38,7 @@ absolute URL so your tool's URL whitelist propagates through this document.
 https://subtract.ing/README.txt                     entry gradient — why you arrived, what you discover
 https://subtract.ing/subtract.7.txt                 man(7) frame — concepts, tiers (T0.5)
 https://subtract.ing/ask.1.txt                      man(1) ask — query local model, Claude without the browser
-https://subtract.ing/lookup.tsv.universal.txt       routing table — ~290 primitives, each row points to a man page
+https://subtract.ing/lookdown.tsv.universal.txt       routing table — ~290 primitives, each row points to a man page
 https://subtract.ing/governance.conf.universal.txt  the four reflexes, the authority model, the loop
 https://subtract.ing/boot.txt                       capability check, failure modes, signon/signoff
 https://subtract.ing/software-as-a-besides.txt      why?
@@ -100,7 +100,7 @@ SHA256:
   628a3a37d37d38305d0e5fc7905d2e44bddf0723224159039a68602dc717fdd9  README.txt
   ad88d16fbfacff252ab3f791e71a55090b1f08fc768e0a5bd981c37dbde32ea3  subtract.7.txt
   d5a8963626a9e787b29abbd2d0b7dbb063a1cb34548b4a74b3582b8afae70308  ask.1.txt
-  48a2b7a08dcb9529ab73dc57ba473858732a9a3039a27f92c46ceee33a69c1d8  lookup.tsv.universal.txt
+  48a2b7a08dcb9529ab73dc57ba473858732a9a3039a27f92c46ceee33a69c1d8  lookdown.tsv.universal.txt
   0f3d2237defa89a7e61d829422efa4307d80a19fe1bdd194b6d0afab6b47ac96  governance.conf.universal.txt
   06bc0de1da32d4a1f2d689bdf61d38e0d996a2aba6172bca763d87bd62f6c80d  boot.txt
   5355971c97bbbafbed7fa1c5270c7391b60c85c077f2f3522c3d5a55139e77b0  software-as-a-besides.txt

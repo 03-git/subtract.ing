@@ -15,7 +15,7 @@ SUBTRACT_DIR="${SUBTRACT_DIR:-$HOME/.subtract}"
 # bash hangs on unclosed quotes (what's, don't, can't) with a bare "> " prompt.
 # user doesn't know what happened. replace PS2 with an explanation.
 PS2="(unclosed quote -- press ctrl-c and rephrase without apostrophes) "
-SUBTRACT_LOOKUP="$SUBTRACT_DIR/lookup.tsv"
+SUBTRACT_LOOKUP="$SUBTRACT_DIR/lookdown.tsv"
 SUBTRACT_SKILLS="$SUBTRACT_DIR/skills"
 SUBTRACT_KIWIX="${SUBTRACT_KIWIX:-http://localhost:8888}"
 SUBTRACT_LAST_OUTPUT=""

@@ -5,11 +5,11 @@
 SUBTRACT_DIR="${SUBTRACT_DIR:-$HOME/.subtract}"
 ASK_CONFIG="$SUBTRACT_DIR/ask_backend"
 
-# --- T0: check lookup.tsv first ---
+# --- T0: check lookdown.tsv first ---
 
 __ask_try_lookup() {
     local query="$1"
-    local lookup_file="$SUBTRACT_DIR/lookup.tsv"
+    local lookup_file="$SUBTRACT_DIR/lookdown.tsv"
     [ ! -f "$lookup_file" ] && return 1
     
     # strip trailing punctuation
@@ -17,7 +17,7 @@ __ask_try_lookup() {
     local query_lower
     query_lower=$(printf '%s' "$query" | tr '[:upper:]' '[:lower:]')
     
-    # read lookup.tsv, try glob patterns
+    # read lookdown.tsv, try glob patterns
     while IFS=$'\t' read -r pattern rest || [ -n "$pattern" ]; do
         # skip comments and empty lines
         case "$pattern" in
@@ -248,7 +248,7 @@ esac
 query="$*"
 [ -z "$query" ] && { echo "Usage: ask \"query\"" >&2; echo "Run 'ask --setup' to configure." >&2; exit 1; }
 
-# T0: try lookup.tsv first (instant, no model)
+# T0: try lookdown.tsv first (instant, no model)
 result=$(__ask_try_lookup "$query")
 if [ -n "$result" ]; then
     echo "$result"
@@ -264,7 +264,7 @@ fi
 if [ -z "$backend" ]; then
     backend=$(__ask_detect)
     if [ -z "$backend" ]; then
-        echo "No answer in lookup.tsv and no local backend running." >&2
+        echo "No answer in lookdown.tsv and no local backend running." >&2
         echo "Run 'ask --setup' to configure, or start ollama/llama.cpp/lm-studio." >&2
         exit 1
     fi
