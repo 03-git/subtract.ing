@@ -255,25 +255,28 @@ __subtract_skills() {
 __subtract_lookup() {
     local input_lower
     input_lower=$(__subtract_lower "$1")
-    local pattern tag cmd rest
+    local pattern tag cmd rest pattern_lower
     while IFS=$'\t' read -r pattern rest; do
         [[ "$pattern" =~ ^#.*$ || -z "$pattern" ]] && continue
-        local pattern_lower
         pattern_lower=$(__subtract_lower "$pattern")
         # shellcheck disable=SC2254
-        if [[ "$input_lower" == $pattern_lower ]]; then
-            # three-column: pattern<TAB>[tag]<TAB>command
-            # two-column:   pattern<TAB>command (backwards compat)
-            if [[ "$rest" =~ ^\[([a-z]+)\] ]]; then
-                if [ -n "$ZSH_VERSION" ]; then tag="${match[1]}"; else tag="${BASH_REMATCH[1]}"; fi
-                cmd="${rest#*$'\t'}"
-            else
-                tag="stdout"
-                cmd="$rest"
-            fi
-            echo "${tag}	${cmd}"
-            return 0
+        # zsh needs $~ for glob expansion in variables
+        if [ -n "$ZSH_VERSION" ]; then
+            [[ "$input_lower" == $~pattern_lower ]] || continue
+        else
+            [[ "$input_lower" == $pattern_lower ]] || continue
         fi
+        # three-column: pattern<TAB>[tag]<TAB>command
+        # two-column:   pattern<TAB>command (backwards compat)
+        if [[ "$rest" =~ ^\[([a-z]+)\] ]]; then
+            if [ -n "$ZSH_VERSION" ]; then tag="${match[1]}"; else tag="${BASH_REMATCH[1]}"; fi
+            cmd="${rest#*$'\t'}"
+        else
+            tag="stdout"
+            cmd="$rest"
+        fi
+        echo "${tag}	${cmd}"
+        return 0
     done < "$SUBTRACT_LOOKUP"
     return 1
 }
