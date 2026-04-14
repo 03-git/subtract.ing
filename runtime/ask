@@ -101,10 +101,24 @@ __ask_curl() {
 
 __ask_is_definitional() {
     local q="$1"
-    # patterns that apropos can answer
-    [[ "$q" =~ ^what\ (command|tool|program)\ ]] && return 0
-    [[ "$q" =~ ^which\ (command|tool|program)\ ]] && return 0
-    [[ "$q" =~ what\ (compresses|extracts|finds|lists|shows|displays|prints|creates|deletes|removes|copies|moves|renames) ]] && return 0
+    # patterns that apropos can answer (portable regex without grouping)
+    case "$q" in
+        "what command "*)  return 0 ;;
+        "what tool "*)     return 0 ;;
+        "what program "*)  return 0 ;;
+        "which command "*) return 0 ;;
+        "which tool "*)    return 0 ;;
+        "which program "*) return 0 ;;
+        *" compresses "*)  return 0 ;;
+        *" extracts "*)    return 0 ;;
+        *" finds "*)       return 0 ;;
+        *" lists "*)       return 0 ;;
+        *" shows "*)       return 0 ;;
+        *" creates "*)     return 0 ;;
+        *" deletes "*)     return 0 ;;
+        *" copies "*)      return 0 ;;
+        *" moves "*)       return 0 ;;
+    esac
     return 1
 }
 
@@ -134,7 +148,7 @@ __ask_setup() {
     
     local detected=""
     if __ask_detect_ollama; then
-        echo "  [✓] ollama (localhost:11434)"
+        echo "  [+] ollama (localhost:11434)"
         detected="ollama"
     else
         echo "  [ ] ollama"
@@ -144,14 +158,14 @@ __ask_setup() {
         local port
         port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
         [ -z "$port" ] && port="8081"
-        echo "  [✓] llama.cpp (localhost:${port})"
+        echo "  [+] llama.cpp (localhost:${port})"
         [ -z "$detected" ] && detected="llama.cpp"
     else
         echo "  [ ] llama.cpp"
     fi
     
     if __ask_detect_lm_studio; then
-        echo "  [✓] lm-studio (localhost:1234)"
+        echo "  [+] lm-studio (localhost:1234)"
         [ -z "$detected" ] && detected="lm-studio"
     else
         echo "  [ ] lm-studio"
