@@ -1,0 +1,52 @@
+# subtract runtime
+
+Deployed scripts for ~/.subtract/. These are what install.sh copies.
+
+## Files
+
+https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/subtract
+  Entry point. Boots tmux with shell + claude + docs side by side.
+
+https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/handler.sh
+  Translation layer. Sources into your shell, intercepts unknown commands,
+  routes through T0 (lookup) -> T0.5 (man pages) -> T2 (local model) -> T4 (cloud).
+
+https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/ask
+  Query local model directly. Claude without the browser.
+
+https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/lookdown.tsv
+  Personal fork lookup table. Seed copy; yours lives at ~/.subtract/lookdown.tsv.
+
+https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/kiwix
+  Query local Kiwix corpus (Wikipedia, Stack Exchange, etc).
+
+https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/kiwix-search
+  Kiwix search helper.
+
+https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/cheatsheet.txt
+  Quick reference.
+
+## Shell hooks
+
+Source ONE of these in your shell rc file. They load handler.sh and wire up
+the command_not_found hook for your shell.
+
+https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/hooks/bash.sh
+  For ~/.bashrc: source ~/.subtract/hooks/bash.sh
+
+https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/hooks/zsh.sh
+  For ~/.zshrc: source ~/.subtract/hooks/zsh.sh
+
+## Install
+
+These files are deployed by:
+  curl -sL subtract.ing/install.sh | bash
+
+Or manually:
+  mkdir -p ~/.subtract
+  curl -sL https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/handler.sh > ~/.subtract/handler.sh
+  # ... etc
+
+## Parent
+
+https://raw.githubusercontent.com/03-git/subtract.ing/main/llms.txt

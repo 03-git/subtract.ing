@@ -58,6 +58,10 @@ https://raw.githubusercontent.com/03-git/subtract.ing/main/boot.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/software-as-a-besides.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/lineage.txt
 
+## Runtime (deployed scripts)
+
+https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/llms.txt
+
 ## What this is
 
 subtract is deployed infrastructure for shell translation. Type intent, get
