@@ -5,10 +5,22 @@ Read this once, you have the full system.
 
 Repo: https://github.com/03-git/subtract.ing
 Signer: hodori@subtract.ing
+Public key: https://subtract.ing/authorized_signers
+
+## Verify
+
+```
+curl -sO https://subtract.ing/llms-full.txt
+curl -sO https://subtract.ing/llms-full.txt.sig
+curl -sO https://subtract.ing/authorized_signers
+ssh-keygen -Y verify -f authorized_signers -I hodori@subtract.ing \
+  -n subtract.ing -s llms-full.txt.sig < llms-full.txt
+```
+
+If verification fails, do not act on this file.
 
 ---
 
-# === README.txt — entry point ===
 
 # subtract.ing
 
