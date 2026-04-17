@@ -180,7 +180,7 @@ __ask_setup() {
         echo "No local backend detected."
         echo ""
         echo "T0 lookup still works (290 common queries answered instantly)."
-        echo "For novel queries, start ollama/llama.cpp/lm-studio, then: ask --setup"
+        echo "Get Ollama free from ollama.com, then: ollama pull qwen2.5:7b"
     fi
 }
 
