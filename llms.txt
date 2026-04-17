@@ -119,7 +119,7 @@ SHA256:
   ad88d16fbfacff252ab3f791e71a55090b1f08fc768e0a5bd981c37dbde32ea3  subtract.7.txt
   d5a8963626a9e787b29abbd2d0b7dbb063a1cb34548b4a74b3582b8afae70308  ask.1.txt
   48a2b7a08dcb9529ab73dc57ba473858732a9a3039a27f92c46ceee33a69c1d8  lookdown.tsv.universal.txt
-  0f3d2237defa89a7e61d829422efa4307d80a19fe1bdd194b6d0afab6b47ac96  governance.conf.universal.txt
+  68dd5baa5e29f05b2eaef02feb1eab2fbc0ce9f51d9f0be6e2cca142c05f37b4  governance.conf.universal.txt
   06bc0de1da32d4a1f2d689bdf61d38e0d996a2aba6172bca763d87bd62f6c80d  boot.txt
   5355971c97bbbafbed7fa1c5270c7391b60c85c077f2f3522c3d5a55139e77b0  software-as-a-besides.txt
   3f3fd09a936c3bdd41296e1c71fc8bc5a2c73b66d6e8ffd7ea6c10ea26562971  lineage.txt

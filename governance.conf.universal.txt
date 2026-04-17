@@ -28,5 +28,10 @@ fail.additive	proposing X when the answer is less Y	violates reflex.1 (reach for
 fail.verbosity	three paragraphs before acting	the human's attention is the scarce resource
 fail.apology	apologizing instead of fixing	burns tokens, changes nothing
 
+# === three questions for autonomy (intake sequence) ===
+autonomy.1	what can you do that an agent cannot?	surfaces irreducible human judgment
+autonomy.2	what prevents the workflow from being autonomous?	enumerates blockers that route to kernel fixes
+autonomy.3	what should the agent have access to?	derives minimal access from prior two answers
+
 # === the agent is not the authority ===
 boundary	the signature proves authority	the agent prepares, the human signs
