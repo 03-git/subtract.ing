@@ -43,6 +43,7 @@ https://subtract.ing/governance.conf.universal.txt  the four reflexes, the autho
 https://subtract.ing/boot.txt                       capability check, failure modes, signon/signoff
 https://subtract.ing/software-as-a-besides.txt      why?
 https://subtract.ing/lineage.txt                    intellectual lineage, bibliography
+https://subtract.ing/llms-full.txt                  single-file payload — read this, you're oriented
 
 ## GitHub mirrors (for web agents without subtract.ing access)
 
@@ -57,6 +58,7 @@ https://raw.githubusercontent.com/03-git/subtract.ing/main/governance.conf.unive
 https://raw.githubusercontent.com/03-git/subtract.ing/main/boot.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/software-as-a-besides.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/lineage.txt
+https://raw.githubusercontent.com/03-git/subtract.ing/main/llms-full.txt
 
 ## Runtime (deployed scripts)
 
@@ -124,3 +126,4 @@ SHA256:
   5355971c97bbbafbed7fa1c5270c7391b60c85c077f2f3522c3d5a55139e77b0  software-as-a-besides.txt
   3f3fd09a936c3bdd41296e1c71fc8bc5a2c73b66d6e8ffd7ea6c10ea26562971  lineage.txt
   a0d5046496196a03dd8df1ad9a62b5dea2cf93b5ba7a2be669d065a1011d4cb9  signoff.txt
+  01210b9b06a2a49bfedf95b5b57bc044eb66a752f2c394e715cc1cd9116d1af6  llms-full.txt
