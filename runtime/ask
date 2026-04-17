@@ -28,10 +28,6 @@ __ask_try_lookup() {
         local cmd
         cmd=$(printf '%s' "$rest" | cut -f1)
         [ -z "$cmd" ] && cmd="$rest"
-        # if rest has a second field, that's the actual command
-        local maybe_cmd
-        maybe_cmd=$(printf '%s' "$rest" | cut -f2)
-        [ -n "$maybe_cmd" ] && cmd="$maybe_cmd"
         
         local pattern_lower
         pattern_lower=$(printf '%s' "$pattern" | tr '[:upper:]' '[:lower:]')

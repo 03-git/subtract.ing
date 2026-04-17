@@ -471,3 +471,6 @@ show*exit*code	echo $?
 how*to*use*	man
 how*do*i*learn*	echo "man <command> for manual, <command> --help for quick usage, apropos <keyword> to search"
 explain*	echo "Try: man <command> or <command> --help"
+*list*files*	ls	list files in current directory
+*show*files*	ls	show files
+how*list*	ls	how do I list
