@@ -61,7 +61,7 @@ fetch "runtime/bin/shell-web" "$SUBTRACT_DIR/bin/shell-web"
 chmod +x "$SUBTRACT_DIR/bin/shell-web"
 
 # kiwix landing page
-fetch "runtime/pages/kiwix.html" "$SUBTRACT_DIR/pages/kiwix.html" 2>/dev/null || true
+fetch "runtime/pages/subtract.html" "$SUBTRACT_DIR/pages/subtract.html" 2>/dev/null || true
 
 # Shell integration
 BASH_LINE='[ -f ~/.subtract/hooks/bash.sh ] && source ~/.subtract/hooks/bash.sh'
