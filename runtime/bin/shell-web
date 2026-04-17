@@ -1,0 +1,38 @@
+#!/bin/bash
+# shell-web — serve a shell in the browser via ttyd
+# Usage: shell-web [start|stop|status]
+
+TTYD="${HOME}/.subtract/bin/ttyd"
+PORT=7681
+PIDFILE="${HOME}/.subtract/ttyd.pid"
+
+case "${1:-start}" in
+    start)
+        if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+            echo "ttyd already running on :$PORT (pid $(cat "$PIDFILE"))"
+            exit 0
+        fi
+        echo "Starting browser shell on http://localhost:$PORT/"
+        nohup "$TTYD" -p "$PORT" bash > /dev/null 2>&1 &
+        echo $! > "$PIDFILE"
+        ;;
+    stop)
+        if [ -f "$PIDFILE" ]; then
+            kill "$(cat "$PIDFILE")" 2>/dev/null
+            rm -f "$PIDFILE"
+            echo "Stopped"
+        else
+            echo "Not running"
+        fi
+        ;;
+    status)
+        if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+            echo "Running on http://localhost:$PORT/ (pid $(cat "$PIDFILE"))"
+        else
+            echo "Not running"
+        fi
+        ;;
+    *)
+        echo "Usage: shell-web [start|stop|status]"
+        ;;
+esac

@@ -14,20 +14,10 @@ case "${1:-start}" in
             exit 1
         fi
 
-        # Check for claude
-        if ! command -v claude &>/dev/null; then
-            echo "subtract requires claude CLI"
-            echo "  https://docs.anthropic.com/en/docs/claude-code"
-            exit 1
-        fi
-
         session="subtract"
 
         # Attach to existing session if present
         tmux attach -t "$session" 2>/dev/null && exit 0
-
-        # Docs: local navigation cheatsheet (user presses 'g' to go elsewhere)
-        URL="$SUBTRACT_DIR/index.html"
 
         # Get terminal dimensions
         COLS=$(tput cols)
@@ -60,16 +50,16 @@ case "${1:-start}" in
             tmux bind-key -n C-v run "tmux set-buffer \"\$(/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -command '[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-Clipboard' | tr -d '\\r')\" && tmux paste-buffer"
         fi
 
-        # Pane 0 (shell): cheatsheet then prompt
-        if [ -f "$SUBTRACT_DIR/cheatsheet.txt" ]; then
-            tmux send-keys -t "$session:0.0" "clear && cat $SUBTRACT_DIR/cheatsheet.txt && echo ''" C-m
-        fi
-
-        # Pane 1 (API): launch claude
-        tmux send-keys -t "$session:0.1" 'claude' C-m
-
-        # Pane 2 (docs): lynx to docs URL
-        tmux send-keys -t "$session:0.2" "lynx $URL" C-m
+        # Each pane: print orientation file, then drop to prompt
+        for i in 0 1 2; do
+            case $i in
+                0) f="pane-shell.txt" ;;
+                1) f="pane-api.txt"   ;;
+                2) f="pane-docs.txt"  ;;
+            esac
+            [ -f "$SUBTRACT_DIR/$f" ] && \
+                tmux send-keys -t "$session:0.$i" "clear && cat $SUBTRACT_DIR/$f && echo" C-m
+        done
 
         # Attach
         tmux attach -t "$session"

@@ -1,0 +1,13 @@
+# api
+
+where you talk to a model.
+
+  ask "question"   walks the tiers (lookdown → apropos → embed →
+                   llama.cpp → cloud). starts local, escalates only
+                   when the local tier misses.
+  ask --setup      pick a backend if none is wired yet.
+  claude           full interactive session (requires install).
+
+no model is pre-loaded. nothing talks unless you ask it to.
+
+ctrl-b 1 → shell.  ctrl-b 3 → docs.  run `kiwix` for the cheatsheet.

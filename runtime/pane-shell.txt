@@ -1,0 +1,12 @@
+# shell
+
+your workspace. files, commands, pipes.
+
+  kiwix           open the offline docs + full cheatsheet
+                  (left margin = primitives + tiers,
+                   right margin = ask + formation)
+  ctrl-b 2        jump to api pane
+  ctrl-b 3        jump to docs pane
+  ctrl-c          stop the current command
+
+that's it. do whatever you want here.

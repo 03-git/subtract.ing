@@ -9,3 +9,6 @@ PROMPT_COMMAND="__subtract_capture;${PROMPT_COMMAND:+$PROMPT_COMMAND}"
 command_not_found_handle() {
     __subtract_handle "$@"
 }
+
+# add subtract binaries to PATH
+export PATH="$HOME/.subtract/bin:$PATH"

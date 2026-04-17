@@ -15,7 +15,7 @@ else
     MODE="web"
 fi
 
-mkdir -p "$SUBTRACT_DIR" "$SUBTRACT_DIR/hooks"
+mkdir -p "$SUBTRACT_DIR" "$SUBTRACT_DIR/hooks" "$SUBTRACT_DIR/bin" "$SUBTRACT_DIR/pages"
 
 fetch() {
     if [ "$MODE" = "local" ]; then
@@ -41,6 +41,28 @@ touch "$SUBTRACT_DIR/.onboarded"
 # Base lookdown.tsv (don't overwrite user's fork)
 [ ! -f "$SUBTRACT_DIR/lookdown.tsv" ] && fetch "runtime/lookdown.tsv" "$SUBTRACT_DIR/lookdown.tsv"
 
+# Browser shell (ttyd) - for new users who know browser but not terminal
+TTYD_VERSION="1.7.7"
+case "$(uname -s)-$(uname -m)" in
+    Linux-x86_64)  TTYD_BIN="ttyd.x86_64" ;;
+    Linux-aarch64) TTYD_BIN="ttyd.aarch64" ;;
+    Darwin-arm64)  TTYD_BIN="ttyd.darwin-arm64" ;;
+    Darwin-x86_64) TTYD_BIN="ttyd.darwin-x86_64" ;;
+    *) TTYD_BIN="" ;;
+esac
+
+if [ -n "$TTYD_BIN" ] && [ ! -f "$SUBTRACT_DIR/bin/ttyd" ]; then
+    echo "Installing browser shell (ttyd)..."
+    curl -sL "https://github.com/tsl0922/ttyd/releases/download/${TTYD_VERSION}/${TTYD_BIN}" \
+        -o "$SUBTRACT_DIR/bin/ttyd" && chmod +x "$SUBTRACT_DIR/bin/ttyd"
+fi
+
+fetch "runtime/bin/shell-web" "$SUBTRACT_DIR/bin/shell-web"
+chmod +x "$SUBTRACT_DIR/bin/shell-web"
+
+# kiwix landing page
+fetch "runtime/pages/kiwix.html" "$SUBTRACT_DIR/pages/kiwix.html" 2>/dev/null || true
+
 # Shell integration
 BASH_LINE='[ -f ~/.subtract/hooks/bash.sh ] && source ~/.subtract/hooks/bash.sh'
 ZSH_LINE='[ -f ~/.subtract/hooks/zsh.sh ] && source ~/.subtract/hooks/zsh.sh'
@@ -60,5 +82,8 @@ echo ""
 echo "Open a new terminal, then try:"
 echo "  show my files"
 echo "  ask \"what compresses files?\""
+echo ""
+echo "Browser shell: shell-web start"
+echo "  then open http://localhost:7681"
 echo ""
 echo "More: https://subtract.ing"
