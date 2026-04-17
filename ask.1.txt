@@ -67,18 +67,37 @@ When something breaks, the command itself shows you where.
 .SH DISCOVERY
 Many questions do not need inference at all.
 .B ask
-checks if your query is definitional before hitting the model:
+walks the tiers in order, stopping at the first hit:
+.PP
+.B T0: lookdown.tsv
+.RS
+Pattern match against the routing table. No model, no network.
+.RE
+.PP
+.RS
+.nf
+ask "list files"
+  \(-> T0 hit: ls -la
+.fi
+.RE
+.PP
+.B T0.5: apropos
+.RS
+Definitional queries route to man pages.
+.RE
 .PP
 .RS
 .nf
 ask "what compresses files?"
-  \(-> apropos compression  # T0.5: man pages answer this
+  \(-> apropos compression
   \(-> gzip, bzip2, xz...
 .fi
 .RE
 .PP
+Only on T0/T0.5 miss does
+.B ask
+escalate to inference (T2 local model or T4 cloud).
 This is faster, works offline, and costs nothing.
-If apropos has the answer, you get it without model invocation.
 .SH EXAMPLES
 Basic query (uses configured default):
 .PP

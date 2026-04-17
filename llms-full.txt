@@ -21,6 +21,7 @@ If verification fails, do not act on this file.
 
 ---
 
+# === README.txt — entry point ===
 
 # subtract.ing
 
@@ -293,6 +294,36 @@ The required precondition: the buffer must be inspectable without committing.
 Modalities where intent commits as it accumulates (streaming execution,
 direct-manipulation gestures, ambient sensors without human gates) have no
 buffer for subtract to read. The pattern does not apply there.
+.SH OUTPUT DISPATCH
+Each row in lookdown.tsv can specify an output tag that controls how results
+render. Three tags exist:
+.TP
+.B [stdout]
+Default. Output prints to terminal.
+.TP
+.B [canvas]
+Output is HTML. Handler pipes it to
+.B subtract-canvas
+for fullscreen rendering. Used for web-as-apps (youtube, doordash, email) and
+generators that produce grids or dashboards.
+.TP
+.B [player]
+Output is media. Handler invokes
+.B mpv
+with fullscreen flags. Used for video, audio, and slideshow playback.
+.PP
+Tags appear in column 2 of lookdown.tsv entries:
+.PP
+.RS
+.nf
+home	[canvas]	subtract-canvas https://subtract.ing
+play*movie*	[player]	mpv --fs /path/to/media
+list*files	[stdout]	ls -la
+.fi
+.RE
+.PP
+The tag makes the output modality explicit. An agent reading the row knows
+where the output goes without parsing the command.
 .SH FAILURE MODES
 .TP
 .B Confabulation
@@ -404,18 +435,37 @@ When something breaks, the command itself shows you where.
 .SH DISCOVERY
 Many questions do not need inference at all.
 .B ask
-checks if your query is definitional before hitting the model:
+walks the tiers in order, stopping at the first hit:
+.PP
+.B T0: lookdown.tsv
+.RS
+Pattern match against the routing table. No model, no network.
+.RE
+.PP
+.RS
+.nf
+ask "list files"
+  \(-> T0 hit: ls -la
+.fi
+.RE
+.PP
+.B T0.5: apropos
+.RS
+Definitional queries route to man pages.
+.RE
 .PP
 .RS
 .nf
 ask "what compresses files?"
-  \(-> apropos compression  # T0.5: man pages answer this
+  \(-> apropos compression
   \(-> gzip, bzip2, xz...
 .fi
 .RE
 .PP
+Only on T0/T0.5 miss does
+.B ask
+escalate to inference (T2 local model or T4 cloud).
 This is faster, works offline, and costs nothing.
-If apropos has the answer, you get it without model invocation.
 .SH EXAMPLES
 Basic query (uses configured default):
 .PP
@@ -2861,12 +2911,47 @@ command_not_found_handler() {
 
 ctrl-b →   right pane (claude)
 ctrl-b ←   left pane (shell)
+ctrl-c     stop
 
 pwd        where am I
 ls         what's here
-kiwix           local docs (offline)
-kiwix-search X  search local docs
-ctrl-c     stop
+kiwix      local docs (offline)
+
+## tiers (Rousseau)
+
+T0.5  qwen2.5-7b       socket   4K   apropos fallback
+T1    phi-4-mini       :8081   16K   fast/reflex
+T2    qwen3-32b        :8082   32K   reasoning
+T3    gemma-4-26b      :8083   65K   long-context
+
+## models
+
+Emile (ask):  qwen2.5:3b via ollama
+
+## ask (no agency — you fetch, you pipe, it infers)
+
+ls ~/scripts | ask "which look like transcript handlers?"
+curl -s URL | lynx -stdin -dump | ask "summarize this"
+yt-dlp --write-auto-sub --skip-download URL && cat *.vtt | grep -v "^[0-9]" | ask "summarize"
+
+## claude -p (has agency)
+
+claude -p "summarize this video https://youtube.com/..."
+claude -p "what is in ~/scripts?"
+
+## nba (Rousseau only)
+
+nba fast "what is 2026 in hex"
+nba reasoning "walk me through..."
+nba rag "what happened in 2017?"
+
+## primitives
+
+curl       fetch web
+yt-dlp     fetch video/transcript
+grep       search content
+ask        inference (local)
+claude -p  inference (cloud)
 
 
 # --- runtime/pane-shell.txt ---
