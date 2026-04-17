@@ -447,15 +447,16 @@ __subtract_ask_local() {
     local prompt="Answer concisely. /no_think ${input}"
     local payload result
 
-    payload=$(printf '{"messages":[{"role":"user","content":"%s"}],"max_tokens":500}' "$prompt")
+    payload=$(jq -n --arg content "$prompt" \
+        '{messages: [{role: "user", content: $content}], max_tokens: 500}')
 
     if [ -n "$inference_host" ] && [ "$inference_host" != "localhost" ]; then
         result=$(ssh -o ConnectTimeout=5 "$inference_host" \
-            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' -d '${payload}'" 2>/dev/null)
+            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' --data-binary @-" <<<"$payload" 2>/dev/null)
     else
         curl -s --connect-timeout 1 "http://localhost:${inference_port}/v1/models" &>/dev/null || return 1
         result=$(curl -s --connect-timeout 10 -X POST -H "Content-Type: application/json" \
-            -d "$payload" "http://localhost:${inference_port}/v1/chat/completions" 2>/dev/null)
+            --data-binary "$payload" "http://localhost:${inference_port}/v1/chat/completions" 2>/dev/null)
     fi
 
     [ -z "$result" ] && return 1
@@ -499,17 +500,18 @@ __subtract_generate() {
     local prompt="Translate to a single bash command. Output ONLY the command, nothing else. No explanation. No markdown. No code fences. /no_think Input: ${input}"
     local payload result
 
-    payload=$(printf '{"messages":[{"role":"user","content":"%s"}],"max_tokens":500}' "$prompt")
+    payload=$(jq -n --arg content "$prompt" \
+        '{messages: [{role: "user", content: $content}], max_tokens: 500}')
 
     # remote inference: SSH to host and curl llama-server there
     if [ -n "$inference_host" ] && [ "$inference_host" != "localhost" ]; then
         result=$(ssh -o ConnectTimeout=5 "$inference_host" \
-            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' -d '${payload}'" 2>/dev/null)
+            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' --data-binary @-" <<<"$payload" 2>/dev/null)
     else
         # local inference: llama-server on localhost
         curl -s --connect-timeout 1 "http://localhost:${inference_port}/v1/models" &>/dev/null || return 1
         result=$(curl -s --connect-timeout 10 -X POST -H "Content-Type: application/json" \
-            -d "$payload" "http://localhost:${inference_port}/v1/chat/completions" 2>/dev/null)
+            --data-binary "$payload" "http://localhost:${inference_port}/v1/chat/completions" 2>/dev/null)
     fi
 
     [ -z "$result" ] && return 1
