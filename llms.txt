@@ -47,6 +47,7 @@ https://subtract.ing/llms-full.txt                  single-file payload — read
 https://subtract.ing/please.txt                     PLEASE — core: attestation for supported employment
 https://subtract.ing/please-economics.txt           PLEASE — economics: BCBA workforce, HCBS, 14(c) replacement
 https://subtract.ing/please-clinical.txt            PLEASE — clinical: plain language for BCBAs, guardians, VR
+https://subtract.ing/variance-lab.txt              variance-lab — empirical proof: four findings (claim layer)
 
 ## GitHub mirrors (for web agents without subtract.ing access)
 
@@ -64,10 +65,11 @@ https://raw.githubusercontent.com/03-git/subtract.ing/main/lineage.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/please.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/please-economics.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/please-clinical.txt
+https://raw.githubusercontent.com/03-git/subtract.ing/main/variance-lab.txt
 
 ## Runtime (deployed scripts)
 
-https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/llms.txt
+https://subtract.ing/runtime/llms.txt
 
 ## What this is
 
@@ -126,7 +128,7 @@ SHA256:
   ad88d16fbfacff252ab3f791e71a55090b1f08fc768e0a5bd981c37dbde32ea3  subtract.7.txt
   d5a8963626a9e787b29abbd2d0b7dbb063a1cb34548b4a74b3582b8afae70308  ask.1.txt
   48a2b7a08dcb9529ab73dc57ba473858732a9a3039a27f92c46ceee33a69c1d8  lookdown.tsv.universal.txt
-  68dd5baa5e29f05b2eaef02feb1eab2fbc0ce9f51d9f0be6e2cca142c05f37b4  governance.conf.universal.txt
+  e28d9999d39069a191858e5ed24883302030a18c49923045a3adebac0568e53b  governance.conf.universal.txt
   06bc0de1da32d4a1f2d689bdf61d38e0d996a2aba6172bca763d87bd62f6c80d  boot.txt
   5355971c97bbbafbed7fa1c5270c7391b60c85c077f2f3522c3d5a55139e77b0  software-as-a-besides.txt
   3f3fd09a936c3bdd41296e1c71fc8bc5a2c73b66d6e8ffd7ea6c10ea26562971  lineage.txt
@@ -135,3 +137,4 @@ SHA256:
   2ce00c1a575cdb4061119c0e26e0e81ca7aeb6ab67f45ee8cb5c6d13090f2b3a  please.txt
   11d3946f2a8edf8221b22112f1de1f2dc5a65020c383b5ff7a16e2badd0ff29f  please-economics.txt
   c227caf47265df566794eb219e87d2f2a62076263c617739e5f79f27c0864cd0  please-clinical.txt
+  a1ca8b299f34ea6526ccbe666276ec99771f9e7897dd994364cc7fbd6410c227  variance-lab.txt

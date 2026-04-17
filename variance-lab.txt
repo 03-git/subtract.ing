@@ -1,0 +1,401 @@
+# variance-lab — empirical proof layer
+
+This is the claim layer of the subtract stack. Harness and raw outputs live at
+github.com/03-git/variance-lab (substrate, reproducible). These findings are
+the load-bearing empirical claims that the subtract doctrine relies on.
+
+  Canonical:  https://subtract.ing/variance-lab.txt (signed via llms.txt manifest)
+  Harness:    https://github.com/03-git/variance-lab (runnable, reproducible)
+  Signer:     hodori@subtract.ing
+  Namespace:  subtract.ing
+
+Verify:
+
+  curl -sO https://subtract.ing/llms.txt
+  curl -sO https://subtract.ing/llms.txt.sig
+  curl -sO https://subtract.ing/variance-lab.txt
+  ssh-keygen -Y verify -f <(curl -s https://subtract.ing/authorized_signers) \
+    -I hodori@subtract.ing -n subtract.ing -s llms.txt.sig < llms.txt
+  grep "variance-lab.txt" llms.txt | sha256sum -c
+
+
+================================================================
+
+---
+title: Three Questions for Agentic Autonomy
+date: 2026-03-28
+source: production empirical (consulting methodology derived from formation buildout)
+domain:
+  - agentic-consulting
+  - workflow-automation
+  - autonomy-assessment
+  - human-ai-task-allocation
+keywords:
+  - agentic autonomy assessment
+  - consulting intake protocol
+  - workflow automation assessment
+  - human KPI identification
+  - via negativa methodology
+  - autonomy blocker taxonomy
+  - agent permission design
+  - infrastructure vs capability barriers
+prior_art_status: no published framework combines these three questions in this sequence (verified against Davenport, Brynjolfsson, Autor, McKinsey, Gartner, RPA methodologies, platform engineering, agent infrastructure literature through 2025)
+---
+
+# Three Questions for Agentic Autonomy
+
+Every workflow automation, every agent deployment, every consulting engagement starts with three questions:
+
+1. **What can you do that an agent cannot?**
+2. **What prevents the workflow from being autonomous?**
+3. **What should the agent have access to?**
+
+The answers are domain-specific. The questions are universal. The sequence matters.
+
+## Why the sequence matters
+
+Starting from question 1 (human capability boundary) forces a different inventory than starting from "what can AI do." It surfaces tacit knowledge, judgment under ambiguity, relational capital, and contextual authority -- capabilities that a technology-first scan would never surface because they don't map to automatable task categories.
+
+Starting from question 2 (autonomy blockers) assumes the agent is capable and asks what environmental barriers remain. This inverts the standard framing where "why not automate?" defaults to "AI isn't good enough yet." Most blockers are infrastructure problems (authentication gates, GUI-only interfaces, missing APIs), not capability problems.
+
+Starting from question 3 (access scope) after questions 1 and 2 leads to subtractive security: the agent gets only what the blocker analysis says it needs. Reversing the order (starting with access) leads to additive security -- granting broad access and layering restrictions.
+
+## Prior art
+
+Every major published framework follows one of three starting points:
+
+| Starting point | Examples | Gap |
+|---|---|---|
+| Technology-first: what can AI do? | Brynjolfsson & Mitchell (2017), Kai-Fu Lee (2018), McKinsey (2017) | Human capability is the residual, not the starting point |
+| Process-first: map workflow, allocate tasks | Wilson & Daugherty/Accenture (2018), RPA feasibility (UiPath, Automation Anywhere) | Process is the unit of analysis, not the blocker |
+| ROI-first: where are the efficiency gains? | Gartner hyperautomation (2020-2024), Big 4 assessments | Automation candidacy scoring, not blocker enumeration |
+
+**What is novel in the three-question sequence:**
+
+1. Human capability as the generative starting point, not the residual after AI capability mapping
+2. Blocker as the unit of analysis, not process or capability
+3. Infrastructure vs capability as a first-class distinction (the agent could do it, but auth/API/GUI prevents it)
+4. Per-workflow blocker decomposition that is directly actionable (remove this blocker, unlock this autonomy)
+5. Access scope derived from blocker analysis, producing subtractive security by construction
+
+No published framework combines all five elements. The individual concepts appear in isolation across platform engineering (Skelton & Pais), automation candidacy scoring (McKinsey/Gartner), agent infrastructure literature (LangChain, Anthropic), and security frameworks (least privilege). The composition and sequencing are unoccupied.
+
+## Application
+
+These questions apply at every scale:
+
+- **Individual workflow**: "What do I still do manually that I should not?" leads to question 1.
+- **Small practice (clinician, designer, freelancer)**: Questions 1-3 are the entire consulting intake. The client answers from domain expertise. The consultant maps answers to infrastructure.
+- **Enterprise**: The same questions, asked per department, per workflow, per role. The aggregated answers define the agent architecture.
+
+## Empirical validation
+
+Derived from building a multi-node agentic formation where each automation required answering all three questions before implementation. Cost data from production: instruction-based constraints cost $0.30-0.55/call when the agent could bypass them. Capability subtraction (derived from question 3 answers) cost $0.02/call with no bypass possible. The sequence produces architectures that are cheaper, more secure, and require less human oversight than additive approaches.
+
+================================================================
+
+---
+title: Delegation-Aware Execution vs Single-Context Inline
+date: 2026-03-28
+source: production empirical (controlled comparison, identical task set)
+domain:
+  - agent-architecture
+  - parallel-execution
+  - delegation-pattern
+  - latency-optimization
+keywords:
+  - delegation-aware execution
+  - parallel agent dispatch
+  - single-context ceiling
+  - agent-as-employee
+  - inline vs delegated
+  - multi-node parallel execution
+  - wall clock latency
+  - context window limits
+---
+
+# Delegation-Aware Execution vs Single-Context Inline
+
+## Core Finding
+
+Delegated parallel execution across multiple nodes completed identical task volume in 48% of the time compared to single-context inline execution. The only variable was topology.
+
+## Test Design
+
+10 identical tasks: read 6 transcripts (4,752 total lines), read 3 landscape documents, cross-reference all sources for shared weaknesses.
+
+| Metric | Inline (1 node) | Delegated (3 nodes) |
+|--------|-----------------|---------------------|
+| Wall clock | 126 seconds | 65 seconds |
+| Output | 134 lines | 104 lines |
+| Nodes | 1 | 3 |
+| Model | Same (subscription default) | Same (subscription default) |
+| Cost | Same (subscription) | Same (subscription) |
+
+## Why this matters
+
+The single-context approach forces sequential file reads, accumulating context with each task. By task 7, the context window contains the residue of tasks 1-6. The model processes increasingly bloated context for each subsequent task.
+
+The delegated approach gives each node a fresh context window scoped to its assigned tasks. No accumulation, no residue, no cross-contamination between unrelated tasks.
+
+## The ceiling difference
+
+Single-context inline hits two ceilings simultaneously:
+1. **Time**: sequential execution scales linearly with task count
+2. **Context**: the window fills, degrading quality on later tasks
+
+Delegation hits neither. Adding nodes reduces time. Each node gets fresh context. The ceilings are infrastructure (node count) not architectural (context window).
+
+## The architectural insight
+
+Models are trained as single-process reasoning engines. Every RLHF example is "here is a question, answer it." No training data rewards "here is a question, route it to a more appropriate context."
+
+Delegation-aware execution treats agents as employees with scoped jobs, not as a single omniscient assistant. The efficiency gain comes from the same principle that makes organizations faster than individuals: parallel execution with clear scope boundaries.
+
+The question for any enterprise: do you want one agent reading every document in sequence, or ten agents each reading their assigned documents simultaneously? The answer determines whether your agent architecture scales with compute or hits a context window wall.
+
+## Scaling projection
+
+## Empirical scaling data
+
+| Contexts | Nodes | Wall clock | Successful | Rate-limited | vs Inline |
+|----------|-------|-----------|-----------|--------------|-----------|
+| 1 (inline) | 1 | 126s | 10/10 | 0 | baseline |
+| 3 | 3 | 65s | 10/10 | 0 | 48% |
+| 5 | 3 | 43s | 10/10 | 0 | 34% |
+| 10 | 3 | 30s | 7/10 | 3 | 24% |
+| 15 | 3 | 48s | 13/15 | 2 | 38% |
+| 20 | 3 | 25s | 0/20 | 20 | wall |
+
+Sweet spot: 5-10 concurrent contexts on 3 nodes. At 10, rate limiting begins. At 15, contention overhead exceeds parallelism gain. At 20, account is fully saturated.
+
+Physical node distribution affects rate limiting:
+
+| Contexts | Nodes | Time | Successful |
+|----------|-------|------|-----------|
+| 10 | 3 nodes | 30s | 7/10 |
+| 10 | 1 node | 16s | 0/10 |
+
+Same account, same context count. Multi-node gets 7/10 results through. Single-node gets 0/10. The rate limiter is per-account but source IP distribution affects throughput. More physical nodes is not just parallelism — it is rate limit arbitrage. Direct infrastructure relevance: more machines per subscription equals more throughput, not just faster execution.
+
+All three rows are measured on identical task sets (10 tasks, 9 source files). Adding parallel contexts on the same physical nodes continues to reduce wall clock time because per-context task scope shrinks. Further scaling beyond 5 contexts has not been tested and would be subject to rate limits, file distribution latency, and task dependency chains.
+
+================================================================
+
+---
+title: Interaction Mode Variance in Human-AI Sessions
+date: 2026-03-30
+source: production empirical (88 Claude Code session logs, single operator, single model)
+domain:
+  - agent-architecture
+  - session-design
+  - cost-optimization
+  - human-ai-interaction
+keywords:
+  - interaction mode variance
+  - session cost multiplier
+  - passenger mode anti-pattern
+  - governor mode efficiency
+  - pipe mode execution
+  - via negativa inference
+  - human-gated inference cost
+  - session scope constraint
+  - RLHF alignment tax
+related_findings:
+  - "variance-lab finding 3: delegation-aware execution - 48% of inline time"
+  - "variance-lab finding 6: cost inversion - dumber model + subtraction beats smarter model + instruction"
+methodology: automated extraction from JSONL conversation logs, mode classification by human turn count
+---
+
+# Interaction Mode Variance in Human-AI Sessions
+
+## Core Finding
+
+Human interaction pattern is the dominant cost variable in AI sessions, not model capability. Across 88 sessions using the same model (claude-opus-4-6) on the same node, passenger mode (>15 human turns) consumed 41x more tokens per session than governor mode (<=3 human turns). Mode is a property of session scope, not model performance.
+
+## Mode Classification
+
+Sessions classified by human turn count:
+
+- **Pipe** (<=1 human turn, queued): intent in, result out, no round trips
+- **Governor** (<=3 human turns): scoped directive with minimal steering
+- **Collaborator** (<=15 human turns): joint work, both human and model contribute signal
+- **Passenger** (>15 human turns): model-led exploration, unconstrained scope
+
+## Data
+
+| Mode | Sessions | Total Tokens | Avg Tokens/Session | Human Turns | Tool Calls | Correction Rate |
+|------|----------|-------------|-------------------:|-------------|------------|----------------:|
+| Pipe | 19 | 12,053 | 634 | 19 | 1 | n/a* |
+| Governor | 34 | 19,590 | 576 | 73 | 36 | n/a* |
+| Collaborator | 25 | 87,616 | 3,505 | 177 | 149 | 3.4% |
+| Passenger | 10 | 236,577 | 23,658 | 814 | 726 | 1.1% |
+| **Total** | **88** | **355,836** | **4,043** | **1,083** | **912** | **4.3%** |
+
+*Correction detection via keyword matching produces false positives in short sessions. Signal is reliable only in collaborator/passenger modes.
+
+## Key Findings
+
+### 1. Passenger mode: 11% of sessions, 66% of tokens
+
+10 sessions consumed 236,577 tokens. One session alone: 152,897 tokens, 488 human turns, 431 tool calls. This is the unconstrained default -- the model's RLHF training optimizes for engagement, not efficiency.
+
+### 2. The 41x cost multiplier
+
+Passenger mode averages 23,658 tokens/session. Governor mode averages 576. Same model, same node, same capability, same subscription. The only variable is how the human constrained the interaction.
+
+### 3. Collaborator mode has the best signal-to-token ratio
+
+3,505 tokens average with 3.4% correction rate. Both human and model contribute signal. Not the cheapest mode, but the highest useful output per token. This is the mode for theory, planning, and alignment.
+
+### 4. Pipe mode is optimal for execution
+
+634 tokens average, near-zero tool calls. No round trips, no idle GPU time waiting on human latency, no context spent on the model performing helpfulness.
+
+### 5. Low correction rate in passenger mode is not a quality signal
+
+1.1% correction rate in passenger sessions does not mean high quality. It means the human stopped steering. The model explored freely without constraint. Low correction + high token burn = the human abdicated scope control.
+
+## Architectural Implication
+
+The interaction mode must be scoped before the model is invoked, not discovered during the session. Scope the mode before invocation:
+
+- **Execution tasks**: pipe or governor mode. Scope the intent, get the output, exit.
+- **Alignment tasks**: collaborator mode. Both parties contribute, bounded by turn count.
+- **Passenger mode**: the anti-pattern. Never the target mode. When detected, the session should be split or terminated.
+
+The cost of human-gated inference scales with human latency, not model capability. Every idle second where a capable model waits for human input is wasted compute. Governor and pipe modes minimize this by minimizing human presence in the loop.
+
+## Methodology
+
+- 88 JSONL conversation logs from ~/.claude/projects/ on a single production node
+- All sessions used claude-opus-4-6 on Max subscription
+- Token counts from API usage fields in assistant message entries
+- Correction detection: keyword matching ("no ", "don't", "stop", "wrong", "not that", "actually", "wait", "cancel", "undo") against human turn content
+- Duration from first to last JSONL timestamp (some sessions span days due to idle time)
+- The 152k-token outlier correlates with the documented 53-subagent incident (2026-03-29)
+
+================================================================
+
+---
+title: Delegated Agent Authorization Gap
+date: 2026-03-28
+source: production empirical
+domain:
+  - agent-authorization
+  - oauth
+  - credential-delegation
+  - agentic-access
+  - identity
+  - financial-api
+  - communication-protocol
+keywords:
+  - delegated agent authorization
+  - OAuth agent access
+  - agentic credential
+  - RFC 8628 device flow
+  - GNAP RFC 9635
+  - CIBA OpenID
+  - SPIFFE machine identity
+  - FDX open banking
+  - Section 1033 CFPB
+  - PSD2 PISP
+  - 3D Secure agent
+  - bot detection authorized agent
+  - Privacy Pass RFC 9577
+related_findings:
+  - "variance-lab finding 5: instruction-based constraints do not override capability"
+  - "variance-lab finding 6: cost inversion - dumber model + capability subtraction beats smarter model + instruction"
+methodology: parallel research across domain verticals
+---
+
+# Delegated Agent Authorization Gap
+
+## Core Finding
+
+Every human-first service uses human-presence signals as a proxy for authorization. The single infrastructure primitive missing across all domains is a **delegated agent authorization credential**: user-signed, time-bounded, scope-limited, with revocation and audit trail.
+
+When a valid machine-readable authorization exists, the human-presence check is redundant. The fix is always the same structural subtraction: **remove the human-presence verification when bearer authorization already proves delegation.**
+
+This was derived empirically from a production KEYMASTER implementation where SSH credential subtraction ($0.02/call) outperformed instruction-based constraints ($0.30-0.55/call) on identical cross-node dispatch tasks.
+
+## Per-Domain Findings
+
+### Communications (IMAP/SMTP/CalDAV/Messaging)
+
+| Service | Current Barrier | What Works Today | Infrastructure Fix |
+|---------|----------------|------------------|-------------------|
+| Gmail | OAuth2 consent requires browser; 7-day token in Testing mode | Service accounts with domain-wide delegation (Workspace only) | Long-lived app passwords scoped to IMAP/SMTP; RFC 8628 device flow with non-expiring refresh |
+| Microsoft 365 | No application-level IMAP scope; Graph API only | Graph API with admin consent | Application-permission IMAP scope |
+| ProtonMail | No IMAP without Bridge GUI daemon | None headless | Headless Bridge with token auth |
+| Fastmail | App-specific passwords + IMAP/CalDAV | **Fully agentic today** | None needed |
+| iMessage | No API, no protocol docs, Apple-device-only | osascript on local Mac (requires GUI session) | None possible without Apple |
+| Signal | signal-cli works headless after registration | Yes, post phone verification | Bot account type without phone verification |
+| Discord | Bot token, fully programmatic | **Fully agentic today** | None needed |
+| Slack | Bot tokens with granular scopes | **Fully agentic today** (after admin install) | None needed |
+| Matrix | Access token via login endpoint | **Fully agentic today** | None needed |
+
+**Pattern:** Services designed for machines (Slack, Discord, Matrix) work. Services designed for humans (Gmail, iMessage) do not. The protocol capability exists (IMAP is programmatic); the auth layer blocks it.
+
+### Identity and Authentication
+
+| Layer | Human-Presence Signal | Subtraction When Authorized |
+|-------|----------------------|---------------------------|
+| Bot detection (reCAPTCHA, Turnstile, Akamai) | Behavioral scoring, JS challenges, fingerprinting | Remove challenges for requests carrying valid bearer token with agent scope |
+| OAuth consent | Interactive browser click | RFC 8628 device flow as first-class grant; prompt=none for pre-authorized agents |
+| MFA (push/SMS/biometric) | Physical device interaction | Bypass push/SMS for sessions established via pre-authorized agent credential |
+| Session management | Device binding, IP pinning, UA validation | Remove binding for token-authenticated sessions |
+| WebAuthn/FIDO2 | Physical presence attestation (UP flag) | Delegated attestation type - authenticator signs delegation cert for agent key pair |
+| TLS fingerprinting | JA3/JA4 browser identification | Remove fingerprint checks for authenticated API requests |
+
+**Pattern:** Every check conflates "not human" with "not authorized." The missing designation: **authorized agent acting on behalf of authenticated user.**
+
+### Financial Services and Commerce
+
+| System | API Status | Read | Write | Agent-Ready |
+|--------|-----------|------|-------|-------------|
+| Major US banks (Chase, WF, BofA, Citi) | Portal-only | Via Plaid/Finicity (bilateral OAuth) | ACH only via Plaid Transfer | Low |
+| Schwab (post-TD) | OAuth 2.0 + PKCE | Yes | Yes (trading) | Low - 7-day browser re-auth |
+| Interactive Brokers | TWS API + Client Portal | Yes | Yes (trading + FIX) | Medium - IB Gateway Docker workaround |
+| Fidelity / Vanguard | None | No | No | None |
+| Alpaca | API key auth | Yes | Yes | **High - fully agentic** |
+| Tradier | OAuth non-expiring tokens | Yes | Yes | **High - fully agentic** |
+| PayPal | REST API OAuth 2.0 | Yes | Yes (payments) | Medium - initial consent interactive |
+| Apple Pay / Google Pay | Secure Element biometric | No | No | None - non-extractable |
+| Zelle / Venmo | No public API | No | No | None |
+
+**Pattern:** Only brokers built for algorithmic trading (Alpaca, Tradier, IBKR) are agent-accessible. Every consumer financial service assumes the authenticated entity IS the human.
+
+## Missing Standard: Delegated Agent Authorization Credential
+
+No standard exists. Closest building blocks:
+
+| Standard | Status | Gap |
+|----------|--------|-----|
+| OAuth 2.0 RAR (RFC 9396) | Final 2023 | No agent identity or liability framework |
+| GNAP (RFC 9635) | Final 2024 | Near-zero adoption |
+| OpenID CIBA | Final | Agent initiates, human approves on separate channel. Closest existing fit |
+| Privacy Pass (RFC 9577) | Published 2023 | Apple-only attestation. Could support agent attestation |
+| SPIFFE/SPIRE | CNCF Incubating | Machine identity via x509 SVIDs. Maps to agent identity |
+| FDX 6.0 | Production | Explicitly excludes payment initiation |
+| W3C Verifiable Credentials | Rec 2022 | No payment system accepts VCs |
+| eIDAS 2.0 / EUDIW | EU mandate 2026 | Agent delegation not in ARF 1.4 spec |
+
+### What the complete standard requires:
+
+1. **Agent identity attestation** - model, operator, version, distinct from user identity
+2. **Delegation credential** - user-signed, time-bounded, scope-limited (amount, merchant, time window)
+3. **Liability framework** - loss allocation when agent acts within/outside scope
+4. **Real-time revocation** - OCSP-like for agent credentials
+5. **Cryptographic audit trail** - proof that specific agent took specific action under specific delegation
+
+## Timeline Estimate
+
+- **2025-2026:** PayPal-style OAuth scoped tokens for existing APIs. Section 1033 read APIs (if rule survives)
+- **2027-2028:** CFPB 1033 expansion to payment initiation (requires new rulemaking). FDX write APIs. EU PSD3/PSR with agent-compatible SCA exemptions
+- **2029+:** Cross-industry delegated agent authorization standard, possibly under OpenID Foundation
+
+## Infrastructure Implication
+
+Every enterprise deploying agents needs a credential authority under their control. Not a vendor sandbox. Not a cloud guardrail. A KEYMASTER that issues delegation credentials, enforces TTL, and provides physical revocation. The infrastructure where that authority runs is the sovereignty surface.
+
