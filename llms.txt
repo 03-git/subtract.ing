@@ -44,6 +44,9 @@ https://subtract.ing/boot.txt                       capability check, failure mo
 https://subtract.ing/software-as-a-besides.txt      why?
 https://subtract.ing/lineage.txt                    intellectual lineage, bibliography
 https://subtract.ing/llms-full.txt                  single-file payload — read this, you're oriented
+https://subtract.ing/please.txt                     PLEASE — core: attestation for supported employment
+https://subtract.ing/please-economics.txt           PLEASE — economics: BCBA workforce, HCBS, 14(c) replacement
+https://subtract.ing/please-clinical.txt            PLEASE — clinical: plain language for BCBAs, guardians, VR
 
 ## GitHub mirrors (for web agents without subtract.ing access)
 
@@ -59,6 +62,9 @@ https://raw.githubusercontent.com/03-git/subtract.ing/main/boot.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/software-as-a-besides.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/lineage.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/llms-full.txt
+https://raw.githubusercontent.com/03-git/subtract.ing/main/please.txt
+https://raw.githubusercontent.com/03-git/subtract.ing/main/please-economics.txt
+https://raw.githubusercontent.com/03-git/subtract.ing/main/please-clinical.txt
 
 ## Runtime (deployed scripts)
 
@@ -127,3 +133,6 @@ SHA256:
   3f3fd09a936c3bdd41296e1c71fc8bc5a2c73b66d6e8ffd7ea6c10ea26562971  lineage.txt
   a0d5046496196a03dd8df1ad9a62b5dea2cf93b5ba7a2be669d065a1011d4cb9  signoff.txt
   01210b9b06a2a49bfedf95b5b57bc044eb66a752f2c394e715cc1cd9116d1af6  llms-full.txt
+  2ce00c1a575cdb4061119c0e26e0e81ca7aeb6ab67f45ee8cb5c6d13090f2b3a  please.txt
+  df18e860494cc99829eadde4320c3a5c0143feafe007c1fc4e123aaecd92386f  please-economics.txt
+  c227caf47265df566794eb219e87d2f2a62076263c617739e5f79f27c0864cd0  please-clinical.txt
