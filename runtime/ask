@@ -211,7 +211,7 @@ case "${1:-}" in
         shift
         query="$*"
         [ -z "$query" ] && { echo "Usage: ask ollama \"query\"" >&2; exit 1; }
-        if ! __ask_detect_ollama; then echo "No local inference server running. Start ollama, llama.cpp, or lm-studio, then try again." >&2; exit 1; fi
+        if ! __ask_detect_ollama; then echo "No AI running. Get Ollama free from ollama.com, then: ollama pull qwen2.5:7b" >&2; exit 1; fi
         __ask_ollama "$query"
         exit $?
         ;;
@@ -219,7 +219,7 @@ case "${1:-}" in
         shift
         query="$*"
         [ -z "$query" ] && { echo "Usage: ask llama.cpp \"query\"" >&2; exit 1; }
-        if ! __ask_detect_llama_cpp; then echo "No local inference server running. Start ollama, llama.cpp, or lm-studio, then try again." >&2; exit 1; fi
+        if ! __ask_detect_llama_cpp; then echo "No AI running. Get Ollama free from ollama.com, then: ollama pull qwen2.5:7b" >&2; exit 1; fi
         __ask_llama_cpp "$query"
         exit $?
         ;;
@@ -227,7 +227,7 @@ case "${1:-}" in
         shift
         query="$*"
         [ -z "$query" ] && { echo "Usage: ask lm-studio \"query\"" >&2; exit 1; }
-        if ! __ask_detect_lm_studio; then echo "No local inference server running. Start ollama, llama.cpp, or lm-studio, then try again." >&2; exit 1; fi
+        if ! __ask_detect_lm_studio; then echo "No AI running. Get Ollama free from ollama.com, then: ollama pull qwen2.5:7b" >&2; exit 1; fi
         __ask_lm_studio "$query"
         exit $?
         ;;
@@ -263,23 +263,23 @@ fi
 if [ -z "$backend" ]; then
     backend=$(__ask_detect)
     if [ -z "$backend" ]; then
-        echo "No answer in lookdown.tsv and no local backend running." >&2
-        echo "Run 'ask --setup' to configure, or start ollama/llama.cpp/lm-studio." >&2
+        echo "No AI running yet." >&2
+        echo "Get Ollama free from ollama.com, then: ollama pull qwen2.5:7b" >&2
         exit 1
     fi
 fi
 
 case "$backend" in
     ollama)
-        if ! __ask_detect_ollama; then echo "No local inference server running. Start ollama, llama.cpp, or lm-studio, then try again." >&2; exit 1; fi
+        if ! __ask_detect_ollama; then echo "No AI running. Get Ollama free from ollama.com, then: ollama pull qwen2.5:7b" >&2; exit 1; fi
         __ask_ollama "$query"
         ;;
     llama.cpp|llama)
-        if ! __ask_detect_llama_cpp; then echo "No local inference server running. Start ollama, llama.cpp, or lm-studio, then try again." >&2; exit 1; fi
+        if ! __ask_detect_llama_cpp; then echo "No AI running. Get Ollama free from ollama.com, then: ollama pull qwen2.5:7b" >&2; exit 1; fi
         __ask_llama_cpp "$query"
         ;;
     lm-studio|lmstudio)
-        if ! __ask_detect_lm_studio; then echo "No local inference server running. Start ollama, llama.cpp, or lm-studio, then try again." >&2; exit 1; fi
+        if ! __ask_detect_lm_studio; then echo "No AI running. Get Ollama free from ollama.com, then: ollama pull qwen2.5:7b" >&2; exit 1; fi
         __ask_lm_studio "$query"
         ;;
     *)
