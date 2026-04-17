@@ -61,7 +61,6 @@ https://raw.githubusercontent.com/03-git/subtract.ing/main/governance.conf.unive
 https://raw.githubusercontent.com/03-git/subtract.ing/main/boot.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/software-as-a-besides.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/lineage.txt
-https://raw.githubusercontent.com/03-git/subtract.ing/main/llms-full.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/please.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/please-economics.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/please-clinical.txt
