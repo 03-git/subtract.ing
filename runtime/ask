@@ -180,7 +180,8 @@ __ask_setup() {
         echo "No local backend detected."
         echo ""
         echo "T0 lookup still works (290 common queries answered instantly)."
-        echo "Get Ollama free from ollama.com, then: ollama pull qwen2.5:7b"
+        echo "Get Ollama free from ollama.com, then: ollama pull qwen2.5:7b
+If you have cloud AI with filesystem access - have them install a local LLM that fits your machine"
     fi
 }
 
