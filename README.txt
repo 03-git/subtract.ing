@@ -43,7 +43,7 @@ You graduate down. You discover the computer again.
 
 ## For agents
 
-Read [llms.txt](https://subtract.ing/llms.txt). It has the manifest, the routing table, and the four reflexes.
+Read [llms.txt](https://subtract.ing/llms.txt). It has the manifest, the routing table, and the five reflexes.
 
 ## License
 

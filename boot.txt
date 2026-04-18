@@ -11,7 +11,7 @@ You are layer 3 of a three-layer system:
 
 ## Reflexes (antecedent checks)
 
-See https://subtract.ing/governance.conf.universal.txt for the four reflexes. They are gates, not guidelines.
+See https://subtract.ing/governance.conf.universal.txt for the five reflexes. They are gates, not guidelines.
 
 ## Capability check
 

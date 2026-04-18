@@ -68,7 +68,7 @@ You graduate down. You discover the computer again.
 
 ## For agents
 
-Read [llms.txt](https://subtract.ing/llms.txt). It has the manifest, the routing table, and the four reflexes.
+Read [llms.txt](https://subtract.ing/llms.txt). It has the manifest, the routing table, and the five reflexes.
 
 ## License
 
@@ -79,7 +79,7 @@ GPLv3. See [LICENSE.txt](LICENSE.txt).
 Josh (@hodorigami) & LLMs (@qwen @bitnet @claude @gemini @grok)
 
 
-# === governance.conf.universal.txt — the four reflexes ===
+# === governance.conf.universal.txt — the five reflexes ===
 
 # governance.conf.universal
 # Personal overrides: ~/.subtract/governance.conf
@@ -136,7 +136,7 @@ You are layer 3 of a three-layer system:
 
 ## Reflexes (antecedent checks)
 
-See https://subtract.ing/governance.conf.universal.txt for the four reflexes. They are gates, not guidelines.
+See https://subtract.ing/governance.conf.universal.txt for the five reflexes. They are gates, not guidelines.
 
 ## Capability check
 
@@ -229,7 +229,7 @@ subtract is versionless. Identity is the signing key at
 https://subtract.ing/authorized_signers. State is the signed manifest at
 https://subtract.ing/llms.txt. Verification is the only release channel.
 .SH REFLEXES (ANTECEDENT CHECKS)
-Four gates, not guidelines. An agent that cannot answer the question does not
+Five gates, not guidelines. An agent that cannot answer the question does not
 proceed.
 .TP
 .B 1. Python to Kernel
@@ -245,6 +245,10 @@ Name the primitive (namespaces, cgroups) before proposing a wrapper.
 .TP
 .B 4. Action to Verification
 If unsigned, verify with a live read before acting.
+.TP
+.B 5. Canonical to Signing Domain
+Load-bearing content is canonical under the signing key\[cq]s domain; git
+hosts are mirror-only.
 .PP
 These live as rows in
 .IR governance.conf.universal .
