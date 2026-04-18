@@ -20,13 +20,7 @@ No account. No API key. No terms of service from a foreign company. No usage met
 
 ## Energy model
 
-```
-E_subtract(t) -> E_syscall ~ 10^-5 J   as learned commands grow
-E_local = 10^2 J/request               (flat, per inference)
-E_api >= 10^4 J/request                (flat or increasing with orchestration)
-```
-
-As you learn commands, energy cost approaches syscall. Local inference is flat. Cloud inference grows with orchestration. subtract's energy curve goes down over time. Everything else's goes up or stays flat.
+As learned commands grow, the work approaches a syscall and the energy cost falls toward the kernel's own floor. Local inference stays flat per request. Cloud inference is flat or rising as orchestration accumulates. One curve goes down over time; the others don't.
 
 ## Where it sits
 
