@@ -619,68 +619,6 @@ list*tv*shows	ls /mnt/media/tv/
 list*tv	ls /mnt/media/tv/
 list*music	ls /mnt/media/music/
 #
-# --- español ---
-# same commands, Spanish intents. specific before general.
-#
-# archivos
-lista*archivos	ls .
-listar*archivos	ls .
-mostrar*archivos	ls .
-qué*hay*en*este*directorio	ls .
-qué*hay*aquí	ls .
-archivos*ocultos	ls -la
-mostrar*archivos*ocultos	ls -la
-tamaño*de*archivos	ls -lh
-#
-# navegación
-ir*a*inicio	cd ~/
-ir*a*casa	cd ~/
-ir*atrás	cd ..
-ir*arriba	cd ..
-#
-# disco
-cuánto*espacio	df -h
-espacio*en*disco	df -h
-espacio*disponible	df -h
-uso*de*disco	du -sh *
-qué*tan*grande*es*esta*carpeta	du -sh .
-tamaño*de*carpeta	du -sh .
-#
-# procesos
-procesos*activos	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
-mostrar*procesos	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
-qué*está*corriendo	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
-matar*proceso	echo "uso: kill <PID>"
-#
-# hora/fecha
-qué*hora*es	date +%T
-qué*día*es	date +%A
-qué*fecha*es	date +%Y-%m-%d
-fecha*de*hoy	date "+%A %Y-%m-%d"
-#
-# red
-cuál*es*mi*ip	hostname -I
-mi*dirección*ip	hostname -I
-estoy*conectado	ping -c1 -W2 8.8.8.8 && echo "sí" || echo "no"
-tengo*internet	ping -c1 -W2 8.8.8.8 && echo "sí" || echo "no"
-#
-# sistema
-cuánta*memoria	free -h
-cuánta*ram	free -h
-mostrar*memoria	free -h
-quién*soy	whoami
-qué*máquina*es*esta	hostname
-información*del*sistema	uname -a
-qué*sistema*operativo	cat /etc/os-release
-#
-# historial
-mostrar*historial	history
-qué*hice	history 20
-últimos*comandos	history 20
-#
-# limpieza
-limpiar*pantalla	clear
-limpiar*terminal	clear
 #
 #
 # --- player (media rendered fullscreen via mpv) ---
@@ -3013,68 +2951,6 @@ list*tv*shows	ls /mnt/media/tv/
 list*tv	ls /mnt/media/tv/
 list*music	ls /mnt/media/music/
 #
-# --- español ---
-# same commands, Spanish intents. specific before general.
-#
-# archivos
-lista*archivos	ls .
-listar*archivos	ls .
-mostrar*archivos	ls .
-qué*hay*en*este*directorio	ls .
-qué*hay*aquí	ls .
-archivos*ocultos	ls -la
-mostrar*archivos*ocultos	ls -la
-tamaño*de*archivos	ls -lh
-#
-# navegación
-ir*a*inicio	cd ~/
-ir*a*casa	cd ~/
-ir*atrás	cd ..
-ir*arriba	cd ..
-#
-# disco
-cuánto*espacio	df -h
-espacio*en*disco	df -h
-espacio*disponible	df -h
-uso*de*disco	du -sh *
-qué*tan*grande*es*esta*carpeta	du -sh .
-tamaño*de*carpeta	du -sh .
-#
-# procesos
-procesos*activos	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
-mostrar*procesos	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
-qué*está*corriendo	ps -eo pid,%cpu,%mem,args --sort=-%cpu | head -20
-matar*proceso	echo "uso: kill <PID>"
-#
-# hora/fecha
-qué*hora*es	date +%T
-qué*día*es	date +%A
-qué*fecha*es	date +%Y-%m-%d
-fecha*de*hoy	date "+%A %Y-%m-%d"
-#
-# red
-cuál*es*mi*ip	hostname -I
-mi*dirección*ip	hostname -I
-estoy*conectado	ping -c1 -W2 8.8.8.8 && echo "sí" || echo "no"
-tengo*internet	ping -c1 -W2 8.8.8.8 && echo "sí" || echo "no"
-#
-# sistema
-cuánta*memoria	free -h
-cuánta*ram	free -h
-mostrar*memoria	free -h
-quién*soy	whoami
-qué*máquina*es*esta	hostname
-información*del*sistema	uname -a
-qué*sistema*operativo	cat /etc/os-release
-#
-# historial
-mostrar*historial	history
-qué*hice	history 20
-últimos*comandos	history 20
-#
-# limpieza
-limpiar*pantalla	clear
-limpiar*terminal	clear
 #
 #
 # --- player (media rendered fullscreen via mpv) ---
