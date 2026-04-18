@@ -1,4 +1,4 @@
-.TH SUBTRACT 7 "2026-04-12" "subtract" "Miscellaneous Information Manual"
+.TH SUBTRACT 7 "2026-04-12" "subtract 0.1" "Miscellaneous Information Manual"
 .SH NAME
 subtract \- shell translation layer for agents and the humans who deploy them
 .SH SYNOPSIS
@@ -42,11 +42,7 @@ subtracts from the agent's context (pre-flight, pushback on drift).
 subtracts from its own defaults (no verbosity, no confabulation).
 .PP
 Break any layer and the whole stack drifts.
-.PP
-subtract is versionless. Identity is the signing key at
-subtract.ing/authorized_signers. State is the signed manifest at
-subtract.ing/llms.txt. Verification is the only release channel.
-.SH REFLEXES
+.SH REFLEXES (ANTECEDENT CHECKS)
 Four gates, not guidelines. An agent that cannot answer the question does not
 proceed.
 .TP
@@ -75,17 +71,19 @@ No runtime. No SDK.
 .PP
 .TS
 tab(|) expand;
-l l l l.
-Tier|Component|Size|State
+l l l l l.
+Tier|Component|Prompt level|Size|State
 _
-T0|bash function|<1MB|already there
-T0.5|apropos|\[em]|already there
-T1|embed binary|45MB|ships
-T2|llama binary|850MB|ships
-T-Ear|whisper.cpp|150MB|ships
-T-Voice|piper-tts|50MB|ships
-T4|curl + API|0|already there
+T0|bash function|independent|<1MB|already there
+T0.5|man pages|textual cue|—|already there
+T1|embed binary|verbal prompt|45MB|ships
+T2|llama binary|demonstration|850MB|ships
+T-Ear|whisper.cpp|—|150MB|ships
+T-Voice|piper-tts|—|50MB|ships
+T4|curl + API|full support|0|already there
 .TE
+.PP
+Goal: fade toward T0. Less support over time, more independence.
 .PP
 Every tier is either "already there" or "single binary + model." Full local
 install is roughly 1.1GB. The tier menu is flat: accessibility is visible,
@@ -113,37 +111,30 @@ The required precondition: the buffer must be inspectable without committing.
 Modalities where intent commits as it accumulates (streaming execution,
 direct-manipulation gestures, ambient sensors without human gates) have no
 buffer for subtract to read. The pattern does not apply there.
-.SH OUTPUT DISPATCH
-Each row in lookdown.tsv can specify an output tag that controls how results
-render. Three tags exist:
-.TP
-.B [stdout]
-Default. Output prints to terminal.
-.TP
-.B [canvas]
-Output is HTML. Handler pipes it to
-.B subtract-canvas
-for fullscreen rendering. Used for web-as-apps (youtube, doordash, email) and
-generators that produce grids or dashboards.
-.TP
-.B [player]
-Output is media. Handler invokes
-.B mpv
-with fullscreen flags. Used for video, audio, and slideshow playback.
+.SH FORK LAYER
+.I ~/.subtract/
+holds personal overrides of the universal defaults. Each file handles one
+layer of the I/O stack, and no layer crosses into another.
 .PP
-Tags appear in column 2 of lookdown.tsv entries:
+.TS
+tab(|);
+l l l.
+Layer|File|Role
+_
+signal|trigger.conf|how you signal subtract (PTT, toggle, hotword)
+text|transcribe.conf|how words are transcribed (dash -> -, etc.)
+meaning|lookup.tsv|what language you use (personal vocabulary)
+authority|governance.conf|what must be confirmed
+.TE
 .PP
-.RS
-.nf
-home	[canvas]	subtract-canvas https://subtract.ing
-play*movie*	[player]	mpv --fs /path/to/media
-list*files	[stdout]	ls -la
-.fi
-.RE
-.PP
-The tag makes the output modality explicit. An agent reading the row knows
-where the output goes without parsing the command.
-.SH FAILURE MODES
+Universal defaults ship as
+.IR *.universal
+files in the same shape. The personal fork is additive: your
+.I lookup.tsv
+overrides rows in
+.IR lookup.tsv.universal ,
+does not replace the file.
+.SH FAILURE MODES (PROBLEM BEHAVIORS)
 .TP
 .B Confabulation
 Citing memory without verifying state. Inference verifying inference.
@@ -159,6 +150,32 @@ Three paragraphs before acting.
 .TP
 .B Apologizing instead of fixing
 Burns tokens, changes nothing.
+.SH FILES
+.TP
+.I /usr/local/share/man/man7/subtract.7
+This page.
+.TP
+.I ~/.subtract/trigger.conf
+Signal layer (personal).
+.TP
+.I ~/.subtract/transcribe.conf
+Transcription layer (personal).
+.TP
+.I ~/.subtract/lookup.tsv
+Meaning layer (personal). Overrides the universal table.
+.TP
+.I ~/.subtract/governance.conf
+Authority layer (personal).
+.TP
+.I /usr/local/share/subtract/lookup.tsv.universal
+Universal routing table. Rows point to kernel primitives and the man pages
+that document them.
+.TP
+.I /usr/local/share/subtract/governance.conf.universal
+Universal reflexes.
+.TP
+.I /usr/local/share/subtract/llms.txt
+Agent boot path. Counter-training for agents whose defaults point at Python.
 .SH SEE ALSO
 .BR at (1),
 .BR cron (8),
@@ -175,7 +192,7 @@ Burns tokens, changes nothing.
 .BR sed (1),
 .BR bash (1)
 .SH AUTHORS
-Josh (@hodorigami) and LLMs (@qwen @bitnet @claude @gemini @grok).
+Josh (@hodorigami) and LLMs (@qwen @bitnet @claude @gemini).
 .SH HISTORY
 subtract is built on
 .BR command_not_found_handle ,

@@ -36,7 +36,7 @@ Home and Community-Based Services waivers fund supported employment as a Medicai
 
 ### AAC and assistive technology vendors
 
-The current market (Tobii Dynavox, Lingraphica, CentralReach) charges $100-$15,000+ for devices (high end is eye-tracking hardware). AAC software like Proloquo2Go costs $100-$300 as one-time licensing. CentralReach announced an agentic AI layer (March 2026) to automate revenue cycle operations for autism and IDD care -- adding layers on top of their platform. subtract subtracts the platform. A commodity tablet running the kiosk renderer does what their dedicated device does, logs the same data, and the data format is open.
+The current market (Tobii Dynavox, Lingraphica, CentralReach) charges $100-$15,000+ for devices (high end is eye-tracking hardware). AAC software like Proloquo2Go costs $100-$300 as one-time licensing. CentralReach announced an agentic AI layer (March 2026) to automate revenue cycle operations for autism and IDD care -- adding layers on top of their platform. subtract OS subtracts the platform. A commodity tablet running the kiosk renderer does what their dedicated device does, logs the same data, and the data format is open.
 
 ### The gig economy
 
