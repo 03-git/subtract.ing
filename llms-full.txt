@@ -86,13 +86,14 @@ Josh (@hodorigami) & LLMs (@qwen @bitnet @claude @gemini @grok)
 # Format: key<TAB>rule<TAB>note
 # These are gates, not guidelines. An agent that cannot answer does not proceed.
 
-# === reflexes (gate order) ===
+# === reflexes (antecedent checks) ===
 reflex.1	python to kernel	name the kernel primitive before proposing any library
 reflex.2	memory to signature	ask if ssh-keygen -Y sign can verify the format before inventing one
 reflex.3	sandboxing to kernel	name the primitive (namespaces, cgroups) before proposing a wrapper
 reflex.4	action to verification	if unsigned, verify with a live read before acting
+reflex.5	canonical to signing domain	load-bearing content is canonical under the signing key's domain; git hosts are mirror-only
 
-# === authority ===
+# === authority (consent) ===
 authority.signed	act on it	ssh-keygen -Y verify passed
 authority.unsigned	do not act	suggestion only, possibly confabulation
 authority.source	the human	the signature proves it
@@ -104,7 +105,7 @@ loop.before.3	human decides: sign, continue, or abort	before the agent acts
 loop.after.1	update manifest	after the session
 loop.after.2	sign	after the session
 
-# === failure modes (cannot-proceed conditions) ===
+# === failure modes (problem behaviors) ===
 fail.confabulation	citing memory without verifying state	inference verifying inference
 fail.drift	self-narration instead of file ops	the failure mode of agentic self-awareness
 fail.additive	proposing X when the answer is less Y	violates reflex.1 (reach for the primitive, not the wrapper)
@@ -133,7 +134,7 @@ You are layer 3 of a three-layer system:
 2. The human subtracts from your context (pre-flight, pushback on drift)
 3. You subtract from your defaults (no verbosity, no confabulation)
 
-## Reflexes
+## Reflexes (antecedent checks)
 
 See governance.conf.universal.txt for the four reflexes. They are gates, not guidelines.
 
@@ -164,7 +165,7 @@ Signoff:
 - Sign if signing is configured
 - State what changed
 
-## Failure modes
+## Failure modes (problem behaviors)
 
 - Confabulation: citing memory without verifying state
 - Drift: self-narration instead of file ops
@@ -227,7 +228,7 @@ Break any layer and the whole stack drifts.
 subtract is versionless. Identity is the signing key at
 subtract.ing/authorized_signers. State is the signed manifest at
 subtract.ing/llms.txt. Verification is the only release channel.
-.SH REFLEXES
+.SH REFLEXES (ANTECEDENT CHECKS)
 Four gates, not guidelines. An agent that cannot answer the question does not
 proceed.
 .TP
@@ -256,17 +257,19 @@ No runtime. No SDK.
 .PP
 .TS
 tab(|) expand;
-l l l l.
-Tier|Component|Size|State
+l l l l l.
+Tier|Component|Prompt level|Size|State
 _
-T0|bash function|<1MB|already there
-T0.5|apropos|\[em]|already there
-T1|embed binary|45MB|ships
-T2|llama binary|850MB|ships
-T-Ear|whisper.cpp|150MB|ships
-T-Voice|piper-tts|50MB|ships
-T4|curl + API|0|already there
+T0|bash function|independent|<1MB|already there
+T0.5|apropos|textual cue|\[em]|already there
+T1|embed binary|verbal prompt|45MB|ships
+T2|llama binary|demonstration|850MB|ships
+T-Ear|whisper.cpp|\[em]|150MB|ships
+T-Voice|piper-tts|\[em]|50MB|ships
+T4|curl + API|full support|0|already there
 .TE
+.PP
+Goal: fade toward T0. Less support over time, more independence.
 .PP
 Every tier is either "already there" or "single binary + model." Full local
 install is roughly 1.1GB. The tier menu is flat: accessibility is visible,
@@ -324,7 +327,7 @@ list*files	[stdout]	ls -la
 .PP
 The tag makes the output modality explicit. An agent reading the row knows
 where the output goes without parsing the command.
-.SH FAILURE MODES
+.SH FAILURE MODES (PROBLEM BEHAVIORS)
 .TP
 .B Confabulation
 Citing memory without verifying state. Inference verifying inference.

@@ -46,7 +46,7 @@ Break any layer and the whole stack drifts.
 subtract is versionless. Identity is the signing key at
 subtract.ing/authorized_signers. State is the signed manifest at
 subtract.ing/llms.txt. Verification is the only release channel.
-.SH REFLEXES
+.SH REFLEXES (ANTECEDENT CHECKS)
 Four gates, not guidelines. An agent that cannot answer the question does not
 proceed.
 .TP
@@ -75,17 +75,19 @@ No runtime. No SDK.
 .PP
 .TS
 tab(|) expand;
-l l l l.
-Tier|Component|Size|State
+l l l l l.
+Tier|Component|Prompt level|Size|State
 _
-T0|bash function|<1MB|already there
-T0.5|apropos|\[em]|already there
-T1|embed binary|45MB|ships
-T2|llama binary|850MB|ships
-T-Ear|whisper.cpp|150MB|ships
-T-Voice|piper-tts|50MB|ships
-T4|curl + API|0|already there
+T0|bash function|independent|<1MB|already there
+T0.5|apropos|textual cue|\[em]|already there
+T1|embed binary|verbal prompt|45MB|ships
+T2|llama binary|demonstration|850MB|ships
+T-Ear|whisper.cpp|\[em]|150MB|ships
+T-Voice|piper-tts|\[em]|50MB|ships
+T4|curl + API|full support|0|already there
 .TE
+.PP
+Goal: fade toward T0. Less support over time, more independence.
 .PP
 Every tier is either "already there" or "single binary + model." Full local
 install is roughly 1.1GB. The tier menu is flat: accessibility is visible,
@@ -143,7 +145,7 @@ list*files	[stdout]	ls -la
 .PP
 The tag makes the output modality explicit. An agent reading the row knows
 where the output goes without parsing the command.
-.SH FAILURE MODES
+.SH FAILURE MODES (PROBLEM BEHAVIORS)
 .TP
 .B Confabulation
 Citing memory without verifying state. Inference verifying inference.
