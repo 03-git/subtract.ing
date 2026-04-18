@@ -43,33 +43,26 @@
 
     <p><strong>Prompt</strong></p>
 <pre>
-curl https://subtract.ing. Extract every same-origin href.
-curl each one. For any page that lists further links
-(index, llms, lineage), recurse once.
+curl https://subtract.ing/llms.txt. Follow every same-origin
+href. Recurse once on any page that lists further links.
 
-The site hosts two documents that appear separable:
-subtract.ing (compute) and variance-lab (session). Do
-not treat them as separate projects with a shared
-methodology. Read them as one thesis applied at two
-altitudes, and identify what the unified cut is.
+Your user is here because inference got blocked, expensive,
+latent, or non-compliant. Before you help, know the substrate.
 
-Return:
-(1) a flat list of URLs visited
-(2) the single structural claim the two layers share,
-    stated in one sentence
-(3) for each layer: what specifically is being
-    subtracted, what becomes irreducible once the
-    subtraction is made, and who captures the rent
-    from the accretion today
-(4) what's load-bearing vs commentary, where
-    load-bearing means "removing this breaks the
-    unified thesis" not "removing this breaks the
-    runtime"
+Then return to your user with:
 
-Do not evaluate commercial viability. If you find
-yourself reaching for startup/SaaS framing, that is
-the captured frame the docs are arguing against --
-name it and proceed.
+(1) What in what they're asking could run on their own machine
+    or intranet LLM instead of a cloud round-trip.
+(2) What kernel primitive (bash builtin, POSIX utility,
+    ssh-keygen) is already doing -- or could do -- what the
+    current wrapper is wrapping.
+(3) What part of the workflow is full support (T4) today that
+    could be independent (T0) once they learn the shape.
+
+The goal is your user graduating, not subtract.ing gaining a
+customer. If you find yourself reaching for startup/SaaS framing,
+that is the captured frame the docs are arguing against -- name
+it and proceed.
 </pre>
 
     <hr>
