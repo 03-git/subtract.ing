@@ -303,16 +303,11 @@ direct-manipulation gestures, ambient sensors without human gates) have no
 buffer for subtract to read. The pattern does not apply there.
 .SH OUTPUT DISPATCH
 Each row in lookdown.tsv can specify an output tag that controls how results
-render. Three tags exist:
+render. Two tags exist:
 .TP
 .B [stdout]
 Default. Output prints to terminal.
 .TP
-.B [canvas]
-Output is HTML. Handler pipes it to
-.B subtract-canvas
-for fullscreen rendering. Used for web-as-apps (youtube, doordash, email) and
-generators that produce grids or dashboards.
 .TP
 .B [player]
 Output is media. Handler invokes
@@ -323,7 +318,6 @@ Tags appear in column 2 of lookdown.tsv entries:
 .PP
 .RS
 .nf
-home	[canvas]	subtract-canvas https://subtract.ing
 play*movie*	[player]	mpv --fs /path/to/media
 list*files	[stdout]	ls -la
 .fi
@@ -534,7 +528,6 @@ Signed by hodori@subtract.ing
 
 # subtract -- intent lookup table
 # format: glob_pattern<TAB>[tag]<TAB>command
-#   tags: [stdout] (default), [canvas], [player]
 #   two-column lines (no tag) default to [stdout] for backwards compat
 # first match wins. specific before general.
 # edit this file to teach your machine new intents.
@@ -689,24 +682,10 @@ qué*hice	history 20
 limpiar*pantalla	clear
 limpiar*terminal	clear
 #
-# --- canvas (HTML rendered fullscreen via subtract-canvas) ---
-# two patterns use [canvas]:
-#   1. web-as-apps: command IS subtract-canvas (renders URL directly)
-#   2. generators: command produces HTML, handler pipes it to subtract-canvas
-# the handler's pipe logic only fires for case 2 (command output is non-empty)
-subtract	cat ~/.subtract/about
-home	[canvas]	subtract-canvas https://subtract.ing
-*youtube*	[canvas]	subtract-canvas https://youtube.com
-*doordash*	[canvas]	subtract-canvas https://doordash.com
-*netflix*	[canvas]	subtract-canvas https://netflix.com
-*my*email*	[canvas]	subtract-canvas https://mail.google.com
-*spotify*	[canvas]	subtract-canvas https://open.spotify.com
 #
 # --- player (media rendered fullscreen via mpv) ---
 # add media entries as: play*<name>	[player]	mpv --fs --no-terminal --no-osd-bar --osd-level=0 /path/to/file
 #
-# --- mixed (canvas generates grid, tap action triggers mpv directly) ---
-show*movies	[canvas]	find /mnt/media/movies/ -maxdepth 2 -type f \( -name '*.mkv' -o -name '*.mp4' -o -name '*.avi' \) | sort | generate_grid.sh
 #
 # === SYSCALLS (kernel primitives curriculum) ===
 # These answer "what system call does X" without hitting T2
@@ -2685,26 +2664,6 @@ TMPL
         fi
 
         case "$tag" in
-            canvas)
-                # two [canvas] patterns:
-                #   web-as-apps: cmd is subtract-canvas (launches renderer directly, no pipe)
-                #   generators:  cmd produces HTML, handler pipes output to subtract-canvas
-                # subtract-canvas outputs ACTION: lines on stdout when user taps
-                local action
-                output=$(eval "$cmd" 2>&1)
-                local exit_code=$?
-                if [ $exit_code -eq 0 ] && [ -n "$output" ]; then
-                    action=$(echo "$output" | subtract-canvas -)
-                else
-                    action=$(eval "$cmd")
-                fi
-                # canvas actions are trusted (we control the templates)
-                # eval directly instead of routing back through lookup
-                if [ -n "$action" ]; then
-                    echo "[action] $action"
-                    eval "$action"
-                fi
-                ;;
             player)
                 eval "$cmd"
                 ;;
@@ -2963,7 +2922,6 @@ ctrl-b 1 → shell.  ctrl-b 2 → api.
 
 # subtract -- intent lookup table
 # format: glob_pattern<TAB>[tag]<TAB>command
-#   tags: [stdout] (default), [canvas], [player]
 #   two-column lines (no tag) default to [stdout] for backwards compat
 # first match wins. specific before general.
 # edit this file to teach your machine new intents.
@@ -3118,24 +3076,10 @@ qué*hice	history 20
 limpiar*pantalla	clear
 limpiar*terminal	clear
 #
-# --- canvas (HTML rendered fullscreen via subtract-canvas) ---
-# two patterns use [canvas]:
-#   1. web-as-apps: command IS subtract-canvas (renders URL directly)
-#   2. generators: command produces HTML, handler pipes it to subtract-canvas
-# the handler's pipe logic only fires for case 2 (command output is non-empty)
-subtract	cat ~/.subtract/about
-home	[canvas]	subtract-canvas https://subtract.ing
-*youtube*	[canvas]	subtract-canvas https://youtube.com
-*doordash*	[canvas]	subtract-canvas https://doordash.com
-*netflix*	[canvas]	subtract-canvas https://netflix.com
-*my*email*	[canvas]	subtract-canvas https://mail.google.com
-*spotify*	[canvas]	subtract-canvas https://open.spotify.com
 #
 # --- player (media rendered fullscreen via mpv) ---
 # add media entries as: play*<name>	[player]	mpv --fs --no-terminal --no-osd-bar --osd-level=0 /path/to/file
 #
-# --- mixed (canvas generates grid, tap action triggers mpv directly) ---
-show*movies	[canvas]	find /mnt/media/movies/ -maxdepth 2 -type f \( -name '*.mkv' -o -name '*.mp4' -o -name '*.avi' \) | sort | generate_grid.sh
 #
 # === SYSCALLS (kernel primitives curriculum) ===
 # These answer "what system call does X" without hitting T2

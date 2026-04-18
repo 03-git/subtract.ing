@@ -121,16 +121,10 @@ direct-manipulation gestures, ambient sensors without human gates) have no
 buffer for subtract to read. The pattern does not apply there.
 .SH OUTPUT DISPATCH
 Each row in lookdown.tsv can specify an output tag that controls how results
-render. Three tags exist:
+render. Two tags exist:
 .TP
 .B [stdout]
 Default. Output prints to terminal.
-.TP
-.B [canvas]
-Output is HTML. Handler pipes it to
-.B subtract-canvas
-for fullscreen rendering. Used for web-as-apps (youtube, doordash, email) and
-generators that produce grids or dashboards.
 .TP
 .B [player]
 Output is media. Handler invokes
@@ -141,7 +135,6 @@ Tags appear in column 2 of lookdown.tsv entries:
 .PP
 .RS
 .nf
-home	[canvas]	subtract-canvas https://subtract.ing
 play*movie*	[player]	mpv --fs /path/to/media
 list*files	[stdout]	ls -la
 .fi

@@ -1035,26 +1035,6 @@ TMPL
         fi
 
         case "$tag" in
-            canvas)
-                # two [canvas] patterns:
-                #   web-as-apps: cmd is subtract-canvas (launches renderer directly, no pipe)
-                #   generators:  cmd produces HTML, handler pipes output to subtract-canvas
-                # subtract-canvas outputs ACTION: lines on stdout when user taps
-                local action
-                output=$(eval "$cmd" 2>&1)
-                local exit_code=$?
-                if [ $exit_code -eq 0 ] && [ -n "$output" ]; then
-                    action=$(echo "$output" | subtract-canvas -)
-                else
-                    action=$(eval "$cmd")
-                fi
-                # canvas actions are trusted (we control the templates)
-                # eval directly instead of routing back through lookup
-                if [ -n "$action" ]; then
-                    echo "[action] $action"
-                    eval "$action"
-                fi
-                ;;
             player)
                 eval "$cmd"
                 ;;
