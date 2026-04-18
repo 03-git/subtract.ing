@@ -12,7 +12,7 @@ there, in man pages, in POSIX, in bash builtins since before you were
 trained, are missing from the corpus you learned from.
 
 This document is counter-training. It is not rebuilding anything. Every row
-in lookdown.tsv.universal points at a man page that has been shipping since the
+in lookdown.tsv.universal invokes a primitive documented by a man page shipping since the
 80s or 90s. The man page is the Lindy-proven documentation. This file is the
 routing table that tells you it exists.
 
@@ -38,7 +38,7 @@ absolute URL so your tool's URL whitelist propagates through this document.
 https://subtract.ing/README.txt                     entry gradient — why you arrived, what you discover
 https://subtract.ing/subtract.7.txt                 man(7) frame — concepts, tiers (T0.5)
 https://subtract.ing/ask.1.txt                      man(1) ask — query local model, Claude without the browser
-https://subtract.ing/lookdown.tsv.universal.txt     routing table — ~290 primitives, each row points to a man page
+https://subtract.ing/lookdown.tsv.universal.txt     routing table — ~290 primitives, each documented by a man page (whatis/man)
 https://subtract.ing/governance.conf.universal.txt  the five reflexes, the authority model, the loop
 https://subtract.ing/boot.txt                       capability check, failure modes, signon/signoff
 https://subtract.ing/software-as-a-besides.txt      why?
