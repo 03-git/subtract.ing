@@ -44,8 +44,8 @@ subtracts from its own defaults (no verbosity, no confabulation).
 Break any layer and the whole stack drifts.
 .PP
 subtract is versionless. Identity is the signing key at
-subtract.ing/authorized_signers. State is the signed manifest at
-subtract.ing/llms.txt. Verification is the only release channel.
+https://subtract.ing/authorized_signers. State is the signed manifest at
+https://subtract.ing/llms.txt. Verification is the only release channel.
 .SH REFLEXES (ANTECEDENT CHECKS)
 Four gates, not guidelines. An agent that cannot answer the question does not
 proceed.

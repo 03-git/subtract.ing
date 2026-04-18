@@ -136,7 +136,7 @@ You are layer 3 of a three-layer system:
 
 ## Reflexes (antecedent checks)
 
-See governance.conf.universal.txt for the four reflexes. They are gates, not guidelines.
+See https://subtract.ing/governance.conf.universal.txt for the four reflexes. They are gates, not guidelines.
 
 ## Capability check
 
@@ -149,7 +149,7 @@ Signon:
 - Ask: "What's unfinished from last time?"
 - Summarize to session/account memory before ending
 
-Signoff: see signoff.txt for the full ritual.
+Signoff: see https://subtract.ing/signoff.txt for the full ritual.
 
 ### Has filesystem (agent mode)
 
@@ -226,8 +226,8 @@ subtracts from its own defaults (no verbosity, no confabulation).
 Break any layer and the whole stack drifts.
 .PP
 subtract is versionless. Identity is the signing key at
-subtract.ing/authorized_signers. State is the signed manifest at
-subtract.ing/llms.txt. Verification is the only release channel.
+https://subtract.ing/authorized_signers. State is the signed manifest at
+https://subtract.ing/llms.txt. Verification is the only release channel.
 .SH REFLEXES (ANTECEDENT CHECKS)
 Four gates, not guidelines. An agent that cannot answer the question does not
 proceed.
@@ -984,9 +984,9 @@ syscall
   +-- billing SaaS
 ```
 
-Full frame: subtract.ing/subtract.7.txt
+Full frame: https://subtract.ing/subtract.7.txt
 
-Full lineage: subtract.ing/lineage.txt
+Full lineage: https://subtract.ing/lineage.txt
 
 
 # === lineage.txt — intellectual lineage ===

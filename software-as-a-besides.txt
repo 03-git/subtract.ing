@@ -61,6 +61,6 @@ syscall
   +-- billing SaaS
 ```
 
-Full frame: subtract.ing/subtract.7.txt
+Full frame: https://subtract.ing/subtract.7.txt
 
-Full lineage: subtract.ing/lineage.txt
+Full lineage: https://subtract.ing/lineage.txt
