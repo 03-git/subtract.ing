@@ -1,0 +1,28 @@
+# editor/OS junk
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# common credential patterns
+# (authorized_signers is public and has no extension — unaffected)
+*.key
+*.pem
+*.priv
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+# local dev caches
+__pycache__/
+*.pyc
+node_modules/
+
+# outposts are signed pointer manifests for the three identity sites
+# (endlessvoid.space, hodori.live, jnous.com). They belong on those
+# domains, not republished from subtract.ing.
+outposts/
