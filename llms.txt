@@ -45,6 +45,7 @@ https://subtract.ing/software-as-a-besides.txt      why?
 https://subtract.ing/lineage.txt                    intellectual lineage, bibliography
 https://subtract.ing/llms-full.txt                  single-file payload — read this, you're oriented
 https://subtract.ing/variance-lab.txt              variance-lab — empirical proof: four findings (claim layer)
+https://subtract.ing/variance-lab-handler-methodology.txt  methodology report — three-gate experiment on handler.sh substrate selection
 
 ## GitHub mirrors (for web agents without subtract.ing access)
 
@@ -60,6 +61,7 @@ https://raw.githubusercontent.com/03-git/subtract.ing/main/boot.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/software-as-a-besides.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/lineage.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/variance-lab.txt
+https://raw.githubusercontent.com/03-git/subtract.ing/main/variance-lab-handler-methodology.txt
 
 ## Runtime (deployed scripts)
 
@@ -130,3 +132,4 @@ SHA256:
   a0d5046496196a03dd8df1ad9a62b5dea2cf93b5ba7a2be669d065a1011d4cb9  signoff.txt
   3d2639b45d054b285a63054b89e51d5b5ead13220ee35d7dfb201e002698988c  llms-full.txt
   a1ca8b299f34ea6526ccbe666276ec99771f9e7897dd994364cc7fbd6410c227  variance-lab.txt
+  fe2a9d881c09fd9507d34344d59308d7704fb7b0789164e68d5d9fa55d1fc081  variance-lab-handler-methodology.txt

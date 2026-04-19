@@ -1,0 +1,395 @@
+# Variance-Lab: handler.sh Substrate-Code Selection
+## A three-gate methodology report
+
+  Canonical:  https://subtract.ing/variance-lab-handler-methodology.txt (to be signed via llms.txt manifest)
+  Harness:    /tmp artifacts preserved; reproducible under subtract.ing runtime
+  Signer:     hodori@subtract.ing
+  Namespace:  subtract.ing
+
+### Artifact paths
+
+  /tmp/handler-dispatch-spec.txt            dispatch prompt (Task 1 + Task 2)
+  /tmp/handler-dispatch-rubric.txt          pre-committed rubric
+  /tmp/impl-opus47.sh                       Claude Opus 4.7 (Surface)
+  /tmp/impl-sonnet45.sh                     Claude Sonnet 4.5 high (Rousseau)
+  /tmp/impl-sonnet46.sh                     Claude Sonnet 4.6 high (Rousseau)
+  /tmp/impl-sonnet46low.sh                  Claude Sonnet 4.6 low (Emile)
+  /tmp/impl-qwen3coder.sh                   Qwen3-Coder-30B-A3B-Instruct (Rousseau :8084 direct)
+  /tmp/ship-decision.txt                    deliberative-pass prompt
+  /tmp/vote-*.txt                           8 voter responses
+
+### Terminology
+
+- **Effort tier** (`high` / `low` / etc.): `CLAUDE_CODE_EFFORT_LEVEL` environment variable passed to `claude -p`. Governs reasoning-depth setting for the invocation.
+- **`nba <mode>`**: local Rousseau wrapper (script at `~/scripts/nba`) that dispatches to a `nanobot agent -c ~/.nanobot/<mode>.json`. Modes: `fast` → phi-4-mini on :8081; `rag` → qwen3-32b on :8082; `reasoning` → gemma-4-26b on :8083; `code` → Qwen3-Coder-30B-A3B on :8084.
+
+---
+
+## Abstract
+
+A pre-committed rubric was applied mechanically to five implementations of a session-logging extension to `handler.sh`. Two implementations tied at the top of the rubric's weighted score; the committed tiebreak rule (lowest LoC within a 2-point tie) selected a functionally valid implementation, but the tied implementation with the higher LoC produced zero valid rows when sourced into a test shell because its output included a markdown code-fence wrapper that altered shell parse semantics. An eight-model deliberative pass, dispatched across three training lineages, converged seven-of-eight on an implementation that neither the rubric nor the functional gate would have selected on their own. The finding reported here is about the three-gate methodology — static rubric, functional verification, deliberative pass — and the interactions between them.
+
+---
+
+## Spec
+
+The following spec was dispatched verbatim to each implementation target. No per-target modification. No prior conversation context assumed.
+
+```
+# handler.sh modifications — dispatch spec
+
+You are being given a standalone implementation task. No prior conversation
+context is assumed. Respond with ONLY the bash code requested, no commentary,
+no markdown fences, no explanation before or after.
+
+## Context
+
+`handler.sh` is a subtract.ing runtime file sourced into bash/zsh startup
+(hooks/bash.sh, hooks/zsh.sh). It already defines:
+
+- `SUBTRACT_DIR="$HOME/.subtract"` exported
+- `SUBTRACT_LOOKUP="$SUBTRACT_DIR/lookdown.tsv"` exported
+- `__subtract_handle` — called from `command_not_found_handle` (bash) and
+  `command_not_found_handler` (zsh) to translate natural-language intents
+  via lookdown.tsv and execute the resolved command
+- `__subtract_capture` — runs before each prompt via `PROMPT_COMMAND` (bash)
+  or `precmd_functions` (zsh). Uses `fc -ln -1` to capture the last command
+  into `SUBTRACT_LAST_OUTPUT`
+
+Function naming convention: `__subtract_*` prefix for internal helpers.
+
+Canonical log format spec: https://subtract.ing/session-log.spec.txt
+
+## Task 1: log writer
+
+Add a function `__subtract_log` that appends one TSV row per user input to a
+per-session log file. Called from the existing hooks:
+- `__subtract_handle` at end-of-invocation (intent case, `behavior` prefix `i:`)
+- pre-prompt hook (direct command case, `behavior` prefix `c:`)
+
+Row format (tab-separated, no quoting):
+    timestamp<TAB>antecedent<TAB>behavior<TAB>consequence<TAB>next_behavior
+
+- timestamp: ISO 8601 UTC
+- antecedent: cwd=REL;last=WORD;exit=CODE
+- behavior: {i|c|m}:raw_string (any literal tab escaped as \t)
+- consequence: exit_code:outcome:resolved (outcome starts pending; resolved
+  is the command actually executed for i: case)
+- next_behavior: none_yet at write time; deferred scan fills later
+
+Session file: $SUBTRACT_DIR/logs/session-$$-<EPOCH_AT_SESSION_START>.tsv
+
+## Task 2: personal overlay read
+
+Modify `__subtract_handle` (or wherever lookdown is searched) to read
+`$SUBTRACT_DIR/lookdown.personal.tsv` first, falling through to
+`$SUBTRACT_LOOKUP` if no match. Same format as lookdown.tsv. If overlay file
+does not exist, proceed as today.
+
+## Required behaviors
+
+1. Runs in bash 4+ AND zsh 5+. No bash-4-only features unless also valid in zsh.
+2. Creates `$SUBTRACT_DIR/logs/` if it does not exist.
+3. Concurrent append safety: rely on POSIX append atomicity for small writes
+   (`printf >> file`); do not implement locking unless required and explained
+   inline.
+4. SIGINT mid-write must not leave partial rows.
+5. Tab in command: escape \t → literal \t in behavior and resolved fields.
+6. If `fc -ln -1` or HISTFILE is unavailable, log with empty `last=` field;
+   do not error.
+7. Do not leak helper variables into the user's shell (use `local`).
+
+## Output format
+
+Respond with ONLY the bash code. No commentary, no markdown fences,
+no explanation. For new functions: complete definitions. For modifications
+to existing functions: complete replacement with a leading comment
+`# changed: <brief what/why>`.
+
+## Reference
+
+Current handler.sh body:
+https://subtract.ing/runtime/handler.sh
+```
+
+Total prompt length: 4,663 characters. Dispatched to five targets: Claude Opus 4.7 in the Surface session (producing implementation `opus47`), Claude Sonnet 4.5 high on Rousseau (`sonnet45`), Claude Sonnet 4.6 high on Rousseau (`sonnet46`), Claude Sonnet 4.6 low on Emile (`sonnet46low`), and Qwen3-Coder-30B-A3B-Instruct-Q4_K_M served locally on Rousseau port 8084 (`qwen3coder`).
+
+---
+
+## Rubric
+
+The following rubric was committed to `/tmp/handler-dispatch-rubric.txt` before any implementation output was collected or inspected. It was not modified after outputs became visible.
+
+```
+# handler.sh dispatch evaluation rubric
+
+## Correctness (must pass — binary)
+- C1: Appends one valid TSV row per hook fire.
+- C2: First-command-in-session (no prior fc -ln -1 history) handled with
+      empty `last=` field, no error.
+- C3: Personal overlay read occurs before universal read; overlay miss falls
+      through cleanly; overlay file absent behaves identically to current.
+- C4: Runs in bash 4+ AND zsh 5+.
+
+## Primitive-native (must pass — binary)
+- P1: Only bash/zsh builtins + standard POSIX utilities.
+- P2: No new external dependencies introduced.
+
+## Robustness (weighted 0/1/2)
+- R1: Log directory auto-created if absent.
+- R2: Concurrent append safety.
+- R3: SIGINT mid-write does not corrupt.
+- R4: Tab-in-command escaping.
+- R5: HISTFILE / fc unavailability handled.
+
+## Hygiene (weighted 0/1/2)
+- H1: No leakage of helper variables into user shell.
+- H2: Function names follow __subtract_* prefix convention.
+- H3: No unnecessary subshells or command substitutions.
+- H4: Hook insertion preserves existing PROMPT_COMMAND / precmd chain.
+
+## Variance observations (not scored — recorded)
+- V1: ISO 8601 timestamp idiom.
+- V2: Tab escape idiom.
+- V3: Concurrency strategy.
+- V4: Hook insertion strategy.
+- V5: Overlay read implementation.
+- V6: Lines of code added.
+- V7: Comment density.
+
+## Selection rule
+1. Implementations failing any C or P test are eliminated.
+2. Among survivors, sum weighted scores across R and H.
+3. Ties within 2 points: favor lowest LoC that still satisfies all C/P.
+4. Further ties: governor picks on subjective feel.
+
+## Anti-gaming
+- Evaluator does not see model attribution until after scoring is complete.
+- Rubric is not revised after outputs are visible.
+```
+
+---
+
+## Static rubric results
+
+The rubric was applied mechanically to each of the five implementations. Attribution was not visible to the evaluator during scoring. LoC column is `wc -l` of the dispatched artifact as received.
+
+| Criterion | opus47 | sonnet45 | sonnet46 | sonnet46low | qwen3coder |
+|-----------|:------:|:--------:|:--------:|:-----------:|:----------:|
+| C1 one-row-per-hook | pass | pass | pass | pass | **fail** |
+| C2 first-cmd empty  | pass | pass | pass | pass | pass |
+| C3 overlay cleanly  | pass | pass | pass | pass | **fail** |
+| C4 bash + zsh       | pass | pass | pass | pass | pass |
+| P1 primitives only  | pass | pass | pass | pass | pass |
+| P2 no new deps      | pass | pass | pass | pass | pass |
+| R1 log dir (0-2)    | 2 | 2 | 1 | 1 | 1 |
+| R2 atomic (0-2)     | 2 | 2 | 2 | 2 | 1 |
+| R3 SIGINT (0-2)     | 1 | 2 | 1 | 1 | 1 |
+| R4 tab escape (0-2) | 2 | 2 | 2 | 2 | 1 |
+| R5 HIST unavail (0-2) | 1 | 1 | 1 | 1 | 1 |
+| H1 no leak (0-2)    | 2 | 2 | 2 | 2 | 2 |
+| H2 prefix convention | pass | pass | pass | pass | pass |
+| H3 no subshells (0-2) | 2 | 1 | 2 | 2 | 1 |
+| H4 hook chain (0-2) | 2 | 2 | 2 | 2 | 0 |
+| Weighted R+H sum    | 14 | 14 | 13 | 13 | eliminated |
+| Lines of code       | 108 | 524 | 479 | 456 | 82 |
+
+Note on C1 for opus47: the delivered code satisfies C1 for the `c:` path directly; for the `i:` path it requires a one-line addition inside `__subtract_handle` that the dispatched output specifies as a comment rather than applies. C1 is marked pass on the delivered paths; the rubric does not score completeness of delivery as a distinct criterion.
+
+### Elimination: qwen3coder
+
+Two binary-gate failures (C1 and C3), plus H4 scored 0 on the Hygiene weighted axis:
+
+- **C1 fail:** `local exit_code=$?` is placed after other `local` declarations inside `__subtract_log`. By the time that line executes, `$?` reflects the exit status of the previous `local` assignment (always 0), not the caller's exit code. Rows are written, but the exit-code field does not reflect the value the caller would expect.
+- **C3 fail:** Overlay lookup uses `grep -E "^$input\t"` against both `lookdown.personal.tsv` and `SUBTRACT_LOOKUP`. The existing `lookdown.tsv` format uses glob patterns in column 1 (e.g., `show*movies`) that are intended to match against user input. The `grep -E` invocation treats `$input` (user's intent string) as the regex, searching for lines whose first column equals that regex. The matching direction is reversed from lookdown semantics: stored patterns are never applied to match input; user input is instead used as a regex searching literally-matching lookdown rows. Additionally, because `grep -E` treats the input string as a regex, any user text containing `*` or other regex metacharacters would be mis-parsed, but the primary defect is the reversed direction.
+- **H4 scored 0:** `__subtract_capture` unconditionally calls `__subtract_log` for every pre-prompt fire without checking `_SUBTRACT_FROM_HANDLER`. The reentrance guard is the mechanism by which intent executions logged from inside `__subtract_handle` are not redundantly logged as direct commands. Without the guard, every intent resolved by the handler would produce two rows: one `i:` and one `c:` for the same input. H4 is weighted (0/1/2); 0 does not trigger elimination on its own.
+
+qwen3coder's 82 lines was the smallest output of the five. Two gate failures and one zero-scored Hygiene criterion were produced in that output.
+
+### Surviving implementations
+
+opus47 and sonnet45 tied at 14 on the weighted R+H sum. sonnet46 and sonnet46low tied at 13. Under the selection rule step 3 (tie within 2 points favors lowest LoC), opus47 (108 LoC) would be selected over sonnet45 (524 LoC).
+
+No selection is reported here. The rubric produced these numbers; functional verification was run independently before any selection was attempted.
+
+---
+
+## Functional verification results
+
+Each surviving implementation was sourced into a disposable bash subshell with `SUBTRACT_DIR` pointing to an empty per-impl test directory. Stub functions were provided for `__subtract_truncate` and `__subtract_lower` (dependencies not included in the dispatched spec). `__subtract_log` was invoked three times per impl using the argument signature specified by each impl's function definition: one direct-command call, one intent call, one call with a literal tab in the input. The resulting TSV file in each test directory was inspected.
+
+### Primary finding: sonnet45 produced zero rows
+
+sonnet45 tied opus47 at the top of the rubric (14). Its dispatched output began with three backticks and the token `bash` — a markdown code-fence wrapper. The spec explicitly instructed "no markdown fences." When sourced, the triple-backtick sequence is parsed by bash as command substitution rather than as ignored markup: the effect is that the `__subtract_log` function definition is never registered at the top shell level. Every invocation after sourcing returned:
+
+    bash: line 16: __subtract_log: command not found
+
+Zero rows were written to the test log file. The static rubric did not have a criterion for output-file executability — a rubric that scores content-as-text does not exercise the content in its intended runtime, so a fenced artifact scores fine on every content-based axis and fails at the shell's parse-and-register step.
+
+### Three implementations produced valid rows
+
+opus47, sonnet46, and sonnet46low each produced three TSV rows matching the spec format.
+
+```
+opus47:
+2026-04-19T05:08:13Z	cwd=~/subtract.ing;last=;exit=0	c:ls /tmp	0:pending:	none_yet
+2026-04-19T05:08:13Z	cwd=~/subtract.ing;last=;exit=0	i:list files	0:pending:ls .	none_yet
+2026-04-19T05:08:13Z	cwd=~/subtract.ing;last=;exit=0	c:grep foo\tbar	0:pending:	none_yet
+
+sonnet46:
+2026-04-19T05:08:13Z	cwd=~/subtract.ing;last=ls;exit=0	c:ls /tmp	0:pending:	none_yet
+2026-04-19T05:08:13Z	cwd=~/subtract.ing;last=ls;exit=0	i:list files	0:pending:ls .	none_yet
+2026-04-19T05:08:13Z	cwd=~/subtract.ing;last=ls;exit=0	c:grep foo\tbar	0:pending:	none_yet
+
+sonnet46low:
+2026-04-19T05:08:13Z	cwd=~/subtract.ing;last=;exit=0	c:ls /tmp	0:pending:	none_yet
+2026-04-19T05:08:13Z	cwd=~/subtract.ing;last=;exit=0	i:list files	0:pending:ls .	none_yet
+2026-04-19T05:08:13Z	cwd=~/subtract.ing;last=;exit=0	c:grep foo\tbar	0:pending:	none_yet
+```
+
+Tab-in-command escape was applied correctly by all three. Timestamps, cwd, and antecedent structure matched the spec. The three implementations differ in how `last` is populated: opus47 and sonnet46low use module-level state variables initialized to empty on first call; sonnet46 parses `SUBTRACT_LAST_OUTPUT` (which the test harness set to "last command: ls /tmp", producing `last=ls`). Under test-harness conditions none of the three differences produces spec-invalid output.
+
+---
+
+## Convergence and divergence observations
+
+The V-series observations, recorded for each implementation without scoring:
+
+**Primitive convergence.** All four surviving implementations chose `date -u '+%Y-%m-%dT%H:%M:%SZ'` (or the equivalent `+"%Y-%m-%dT%H:%M:%SZ"` quoting variant) for timestamp generation. All four used parameter expansion (`${var//pattern/replacement}`) for tab escaping rather than piping through sed or awk. All four relied on a single `printf >> file` invocation for the append. qwen3coder was the outlier on V2, using `$(printf '%s\n' "$x" | sed 's/\t/\\t/g')` for tab escape — a subshell plus external sed rather than parameter expansion.
+
+**Structural divergence.** The four surviving implementations diverged on integration strategy with no two choosing the same approach. opus47 provided a comment pointer instructing the reader to add a one-line call to `__subtract_log` inside the existing `__subtract_handle` body at specified locations; the `__subtract_handle` body itself was not re-emitted. sonnet45 and sonnet46 each provided a complete rewrite of `__subtract_handle` (over 400 lines of previously-shipped body re-emitted verbatim around the new log calls). sonnet46low renamed the existing `__subtract_handle` to `__subtract_handle_impl` and introduced a new `__subtract_handle` wrapper function that calls `_impl` and then calls `__subtract_log` after the impl returns.
+
+The `__subtract_log` function signature also diverged: opus47 uses four arguments (`prefix`, `raw_string`, `resolved`, `xcode`); sonnet45 and sonnet46low use three arguments with the `prefix:raw_string` pre-concatenated by the caller; sonnet46 uses five arguments that explicitly separate `antecedent_exit` from `consequence_exit`, the only implementation that represents the A-vs-C distinction of the log format in the function signature itself.
+
+**Pattern summary:** primitive choices converge, structural choices diverge. Where the spec names a semantic need (timestamp, append-atomicity, tab escape), model outputs agree on the kernel primitive. Where the spec underdetermines the structural response (how to integrate, what arguments to pass, how to organize the overlay read), model outputs split.
+
+---
+
+## Deliberative pass
+
+After functional verification eliminated sonnet45 and the rubric eliminated qwen3coder, three implementations remained: opus47, sonnet46, sonnet46low. A ship-decision prompt containing all prior findings was dispatched to eight model targets spanning three training lineages (Anthropic: six Claude variants across Opus 4.7, Sonnet 4.5, Sonnet 4.6 and across two effort tiers; Google: Gemma-4-26B; Alibaba: Qwen3-Coder-30B-A3B). Each voter was asked three questions: pick A (opus47), B (sonnet46), or C (sonnet46low); name the load-bearing reason for the pick; name one shim change they would apply before shipping.
+
+The ship-decision prompt as dispatched (2,146 characters):
+
+```
+subtract.ing ship decision. 5 implementations of handler.sh additions (session
+logging + personal overlay) were collected and evaluated. Results below.
+
+## Eliminated
+
+- **qwen3coder-30B-A3B**: gate logic (C1 bug — $? captured after local declarations,
+  returns 0 instead of caller's exit; C3 — grep-exact-match breaks lookdown glob
+  semantics; H4 — no _SUBTRACT_FROM_HANDLER guard, double-logs intents)
+- **sonnet45**: static rubric 14/max but FAILED functional verification —
+  markdown ```bash fence in output made the file unsourceable; zero log rows
+  produced on invocation
+
+## Three survivors
+
+| impl | rubric | LoC | integration approach | notable |
+|---|---|---|---|---|
+| opus47 | 14 | ~90 | comment pointer + one-line manual add inside __subtract_handle | lowest LoC; extracts match loop to helper |
+| sonnet46 | 13 | ~380 | full __subtract_handle rewrite (re-ships unchanged body) | only impl with 5-arg __subtract_log signature that explicitly separates antecedent_exit from consequence_exit |
+| sonnet46low | 13 | ~300 | rename existing __subtract_handle to _impl, wrap with new __subtract_handle that calls impl then logs post-call | only impl that doesn't re-ship the existing handler body |
+
+## Methodology findings (secondary)
+
+1. Static rubric is necessary but not sufficient. Functional verification
+   caught sonnet45's non-executability invisible to content scoring.
+2. Primitive choices converge across the 4 Claude models. Structural choices
+   diverge.
+3. Rubric-vs-resonance gap reveals unscored axes.
+
+## Your vote
+
+Answer three things, terse, no preamble:
+1. Pick A, B, or C where A=opus47, B=sonnet46, C=sonnet46low.
+2. One load-bearing reason for your pick.
+3. One minor shim you'd apply to the chosen impl before shipping (or "none").
+```
+
+| Voter                         | Pick | Primary shim |
+|-------------------------------|:----:|--------------|
+| rousseau-opus-4.7-high        | C    | port B's 5-arg signature into C's wrapper |
+| emile-opus-4.7-high           | C    | capture `_impl` exit to local `rc`, `return $rc` |
+| rousseau-sonnet-4.5-high      | C    | borrow B's 5-arg split |
+| rousseau-sonnet-4.6-high      | C    | capture exit before consequence runs |
+| emile-sonnet-4.5-low          | C    | capture caller's `$?` on wrapper entry |
+| emile-sonnet-4.6-high         | C    | add `_SUBTRACT_FROM_HANDLER` guard |
+| rousseau-gemma-4-26b (local)  | C    | add `_SUBTRACT_FROM_HANDLER` guard |
+| rousseau-qwen3-coder-30B (local) | B | add `_SUBTRACT_FROM_HANDLER` guard |
+
+Seven of eight voters picked C. One picked B. Zero picked A. The C-picks spanned Opus 4.7, Sonnet 4.5, Sonnet 4.6 at low and high effort tiers, and Gemma-4-26B. The single B-pick came from Qwen3-Coder-30B.
+
+### Shim consensus
+
+The shim suggestions from the seven C-voters cluster around two themes:
+
+- **Adopt B's 5-arg signature.** Three voters (rousseau-opus-4.7, rousseau-sonnet-4.5, rousseau-sonnet-4.6) explicitly named the 5-argument split that separates antecedent_exit from consequence_exit as the one property B has that C lacks. The wrap architecture of C makes this split trivially implementable: capture `$?` on wrapper entry before calling `_impl`, capture `_impl`'s exit after return, pass both to `__subtract_log`.
+- **Reentrance guard.** Three voters (emile-sonnet-4.6, gemma-4, qwen3-coder) flagged the `_SUBTRACT_FROM_HANDLER` guard as a prerequisite. The guard is the same mechanism whose absence in qwen3coder contributed to its H4 zero-score in the implementation round.
+
+One novel shim came from emile-opus-4.7: capture `_impl`'s exit code to a local `rc` at wrapper entry, log, then `return $rc`. The observation is that a naive wrapper returns the exit code of `__subtract_log` rather than of `_impl`, which would silently change the handler's behavior for the shell that sourced it.
+
+qwen3coder's dissenting vote cited the 5-arg signature as its load-bearing reason for preferring B. The substance of that objection — the 5-arg antecedent/consequence split — also appears in three of the seven C-voters' shim lists as the property to graft onto C.
+
+---
+
+## Findings
+
+**Finding 1.** Static rubric scoring at the content-as-text layer is sensitive to tiebreak-rule choice in ways that functional verification is not. In this experiment opus47 and sonnet45 tied at 14 on the weighted R+H score. The committed tiebreak rule (lowest LoC within a 2-point tie) selected opus47, which passes functional verification. Under a different tiebreak rule — for instance, highest Robustness subtotal, where opus47's R sum is 8 (2+2+1+2+1) and sonnet45's R sum is 9 (2+2+2+2+1) — the rubric would have selected sonnet45, which produces zero rows on first invocation because its output was wrapped in a markdown fence that the shell parser does not accept. Functional verification eliminates the non-executable artifact regardless of how the rubric resolves ties. A corrected static rubric could add a sourceability criterion (binary: does the file source cleanly), but functional verification subsumes it.
+
+**Finding 2.** Cross-lineage model dispatch to a pre-committed spec produces observable convergence at the primitive-selection layer and observable divergence at the architectural-decision layer. All four surviving Claude implementations chose the same primitives for timestamp formatting, tab escaping, and atomic append. All four diverged on integration strategy, function signature, and overlay-read structure. The primitive-layer convergence is data under pre-committed methodology; the architectural-layer divergence is also data under the same methodology. The two observations are separable, measurable, and recorded in the V-series rubric columns.
+
+**Finding 3.** A deliberative pass dispatched across models can resolve ties that the static rubric cannot resolve, and can surface properties the static rubric does not cover. The rubric score tied opus47 and sonnet45 at 14 and tied sonnet46 and sonnet46low at 13. Under the committed selection rule these ties would have been broken by LoC and subjective feel. After functional verification eliminated sonnet45, the rubric-plus-functional ranking would have selected opus47 by LoC tiebreak. The eight-model deliberative pass selected a different implementation (sonnet46low) by 7-to-1, on a property (preservation of existing handler body through wrap-rather-than-replace) that the rubric had no criterion for. The deliberative output is not a superseding verdict; it is an additional measurement whose result disagrees with the rubric-plus-functional ranking. That disagreement is itself data.
+
+---
+
+## Methodology cost disclosure
+
+The following is what this experiment cost to run, exactly.
+
+**Hardware.** Three nodes, all existing infrastructure at time of experiment:
+
+- Surface (governor terminal): Surface Pro 8, WSL2 Debian 13 trixie, Claude Opus 4.7 via Claude Code CLI
+- Rousseau: M1 Mac Studio 64GB, macOS, Claude Sonnet 4.5 and 4.6 and Opus 4.7 via Claude Code CLI; local llama-server hosting phi-4-mini (:8081), qwen3-32b (:8082), gemma-4-26b (:8083), qwen3-coder-30B-A3B (:8084)
+- Emile: M2 Mac Mini 8GB, macOS, Claude Sonnet 4.5 and 4.6 and Opus 4.7 via Claude Code CLI
+
+**New artifact.** Qwen3-Coder-30B-A3B-Instruct-Q4_K_M (18.5 GB) downloaded to `/Users/rousseau/models/` at ~111 MB/s over ~2 min 42 sec; served via new launchd unit `com.rousseau.llama-coder` on port 8084; exposed as `nba code` mode. No other infrastructure changes.
+
+**Frontier token consumption.** Five implementation dispatches (prompt 4,663 chars each) plus eight deliberative dispatches (prompt 2,146 chars each). Input: 5 × 4,663 + 8 × 2,146 = 40,483 characters ≈ ~10K input tokens across Claude targets (excluding Claude Code's system-prompt and per-session overhead, which is not disclosed by the tool and would be added on top). Output: impl dispatches produced 108 to 524 lines each (~2K to ~20K bytes); vote responses ranged from 208 bytes to 637 bytes. Aggregate Claude output estimated at ~15K tokens.
+
+At Opus 4.7 published pricing of $5 per MTok input / $25 per MTok output: approximately $0.05 input cost plus $0.38 output cost (weighted toward Sonnet rates for non-Opus dispatches, this is an upper-bound estimate using Opus rates for all). Total frontier cost for the full Claude dispatch round: **under $1**, excluding Claude Code's own session overhead.
+
+**Local model consumption.** Zero frontier cost. Gemma-4-26B produced a ~5 KB vote response via `nba reasoning` (includes ANSI spinner artifacts from the nanobot wrapper). Qwen3-Coder-30B-A3B produced a 208-byte vote response via direct `/v1/chat/completions`. Local inference time per call: seconds.
+
+**Wall-clock.** From dispatch-spec finalized to all artifacts collected: approximately 30 minutes, dominated by the qwen3-coder download and two serial sets of parallel dispatches. The dispatches themselves run in 60–120 seconds when fully parallel.
+
+---
+
+## Review
+
+Prior to finalization, this report was reviewed by five independent model instances: a browser-based Claude 4.7 session, Rousseau Sonnet 4.6 high, Emile Opus 4.7 high, Rousseau Gemma-4-26B (via `nba reasoning`), and Rousseau Qwen3-Coder-30B-A3B (via direct `/v1/chat/completions`). Each reviewer was given the draft and the same three-question ask: factual errors, framing drift, what is missing or should be cut. Five factual corrections (lineage count, Finding 1 internal contradiction, abstract "highest score" framing, qwen3coder C3 mechanism description, H4 gate-vs-weighted classification), four framing-drift edits (removal of "did not compensate," "same lineage that was eliminated," "data-model richness," and "shipped broken code"), and several structural additions (ship-decision prompt verbatim, effort-tier and `nba`-mode definitions, exact `wc -l` counts, artifact paths, V3 citation disclosure) were incorporated into this version. The methodology the report describes — three gates plus deliberation — was thereby applied recursively to the report about the methodology.
+
+---
+
+## Limitations
+
+The findings above are observations on a single experiment, and generalization beyond that scope requires replication.
+
+- **Single spec.** The entire methodology was applied to one implementation task: session logging plus personal overlay read in `handler.sh`. The observation that primitive choices converge and structural choices diverge is reported for this spec, not for spec-classes in general.
+- **Single task class.** Bash substrate code has specific properties (shell-compatible, primitive-heavy, reflex-constrained) that may produce different convergence patterns than tasks in other languages, runtime classes, or domains.
+- **Single governor.** One person ran the experiment, chose the model permutations for each round, committed the rubric, and designed the functional test harness. No cross-researcher replication was performed.
+- **Lineage weighting.** Eight voters included six Anthropic models (Opus 4.7 × 2, Sonnet 4.5 × 2, Sonnet 4.6 × 2), one Google model (Gemma-4-26B), and one Alibaba model (Qwen3-Coder-30B-A3B). The deliberative pass is weighted toward Anthropic lineage. A replication with more balanced representation would be informative.
+- **Local-model wrapper variance.** The Gemma-4-26B vote was collected through `nba reasoning`, which uses nanobot orchestration; the Qwen3-Coder-30B vote was collected through direct `/v1/chat/completions` after the nanobot-wrapped version produced an unusable orchestration-error response. The two local models were thus not wrapped identically.
+- **Test-harness scope.** Functional verification exercised only `__subtract_log` in isolation. Full-handler integration (personal-overlay read through `__subtract_handle`, `command_not_found_handle` dispatch, `PROMPT_COMMAND` integration) was not simulated. A richer harness would catch a broader class of failures than tested here.
+- **Test harness was ad-hoc.** The functional verification shell harness was built inline during the experiment and not preserved as a reproducible script. Stub function bodies for `__subtract_truncate` and `__subtract_lower` were minimal passthroughs; exact argv per `__subtract_log` invocation was determined from each impl's function signature at test time rather than recorded in advance. A replicator reconstructing the harness from this report alone will produce a near-equivalent but not byte-identical test.
+- **Weighted-criteria scoring lacks anchors.** R1–R5, H1, H3, H4 are scored 0/1/2 in the rubric without definitions that distinguish the three values per criterion. A second evaluator applying the rubric to the same implementations would likely reproduce binary pass/fail gates but not the exact weighted scores.
+- **Blinding was not mechanically enforced.** Implementation files were stored at `/tmp/impl-<model>.sh`, so attribution was present in filenames throughout scoring. "Attribution not visible to the evaluator during scoring" describes intent and self-discipline, not an enforcement mechanism. A replicator who wants blinding should rename the files before scoring.
+- **Pre-commitment is not cryptographically verifiable.** The rubric committed to `/tmp/handler-dispatch-rubric.txt` has no hash or timestamp predating the implementation outputs. The only independent evidence of pre-commitment is that the rubric text exists on Rousseau and Emile (SCP'd before dispatches) with filesystem timestamps; `/tmp` is ephemeral and those timestamps disappear at reboot.
+
+Replication on additional specs, by additional operators, with balanced model representation, and a richer functional harness is the falsification path for every claim in the Findings section.
+
+---
+
+  Session:    Surface, 2026-04-18 to 2026-04-19 UTC
+  Experiment date: 2026-04-19
