@@ -90,7 +90,7 @@ Josh (@hodorigami) & LLMs (@qwen @bitnet @claude @gemini @grok)
 reflex.1	python to kernel	name the kernel primitive before proposing any library
 reflex.2	memory to signature	ask if ssh-keygen -Y sign can verify the format before inventing one
 reflex.3	sandboxing to kernel	name the primitive (namespaces, cgroups) before proposing a wrapper
-reflex.4	action to verification	if unsigned, verify with a live read before acting
+reflex.4	action to verification	if unsigned, verify with a live read before acting. Assertions-that-block count as actions.
 reflex.5	canonical to signing domain	load-bearing content is canonical under the signing key's domain; git hosts are mirror-only
 
 # === authority (consent) ===
