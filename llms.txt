@@ -132,4 +132,4 @@ SHA256:
   34dd1f5106ea0cfe4f6a555b528d9a39584cb430bf1f7d724459fd2a5430343a  signoff.txt
   b660c5c6731a8dc8a1ab658ef4c2d14676d82ad6a080c33dc20c89ba832ae65e  llms-full.txt
   2c8587f57b1835a0f733221528cb35f4f6aa08a3a21ad18e589814d59c810108  variance-lab.txt
-  fe2a9d881c09fd9507d34344d59308d7704fb7b0789164e68d5d9fa55d1fc081  variance-lab-handler-methodology.txt
+  d2b28b22622102b687d4e2f0438e6c3258b5bfa6c07a191cbf17ccb2ea64a167  variance-lab-handler-methodology.txt

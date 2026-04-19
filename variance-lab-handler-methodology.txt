@@ -8,15 +8,18 @@
 
 ### Artifact paths
 
-  /tmp/handler-dispatch-spec.txt            dispatch prompt (Task 1 + Task 2)
-  /tmp/handler-dispatch-rubric.txt          pre-committed rubric
-  /tmp/impl-opus47.sh                       Claude Opus 4.7 (Surface)
-  /tmp/impl-sonnet45.sh                     Claude Sonnet 4.5 high (Rousseau)
-  /tmp/impl-sonnet46.sh                     Claude Sonnet 4.6 high (Rousseau)
-  /tmp/impl-sonnet46low.sh                  Claude Sonnet 4.6 low (Emile)
-  /tmp/impl-qwen3coder.sh                   Qwen3-Coder-30B-A3B-Instruct (Rousseau :8084 direct)
-  /tmp/ship-decision.txt                    deliberative-pass prompt
-  /tmp/vote-*.txt                           8 voter responses
+Artifacts backing this report live under `github.com/03-git/variance-lab/data/handler/`.
+
+What survived the original `/tmp` run and is published:
+
+  data/handler/handler-dispatch-spec.txt      4,663-char dispatch prompt (Task 1 + Task 2)
+  data/handler/handler-dispatch-rubric.txt    pre-committed evaluation rubric
+
+What did not survive (original `/tmp` paths, not preserved across session boundary — see Limitations):
+
+  /tmp/impl-{opus47,sonnet45,sonnet46,sonnet46low,qwen3coder}.sh    five implementations
+  /tmp/ship-decision.txt                                             deliberative-pass prompt
+  /tmp/vote-*.txt                                                    eight voter responses
 
 ### Terminology
 
@@ -118,7 +121,7 @@ Total prompt length: 4,663 characters. Dispatched to five targets: Claude Opus 4
 
 ## Rubric
 
-The following rubric was committed to `/tmp/handler-dispatch-rubric.txt` before any implementation output was collected or inspected. It was not modified after outputs became visible.
+The following rubric (now published at `data/handler/handler-dispatch-rubric.txt`) was committed to disk before any implementation output was collected or inspected. It was not modified after outputs became visible. The Limitations section below notes the weakness of filesystem-only pre-commitment.
 
 ```
 # handler.sh dispatch evaluation rubric
