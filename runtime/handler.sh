@@ -21,6 +21,14 @@ SUBTRACT_KIWIX="${SUBTRACT_KIWIX:-http://localhost:8888}"
 SUBTRACT_LAST_OUTPUT=""
 SUBTRACT_MAX_CONTEXT=20
 
+# session log state
+: "${SUBTRACT_SESSION_START:=$(date +%s)}"
+SUBTRACT_SESSION_LOG="$SUBTRACT_DIR/logs/session-$$-$SUBTRACT_SESSION_START.tsv"
+SUBTRACT_PERSONAL_LOOKUP="$SUBTRACT_DIR/lookdown.personal.tsv"
+SUBTRACT_LAST_EXIT=0
+SUBTRACT_LAST_CMD_WORD=""
+_SUBTRACT_RESOLVED_CMD=""
+
 # skills prefix patterns: procedural queries ("how do I X", "teach me X")
 # matched after T0, before kiwix. triggers grep against skills index.
 SUBTRACT_SKILLS_PREFIXES="how do i |how to |teach me |steps to |guide to |tutorial |tutorial for "
@@ -130,9 +138,38 @@ __subtract_truncate() {
     fi
 }
 
+# --- session log writer (5-arg: prefix raw antecedent_exit consequence_exit resolved) ---
+__subtract_log() {
+    local prefix="$1" raw="$2" ant_exit="${3:-0}" cons_exit="${4:-pending}" resolved="${5:-}"
+    local ts cwd ant beh con tab
+    [ -d "$SUBTRACT_DIR/logs" ] || mkdir -p "$SUBTRACT_DIR/logs" 2>/dev/null
+    ts=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+    case "$PWD" in
+        "$HOME")    cwd="~" ;;
+        "$HOME"/*)  cwd="~${PWD#$HOME}" ;;
+        *)          cwd="$PWD" ;;
+    esac
+    ant="cwd=${cwd};last=${SUBTRACT_LAST_CMD_WORD};exit=${ant_exit}"
+    tab=$(printf '\t')
+    raw="${raw//$tab/\\t}"
+    resolved="${resolved//$tab/\\t}"
+    beh="${prefix}:${raw}"
+    con="${cons_exit}:pending:${resolved}"
+    printf '%s\t%s\t%s\t%s\t%s\n' "$ts" "$ant" "$beh" "$con" "none_yet" >> "$SUBTRACT_SESSION_LOG" 2>/dev/null
+}
+
+# changed: _SUBTRACT_FROM_HANDLER guard; logs c: row for direct commands; tracks last-cmd state for antecedent
 __subtract_capture() {
+    local exit_code=$?
+    local last_cmd=""
     if [ -z "$_SUBTRACT_FROM_HANDLER" ]; then
-        SUBTRACT_LAST_OUTPUT="last command: $(fc -ln -1 2>/dev/null | sed "s/^[[:space:]]*//")"
+        last_cmd=$(fc -ln -1 2>/dev/null | sed "s/^[[:space:]]*//")
+        SUBTRACT_LAST_OUTPUT="last command: $(__subtract_truncate "$last_cmd")"
+        if [ -n "$last_cmd" ]; then
+            __subtract_log "c" "$last_cmd" "$SUBTRACT_LAST_EXIT" "$exit_code" ""
+        fi
+        SUBTRACT_LAST_CMD_WORD="${last_cmd%% *}"
+        SUBTRACT_LAST_EXIT="$exit_code"
     fi
     _SUBTRACT_FROM_HANDLER=""
 }
@@ -256,28 +293,32 @@ __subtract_lookup() {
     local input_lower
     input_lower=$(__subtract_lower "$1")
     local pattern tag cmd rest pattern_lower
-    while IFS=$'\t' read -r pattern rest; do
-        [[ "$pattern" =~ ^#.*$ || -z "$pattern" ]] && continue
-        pattern_lower=$(__subtract_lower "$pattern")
-        # shellcheck disable=SC2254
-        # zsh needs $~ for glob expansion in variables
-        if [ -n "$ZSH_VERSION" ]; then
-            [[ "$input_lower" == $~pattern_lower ]] || continue
-        else
-            [[ "$input_lower" == $pattern_lower ]] || continue
-        fi
-        # three-column: pattern<TAB>[tag]<TAB>command
-        # two-column:   pattern<TAB>command (backwards compat)
-        if [[ "$rest" =~ ^\[([a-z]+)\] ]]; then
-            if [ -n "$ZSH_VERSION" ]; then tag="${match[1]}"; else tag="${BASH_REMATCH[1]}"; fi
-            cmd="${rest#*$'\t'}"
-        else
-            tag="stdout"
-            cmd="$rest"
-        fi
-        echo "${tag}	${cmd}"
-        return 0
-    done < "$SUBTRACT_LOOKUP"
+    local _lf
+    for _lf in "$SUBTRACT_PERSONAL_LOOKUP" "$SUBTRACT_LOOKUP"; do
+        [ -f "$_lf" ] || continue
+        while IFS=$'\t' read -r pattern rest; do
+            [[ "$pattern" =~ ^#.*$ || -z "$pattern" ]] && continue
+            pattern_lower=$(__subtract_lower "$pattern")
+            # shellcheck disable=SC2254
+            # zsh needs $~ for glob expansion in variables
+            if [ -n "$ZSH_VERSION" ]; then
+                [[ "$input_lower" == $~pattern_lower ]] || continue
+            else
+                [[ "$input_lower" == $pattern_lower ]] || continue
+            fi
+            # three-column: pattern<TAB>[tag]<TAB>command
+            # two-column:   pattern<TAB>command (backwards compat)
+            if [[ "$rest" =~ ^\[([a-z]+)\] ]]; then
+                if [ -n "$ZSH_VERSION" ]; then tag="${match[1]}"; else tag="${BASH_REMATCH[1]}"; fi
+                cmd="${rest#*$'\t'}"
+            else
+                tag="stdout"
+                cmd="$rest"
+            fi
+            echo "${tag}	${cmd}"
+            return 0
+        done < "$_lf"
+    done
     return 1
 }
 
@@ -651,7 +692,7 @@ __subtract_kiwix() {
 
 # --- core handler ---
 
-__subtract_handle() {
+__subtract_handle_impl() {
     local input="$*"
     local cmd tier tag output result
 
@@ -661,7 +702,7 @@ __subtract_handle() {
         if [ -f "$SUBTRACT_DIR/.onboarded" ]; then
             echo "you said: $input"
             printf '[enter to run / ctrl-c to skip] '; read -r _ < /dev/tty
-            __subtract_handle "$@"
+            __subtract_handle_impl "$@"
         else
             echo "setup deferred. type 'reconfigure' when ready."
         fi
@@ -806,7 +847,7 @@ TMPL
             ;;
         "ask local "*)
             # backwards compat alias
-            __subtract_handle "ask llama.cpp ${input#ask local }"
+            __subtract_handle_impl "ask llama.cpp ${input#ask local }"
             return
             ;;
         "ask llama.cpp "*)
@@ -1034,6 +1075,7 @@ TMPL
             [ "$confirm" = "n" ] && return 1
         fi
 
+        _SUBTRACT_RESOLVED_CMD="$cmd"
         case "$tag" in
             player)
                 eval "$cmd"
@@ -1061,3 +1103,18 @@ TMPL
 
 # command_not_found_handle (bash) and command_not_found_handler (zsh)
 # defined in hooks/bash.sh and hooks/zsh.sh respectively
+
+# --- session log wrapper: __subtract_handle ---
+# Calls __subtract_handle_impl, then logs one i: row with antecedent_exit (from
+# prior command) and consequence_exit (from _impl). Returns _impl's exit so the
+# shell sees the actual command's result, not the logger's.
+__subtract_handle() {
+    local ant_exit=$SUBTRACT_LAST_EXIT
+    _SUBTRACT_RESOLVED_CMD=""
+    __subtract_handle_impl "$@"
+    local rc=$?
+    __subtract_log "i" "$*" "$ant_exit" "$rc" "$_SUBTRACT_RESOLVED_CMD"
+    SUBTRACT_LAST_CMD_WORD="${1%% *}"
+    SUBTRACT_LAST_EXIT="$rc"
+    return $rc
+}
