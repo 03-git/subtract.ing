@@ -1,0 +1,37 @@
+# subtract session log
+# format spec
+
+# one file per shell session: ~/.subtract/logs/session-<PID>-<EPOCH>.tsv
+# e.g. session-47291-1713478215.tsv
+# one row per user input
+# TSV, no quoting, append-only during session
+
+columns:
+  1. timestamp       ISO 8601 UTC
+  2. antecedent      cwd=REL;last=WORD;exit=CODE
+                       cwd    relative to $HOME or /
+                       last   first word of previous user command
+                       exit   last exit code
+  3. behavior        {i|c|m}:raw_string
+                       i  intent routed to lookdown
+                       c  direct command typed as-is
+                       m  typed partial + readline/tab completion
+  4. consequence     exit_code:outcome:resolved
+                       outcome   pending|ok|fail|retry|abandon
+                       resolved  command actually executed (if intent)
+  5. next_behavior   deferred. starts none_yet.
+                     scan fills: direct|intent|mixed
+
+# session boundary: shell PID at session start. subtract-generic.
+# governor or clinical layers MAY wrap with their own session identity.
+
+# scan rules (derived-column resolution, runs periodically):
+#   outcome: pending -> ok|fail if exit conclusive and no variant N+1
+#            pending -> retry if N+1 is variant of N (same first word,
+#                       small edit distance)
+#            pending -> abandon if N+1 unrelated and time gap > K seconds
+#   next_behavior: for row N with (cwd, last), look forward for row with
+#                  matching (cwd, last). write M's behavior prefix into
+#                  N's column 5. if none found, leave none_yet.
+
+# similarity relation: exact match on cwd + last. exit ignored.
