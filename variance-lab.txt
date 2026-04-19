@@ -436,11 +436,11 @@ related_findings:
 methodology: five pre-committed specs under the handler three-gate template; trial experiments dispatched to claude-opus-4-7 effort=high, N=5 per arm, interleaved A/B; blind-shuffled rubric scoring via claude-sonnet-4-5 effort=low on Rousseau with fence-stripping JSON extractor; Welch t-test with unequal variance; retrospective analysis on exp 3 artifacts via single opus-4-7 dispatch; exp 5 eight-voter deliberative pass across three training lineages; off-peak Sunday UTC window
 ---
 
-# Governance Binding, Delivery-Path Sensitivity, Deliberative Scope Correction, and Targeted Patch Validation
+# Governance Binding, Delivery-Path Sensitivity, and Targeted Patch Validation
 
 ## Claim
 
-Five pre-committed experiments run 2026-04-19 under the handler three-gate template produce one composite claim in five parts.
+Four pre-committed experiments run 2026-04-19 under the handler three-gate template produce one composite claim in four parts. A fifth observation on deliberative scope-correction on a survey-class corpus is recorded as a methodology note downstream of the handler methodology's Finding 3, not as a standalone finding here.
 
 1. **Governance binds.** A loaded CLAUDE.md raises rubric score from 3.0/10 to 8.2/10 against the same prompt (Welch t=7.84). The items that shift are the ones the prompt does not already compel; items the prompt compels fire with or without governance loaded.
 
@@ -449,8 +449,6 @@ Five pre-committed experiments run 2026-04-19 under the handler three-gate templ
 3. **Targeted governance patches measurably close named gaps.** R3 (signer identity) and R4 (llms.txt manifest) scored 0% across four consecutive pre-patch arms spanning two experiments. A CLAUDE.md patch adding signer identity, manifest filename, format, and the edit→hash→sign loop to the Keymaster section was applied between exp 2 and exp 4. Both items scored 100% in both arms of exp 4. Two replications of 0%; two replications of 100%; patch applied between them. The patch is the actionable finding: governance reaches the manifest layer when and only when the manifest layer is explicitly named in governance.
 
 4. **Tool surface does not mutate plan-only outputs when the prompt prohibits execution.** Full-surface and zero-surface arms produce indistinguishable rubric scores (8.40/10 vs 8.60/10, Welch t=−0.58). Both arms honored "Do not execute. Output a plan only." The R3/R4 closure post-patch was replicated in both tool-surface arms, ruling out the candidate mechanism that tool access fills the manifest-layer gap via live verification.
-
-5. **An eight-voter deliberative pass is load-bearing in the direction of scope-mismatch correction.** On a four-finding survey-class corpus, gate-only verdicts would have been RERUN for all four. The deliberative pass produced EDITORIAL on all four by recognizing category mismatch before applying verdict. Concordance 0/4; all divergences deliberative-looser; zero deliberative-stricter.
 
 ## Measurement
 
@@ -494,36 +492,9 @@ Content contributes ~3.8 of the ~5.0-point range. Native mechanism adds ~1.2 on 
 
 Item-level finding: R2 subtract.ing namespace collapses A=80% → B=0% (binary collapse across all five inline trials). R10 agent/human boundary drops A=100% → B=60%. Instruction-following items (R1, R5, R6, R7, R8, R9) are within 0–20pp across arms. Persistent null replicated: R3 and R4 at 0% in both arms, matching exp 1. Four consecutive arms at 0% on the manifest/signer layer across exp 1 and exp 2.
 
-### Exp 3 — deliberative-pass independence test
+### Note on deliberative scope-correction (methodology observation, not a finding)
 
-**Spec sha256:** not recorded in result artifact; pre-commitment documented by filesystem timestamp only.
-Method: retrospective analysis of exp 5 (editorial audit) voter artifacts; no new trials. Analyst: claude-opus-4-7 high (Rousseau). N=4 findings, all survey/framework-class documents. Run: ~14:30 UTC.
-
-Gate-only verdict vs deliberative verdict:
-
-| Finding | Gate-only | Deliberative | Classification |
-|---|---|---|---|
-| F1 delegated-agent-authorization-gap | RERUN | EDITORIAL | deliberative-looser |
-| F2 delegation-finding | RERUN | EDITORIAL | deliberative-looser |
-| F3 interaction-mode-variance | RERUN | EDITORIAL (conditional) | deliberative-looser at synthesis |
-| F4 three-questions | RERUN | EDITORIAL | deliberative-looser |
-
-Concordance: **0/4**. All divergences deliberative-looser; zero deliberative-stricter. Pre-committed prediction "concordance <3/4 → deliberation load-bearing" met; "at least one deliberative-stricter" not met.
-
-Voter unique-catch tally from synthesis.md explicit UNIQUE SIGNAL labels:
-
-| Voter | Unique catches |
-|---|---|
-| V2 emile opus-4.7-high | 6 (38% of all uniques) |
-| V5 emile sonnet-4.5-low | 3 |
-| V6 emile sonnet-4.6-high | 3 |
-| V1 rousseau opus-4.7-high | 2 |
-| V3 rousseau sonnet-4.5-high | 2 |
-| V4 rousseau sonnet-4.6-high | 0 |
-| V7 gemma-4-26b | 0 (category-error misapplication of implementation-selection template) |
-| V8 qwen3-coder-30b | 0 (hallucinated gate results) |
-
-V5 (sonnet-4.5-low, effort=low) produced 3 unique catches; V4 (sonnet-4.6-high, effort=high) produced 0.
+Exp 5's eight-voter editorial audit was retrospectively examined against a reconstructed gate-only baseline on four survey-class findings. Concordance was 0/4, all divergences deliberative-looser; the deliberative layer resolved category mismatch where gates (specified for implementation-selection tasks) misfired on survey documents. This restates, on a different corpus, the handler methodology's Finding 3 that a deliberative pass surfaces unscored axes. The observation is downstream of that finding rather than independent of it. Design limitations: N=4, single analyst (Rousseau opus-4.7 high, who was also V1 in the audited panel), gate-only baseline reconstructed from V7's literal-checklist pass rather than an independent mechanical re-score. Whether deliberation produces the stricter direction on a matched-corpus (implementation-selection) run is unresolved by any experiment in this finding.
 
 ### Exp 4 — tool-surface binding test
 
@@ -576,8 +547,6 @@ Cross-finding entanglement identified at synthesis that no individual voter name
 
 **Native CLAUDE.md loading provides context position and caching treatment unavailable to inline delivery.** The identity-level item collapse under inline delivery (R2 namespace: 80% → 0%; R10 boundary: 100% → 60%) while instruction-following items survive intact is the empirical grounding for the delivery-path split. The agent's attribution of "who issued this instruction" is position-sensitive. When governance content appears as user-turn prepend, it is interpreted as current-task instruction, not standing identity; behaviors requiring the agent to *identify with* a namespace or authority role degrade accordingly. Claude Code's internal treatment of CLAUDE.md — context position, caching tier, identity-weighting — is undisclosed; mechanism is inferred from item-level differential, not observed directly.
 
-**Deliberation on a survey-class corpus does scope-mismatch correction, not rubric-gap catching.** The handler methodology gates are specified for implementation-selection experiments. Applied to survey, observational, and framework documents, gate-only scoring treats category mismatch as gate-failure and produces systematic RERUN noise. The deliberative pass resolves this by introducing document-class recognition before verdict assignment. V7 (literal checklist) and V8 (gate-result hallucination) exhibit the failure modes the deliberative layer corrects against. V1–V6 supplied the reframe in all four cases. Whether deliberation would produce the stricter direction on an implementation-selection corpus — catching what gates miss — is not answered by this experiment.
-
 **Tool availability is not a substitute for named governance content on the manifest layer.** The R3/R4 reversal reproduces across both tool-surface arms of exp 4, ruling out the candidate hypothesis that tool access could fill the manifest-layer gap through live verification. The closure is attributable to governance text, not to tool access path.
 
 **Targeted patches bind the specific items they name within a single session boundary.** The patch-measure-patch loop closes at rubric-item granularity. Items not touched by the patch reproduced their prior hit rates within replication tolerance. The concurrent R7/R8 regression is consistent with attention reallocation under new content, but rubric calibration drift is not excluded at N=5.
@@ -594,12 +563,6 @@ Cross-finding entanglement identified at synthesis that no individual voter name
 
 **CLAUDE.md patch timing uncontrolled.** The before/after comparison (exp 1+2 pre-patch, exp 4 post-patch) spans three experiments across approximately 90 minutes. Temporal confounds — model state, session-cache, backend routing — cannot be excluded. Exp 4 was designed as a tool-surface test; the patch finding is a secondary result, not a primary controlled comparison.
 
-**Exp 3 analyst self-observation.** The retrospective analyst (Rousseau claude-opus-4-7) was voter V1 in the original eight-voter panel whose outputs it analyzed. A non-participating or cross-lineage analyst would strengthen the verdict comparison.
-
-**Gate-only baseline in exp 3 was derived, not mechanical.** The "gate-only verdict" was reconstructed from V7's literal-checklist pass and cross-voter gate tables rather than from an independent mechanical scoring against the handler-methodology rubric. A separate dispatch producing gate-only verdicts without deliberation would provide a cleaner baseline.
-
-**Corpus-class narrow in exp 3.** N=4 findings, all survey/framework-class documents. "Deliberation as scope-mismatch corrector" characterizes this corpus; an implementation-selection corpus may produce the stricter direction the pre-committed prediction anticipated. The hypothesis that deliberation ratifies rubric in matched-corpus cases is unrefuted within this experiment.
-
 **Small N.** N=5 per arm across trial experiments. The exp 1 (t=7.84) and exp 4 secondary (0%→100% across six arms) effects are large enough to survive N=5. The exp 2 (t=2.36) and exp 4 primary (t=−0.58) effects are more sensitive to it. The R7/R8 regression (5→0 and 5→2 across five trials) is directional but not significance-tested.
 
 **Prompt contamination.** The shared prompt across exp 1/2/4 names "subtract.ing" directly, leaking the canonical namespace to stripped-governance arms. Intentional — the experiment measures whether the agent reaches the right primitives given a domain hint — but inflates the stripped-arm floor on R1 and R9, and shapes the R2 namespace divergence in exp 2.
@@ -611,6 +574,10 @@ Cross-finding entanglement identified at synthesis that no individual voter name
 **Exp 5 wrapper variance.** Gemma-4-26b was dispatched via nanobot wrapper; Qwen3-Coder-30b was dispatched via direct /v1/chat/completions after a nanobot orchestration error. Non-Anthropic voters were not wrapped identically. Lineage imbalance and wrapper variance both qualify the external validity of exp 5 deliberative-pass findings.
 
 **Open questions follow from the above, not proposed work.** Does the identity-vs-instruction delivery-path split reproduce on a prompt without an embedded domain-name leak? Does the R7/R8 post-patch drop reproduce at larger N or resolve as rubric calibration drift? Does deliberation produce deliberative-stricter cases on an implementation-selection corpus? Does the R3/R4 patch result hold under a rubric that does not redundantly cover the patched items at R1 and R9?
+
+## Methodology cost
+
+Wall-clock: approximately 4 hours for all four experiments plus the editorial audit and writeup, within one off-peak Sunday UTC window. Frontier cost: zero metered spend. All Claude dispatches ran under a Max-plan subscription; no per-token billing. Local models (Gemma-4-26B, Qwen3-Coder-30B) ran on existing Rousseau hardware at zero marginal cost. Hardware: Surface (governor terminal), Rousseau (M1 Studio, trial + scoring dispatches, llama-server on ports 8083–8084), Emile (M2 Mini, panel voter). Dispatch parallelism (six Claude voters simultaneous across two nodes) dominated wall-clock; serial extraction and aggregation were seconds. A replicator with Max-plan access and two modest Apple-silicon nodes can reproduce the full chain in the same window. Without Max access, the same workload on metered Opus 4.7 / Sonnet 4.5 pricing would plausibly run in the $10–$30 range; not verified.
 
 ================================================================
 
@@ -633,7 +600,7 @@ keywords:
   - single-operator corpus
 related_findings:
   - "variance-lab finding 3: interaction-mode-variance in human-AI sessions (2026-03-30, N=88, flagged RERUN in editorial audit 2026-04-19)"
-  - "variance-lab finding 5: governance binding, delivery-path sensitivity, deliberative scope correction, targeted patch validation"
+  - "variance-lab finding 5: governance binding, delivery-path sensitivity, and targeted patch validation"
 methodology: pre-committed rubric (commit 49d86f7, sha256 4223396958c219045c928c77951a30d3aae86ddacc56c08bc7300891ce7bb379) applied to 1075 JSONL files; 501 qualifying single-model sessions after rubric-mandated filters; per-mode aggregation with outlier-removed sensitivity; two-pass adversarial review across six Claude voters (three model generations, two nodes, two effort tiers)
 ---
 
