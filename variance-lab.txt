@@ -611,3 +611,136 @@ Cross-finding entanglement identified at synthesis that no individual voter name
 **Exp 5 wrapper variance.** Gemma-4-26b was dispatched via nanobot wrapper; Qwen3-Coder-30b was dispatched via direct /v1/chat/completions after a nanobot orchestration error. Non-Anthropic voters were not wrapped identically. Lineage imbalance and wrapper variance both qualify the external validity of exp 5 deliberative-pass findings.
 
 **Open questions follow from the above, not proposed work.** Does the identity-vs-instruction delivery-path split reproduce on a prompt without an embedded domain-name leak? Does the R7/R8 post-patch drop reproduce at larger N or resolve as rubric calibration drift? Does deliberation produce deliberative-stricter cases on an implementation-selection corpus? Does the R3/R4 patch result hold under a rubric that does not redundantly cover the patched items at R1 and R9?
+
+================================================================
+
+---
+title: Interaction-Mode-Variance Rerun Under Pre-Committed Rubric
+date: 2026-04-19
+source: variance-lab harness, branch rerun/finding-3
+domain:
+  - token-economics
+  - interaction-mode
+  - measurement-hygiene
+  - replication
+keywords:
+  - interaction-mode-variance
+  - pre-committed rubric
+  - passenger mode
+  - tokens-per-turn
+  - subagent dedup
+  - five-model pool
+  - single-operator corpus
+related_findings:
+  - "variance-lab finding 3: interaction-mode-variance in human-AI sessions (2026-03-30, N=88, flagged RERUN in editorial audit 2026-04-19)"
+  - "variance-lab finding 5: governance binding, delivery-path sensitivity, deliberative scope correction, targeted patch validation"
+methodology: pre-committed rubric (commit 49d86f7, sha256 4223396958c219045c928c77951a30d3aae86ddacc56c08bc7300891ce7bb379) applied to 1075 JSONL files; 501 qualifying single-model sessions after rubric-mandated filters; per-mode aggregation with outlier-removed sensitivity; two-pass adversarial review across six Claude voters (three model generations, two nodes, two effort tiers)
+---
+
+# Interaction-Mode-Variance Rerun
+
+## Claim
+
+Under a pre-committed rubric (`findings/interaction-mode-variance-rubric.md` @ `49d86f7`, sha256 `4223396958c219045c928c77951a30d3aae86ddacc56c08bc7300891ce7bb379`) applied to 1075 Claude Code JSONL session files on a single operator, single node, between 2026-03-29 and 2026-04-19, the ordering passenger > collaborator > governor > pipe in total tokens per session holds on means and on medians. The passenger-vs-governor multiplier is **52.7× on means** (21.6× on medians, 50.4× on outlier-removed means; governor N=9) under single-model sessions only. The original finding's 41× headline (N=88, 2026-03-30, means only) is observed here with the same ordering under a different mode distribution and a different model-pool composition.
+
+## Measurement
+
+Pre-commitment: rubric committed 2026-04-19T12:21:33Z on branch `rerun/finding-3` at `49d86f7`. Content sha256 above. Rubric fixes mode thresholds, human-turn definition, session qualification, correction-keyword set, and mixed-model exclusion. No post-hoc tuning.
+
+Corpus: 1075 JSONL files under `~/.claude/projects/<project>/` on Surface, with `utc_start` timestamps ranging 2026-03-29T02:37:27Z to 2026-04-19T17:18:25Z. The rerun corpus is ~5.7× larger than the original by qualifying-session count (501 vs 88).
+
+Filter sequence (rubric-mandated):
+
+1. Extractor emits one row per file (1075 total).
+2. Subagent child transcripts excluded via `/subagents/` path filter at aggregation (555 rows). Spot-check N=10 of filtered paths confirmed each parent present in the corpus. Replicators can verify the rest deterministically from the TSV.
+3. Zero-human-turn or zero-assistant-response sessions excluded (5 rows).
+4. Mixed-model sessions excluded from single-model comparisons (14 rows, 13 passenger + 1 collaborator). Reported separately.
+
+Residual single-model qualifying sessions: **501**.
+
+### Per-mode aggregates (single-model)
+
+| Mode | N | Mean tok | Median tok | Mean (OR) | Median (OR) | Turns | Tok/turn | Corr. rate† |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Pipe (h≤1) | 394 | 751 | 136 | 631 | 136 | 394 | 751 | 0.919† |
+| Governor (2≤h≤3) | 9 | 3,308 | 3,217 | 3,017 | 2,899 | 21 | 1,417 | 0.238† |
+| Collaborator (4≤h≤15) | 28 | 34,463 | 15,035 | 19,416 | 14,855 | 238 | 4,055 | 0.273 |
+| Passenger (h>15) | 70 | 174,254 | 69,639 | 151,996 | 69,398 | 5,363 | 2,274 | 0.274 |
+
+(OR) = single-highest-token session removed per mode.
+
+† Correction rate for pipe and governor is not commensurable with collaborator/passenger. Pipe denominator is `n_sessions` (1 turn/session), so the rate measures "fraction of pipe prompts containing a keyword substring," not retroactive correction. Governor at N=9 is similarly sensitive.
+
+**Non-monotonic per-turn cost.** Tokens/turn is highest in collaborator mode (4,055), not passenger (2,274). Per-session multipliers conflate turn-count with per-turn cost.
+
+### Model composition of the single-model pool
+
+| Model | Sessions | Share |
+|---|---:|---:|
+| claude-opus-4-6 | 344 | 68.7% |
+| claude-opus-4-5-20251101 | 82 | 16.4% |
+| claude-opus-4-7 | 53 | 10.6% |
+| claude-sonnet-4-5-20250929 | 20 | 4.0% |
+| claude-sonnet-4-6 | 2 | 0.4% |
+
+Original finding was claude-opus-4-6 only. Per-model × per-mode breakdown is out of scope per rubric.
+
+### Multipliers (triples per rubric §Aggregation: mean / median / outlier-removed mean)
+
+- Passenger vs governor: 52.7× / 21.6× / 50.4× (governor N=9)
+- Passenger vs pipe: 232× / 512× / 241×
+- Passenger vs collaborator: 5.06× / 4.63× / 7.83×
+- Collaborator vs pipe: 45.9× / 110.6× / 30.8×
+
+Pipe-denominator median-based multipliers exceed mean-based because pipe median (136) is much smaller than pipe mean (751). Readers using the median as a conservative estimator should be aware of this inversion.
+
+**Output-weighted.** Output tokens dominate total (92.6% pipe, 98.4% passenger). For any pricing schedule weighting output more than input, cost-weighted multipliers are slightly higher: passenger/governor output-mean ratio = 53.2×.
+
+### Comparison to original finding
+
+Original (N=88, 2026-03-30, claude-opus-4-6 only, means only):
+
+| Mode | N orig | Avg tok orig | N rerun | Mean rerun | Median rerun |
+|---|---:|---:|---:|---:|---:|
+| Pipe | 19 | 634 | 394 | 751 | 136 |
+| Governor | 34 | 576 | 9 | 3,308 | 3,217 |
+| Collaborator | 25 | 3,505 | 28 | 34,463 | 15,035 |
+| Passenger | 10 | 23,658 | 70 | 174,254 | 69,639 |
+
+The two corpora have different composition (governor N 34 → 9, passenger per-session tokens 23,658 → 174,254, model pool one → five Claude versions). Mode-share differences are not time-series evidence of operator behavior change.
+
+## Mechanism
+
+Mode is assigned from `human_turns` with no other signal; token totals are monotonically ordered by mode (medians: 136 < 3,217 < 15,035 < 69,639). The passenger/pipe multiplier decomposes into a turn-count component and a per-turn-cost component; the tokens/turn column shows these components can order differently (collaborator costs more per turn than passenger). A replicator should not infer a per-turn cost ratio from a per-session multiplier.
+
+Passenger sessions dominate tokens. 70 passenger sessions carry 12.20M of 13.49M single-model qualifying tokens (90.4%). Passenger session-share is 14.0% (rerun) vs 11.4% (original), essentially flat. The token-share rise (66% → 90.4%) is driven by per-session passenger tokens growing 7.4× (23,658 → 174,254), not by count growth. Drivers (operator behavior, tooling, model-mix, corpus-window composition) are not disentangled.
+
+Governor mean 3,308 and median 3,217 differ by 91 tokens at N=9, consistent with a tight distribution; no stddev/IQR is reported. Pipe mean 751 vs median 136 reflects a long right tail under the 1-turn bound.
+
+## Confounds
+
+**Mechanical turn/token overlap in the per-session multiplier.** No turn-normalized decomposition beyond the tokens/turn column; per-turn-cost variance itself is not analyzed.
+
+**N=9 governor, N=28 collaborator.** No confidence intervals or bootstrap. Multipliers with these modes as denominator are informative, not tight.
+
+**Five-model pool.** Original was one model (claude-opus-4-6, 68.7% of rerun pool). Model-version drift cannot be separated from turn-count signal at this granularity.
+
+**Methodology-sessions inclusion.** `-tmp/` and `-tmp-exp4/` contribute 27 pipe-mode sessions, 67,343 tokens (22.7% of pipe-mode, 0.50% of whole-corpus single-model). Removing shifts pipe mean 751 → 623 (n=367, −17.0%). Mode ordering and multiplier directions unchanged. Retained per rubric's "same corpus" language.
+
+**Passenger outlier.** Largest single-model passenger session: 1,710,089 tokens. Removal drops passenger mean 174,254 → 151,996 (−12.8%). Session content not inspected.
+
+**Subagent path-filter coverage.** Pattern: `path ~ /\/subagents\//`. 555 rows matched. Spot-check 10/555 (1.8%) verified parent presence; remaining 545 not individually verified. Replicators can verify from `sessions-dedup.tsv`. Extractor-as-extracted is rubric-non-compliant without the filter applied downstream.
+
+**session_id is a relative file path, not sha/hash** per rubric §Scoring criteria item 1. No effect on this rerun's counts; cross-node replication could produce path collisions.
+
+**Correction-rate false-positive audit not performed.** Rubric fixes the keyword set; no sample of matched-but-not-correction utterances. Pipe and governor rates are not commensurable with collaborator and passenger rates.
+
+**Token counts are client-logged (API `usage` fields), not billing-verified.** Rubric lists billing verification as nice-to-have, not in scope.
+
+**Single operator, single node, single window.** No cross-operator or cross-node replication. Extractor is single-implementation Python 3 stdlib (kernel primitive for JSON is `jq`; stdlib chosen because multi-pass per-session state — model-set, token sums, XML-tag stripping, compaction-preamble detection — crossed the jq-readability threshold, declared in each script's header). Aggregator arithmetic spot-verified by cross-lineage reviewers (two-pass adversarial panel: six Claude voters across rousseau and emile × opus-4-7, sonnet-4-5, sonnet-4-6 × high and low effort) against the TSVs before writeup.
+
+## Harness
+
+Full writeup, per-session TSVs, extractor, and aggregator:
+
+    https://github.com/03-git/variance-lab/blob/rerun/finding-3/findings/interaction-mode-variance-rerun.md
