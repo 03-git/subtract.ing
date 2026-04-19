@@ -10,6 +10,8 @@
 #
 # everything lives in ~/.subtract/. read it, edit it, delete it.
 
+# credit: Chet Ramey, command_not_found_handle (2009) — see CodeSource video 2026-04-19.
+
 SUBTRACT_DIR="${SUBTRACT_DIR:-$HOME/.subtract}"
 
 # bash hangs on unclosed quotes (what's, don't, can't) with a bare "> " prompt.
