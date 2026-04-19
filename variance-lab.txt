@@ -4,10 +4,11 @@ This is the claim layer of the subtract stack. Harness and raw outputs live at
 github.com/03-git/variance-lab (substrate, reproducible). These findings are
 the load-bearing empirical claims that the subtract doctrine relies on.
 
-  Canonical:  https://subtract.ing/variance-lab.txt (signed via llms.txt manifest)
-  Harness:    https://github.com/03-git/variance-lab (runnable, reproducible)
-  Signer:     hodori@subtract.ing
-  Namespace:  subtract.ing
+  Canonical:   https://subtract.ing/variance-lab.txt (signed via llms.txt manifest)
+  Methodology: https://subtract.ing/variance-lab-handler-methodology.txt (three-gate validation, 2026-04-18)
+  Harness:     https://github.com/03-git/variance-lab (runnable, reproducible)
+  Signer:      hodori@subtract.ing
+  Namespace:   subtract.ing
 
 Verify:
 

@@ -6,3 +6,8 @@ ls         what's here
 kiwix           local docs (offline)
 kiwix-search X  search local docs
 ctrl-c     stop
+
+## sign & verify
+
+ssh-keygen -Y sign   -f KEY  -n NAMESPACE < FILE > FILE.sig
+ssh-keygen -Y verify -f authorized_signers -I SIGNER -n NAMESPACE -s FILE.sig < FILE
