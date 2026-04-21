@@ -1153,13 +1153,20 @@ ${transcript_text}"
         fi
     fi
 
-    local escaped_prompt payload
+    local escaped_prompt payload inference_host inference_port
     escaped_prompt=$(printf '%s' "$prompt" | jq -Rs .)
     payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":2048}"
+    inference_host=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null)
+    inference_port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
+    [ -z "$inference_port" ] && inference_port="8083"
 
-    if curl -s --connect-timeout 1 "http://localhost:8083/v1/models" &>/dev/null; then
+    if [ -n "$inference_host" ] && [ "$inference_host" != "localhost" ]; then
+        result=$(echo "$payload" | ssh -o ConnectTimeout=5 "$inference_host" \
+            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' -d @-" 2>/dev/null \
+            | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+    elif curl -s --connect-timeout 1 "http://localhost:${inference_port}/v1/models" &>/dev/null; then
         result=$(curl -s --connect-timeout 30 -X POST -H "Content-Type: application/json" \
-            -d "$payload" "http://localhost:8083/v1/chat/completions" 2>/dev/null \
+            -d "$payload" "http://localhost:${inference_port}/v1/chat/completions" 2>/dev/null \
             | jq -r '.choices[0].message.content // empty' 2>/dev/null)
     fi
 
@@ -1182,13 +1189,20 @@ __subtract_write() {
 
     local prompt="Create or edit content based on this request. Output ONLY the content, no commentary: ${input}"
 
-    local escaped_prompt payload
+    local escaped_prompt payload inference_host inference_port
     escaped_prompt=$(printf '%s' "$prompt" | jq -Rs .)
     payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":4096}"
+    inference_host=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null)
+    inference_port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
+    [ -z "$inference_port" ] && inference_port="8083"
 
-    if curl -s --connect-timeout 1 "http://localhost:8083/v1/models" &>/dev/null; then
+    if [ -n "$inference_host" ] && [ "$inference_host" != "localhost" ]; then
+        result=$(echo "$payload" | ssh -o ConnectTimeout=5 "$inference_host" \
+            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' -d @-" 2>/dev/null \
+            | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+    elif curl -s --connect-timeout 1 "http://localhost:${inference_port}/v1/models" &>/dev/null; then
         result=$(curl -s --connect-timeout 60 -X POST -H "Content-Type: application/json" \
-            -d "$payload" "http://localhost:8083/v1/chat/completions" 2>/dev/null \
+            -d "$payload" "http://localhost:${inference_port}/v1/chat/completions" 2>/dev/null \
             | jq -r '.choices[0].message.content // empty' 2>/dev/null)
     fi
 
