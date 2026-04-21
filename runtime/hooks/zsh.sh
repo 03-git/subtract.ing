@@ -1,5 +1,9 @@
 # subtract zsh hook
 # sources shared handler, sets up zsh-specific hooks
+
+# pass unmatched globs as literals (fixes "do?" being parsed as glob)
+setopt nonomatch
+
 [ -f ~/.subtract/subtract.sh ] && source ~/.subtract/subtract.sh
 
 # capture last command output before each prompt
