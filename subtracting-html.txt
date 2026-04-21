@@ -1,0 +1,78 @@
+subtracting.html — GUI layer for subtract
+2026-04-21
+
+Derived from variance test across personas (child, adult worker, developer,
+founder, investor, regulator). Criticisms define the spec.
+
+== Variance Test Findings ==
+
+Child (single word queries):
+  - "dinosaurs" hits typo detection, returns "command not found"
+  - In read mode, gets confused by adult session context bleeding in
+  - Needs visual interface, not command line
+
+Developer ("what is subtract.ing"):
+  - Model doesn't know subtract — interprets as math operation
+  - llms.txt and SOUL.txt not in inference context
+  - Needs subtract docs injected into context
+
+Founder (cost savings):
+  - Model gives generic AI cost advice
+  - No knowledge of tiered routing, local-first architecture
+  - Needs visual cost story
+
+Investor (GPLv3 funding):
+  - Got reasonable generic answer about open source investment
+  - Doesn't connect to subtract's specific value prop
+  - Needs to see the enclosure-resistance story
+
+Regulator (compliance):
+  - Needs to see air-gap capability, data sovereignty
+  - localhost-only stack is the answer
+
+== subtracting.html Spec ==
+
+Browser page served at localhost. Ties the stack together visually.
+
+Closes each criticism:
+  - Model doesn't know subtract → llms.txt + SOUL.txt injected into context
+  - Single words fail typo check → Visual mode buttons (R / W / X)
+  - Context bleeds across personas → Session tabs, clear separation
+  - CLI intimidates non-devs → Browser page, familiar interface
+
+Localhost stack it connects:
+  localhost:7681   ttyd (browser shell)
+  localhost:8888   kiwix (knowledge base)
+  localhost:8083   llama-server (inference)
+  subtracting.html (GUI entry point)
+
+== The Old Intranet Returns ==
+
+No public internet. No SharePoint. No Google Workspace.
+
+The LLM is local. The docs are local (ZIM). The shell is local.
+Everything is local.
+
+Deployment scales:
+  Hobbyist: Pi or old laptop
+  Enterprise: on-prem, air-gapped, compliant
+
+Why GPLv3: stack can't be enclosed
+Why local: nothing leaves the network, compliance by architecture
+Why besides: cloud still works when available, local works when it doesn't
+
+== Persona Answers ==
+
+Child: visual buttons, no typing commands
+Developer: subtract docs in context, model knows what it is
+Founder: cost = local inference, not metered API calls
+Investor: GPLv3 = can't be enclosed, adoption floor not ceiling
+Regulator: air-gapped, data never leaves, audit trail on disk
+
+== Next Steps ==
+
+1. Create subtracting.html with R/W/X mode buttons
+2. Inject llms.txt + SOUL.txt into inference context
+3. Add session tabs for context separation
+4. Connect to existing localhost services (ttyd, kiwix, llama-server)
+5. Test with variance personas again
