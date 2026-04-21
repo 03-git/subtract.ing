@@ -26,7 +26,7 @@ fetch() {
 }
 
 # T0 core
-fetch "runtime/handler.sh" "$SUBTRACT_DIR/handler.sh"
+fetch "runtime/subtract.sh" "$SUBTRACT_DIR/subtract.sh"
 fetch "runtime/subtract" "$SUBTRACT_DIR/subtract"
 fetch "runtime/ask" "$SUBTRACT_DIR/ask"
 fetch "runtime/cheatsheet.txt" "$SUBTRACT_DIR/cheatsheet.txt"

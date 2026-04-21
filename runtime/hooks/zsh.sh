@@ -1,6 +1,6 @@
 # subtract zsh hook
 # sources shared handler, sets up zsh-specific hooks
-[ -f ~/.subtract/handler.sh ] && source ~/.subtract/handler.sh
+[ -f ~/.subtract/subtract.sh ] && source ~/.subtract/subtract.sh
 
 # capture last command output before each prompt
 precmd_functions+=(__subtract_capture)
