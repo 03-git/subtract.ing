@@ -1176,7 +1176,7 @@ ${transcript_text}"
 
     if [ -n "$result" ]; then
         echo "$result"
-        printf "Q: %s\nA: %s\n" "$input" "$result" >> "${session}.log"
+        printf "%s\tQ\t%s\n%s\tA\t%s\n" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$input" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$result" >> "${session}.log"
     else
         echo "no model available"
         return 1
@@ -1277,7 +1277,7 @@ alias who="__subtract_passthrough who"
 # --- Claude session context extraction ---
 __subtract_claude_context() {
     local session dir_slug
-    dir_slug=$(pwd | tr "/" "-")
+    dir_slug=$(pwd | tr "/." "--")
     session=$(ls -t "$HOME/.claude/projects/${dir_slug}"/*.jsonl 2>/dev/null | head -1)
     [ -z "$session" ] && return 1
 
@@ -1289,4 +1289,42 @@ __subtract_claude_context() {
         "Assistant: " + (if (.message.content | type) == "array" then ([.message.content[] | select(.type=="text") | .text] | join(" ")) // "" else .message.content // "" end)
       end
     ' 2>/dev/null | grep -v '^\(Human\|Assistant\): $' | tail -20
+}
+
+__subtract_session_synthesis() {
+    local tmpfile="${TMPDIR:-/tmp}/.subtract-synthesis.$$"
+    local dir_slug session_file handler_log
+
+    # 1. Claude JSONL with timestamps
+    dir_slug=$(pwd | tr "/." "--")
+    session_file=$(ls -t "$HOME/.claude/projects/${dir_slug}"/*.jsonl 2>/dev/null | head -1)
+    if [ -n "$session_file" ]; then
+        tail -200 "$session_file" | jq -r '
+          select(.type=="user" or .type=="assistant") |
+          select(.timestamp) |
+          .timestamp + "\t" + (if .type=="user" then "claude-Q" else "claude-A" end) + "\t" +
+          (if (.message.content | type) == "array" then
+            ([.message.content[] | select(.type=="text") | .text] | join(" ")) // ""
+          else .message.content // "" end)
+        ' 2>/dev/null >> "$tmpfile"
+    fi
+
+    # 2. Handler session log (TSV: timestamp, Q/A, content)
+    handler_log=$(__subtract_session_file).log
+    if [ -f "$handler_log" ]; then
+        tail -50 "$handler_log" | while IFS=$'\t' read -r ts type content; do
+            [ -n "$ts" ] && printf '%s\thandler-%s\t%s\n' "$ts" "$type" "$content"
+        done >> "$tmpfile"
+    fi
+
+    # 3. Bash history (last 20 commands, no timestamps available by default)
+    # Mark with "now" timestamp as approximation
+    local now; now=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+    fc -ln -20 2>/dev/null | sed 's/^[[:space:]]*//' | while read -r cmd; do
+        [ -n "$cmd" ] && printf '%s\tbash\t%s\n' "$now" "$cmd"
+    done >> "$tmpfile"
+
+    # Sort by timestamp, output
+    sort "$tmpfile" 2>/dev/null | tail -30
+    rm -f "$tmpfile"
 }
