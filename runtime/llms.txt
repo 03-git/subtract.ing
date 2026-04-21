@@ -7,7 +7,7 @@ Deployed scripts for ~/.subtract/. These are what install.sh copies.
 https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/subtract
   Entry point. Boots tmux with shell + claude + docs side by side.
 
-https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/handler.sh
+https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/subtract.sh
   Translation layer. Sources into your shell, intercepts unknown commands,
   routes through T0 (lookup) -> T0.5 (man pages) -> T2 (local model) -> T4 (cloud).
 
@@ -28,7 +28,7 @@ https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/cheatsheet.tx
 
 ## Shell hooks
 
-Source ONE of these in your shell rc file. They load handler.sh and wire up
+Source ONE of these in your shell rc file. They load subtract.sh and wire up
 the command_not_found hook for your shell.
 
 https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/hooks/bash.sh
@@ -44,7 +44,7 @@ These files are deployed by:
 
 Or manually:
   mkdir -p ~/.subtract
-  curl -sL https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/handler.sh > ~/.subtract/handler.sh
+  curl -sL https://raw.githubusercontent.com/03-git/subtract.ing/main/runtime/subtract.sh > ~/.subtract/subtract.sh
   # ... etc
 
 ## Parent

@@ -1163,7 +1163,7 @@ fetch() {
 }
 
 # T0 core
-fetch "runtime/handler.sh" "$SUBTRACT_DIR/handler.sh"
+fetch "runtime/subtract.sh" "$SUBTRACT_DIR/subtract.sh"
 fetch "runtime/subtract" "$SUBTRACT_DIR/subtract"
 fetch "runtime/ask" "$SUBTRACT_DIR/ask"
 fetch "runtime/cheatsheet.txt" "$SUBTRACT_DIR/cheatsheet.txt"
@@ -1603,7 +1603,7 @@ If you have cloud AI with filesystem access - have them install a local LLM that
 esac
 
 
-# --- runtime/handler.sh ---
+# --- runtime/subtract.sh ---
 
 # subtract -- translation layer
 # type what you mean. the computer figures out the command.
@@ -2827,7 +2827,7 @@ esac
 
 # subtract bash hook
 # sources shared handler, sets up bash-specific hooks
-[ -f ~/.subtract/handler.sh ] && source ~/.subtract/handler.sh
+[ -f ~/.subtract/subtract.sh ] && source ~/.subtract/subtract.sh
 
 # capture last command output before each prompt
 PROMPT_COMMAND="__subtract_capture;${PROMPT_COMMAND:+$PROMPT_COMMAND}"
@@ -2845,7 +2845,7 @@ export PATH="$HOME/.subtract/bin:$PATH"
 
 # subtract zsh hook
 # sources shared handler, sets up zsh-specific hooks
-[ -f ~/.subtract/handler.sh ] && source ~/.subtract/handler.sh
+[ -f ~/.subtract/subtract.sh ] && source ~/.subtract/subtract.sh
 
 # capture last command output before each prompt
 precmd_functions+=(__subtract_capture)
