@@ -27,13 +27,13 @@ fetch() {
 
 # T0 core
 fetch "runtime/subtract.sh" "$SUBTRACT_DIR/subtract.sh"
-fetch "runtime/subtract" "$SUBTRACT_DIR/subtract"
+fetch "runtime/addition" "$SUBTRACT_DIR/addition"
 fetch "runtime/ask" "$SUBTRACT_DIR/ask"
 fetch "runtime/cheatsheet.txt" "$SUBTRACT_DIR/cheatsheet.txt"
 fetch "runtime/index.html" "$SUBTRACT_DIR/index.html"
 fetch "runtime/hooks/bash.sh" "$SUBTRACT_DIR/hooks/bash.sh"
 fetch "runtime/hooks/zsh.sh" "$SUBTRACT_DIR/hooks/zsh.sh"
-chmod +x "$SUBTRACT_DIR/subtract" "$SUBTRACT_DIR/ask"
+chmod +x "$SUBTRACT_DIR/addition" "$SUBTRACT_DIR/ask"
 
 # mark as onboarded (fat lookdown.tsv makes interactive setup unnecessary)
 touch "$SUBTRACT_DIR/.onboarded"
@@ -60,8 +60,36 @@ fi
 fetch "runtime/bin/shell-web" "$SUBTRACT_DIR/bin/shell-web"
 chmod +x "$SUBTRACT_DIR/bin/shell-web"
 
-# kiwix landing page
-fetch "runtime/pages/subtract.html" "$SUBTRACT_DIR/pages/subtract.html" 2>/dev/null || true
+# pages
+fetch "runtime/pages/subtracting.html" "$SUBTRACT_DIR/pages/subtracting.html"
+fetch "runtime/pages/multiplying.html" "$SUBTRACT_DIR/pages/multiplying.html"
+fetch "runtime/pages/bridge.py" "$SUBTRACT_DIR/pages/bridge.py"
+
+# browse command + launchers
+fetch "runtime/browse" "$SUBTRACT_DIR/browse"
+chmod +x "$SUBTRACT_DIR/browse"
+
+cat > "$SUBTRACT_DIR/pages/serve" <<'SERVE'
+#!/bin/bash
+cd ~/.subtract/pages
+python3 -m http.server 8888 &
+echo "Serving on http://localhost:8888"
+SERVE
+chmod +x "$SUBTRACT_DIR/pages/serve"
+
+for name in subtracting multiplying; do
+    cat > "$SUBTRACT_DIR/$name" <<LAUNCHER
+#!/bin/bash
+exec ~/.subtract/browse $name
+LAUNCHER
+    chmod +x "$SUBTRACT_DIR/$name"
+done
+
+cat > "$SUBTRACT_DIR/browse.aliases" <<ALIASES
+kiwix	file://$SUBTRACT_DIR/pages/subtracting.html
+subtracting	file://$SUBTRACT_DIR/pages/subtracting.html
+multiplying	file://$SUBTRACT_DIR/pages/multiplying.html
+ALIASES
 
 # Shell integration
 BASH_LINE='[ -f ~/.subtract/hooks/bash.sh ] && source ~/.subtract/hooks/bash.sh'

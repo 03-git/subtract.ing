@@ -1,0 +1,28 @@
+#!/bin/bash
+# browse <url|alias>  — open default browser
+# aliases: ~/.subtract/browse.aliases  (TAB-separated: name<TAB>url)
+
+target="${1:-https://subtract.ing}"
+
+aliases="${HOME}/.subtract/browse.aliases"
+if [ -f "$aliases" ]; then
+    resolved=$(awk -F'\t' -v k="$target" '$1==k{print $2; exit}' "$aliases")
+    [ -n "$resolved" ] && target="$resolved"
+fi
+
+case "$(uname -s)" in
+    Darwin)
+        open "$target"
+        ;;
+    Linux)
+        if grep -qi microsoft /proc/version 2>/dev/null; then
+            if [[ "$target" == file://* ]]; then
+                path="${target#file://}"
+                target="file:$(wslpath -w "$path" | tr '\\' '/')"
+            fi
+            /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -Command "Start-Process '$target'" 2>/dev/null
+        else
+            xdg-open "$target"
+        fi
+        ;;
+esac
