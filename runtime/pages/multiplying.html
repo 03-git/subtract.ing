@@ -20,6 +20,10 @@
   .pane:last-of-type{border-right:none}
   .pane-label{font-size:.7rem;opacity:.35;margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.1em}
 
+  .drop{border:1px dashed #333;padding:1rem;text-align:center;color:#555;margin-bottom:.75rem;display:none;min-height:3rem;font-size:.85rem}
+  .drop.visible{display:block}
+  .drop.over{border-color:#fc6;color:#fc6}
+
   .queue{flex:1;overflow-y:auto;margin-bottom:.75rem}
   .q-item{border:1px solid #222;margin-bottom:.5rem;padding:.5rem .6rem;font-size:.85rem;position:relative}
   .q-item.cooking{border-color:#fc6;color:#fc6}
@@ -177,6 +181,8 @@ function setMode(m) {
 let dropped = [];
 const dropEl = document.getElementById('drop');
 
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => e.preventDefault());
 dropEl.addEventListener('dragover', e => { e.preventDefault(); dropEl.classList.add('over'); });
 dropEl.addEventListener('dragleave', () => { dropEl.classList.remove('over'); });
 dropEl.addEventListener('drop', e => {
@@ -214,12 +220,11 @@ async function submitIntent(isNewThread) {
 
   if (isNewThread) currentThread = newThreadId();
 
-  let fileContent = null;
-  let fileName = null;
+  let files = [];
   if (mode === 'w' && dropped.length > 0) {
-    const last = dropped[dropped.length - 1];
-    fileName = last.name;
-    fileContent = await last.text();
+    for (const f of dropped) {
+      files.push({name: f.name, content: await f.text()});
+    }
   }
 
   const item = {
@@ -231,12 +236,16 @@ async function submitIntent(isNewThread) {
     answer: '',
     card: null,
     qel: null,
-    fileContent: fileContent,
-    fileName: fileName
+    files: files,
+    fileName: files.length ? files.map(f => f.name).join(', ') : null
   };
 
   queue.push(item);
   renderQueueItem(item);
+  if (files.length) {
+    dropped = [];
+    document.getElementById('drop').textContent = 'drop files here';
+  }
   processQueue();
 }
 
@@ -282,7 +291,8 @@ function cook(item) {
   card.className = 'card';
   const cardQ = document.createElement('div');
   cardQ.className = 'card-q';
-  cardQ.textContent = '> ' + item.text;
+  cardQ.textContent = (item.fileName ? '[' + item.fileName + '] ' : '') + '> ' + item.text;
+  item.cardEl = card;
   cardQ.onclick = () => card.classList.toggle('collapsed');
   const cardA = document.createElement('div');
   cardA.className = 'card-a cooking';
@@ -297,7 +307,7 @@ function cook(item) {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({intent: item.text, mode: item.mode, thread: item.thread,
-      file: item.fileContent, fileName: item.fileName})
+      files: item.files})
   })
   .then(r => {
     const ct = r.headers.get('Content-Type') || '';
@@ -321,6 +331,7 @@ function cook(item) {
                 cardA.textContent += obj.token;
                 answers.scrollTop = answers.scrollHeight;
               }
+              if (obj.source && item.cardEl) item.cardEl.style.borderColor = obj.source === 'local' ? '#333' : '#222';
             } catch(e) {}
           }
           pump();
@@ -331,6 +342,7 @@ function cook(item) {
       return r.json().then(data => {
         if (data.stdout) cardA.textContent = data.stdout.trimEnd();
         if (data.stderr) cardA.textContent = data.stderr.trimEnd();
+        if (item.cardEl) item.cardEl.style.borderColor = '#333';
         finish(item);
       });
     }

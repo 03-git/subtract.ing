@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>coloring</title>
+<style>
+  html,body{margin:0;background:#111;overflow:hidden;height:100%;touch-action:none;user-select:none}
+  canvas{display:block;background:#fff;cursor:crosshair}
+  .toolbar{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:center;gap:.5rem;padding:.5rem;background:#111}
+  .swatch{width:2.5rem;height:2.5rem;border-radius:50%;border:3px solid #333;cursor:pointer;flex-shrink:0}
+  .swatch.on{border-color:#fff}
+  .size{display:flex;align-items:center;gap:.3rem;margin-left:.5rem}
+  .size button{font:bold 1.2rem monospace;background:#222;color:#fff;border:1px solid #444;width:2rem;height:2rem;cursor:pointer;border-radius:4px}
+  .size span{color:#fff;font:1rem monospace;width:2rem;text-align:center}
+  .tool{font:bold .9rem monospace;background:#222;color:#fff;border:1px solid #444;padding:.4rem .7rem;cursor:pointer;border-radius:4px;margin-left:.5rem}
+  .tool.on{background:#555;border-color:#fff}
+  .spacer{flex:1}
+  .clear{font:bold .9rem monospace;background:#400;color:#f66;border:1px solid #600;padding:.4rem .7rem;cursor:pointer;border-radius:4px}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="toolbar">
+  <div class="swatch on" style="background:#000" data-color="#000"></div>
+  <div class="swatch" style="background:#e33" data-color="#e33"></div>
+  <div class="swatch" style="background:#f90" data-color="#f90"></div>
+  <div class="swatch" style="background:#fd0" data-color="#fd0"></div>
+  <div class="swatch" style="background:#3b3" data-color="#3b3"></div>
+  <div class="swatch" style="background:#38f" data-color="#38f"></div>
+  <div class="swatch" style="background:#93f" data-color="#93f"></div>
+  <div class="swatch" style="background:#f6c" data-color="#f6c"></div>
+  <div class="swatch" style="background:#864" data-color="#864"></div>
+  <div class="swatch" style="background:#fff;border-color:#555" data-color="#fff"></div>
+  <div class="size">
+    <button onclick="changeSize(-4)">−</button>
+    <span id="sizeLabel">8</span>
+    <button onclick="changeSize(4)">+</button>
+  </div>
+  <button class="tool" id="eraser" onclick="toggleEraser()">eraser</button>
+  <div class="spacer"></div>
+  <button class="clear" onclick="clearCanvas()">clear</button>
+</div>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let color = '#000';
+let size = 8;
+let erasing = false;
+let drawing = false;
+let lastX, lastY;
+
+function resize() {
+  const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight - 52;
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.putImageData(img, 0, 0);
+}
+resize();
+window.addEventListener('resize', resize);
+
+function getPos(e) {
+  if (e.touches) return [e.touches[0].clientX, e.touches[0].clientY];
+  return [e.clientX, e.clientY];
+}
+
+function startDraw(e) {
+  drawing = true;
+  [lastX, lastY] = getPos(e);
+}
+
+function draw(e) {
+  if (!drawing) return;
+  e.preventDefault();
+  const [x, y] = getPos(e);
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY);
+  ctx.lineTo(x, y);
+  ctx.strokeStyle = erasing ? '#fff' : color;
+  ctx.lineWidth = erasing ? size * 3 : size;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+  [lastX, lastY] = [x, y];
+}
+
+function stopDraw() { drawing = false; }
+
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', stopDraw);
+canvas.addEventListener('mouseleave', stopDraw);
+canvas.addEventListener('touchstart', startDraw, {passive: false});
+canvas.addEventListener('touchmove', draw, {passive: false});
+canvas.addEventListener('touchend', stopDraw);
+
+document.querySelectorAll('.swatch').forEach(s => {
+  s.addEventListener('click', () => {
+    document.querySelectorAll('.swatch').forEach(x => x.classList.remove('on'));
+    s.classList.add('on');
+    color = s.dataset.color;
+    erasing = false;
+    document.getElementById('eraser').classList.remove('on');
+  });
+});
+
+function changeSize(d) {
+  size = Math.max(2, Math.min(48, size + d));
+  document.getElementById('sizeLabel').textContent = size;
+}
+
+function toggleEraser() {
+  erasing = !erasing;
+  document.getElementById('eraser').classList.toggle('on', erasing);
+}
+
+function clearCanvas() {
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+</script>
+</body>
+</html>

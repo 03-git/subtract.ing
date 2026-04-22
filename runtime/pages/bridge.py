@@ -23,8 +23,7 @@ class Handler(BaseHTTPRequestHandler):
         intent = data.get("intent", "").strip()
         mode = data.get("mode", "r")
         thread_id = data.get("thread", "default")
-        file_content = data.get("file")
-        file_name = data.get("fileName")
+        files = data.get("files", [])
 
         if not intent:
             self._respond(400, {"error": "empty intent"})
@@ -50,17 +49,18 @@ class Handler(BaseHTTPRequestHandler):
                 "stream": False
             })
         except subprocess.TimeoutExpired:
-            self._stream_inference(intent, mode, thread_id)
+            self._stream_inference(intent, mode, thread_id, files)
 
-    def _stream_inference(self, intent, mode, thread_id="default"):
+    def _stream_inference(self, intent, mode, thread_id="default", files=None):
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream")
         self.send_header("Cache-Control", "no-cache")
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
 
-        if file_content and file_name:
-            prompt = f"Here is {file_name}:\n\n{file_content}\n\nRequest: {intent}\n\nOutput ONLY the complete modified file, no commentary."
+        if files:
+            names = ", ".join(f["name"] for f in files)
+            prompt = f"Find and read these files on this machine: {names}. Then: {intent}"
         else:
             prompt = f"Answer concisely: {intent}"
 
@@ -77,14 +77,15 @@ class Handler(BaseHTTPRequestHandler):
             cmd = ["claude", "-p"]
             if thread_id in Handler.threads:
                 cmd.append("-c")
-            cmd.append(prompt)
+            cmd.append("-")
             result = subprocess.run(
-                cmd, capture_output=True, text=True, timeout=60, env=ENV
+                cmd, capture_output=True, text=True, timeout=120,
+                input=prompt, env=ENV, cwd=os.path.expanduser("~")
             )
             text = result.stdout.strip()
             if text:
                 Handler.threads[thread_id] = True
-                self.wfile.write(f"data: {json.dumps({'token': text})}\n\n".encode())
+                self.wfile.write(f"data: {json.dumps({'token': text, 'source': 'cloud'})}\n\n".encode())
                 self.wfile.flush()
                 self.wfile.write(b"data: [DONE]\n\n")
                 self.wfile.flush()
@@ -139,7 +140,7 @@ class Handler(BaseHTTPRequestHandler):
                         delta = obj.get("choices", [{}])[0].get("delta", {})
                         token = delta.get("content", "")
                         if token:
-                            self.wfile.write(f"data: {json.dumps({'token': token})}\n\n".encode())
+                            self.wfile.write(f"data: {json.dumps({'token': token, 'source': 'local'})}\n\n".encode())
                             self.wfile.flush()
                     except (json.JSONDecodeError, IndexError, KeyError):
                         pass
