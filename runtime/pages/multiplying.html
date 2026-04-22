@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>multiplying</title>
+<style>
+  html,body{margin:0;background:#000;color:#fff;font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;height:100%}
+  *{box-sizing:border-box}
+
+  .layout{display:grid;grid-template-columns:16rem 1fr 1fr 16rem;gap:0;max-width:100rem;margin:0 auto;height:100vh}
+
+  aside{font-size:11px;line-height:1.45;color:#6f6;white-space:pre;overflow-x:auto;opacity:.8;padding:1.5rem .75rem}
+  aside.l{border-right:1px solid #1a3a1a}
+  aside.r{border-left:1px solid #1a3a1a}
+  aside .t{color:#9f9;opacity:.55;margin:1.1em 0 .3em;display:block;font-weight:700}
+  aside a{color:#6f6;text-decoration:none;border-bottom:1px solid #1a3a1a}
+  aside a:hover{border-color:#6f6}
+
+  .pane{display:flex;flex-direction:column;border-right:1px solid #222;padding:1rem;overflow:hidden}
+  .pane:last-of-type{border-right:none}
+  .pane-label{font-size:.7rem;opacity:.35;margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.1em}
+
+  .queue{flex:1;overflow-y:auto;margin-bottom:.75rem}
+  .q-item{border:1px solid #222;margin-bottom:.5rem;padding:.5rem .6rem;font-size:.85rem;position:relative}
+  .q-item.cooking{border-color:#fc6;color:#fc6}
+  .q-item.waiting{border-color:#333;color:#999}
+  .q-item.done{border-color:#1a3a1a;color:#555}
+  .q-item .cancel{position:absolute;right:.4rem;top:.3rem;cursor:pointer;color:#555;font-size:.7rem}
+  .q-item .cancel:hover{color:#f66}
+  .q-item .thread-tag{font-size:.65rem;opacity:.4;margin-left:.5rem}
+  .q-status{font-size:.65rem;opacity:.5;margin-top:.2rem}
+
+  .input-area{position:sticky;bottom:0;background:#000}
+  .input-row{display:flex;gap:0}
+  .input-row textarea{
+    flex:1;font:inherit;background:#000;color:#fff;border:1px solid #333;
+    padding:.5rem .6rem;outline:none;font-size:.85rem;resize:none;height:3.5rem;
+  }
+  .input-row textarea:focus{border-color:#fff}
+  .input-row textarea::placeholder{color:#444}
+  .input-btns{display:flex;flex-direction:column;gap:0}
+  .input-btns button{
+    font:inherit;background:#000;color:#555;border:1px solid #333;border-left:0;
+    padding:.25rem .6rem;cursor:pointer;font-size:.75rem;flex:1;
+  }
+  .input-btns button:hover{color:#fff}
+  .input-btns button.new-thread{color:#6f6;border-color:#333}
+  .input-btns button.new-thread:hover{border-color:#6f6}
+  .input-hint{font-size:.65rem;opacity:.3;margin-top:.3rem}
+
+  .answers{flex:1;overflow-y:auto;margin-bottom:.5rem}
+  .card{border:1px solid #222;margin-bottom:.5rem}
+  .card-q{padding:.4rem .6rem;font-size:.75rem;color:#999;cursor:pointer;border-bottom:1px solid #111;user-select:none}
+  .card-q:hover{color:#fff}
+  .card-a{padding:.6rem;font-size:.85rem;white-space:pre-wrap;word-break:break-word;max-height:20rem;overflow-y:auto}
+  .card-a.cooking{color:#fc6}
+  .card.collapsed .card-a{display:none}
+  .answer-status{font-size:.7rem;opacity:.35;padding:0 1rem .75rem}
+
+  .mode{display:flex;gap:0;margin-bottom:.75rem;user-select:none}
+  .mode button{
+    font:inherit;background:#000;color:#555;border:1px solid #333;
+    padding:.3rem 1rem;cursor:pointer;font-size:1rem;letter-spacing:.05em;
+  }
+  .mode button:first-child{border-radius:3px 0 0 3px}
+  .mode button:last-child{border-radius:0 3px 3px 0}
+  .mode button:not(:first-child){border-left:0}
+  .mode button.on.r{color:#6f6;border-color:#6f6}
+  .mode button.on.w{color:#fc6;border-color:#fc6}
+  .mode button.on.x{color:#f66;border-color:#f66}
+
+  footer{opacity:.35;font-size:.7rem;line-height:1.5;padding-top:.5rem;border-top:1px solid #111}
+  footer a{color:#fff;text-decoration:none;border-bottom:1px solid #333}
+
+  @media(max-width:1000px){.layout{grid-template-columns:1fr;height:auto}aside{display:none}.pane{min-height:50vh}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="l"><span class="t">## search before you ask</span>
+<a href="http://localhost:8080/">browse offline docs</a>
+all ZIMs served locally on :8080
+
+<a href="http://localhost:8080/viewer#wikipedia_en_simple">simple english wikipedia</a>
+type a topic and go
+
+<span class="t">## what happens when you type</span>
+1. lookdown table (instant)
+2. man pages / apropos
+3. skills (procedural)
+4. kiwix (offline knowledge)
+5. local model (your machine)
+6. cloud model (if configured)
+
+most questions never reach a model.
+</aside>
+
+  <div class="pane">
+    <div class="pane-label">compose</div>
+    <div class="mode">
+      <button class="r on" onclick="setMode('r')">r</button>
+      <button class="w" onclick="setMode('w')">w</button>
+      <button class="x" onclick="setMode('x')">x</button>
+    </div>
+    <div class="drop" id="drop">drop files here</div>
+    <div class="queue" id="queue"></div>
+    <div class="input-area">
+      <div class="input-row">
+        <textarea id="intent" placeholder="type what you want to do" autofocus
+                  onkeydown="handleKey(event)"></textarea>
+        <div class="input-btns">
+          <button onclick="submitIntent(false)">→</button>
+          <button class="new-thread" onclick="submitIntent(true)">+</button>
+        </div>
+      </div>
+      <div class="input-hint">enter = send (continues thread) · shift+enter = newline · + = new thread</div>
+    </div>
+  </div>
+
+  <div class="pane">
+    <div class="pane-label">answers</div>
+    <div class="answers" id="answers"></div>
+    <div class="answer-status" id="status"></div>
+    <footer>
+      <a href="https://github.com/03-git/subtract.ing">github.com/03-git/subtract.ing</a> · GPLv3<br>
+      Josh (@hodorigami) &amp; LLMs (@qwen @bitnet @claude @gemini @grok)
+    </footer>
+  </div>
+
+  <aside class="r"><span class="t">## r w x</span>
+<span style="color:#6f6">r</span>  read
+   ask questions
+   see what commands do
+   nothing runs
+
+<span style="color:#fc6">w</span>  write
+   drag files in
+   paste screenshots or programs
+   describe the change
+   preview in a new tab
+
+<span style="color:#f66">x</span>  execute
+   commands run
+   you own what happens
+
+<span class="t">## the math</span>
+subtract.ing subtracts.
+multiplying.html multiplies.
+
+the page is yours to change.
+the bridge stays.
+</aside>
+
+</div>
+<script>
+const BRIDGE = 'http://localhost:8889';
+const MAX_CONCURRENT = 3;
+
+let mode = 'r';
+let threadCounter = 0;
+let currentThread = newThreadId();
+let queue = [];
+let cooking = 0;
+
+function newThreadId() { return 't' + (++threadCounter) + '_' + Date.now(); }
+
+function setMode(m) {
+  if (m === 'x' && mode !== 'x' && !confirm('enable execute mode?')) return;
+  mode = m;
+  document.querySelectorAll('.mode button').forEach(b => {
+    b.classList.toggle('on', b.classList.contains(m));
+  });
+  document.getElementById('drop').classList.toggle('visible', m === 'w' || m === 'x');
+}
+
+let dropped = [];
+const dropEl = document.getElementById('drop');
+
+dropEl.addEventListener('dragover', e => { e.preventDefault(); dropEl.classList.add('over'); });
+dropEl.addEventListener('dragleave', () => { dropEl.classList.remove('over'); });
+dropEl.addEventListener('drop', e => {
+  e.preventDefault();
+  dropEl.classList.remove('over');
+  const files = Array.from(e.dataTransfer.files);
+  if (!files.length) return;
+  dropped = dropped.concat(files);
+  dropEl.textContent = files.map(f => f.name).join(', ');
+});
+
+document.addEventListener('paste', e => {
+  if (mode !== 'w' && mode !== 'x') return;
+  Array.from(e.clipboardData.items).forEach(item => {
+    if (item.type.startsWith('image/')) {
+      const f = item.getAsFile();
+      dropped.push(f);
+      dropEl.textContent = 'pasted image (' + f.size + ' bytes)';
+    }
+  });
+});
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    submitIntent(false);
+  }
+}
+
+async function submitIntent(isNewThread) {
+  const el = document.getElementById('intent');
+  const text = el.value.trim();
+  if (!text) return;
+  el.value = '';
+
+  if (isNewThread) currentThread = newThreadId();
+
+  let fileContent = null;
+  let fileName = null;
+  if (mode === 'w' && dropped.length > 0) {
+    const last = dropped[dropped.length - 1];
+    fileName = last.name;
+    fileContent = await last.text();
+  }
+
+  const item = {
+    id: Date.now(),
+    text: text,
+    mode: mode,
+    thread: currentThread,
+    state: 'waiting',
+    answer: '',
+    card: null,
+    qel: null,
+    fileContent: fileContent,
+    fileName: fileName
+  };
+
+  queue.push(item);
+  renderQueueItem(item);
+  processQueue();
+}
+
+function renderQueueItem(item) {
+  const q = document.getElementById('queue');
+  const div = document.createElement('div');
+  div.className = 'q-item waiting';
+  div.innerHTML = `${esc(item.text)}<span class="thread-tag">${item.thread.split('_')[0]}</span>`
+    + `<span class="cancel" onclick="cancelItem(${item.id})">×</span>`
+    + `<div class="q-status">waiting</div>`;
+  item.qel = div;
+  q.appendChild(div);
+  q.scrollTop = q.scrollHeight;
+}
+
+function cancelItem(id) {
+  const idx = queue.findIndex(i => i.id === id);
+  if (idx === -1) return;
+  const item = queue[idx];
+  if (item.state !== 'waiting') return;
+  queue.splice(idx, 1);
+  item.qel.remove();
+  updateStatus();
+}
+
+function processQueue() {
+  updateStatus();
+  while (cooking < MAX_CONCURRENT) {
+    const next = queue.find(i => i.state === 'waiting');
+    if (!next) return;
+    cook(next);
+  }
+}
+
+function cook(item) {
+  item.state = 'cooking';
+  cooking++;
+  item.qel.className = 'q-item cooking';
+  item.qel.querySelector('.q-status').textContent = 'local inference requires patience';
+  updateStatus();
+
+  const card = document.createElement('div');
+  card.className = 'card';
+  const cardQ = document.createElement('div');
+  cardQ.className = 'card-q';
+  cardQ.textContent = '> ' + item.text;
+  cardQ.onclick = () => card.classList.toggle('collapsed');
+  const cardA = document.createElement('div');
+  cardA.className = 'card-a cooking';
+  card.appendChild(cardQ);
+  card.appendChild(cardA);
+  item.card = card;
+  const answers = document.getElementById('answers');
+  answers.appendChild(card);
+  answers.scrollTop = answers.scrollHeight;
+
+  fetch(BRIDGE, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({intent: item.text, mode: item.mode, thread: item.thread,
+      file: item.fileContent, fileName: item.fileName})
+  })
+  .then(r => {
+    const ct = r.headers.get('Content-Type') || '';
+    if (ct.includes('text/event-stream')) {
+      const reader = r.body.getReader();
+      const dec = new TextDecoder();
+      let buf = '';
+      function pump() {
+        reader.read().then(({done, value}) => {
+          if (done) { finish(item); return; }
+          buf += dec.decode(value, {stream: true});
+          const lines = buf.split('\n');
+          buf = lines.pop();
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            const payload = line.slice(6);
+            if (payload === '[DONE]') { finish(item); return; }
+            try {
+              const obj = JSON.parse(payload);
+              if (obj.token) {
+                cardA.textContent += obj.token;
+                answers.scrollTop = answers.scrollHeight;
+              }
+            } catch(e) {}
+          }
+          pump();
+        });
+      }
+      pump();
+    } else {
+      return r.json().then(data => {
+        if (data.stdout) cardA.textContent = data.stdout.trimEnd();
+        if (data.stderr) cardA.textContent = data.stderr.trimEnd();
+        finish(item);
+      });
+    }
+  })
+  .catch(() => {
+    cardA.textContent = 'bridge not running';
+    cardA.className = 'card-a';
+    finish(item);
+  });
+}
+
+function finish(item) {
+  item.state = 'done';
+  cooking--;
+  item.qel.className = 'q-item done';
+  item.qel.querySelector('.q-status').textContent = 'done';
+  const cardA = item.card.querySelector('.card-a');
+  cardA.classList.remove('cooking');
+
+  if (item.mode === 'w' && item.fileName && item.fileName.endsWith('.html')) {
+    const content = cardA.textContent;
+    const htmlMatch = content.match(/<!doctype html>[\s\S]*<\/html>/i)
+      || content.match(/<html[\s\S]*<\/html>/i);
+    if (htmlMatch) {
+      const blob = new Blob([htmlMatch[0]], {type: 'text/html'});
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('div');
+      link.style.cssText = 'padding:.3rem .6rem;font-size:.75rem';
+      link.innerHTML = '<a href="' + url + '" target="_blank" style="color:#fc6;border-bottom:1px solid #fc6">open preview in new tab</a>';
+      item.card.appendChild(link);
+    }
+  }
+
+  processQueue();
+}
+
+function updateStatus() {
+  const waiting = queue.filter(i => i.state === 'waiting').length;
+  const active = cooking;
+  const el = document.getElementById('status');
+  if (active === 0 && waiting === 0) { el.textContent = ''; return; }
+  let s = '';
+  if (active) s += active + ' cooking';
+  if (active && waiting) s += ', ';
+  if (waiting) s += waiting + ' waiting';
+  el.textContent = s;
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+</script>
+</body>
+</html>
