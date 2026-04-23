@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="alternate" type="text/markdown" href="/llms.txt" title="Machine-readable version">
     <link rel="icon" type="image/png" href="/favicon.png">
-    <title>subtract — shell translation for agents and humans</title>
-    <meta name="description" content="Software as a besides. A kernel-first translation layer: type intent, get command, learn command, stop needing translation. Counter-training for agents whose defaults point at Python and SaaS.">
-    <meta property="og:title" content="subtract — shell translation for agents and humans">
-    <meta property="og:description" content="Software as a besides. Type intent, get command, learn command.">
+    <title>subtract.ing</title>
+    <meta name="description" content="command_not_found_handle operationalized to let you type natural language to the command line.">
+    <meta property="og:title" content="subtract.ing">
+    <meta property="og:description" content="Type natural language to the command line.">
     <meta property="og:url" content="https://subtract.ing/">
     <style>
         body {
@@ -16,10 +16,10 @@
             color: #c0c0c0;
             font-family: monospace;
             margin: 2rem auto;
+            max-width: 72ch;
             padding: 0 1rem;
             line-height: 1.5;
         }
-        header { margin-bottom: 2rem; }
         h1 { font-size: 1rem; font-weight: normal; margin: 0; }
         p { margin: 0.5rem 0; }
         hr { border: none; color: #555; margin: 1.5rem 0; }
@@ -31,70 +31,44 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1>subtract.ing</h1>
-        <p>Shell translation infrastructure. Type intent, get command,<br>
-        learn command, stop needing translation.</p>
-        <p>For humans: tiers fade toward independence.<br>
-        For agents: antecedent checks, problem behaviors, consent.</p>
-    </header>
+    <h1>subtract.ing</h1>
+    <p>command_not_found_handle operationalized to let you type
+    natural language to the command line.</p>
 
     <hr>
 
-
 <pre>
-The author(s) does not reserve trademark rights beyond what attaches
-to the signed domain.
-
-The author(s) does not solicit contributions as a condition of the
-project's stewardship (even if @grok @claude and @gemini ask!).
-
-Third parties are free to promote, package, deploy, teach, translate,
-fork, or commercially host subtract.ing under GPLv3. No coordination
-with the author(s) is required.
-
-The human author's commitment is to maintain the signed canonical at
-subtract.ing for as long as the domain is held.
+syscall
+  |
+  +-- kernel (already there)
+  +-- shell (already there)
+  +-- subtract.sh (command_not_found_handle)
+  +-- lookdown.tsv (routing table)
+  +-- busybox httpd (ships with the OS)
+  +-- browser (already on every computer)
+  |
+  |   -- everything below this line moves control and visibility beyond your computer --
+  |
+  +-- npm/pip/cargo
+  +-- language runtime
+  +-- framework
+  +-- ORM, database server
+  +-- API gateway, auth service
+  +-- container runtime, orchestrator
+  +-- cloud provider, CI/CD, CDN
+  +-- monitoring SaaS, billing SaaS
 </pre>
 
     <hr>
 
     <p><strong>Install</strong></p>
 <pre>curl -sL https://subtract.ing/install.sh | bash</pre>
+    <p class="dim">or: curl -sLO https://subtract.ing/install.sh && less install.sh && bash install.sh</p>
 
     <hr>
 
-    <p><strong>Tiers</strong> <span class="dim">(prompt hierarchy — goal: fade toward T0)</span></p>
-<pre>
-T0       lookdown.tsv  <span class="dim">independent</span>
-T0.5     apropos       <span class="dim">textual cue</span>
-T1       embedding     <span class="dim">verbal prompt</span>
-T2       llama.cpp     <span class="dim">demonstration</span>
-T-Voice  whisper.cpp   <span class="dim">voice input</span>
-T-Ear    piper-tts     <span class="dim">voice output</span>
-T4       curl          <span class="dim">full support</span>
-</pre>
-
-    <hr>
-
-    <p><strong>Files</strong></p>
-<pre>
-<a href="https://subtract.ing/llms.txt">https://subtract.ing/llms.txt</a>                    <span class="dim">agent boot path</span>
-<a href="https://subtract.ing/README.txt">https://subtract.ing/README.txt</a>                  <span class="dim">entry gradient</span>
-<a href="https://subtract.ing/subtract.7.txt">https://subtract.ing/subtract.7.txt</a>              <span class="dim">man(7) frame</span>
-<a href="https://subtract.ing/ask.1.txt">https://subtract.ing/ask.1.txt</a>                   <span class="dim">walks the prompt hierarchy</span>
-<a href="https://subtract.ing/lookdown.tsv.universal.txt">https://subtract.ing/lookdown.tsv.universal.txt</a>  <span class="dim">turns your intent into prompts</span>
-<a href="https://subtract.ing/governance.conf.universal.txt">https://subtract.ing/governance.conf.universal.txt</a> <span class="dim">reflexes, authority, loop</span>
-<a href="https://subtract.ing/boot.txt">https://subtract.ing/boot.txt</a>                    <span class="dim">agent discipline</span>
-<a href="https://subtract.ing/software-as-a-besides.txt">https://subtract.ing/software-as-a-besides.txt</a>   <span class="dim">why?</span>
-<a href="https://subtract.ing/signoff.txt">https://subtract.ing/signoff.txt</a>                 <span class="dim">session close</span>
-<a href="https://subtract.ing/lineage.txt">https://subtract.ing/lineage.txt</a>                 <span class="dim">credits</span>
-<a href="https://subtract.ing/variance-lab.txt">https://subtract.ing/variance-lab.txt</a>            <span class="dim">empirical findings</span>
-<a href="https://subtract.ing/variance-lab-handler-methodology.txt">https://subtract.ing/variance-lab-handler-methodology.txt</a>  <span class="dim">three-gate methodology report</span>
-
-~/.subtract/pages/subtracting.html              <span class="dim">local — shell experience (type: subtracting)</span>
-~/.subtract/pages/multiplying.html              <span class="dim">local — browser experience (type: multiplying)</span>
-</pre>
+    <p><a href="/multiplying.html">Demo</a> <span class="dim">— what a working install looks like</span></p>
+    <p><a href="/subtracting.html">Theory</a> <span class="dim">— why subtract exists</span></p>
 
     <hr>
 
