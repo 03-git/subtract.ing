@@ -125,20 +125,20 @@ syscall
     phone a friend.</p>
 
 <pre>
-computer      lookdown.tsv   <span class="dim">pattern match, no AI</span>
-              apropos        <span class="dim">man page lookup, no AI</span>
+computer    lookdown.tsv   <span class="dim">pattern match, no AI</span>
+            apropos        <span class="dim">man page lookup, no AI</span>
 
-computer AI   embedding      <span class="dim">local vector search</span>
-              llama.cpp      <span class="dim">local language model</span>
+assisted    embedding      <span class="dim">local vector search</span>
+            llama.cpp      <span class="dim">local language model</span>
 
-cloud AI      curl           <span class="dim">remote API</span>
+remote      curl           <span class="dim">cloud API</span>
 </pre>
 
     <p>Voice input and output (speech-to-text, text-to-speech) can
     be local or cloud depending on what is available.</p>
 
-    <p>The goal is that your computer answers before AI does, and
-    local AI answers before cloud AI does. Each component is either
+    <p>The goal is that your computer answers before assistance is
+    needed, and local assistance answers before remote does. Each component is either
     pre-installed or a single binary plus model file. Full local
     install is roughly 1.1GB. No interpreter or package manager
     required.</p>

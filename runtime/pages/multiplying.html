@@ -63,8 +63,8 @@
 
   .source-tag{font-size:.65rem;opacity:.5;padding:.2rem .6rem;border-top:1px solid #111}
   .source-tag.computer{color:#6f6}
-  .source-tag.computer-ai{color:#fc6}
-  .source-tag.cloud-ai{color:#f66}
+  .source-tag.assisted{color:#fc6}
+  .source-tag.remote{color:#f66}
 
   footer{opacity:.35;font-size:.7rem;line-height:1.5;padding-top:.5rem;border-top:1px solid #111}
   footer a{color:#fff;text-decoration:none;border-bottom:1px solid #333}
@@ -83,9 +83,9 @@ all ZIMs served locally on :8080
 type a topic and go
 
 <span class="t">## what happens when you type</span>
-1. your computer answers (instant)
-2. local AI answers (your machine)
-3. cloud AI answers (if configured)
+1. computer (instant, no AI)
+2. assisted (local model, private)
+3. remote (cloud, if configured)
 
 most questions never reach AI.
 </aside>
@@ -122,12 +122,12 @@ most questions never reach AI.
    pattern match or man page
    nothing runs, no AI
 
-<span style="color:#fc6">computer AI</span>
+<span style="color:#fc6">assisted</span>
    local model on your machine
    private, no network
 
-<span style="color:#f66">cloud AI</span>
-   remote API
+<span style="color:#f66">remote</span>
+   cloud API
    only if local can't answer
 
 <span class="t">## execution</span>
@@ -277,15 +277,15 @@ function processQueue() {
 function sourceLabel(src) {
   if (!src) return null;
   if (src === 'T0' || src === 'T0.5' || src === 'apropos' || src === 'lookup' || src === 'skills' || src === 'kiwix') return 'computer';
-  if (src === 'T1' || src === 'T2' || src === 'local' || src === 'embedding' || src === 'llama') return 'computer AI';
-  if (src === 'T4' || src === 'cloud' || src === 'claude') return 'cloud AI';
+  if (src === 'T1' || src === 'T2' || src === 'local' || src === 'embedding' || src === 'llama') return 'assisted';
+  if (src === 'T4' || src === 'cloud' || src === 'claude') return 'remote';
   return src;
 }
 
 function sourceClass(label) {
   if (label === 'computer') return 'computer';
-  if (label === 'computer AI') return 'computer-ai';
-  if (label === 'cloud AI') return 'cloud-ai';
+  if (label === 'assisted') return 'assisted';
+  if (label === 'remote') return 'remote';
   return '';
 }
 
