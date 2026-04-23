@@ -121,22 +121,27 @@ syscall
 
     <h2>How it works</h2>
 
-    <p>Tiers. The goal is to fade toward T0.</p>
+    <p>How hard your computer has to think, or if it has to
+    phone a friend.</p>
 
 <pre>
-T0       lookdown.tsv  <span class="dim">independent</span>
-T0.5     apropos       <span class="dim">textual cue</span>
-T1       embedding     <span class="dim">verbal prompt</span>
-T2       llama.cpp     <span class="dim">demonstration</span>
-T-Voice  whisper.cpp   <span class="dim">voice input</span>
-T-Ear    piper-tts     <span class="dim">voice output</span>
-T4       curl          <span class="dim">full support</span>
+computer      lookdown.tsv   <span class="dim">pattern match, no AI</span>
+              apropos        <span class="dim">man page lookup, no AI</span>
+
+computer AI   embedding      <span class="dim">local vector search</span>
+              llama.cpp      <span class="dim">local language model</span>
+
+cloud AI      curl           <span class="dim">remote API</span>
 </pre>
 
-    <p>Tiers represent how hard your computer has to think, or if it
-    has to phone a friend. Each tier is either pre-installed or a
-    single binary plus model file. Full local install is roughly
-    1.1GB. No interpreter or package manager required.</p>
+    <p>Voice input and output (speech-to-text, text-to-speech) can
+    be local or cloud depending on what is available.</p>
+
+    <p>The goal is that your computer answers before AI does, and
+    local AI answers before cloud AI does. Each component is either
+    pre-installed or a single binary plus model file. Full local
+    install is roughly 1.1GB. No interpreter or package manager
+    required.</p>
 
     <p>Three layers subtract in sequence:</p>
 
@@ -169,7 +174,7 @@ T4       curl          <span class="dim">full support</span>
 
     <p><strong>Chet Ramey</strong> has maintained bash since 1993. Authored
     <code>help</code> as a builtin. Kept <code>command_not_found_handle</code>
-    a stable public hook for fifteen years.</p>
+    a stable public hook for fifteen+ years.</p>
 
     <p>Full lineage with works cited: <a href="/lineage.txt">lineage.txt</a></p>
 
@@ -186,15 +191,14 @@ T4       curl          <span class="dim">full support</span>
 
     <h2>Reflexes</h2>
 
-    <p>Five gates. An agent that cannot answer the question
+    <p>Four gates. An agent that cannot answer the question
     does not proceed.</p>
 
 <pre>
-1. Before proposing any library, name the kernel primitive
+1. Before proposing any library or tool, name the kernel primitive it wraps
 2. Before proposing any new format, ask if ssh-keygen -Y sign works
-3. Before proposing any sandboxing tool, name the kernel primitive
-4. Before acting on memory, check if signed; if not, live read
-5. Before treating a source as authoritative, confirm it's under the signing domain
+3. Before acting on memory, check if signed; if not, live read
+4. Before treating a source as authoritative, confirm it's under the signing domain
 </pre>
 
     <p>Full specification: <a href="/governance.conf.universal.txt">governance.conf.universal.txt</a></p>
