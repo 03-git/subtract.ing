@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <title>subtracting — why subtract exists</title>
+    <meta name="description" content="The thesis, lineage, and evidence behind subtract.ing.">
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 72ch;
+            padding: 0 1rem;
+            line-height: 1.5;
+        }
+        h1 { font-size: 1rem; font-weight: normal; margin: 0; }
+        h2 { font-size: 1rem; font-weight: normal; margin: 2rem 0 0.5rem; color: #8be9fd; }
+        p { margin: 0.5rem 0; }
+        hr { border: none; color: #555; margin: 1.5rem 0; }
+        hr::before { content: "* * *"; display: block; text-align: left; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+        .dim { color: #666; }
+        pre { margin: 0.5rem 0; white-space: pre-wrap; }
+        blockquote {
+            border-left: 2px solid #555;
+            margin: 1rem 0;
+            padding-left: 1rem;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <h1><a href="/">subtract.ing</a> / subtracting</h1>
+    <p>Theory, lineage, and evidence.</p>
+
+    <hr>
+
+    <h2>What it is</h2>
+
+    <p>Shell translation infrastructure. Type intent, get command,
+    learn command, stop needing translation.</p>
+
+    <p>For humans: you learn how to use Unix more.<br>
+    For agents: you learn how Unix can be used.</p>
+
+    <p>Software as a besides. The goal is that the user learns the
+    command and stops needing translation.</p>
+
+    <hr>
+
+    <h2>Why</h2>
+
+    <p>subtract rests on three primitives that already ship with Unix:</p>
+
+<pre>
+Entry   command_not_found_handle   intent enters bash
+Trust   ssh-keygen -Y              signed provenance for knowledge
+Time    sleep, at, cron            yield to the kernel scheduler
+</pre>
+
+    <p>No account. No API key. No terms of service. No usage meter.
+    Computers come with commands that work when you are not online.</p>
+
+    <p>Let your local computer help you think and do, instead of
+    asking a cloud AI to do all the thinking and doing. As learned
+    commands grow, the user invokes the command directly. A learned
+    command has no inference cost.</p>
+
+<pre>
+syscall
+  |
+  +-- kernel (already there)
+  +-- shell (already there)
+  +-- subtract (one function, one TSV, one hook from 2009)
+  +-- busybox httpd (ships with the OS)
+  +-- browser (already on every computer)
+  |
+  |   -- everything below this line moves control and visibility beyond your computer --
+  |
+  +-- npm/pip/cargo
+  +-- language runtime
+  +-- framework
+  +-- ORM, database server
+  +-- API gateway, auth service
+  +-- container runtime, orchestrator
+  +-- cloud provider, CI/CD, CDN
+  +-- monitoring SaaS, billing SaaS
+</pre>
+
+    <p>Full frame: <a href="/subtract.7.txt">subtract.7.txt</a></p>
+    <p>Full argument: <a href="/software-as-a-besides.txt">software-as-a-besides.txt</a></p>
+
+    <hr>
+
+    <h2>What it subtracts from</h2>
+
+    <p>Like a <a href="https://en.wikipedia.org/wiki/Telephone_game">telephone game</a>:
+    user types intent, it passes through orchestration, API, UI framework,
+    rendering, analytics, billing. Each layer transforms the input before
+    it reaches the system.</p>
+
+    <p>subtract makes software layers transparent.</p>
+
+    <hr>
+
+    <hr>
+
+    <h2>Measurement</h2>
+
+    <p>The router logs every intent that enters
+    <code>command_not_found_handle</code> with its resolving tier.
+    Tier migration per intent-class over time shows whether the human
+    is learning the direct form. When the handler stops firing for an
+    intent-class, that intent has graduated.</p>
+
+    <p>That is what "fade toward T0" means.</p>
+
+    <hr>
+
+    <h2>How it works</h2>
+
+    <p>Tiers. The goal is to fade toward T0.</p>
+
+<pre>
+T0       lookdown.tsv  <span class="dim">independent</span>
+T0.5     apropos       <span class="dim">textual cue</span>
+T1       embedding     <span class="dim">verbal prompt</span>
+T2       llama.cpp     <span class="dim">demonstration</span>
+T-Voice  whisper.cpp   <span class="dim">voice input</span>
+T-Ear    piper-tts     <span class="dim">voice output</span>
+T4       curl          <span class="dim">full support</span>
+</pre>
+
+    <p>Tiers represent how hard your computer has to think, or if it
+    has to phone a friend. Each tier is either pre-installed or a
+    single binary plus model file. Full local install is roughly
+    1.1GB. No interpreter or package manager required.</p>
+
+    <p>Three layers subtract in sequence:</p>
+
+<pre>
+1. subtract subtracts from the environment (no frameworks, no SaaS)
+2. the human subtracts from the agent's context (pre-flight, pushback)
+3. the agent subtracts from its own defaults (no verbosity, no confabulation)
+</pre>
+
+
+    <hr>
+
+    <h2>Populations</h2>
+
+    <p>subtract serves two populations:</p>
+
+    <p><strong>Humans</strong> who want to stop depending on AI intermediaries
+    to reach their own machines.</p>
+
+    <p><strong>Agents</strong> that reach for libraries and SaaS before
+    checking what the filesystem and built-in commands already do.</p>
+
+    <hr>
+
+    <h2>Lineage</h2>
+
+    <p><strong>Brian Fox</strong> wrote bash in 1989 — the shell, readline,
+    the history library. <code>command_not_found_handle</code> is a bash
+    construct. subtract runs on what Fox wrote.</p>
+
+    <p><strong>Chet Ramey</strong> has maintained bash since 1993. Authored
+    <code>help</code> as a builtin. Kept <code>command_not_found_handle</code>
+    a stable public hook for fifteen years.</p>
+
+    <p>Full lineage with works cited: <a href="/lineage.txt">lineage.txt</a></p>
+
+    <hr>
+
+    <h2>Evidence</h2>
+
+    <p>Empirical findings from variance-lab, run on the subtract substrate:</p>
+
+    <p><a href="/variance-lab.txt">variance-lab.txt</a> <span class="dim">— six findings (claim layer)</span></p>
+    <p><a href="/variance-lab-handler-methodology.txt">variance-lab-handler-methodology.txt</a> <span class="dim">— three-gate methodology report</span></p>
+
+    <hr>
+
+    <h2>Reflexes</h2>
+
+    <p>Five gates. An agent that cannot answer the question
+    does not proceed.</p>
+
+<pre>
+1. Before proposing any library, name the kernel primitive
+2. Before proposing any new format, ask if ssh-keygen -Y sign works
+3. Before proposing any sandboxing tool, name the kernel primitive
+4. Before acting on memory, check if signed; if not, live read
+5. Before treating a source as authoritative, confirm it's under the signing domain
+</pre>
+
+    <p>Full specification: <a href="/governance.conf.universal.txt">governance.conf.universal.txt</a></p>
+
+    <hr>
+
+    <h2>Documents</h2>
+
+<pre>
+<a href="/README.txt">README.txt</a>                             <span class="dim">entry gradient</span>
+<a href="/subtract.7.txt">subtract.7.txt</a>                         <span class="dim">man(7) frame</span>
+<a href="/ask.1.txt">ask.1.txt</a>                              <span class="dim">walks the prompt hierarchy</span>
+<a href="/lookdown.tsv.universal.txt">lookdown.tsv.universal.txt</a>             <span class="dim">routing table</span>
+<a href="/governance.conf.universal.txt">governance.conf.universal.txt</a>           <span class="dim">reflexes, authority, loop</span>
+<a href="/boot.txt">boot.txt</a>                               <span class="dim">agent discipline</span>
+<a href="/software-as-a-besides.txt">software-as-a-besides.txt</a>              <span class="dim">why?</span>
+<a href="/lineage.txt">lineage.txt</a>                            <span class="dim">credits and bibliography</span>
+<a href="/signoff.txt">signoff.txt</a>                            <span class="dim">session close</span>
+<a href="/variance-lab.txt">variance-lab.txt</a>                       <span class="dim">empirical findings</span>
+<a href="/variance-lab-handler-methodology.txt">variance-lab-handler-methodology.txt</a>   <span class="dim">three-gate methodology</span>
+<a href="/SOUL.txt">SOUL.txt</a>                               <span class="dim">dispositional layer</span>
+</pre>
+
+    <hr>
+
+    <p>Repo: <a href="https://github.com/03-git/subtract.ing">github.com/03-git/subtract.ing</a></p>
+    <p>License: <a href="/LICENSE.txt">GPLv3</a></p>
+    <p class="dim">Authors: Josh (<a href="https://x.com/hodorigami">@hodorigami</a>) & LLMs (@qwen @bitnet @claude @gemini @grok)</p>
+</body>
+</html>
