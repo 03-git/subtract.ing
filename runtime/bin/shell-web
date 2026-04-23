@@ -13,7 +13,7 @@ case "${1:-start}" in
             exit 0
         fi
         echo "Starting browser shell on http://localhost:$PORT/"
-        nohup "$TTYD" -W -p "$PORT" bash > /dev/null 2>&1 &
+        nohup "$TTYD" -W -p "$PORT" bash --login > /dev/null 2>&1 &
         echo $! > "$PIDFILE"
         ;;
     stop)
