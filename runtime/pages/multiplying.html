@@ -61,17 +61,10 @@
   .card.collapsed .card-a{display:none}
   .answer-status{font-size:.7rem;opacity:.35;padding:0 1rem .75rem}
 
-  .mode{display:flex;gap:0;margin-bottom:.75rem;user-select:none}
-  .mode button{
-    font:inherit;background:#000;color:#555;border:1px solid #333;
-    padding:.3rem 1rem;cursor:pointer;font-size:1rem;letter-spacing:.05em;
-  }
-  .mode button:first-child{border-radius:3px 0 0 3px}
-  .mode button:last-child{border-radius:0 3px 3px 0}
-  .mode button:not(:first-child){border-left:0}
-  .mode button.on.r{color:#6f6;border-color:#6f6}
-  .mode button.on.w{color:#fc6;border-color:#fc6}
-  .mode button.on.x{color:#f66;border-color:#f66}
+  .source-tag{font-size:.65rem;opacity:.5;padding:.2rem .6rem;border-top:1px solid #111}
+  .source-tag.computer{color:#6f6}
+  .source-tag.computer-ai{color:#fc6}
+  .source-tag.cloud-ai{color:#f66}
 
   footer{opacity:.35;font-size:.7rem;line-height:1.5;padding-top:.5rem;border-top:1px solid #111}
   footer a{color:#fff;text-decoration:none;border-bottom:1px solid #333}
@@ -90,23 +83,15 @@ all ZIMs served locally on :8080
 type a topic and go
 
 <span class="t">## what happens when you type</span>
-1. lookdown table (instant)
-2. man pages / apropos
-3. skills (procedural)
-4. kiwix (offline knowledge)
-5. local model (your machine)
-6. cloud model (if configured)
+1. your computer answers (instant)
+2. local AI answers (your machine)
+3. cloud AI answers (if configured)
 
-most questions never reach a model.
+most questions never reach AI.
 </aside>
 
   <div class="pane">
     <div class="pane-label">compose</div>
-    <div class="mode">
-      <button class="r on" onclick="setMode('r')">r</button>
-      <button class="w" onclick="setMode('w')">w</button>
-      <button class="x" onclick="setMode('x')">x</button>
-    </div>
     <div class="drop" id="drop">drop files here</div>
     <div class="queue" id="queue"></div>
     <div class="input-area">
@@ -118,7 +103,7 @@ most questions never reach a model.
           <button class="new-thread" onclick="submitIntent(true)">+</button>
         </div>
       </div>
-      <div class="input-hint">enter = send (continues thread) · shift+enter = newline · + = new thread</div>
+      <div class="input-hint">enter = send · shift+enter = newline · + = new thread</div>
     </div>
   </div>
 
@@ -132,28 +117,26 @@ most questions never reach a model.
     </footer>
   </div>
 
-  <aside class="r"><span class="t">## r w x</span>
-<span style="color:#6f6">r</span>  read
-   ask questions
-   see what commands do
-   nothing runs
+  <aside class="r"><span class="t">## how it answers</span>
+<span style="color:#6f6">computer</span>
+   pattern match or man page
+   nothing runs, no AI
 
-<span style="color:#fc6">w</span>  write
-   drag files in
-   paste screenshots or programs
-   describe the change
-   preview in a new tab
+<span style="color:#fc6">computer AI</span>
+   local model on your machine
+   private, no network
 
-<span style="color:#f66">x</span>  execute
-   commands run
-   you own what happens
+<span style="color:#f66">cloud AI</span>
+   remote API
+   only if local can't answer
 
-<span class="t">## the math</span>
-subtract.ing subtracts.
-multiplying.html multiplies.
+<span class="t">## execution</span>
+commands that change things
+ask before they run.
 
-the page is yours to change.
-the bridge stays.
+<span class="t">## files</span>
+drag files into the input
+to ask about their contents.
 </aside>
 
 </div>
@@ -161,7 +144,6 @@ the bridge stays.
 const BRIDGE = 'http://localhost:8889';
 const MAX_CONCURRENT = 3;
 
-let mode = 'r';
 let threadCounter = 0;
 let currentThread = newThreadId();
 let queue = [];
@@ -169,19 +151,24 @@ let cooking = 0;
 
 function newThreadId() { return 't' + (++threadCounter) + '_' + Date.now(); }
 
-function setMode(m) {
-  if (m === 'x' && mode !== 'x' && !confirm('enable execute mode?')) return;
-  mode = m;
-  document.querySelectorAll('.mode button').forEach(b => {
-    b.classList.toggle('on', b.classList.contains(m));
-  });
-  document.getElementById('drop').classList.toggle('visible', m === 'w' || m === 'x');
+function inferMode(text, hasFiles) {
+  if (hasFiles) return 'w';
+  const lower = text.toLowerCase();
+  const destructive = ['rm ', 'rmdir ', 'dd ', 'mkfs ', 'chmod ', 'chown ', 'shred ', 'truncate ',
+    'delete ', 'remove ', 'kill ', 'stop '];
+  const writeWords = ['create ', 'write ', 'edit ', 'make ', 'save ', 'move ', 'copy ', 'rename '];
+  for (const d of destructive) { if (lower.startsWith(d) || lower.includes(' ' + d)) return 'x'; }
+  for (const w of writeWords) { if (lower.startsWith(w) || lower.includes(' ' + w)) return 'w'; }
+  return 'r';
 }
 
 let dropped = [];
 const dropEl = document.getElementById('drop');
 
-document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('dragover', e => { e.preventDefault(); dropEl.classList.add('visible'); });
+document.addEventListener('dragleave', e => {
+  if (!e.relatedTarget || e.relatedTarget === document.documentElement) dropEl.classList.remove('visible');
+});
 document.addEventListener('drop', e => e.preventDefault());
 dropEl.addEventListener('dragover', e => { e.preventDefault(); dropEl.classList.add('over'); });
 dropEl.addEventListener('dragleave', () => { dropEl.classList.remove('over'); });
@@ -192,15 +179,16 @@ dropEl.addEventListener('drop', e => {
   if (!files.length) return;
   dropped = dropped.concat(files);
   dropEl.textContent = files.map(f => f.name).join(', ');
+  dropEl.classList.add('visible');
 });
 
 document.addEventListener('paste', e => {
-  if (mode !== 'w' && mode !== 'x') return;
   Array.from(e.clipboardData.items).forEach(item => {
     if (item.type.startsWith('image/')) {
       const f = item.getAsFile();
       dropped.push(f);
       dropEl.textContent = 'pasted image (' + f.size + ' bytes)';
+      dropEl.classList.add('visible');
     }
   });
 });
@@ -221,11 +209,15 @@ async function submitIntent(isNewThread) {
   if (isNewThread) currentThread = newThreadId();
 
   let files = [];
-  if (mode === 'w' && dropped.length > 0) {
+  if (dropped.length > 0) {
     for (const f of dropped) {
       files.push({name: f.name, content: await f.text()});
     }
   }
+
+  const mode = inferMode(text, files.length > 0);
+
+  if (mode === 'x' && !confirm('this looks like it will change things. proceed?')) return;
 
   const item = {
     id: Date.now(),
@@ -234,6 +226,7 @@ async function submitIntent(isNewThread) {
     thread: currentThread,
     state: 'waiting',
     answer: '',
+    source: null,
     card: null,
     qel: null,
     files: files,
@@ -244,7 +237,8 @@ async function submitIntent(isNewThread) {
   renderQueueItem(item);
   if (files.length) {
     dropped = [];
-    document.getElementById('drop').textContent = 'drop files here';
+    dropEl.textContent = 'drop files here';
+    dropEl.classList.remove('visible');
   }
   processQueue();
 }
@@ -280,11 +274,26 @@ function processQueue() {
   }
 }
 
+function sourceLabel(src) {
+  if (!src) return null;
+  if (src === 'T0' || src === 'T0.5' || src === 'apropos' || src === 'lookup' || src === 'skills' || src === 'kiwix') return 'computer';
+  if (src === 'T1' || src === 'T2' || src === 'local' || src === 'embedding' || src === 'llama') return 'computer AI';
+  if (src === 'T4' || src === 'cloud' || src === 'claude') return 'cloud AI';
+  return src;
+}
+
+function sourceClass(label) {
+  if (label === 'computer') return 'computer';
+  if (label === 'computer AI') return 'computer-ai';
+  if (label === 'cloud AI') return 'cloud-ai';
+  return '';
+}
+
 function cook(item) {
   item.state = 'cooking';
   cooking++;
   item.qel.className = 'q-item cooking';
-  item.qel.querySelector('.q-status').textContent = 'local inference requires patience';
+  item.qel.querySelector('.q-status').textContent = 'thinking...';
   updateStatus();
 
   const card = document.createElement('div');
@@ -331,7 +340,7 @@ function cook(item) {
                 cardA.textContent += obj.token;
                 answers.scrollTop = answers.scrollHeight;
               }
-              if (obj.source && item.cardEl) item.cardEl.style.borderColor = obj.source === 'local' ? '#333' : '#222';
+              if (obj.source) item.source = obj.source;
             } catch(e) {}
           }
           pump();
@@ -342,7 +351,7 @@ function cook(item) {
       return r.json().then(data => {
         if (data.stdout) cardA.textContent = data.stdout.trimEnd();
         if (data.stderr) cardA.textContent = data.stderr.trimEnd();
-        if (item.cardEl) item.cardEl.style.borderColor = '#333';
+        if (data.source) item.source = data.source;
         finish(item);
       });
     }
@@ -361,6 +370,14 @@ function finish(item) {
   item.qel.querySelector('.q-status').textContent = 'done';
   const cardA = item.card.querySelector('.card-a');
   cardA.classList.remove('cooking');
+
+  const label = sourceLabel(item.source);
+  if (label) {
+    const tag = document.createElement('div');
+    tag.className = 'source-tag ' + sourceClass(label);
+    tag.textContent = label;
+    item.card.appendChild(tag);
+  }
 
   if (item.mode === 'w' && item.fileName && item.fileName.endsWith('.html')) {
     const content = cardA.textContent;
@@ -385,7 +402,7 @@ function updateStatus() {
   const el = document.getElementById('status');
   if (active === 0 && waiting === 0) { el.textContent = ''; return; }
   let s = '';
-  if (active) s += active + ' cooking';
+  if (active) s += active + ' thinking';
   if (active && waiting) s += ', ';
   if (waiting) s += waiting + ' waiting';
   el.textContent = s;
