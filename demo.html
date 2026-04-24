@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>subtract.ing — demo</title>
+<style>
+body{background:#000;color:#ccc;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;margin:0;padding:0;height:100vh;display:flex;flex-direction:column}
+.term{flex:1;padding:1.5rem;overflow-y:auto}
+.line{margin-bottom:.2rem;line-height:1.5}
+.ps1{color:#6f6}
+.typing{color:#fff}
+.cursor{display:inline-block;width:7px;height:14px;background:#6f6;animation:blink 1s step-end infinite;vertical-align:text-bottom}
+@keyframes blink{50%{opacity:0}}
+.output{color:#ccc}
+.tag{color:#555}
+.prompt-confirm{color:#555}
+.dim{color:#444}
+.bar{border-top:1px solid #222;padding:.75rem 1.5rem;font-size:.75rem;color:#444}
+.bar a{color:#6f6;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="term" id="term"></div>
+<div class="bar">this is a recording — <a href="https://subtract.ing/">install</a> to use it live · <a href="https://subtract.ing/subtracting.html">why it works this way</a></div>
+<script>
+const demos = [
+  {q:"show my files", tag:"T0:stdout", cmd:"ls .", out:"CLAUDE.md\nDocuments\nDownloads\nMusic\nPictures\nscripts"},
+  {q:"who is logged in", tag:"T0:stdout", cmd:"who", out:"josh     pts/0        Apr 23 19:21"},
+  {q:"disk usage", tag:"T0:stdout", cmd:"du -sh *", out:"4.0K\tCLAUDE.md\n12M\tDocuments\n1.2G\tDownloads\n340M\tMusic\n28K\tPictures\n8.0K\tscripts"},
+  {q:"what process is using port 8080", tag:"T2:stdout", cmd:"lsof -i :8080", out:"kiwix-ser 1234 josh    3u  IPv6 0x1234  0t0  TCP *:http-alt (LISTEN)"},
+  {q:"can you read websites", answer:"I can process and analyze text from websites, but I don't directly read them. I rely on text provided to me or accessed through URLs you give me."},
+  {q:"compress this directory", tag:"T2:stdout", cmd:"tar -czvf archive.tar.gz .", out:"a .\na ./CLAUDE.md\na ./Documents\na ./scripts"},
+  {q:"why does the computer answer first", answer:"The lookup table resolves in milliseconds. Inference takes seconds. If the answer is already written, running a model is wasted time and wasted energy. The goal is to need the model less over time, not more."},
+  {q:"find files changed today", tag:"T2:stdout", cmd:"find . -type f -mtime 0", out:"./CLAUDE.md\n./scripts/bench.sh"},
+  {q:"what happens when I learn the command", answer:"You type it directly. subtract.ing is not needed. The AI trained you toward the machine, then got out of the way."},
+];
+
+const term = document.getElementById('term');
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+function addLine(html){
+  const d=document.createElement('div');
+  d.className='line';
+  d.innerHTML=html;
+  term.appendChild(d);
+  term.scrollTop=term.scrollHeight;
+  return d;
+}
+
+async function typeText(el,text,speed){
+  for(let i=0;i<text.length;i++){
+    el.textContent+=text[i];
+    term.scrollTop=term.scrollHeight;
+    await sleep(speed);
+  }
+}
+
+async function runDemo(demo){
+  const line=addLine('<span class="ps1">~$ </span><span class="typing"></span><span class="cursor">&nbsp;</span>');
+  const typing=line.querySelector('.typing');
+  const cursor=line.querySelector('.cursor');
+
+  await typeText(typing,demo.q,40);
+  await sleep(300);
+  cursor.remove();
+
+  if(demo.answer){
+    await sleep(500);
+    addLine('<span class="output">'+demo.answer.replace(/\n/g,'<br>')+'</span>');
+  } else {
+    addLine('<span class="tag">['+demo.tag+'] '+demo.cmd+'</span>');
+    addLine('<span class="prompt-confirm">[enter/n] </span>');
+    await sleep(400);
+    addLine('<span class="output">'+demo.out.replace(/\n/g,'<br>')+'</span>');
+  }
+
+  await sleep(2500);
+}
+
+async function loop(){
+  while(true){
+    for(const d of demos) await runDemo(d);
+    await sleep(3000);
+    term.innerHTML='';
+  }
+}
+loop();
+</script>
+</body>
+</html>
