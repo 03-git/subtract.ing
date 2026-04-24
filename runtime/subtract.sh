@@ -133,6 +133,15 @@ __subtract_truncate() {
 __subtract_capture() {
     if [ -z "$_SUBTRACT_FROM_HANDLER" ]; then
         SUBTRACT_LAST_OUTPUT="last command: $(fc -ln -1 2>/dev/null | sed "s/^[[:space:]]*//")"
+        # auto-switch to read mode after claude -p (conversation context available)
+        case "$SUBTRACT_LAST_OUTPUT" in
+            *"claude -p "*|*"claude --print "*)
+                _SUBTRACT_AFTER_CLAUDE_P=1
+                ;;
+            *)
+                _SUBTRACT_AFTER_CLAUDE_P=""
+                ;;
+        esac
     fi
     _SUBTRACT_FROM_HANDLER=""
 }
@@ -444,7 +453,7 @@ __subtract_ask_local() {
     [ -z "$inference_port" ] && inference_port="8081"
 
     local input="$1"
-    local prompt="Answer concisely. /no_think ${input}"
+    local prompt="Answer concisely. ${input}"
     local payload result
 
     local escaped_prompt; escaped_prompt=$(printf "%s" "$prompt" | jq -Rs .)
@@ -476,6 +485,22 @@ __subtract_ask_cloud() {
         claude)
             command -v claude &>/dev/null || [ -x "$HOME/.local/bin/claude" ] || return 1
             result=$(claude -p "Answer concisely: $input" 2>/dev/null)
+            ;;
+        xai|grok)
+            local xai_key
+            xai_key=$(cat "$SUBTRACT_DIR/xai_key" 2>/dev/null)
+            [ -z "$xai_key" ] && return 1
+            local payload
+            payload=$(jq -n --arg q "$input" '{
+                model: "grok-4.20-0309-reasoning",
+                messages: [{role: "user", content: ("Answer concisely: " + $q)}],
+                max_tokens: 4096
+            }')
+            result=$(curl -s -X POST https://api.x.ai/v1/chat/completions \
+                -H "Authorization: Bearer $xai_key" \
+                -H "Content-Type: application/json" \
+                -d "$payload" 2>/dev/null)
+            result=$(echo "$result" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
             ;;
         *)
             return 1
@@ -670,6 +695,13 @@ __subtract_handle() {
     local input_lower
     input_lower=$(__subtract_lower "$input")
     case "$input_lower" in
+        "download video "*)
+            local dl_url="${input#* video }"
+            echo "[downloading to acer:9000/videos/]"
+            ssh acer "yt-dlp -o '/home/media/Games/videos/%(title)s.%(ext)s' '$dl_url'" 2>&1
+            _SUBTRACT_FROM_HANDLER=1
+            return 0
+            ;;
         "skills")
             echo "[skill] domains:"
             ls "$SUBTRACT_SKILLS/" 2>/dev/null | grep -v '^\.' || echo "  (none)"
@@ -1239,9 +1271,40 @@ __subtract_route_by_mode() {
         return 127
     fi
 
+    # question detection: interrogative input gets a conversational answer
+    local input_lower
+    input_lower=$(__subtract_lower "$input")
+    local first_word="${input_lower%% *}"
+    case "$first_word" in
+        can|could|do|does|did|will|would|shall|should|is|are|was|were|has|have|what|where|when|who|why|how)
+            local answer
+            answer=$(__subtract_ask_local "$input")
+            if [ -n "$answer" ]; then
+                echo "$answer"
+                _SUBTRACT_FROM_HANDLER=1
+                return 0
+            fi
+            ;;
+    esac
+    if [[ "$input" == *"?" ]]; then
+        local answer
+        answer=$(__subtract_ask_local "$input")
+        if [ -n "$answer" ]; then
+            echo "$answer"
+            _SUBTRACT_FROM_HANDLER=1
+            return 0
+        fi
+    fi
+
     mode=$(__subtract_get_mode)
     if [ -z "$mode" ]; then
         mode=$(__subtract_prompt_mode)
+    fi
+
+    # auto-override to read mode after claude -p (conversation follow-up)
+    if [ -n "$_SUBTRACT_AFTER_CLAUDE_P" ]; then
+        mode="r"
+        _SUBTRACT_AFTER_CLAUDE_P=""
     fi
 
     case "$mode" in
