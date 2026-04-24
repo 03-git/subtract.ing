@@ -26,10 +26,10 @@ body{background:#000;color:#ccc;font-family:ui-monospace,Menlo,Consolas,monospac
 <script>
 const demos = [
   {q:"how does this work compared to claude.ai", answer:"lookdown.tsv answers instantly from a routing table on your machine. no account, no API, no rate limit. queries that need more than pattern matching fall through to a local model running on your hardware. nothing leaves your computer."},
-  {q:"what process is using port 8080", tag:"T2:stdout", cmd:"lsof -i :8080"},
-  {q:"find files changed today", tag:"T2:stdout", cmd:"find . -type f -mtime 0"},
+  {q:"what process is using port 8080", tag:"assisted", cmd:"lsof -i :8080"},
+  {q:"find files changed today", tag:"assisted", cmd:"find . -type f -mtime 0"},
   {q:"why does the computer answer first", answer:"the lookup table resolves in milliseconds. inference takes seconds. if the answer is already written, running a model is wasted time and wasted energy. the goal is to need the model less over time, not more."},
-  {q:"compress this directory", tag:"T2:stdout", cmd:"tar -czvf archive.tar.gz ."},
+  {q:"compress this directory", tag:"assisted", cmd:"tar -czvf archive.tar.gz ."},
   {q:"what happens when I learn the command", answer:"you type it directly. subtract.ing is not needed. the AI trained you toward the machine, then got out of the way."},
 ];
 
