@@ -3,7 +3,12 @@
 Fast paths (T0/skills/kiwix) return immediately.
 Inference streams token-by-token via SSE."""
 import subprocess, json, os, re, urllib.request, urllib.error
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler
+from socketserver import ThreadingMixIn
+from http.server import HTTPServer
+
+class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
+    daemon_threads = True
 
 PORT = 8889
 FAST_TIMEOUT = 5
@@ -237,4 +242,4 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     print(f"bridge on :{PORT}")
-    HTTPServer(("127.0.0.1", PORT), Handler).serve_forever()
+    ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()

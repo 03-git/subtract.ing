@@ -448,7 +448,6 @@ __subtract_ask_local() {
     local payload result
 
     local escaped_prompt; escaped_prompt=$(printf "%s" "$prompt" | jq -Rs .)
-    payload="{"messages":[{"role":"user","content":${escaped_prompt}}],"max_tokens":500}"
     payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":500}"
     if [ -n "$inference_host" ] && [ "$inference_host" != "localhost" ]; then
         result=$(ssh -o ConnectTimeout=5 "$inference_host" \
