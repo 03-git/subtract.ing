@@ -1,53 +1,30 @@
 # subtract.ing
 
-You hit a rate limit, or the latency got annoying, or you got cut off mid-thought.
-You're looking for the same capability without the browser.
+command_not_found_handle operationalized to let you type
+natural language to the command line.
 
 ## Install
 
-```bash
+```
 curl -sL https://subtract.ing/install.sh | bash
 ```
 
-New terminal, or `source ~/.subtract/hooks/bash.sh`.
+Or inspect first: `curl -sLO https://subtract.ing/install.sh && less install.sh && bash install.sh`
 
-## Use
+## What it is
 
-Type what you mean:
-
-```bash
-show my files
-compress this folder
-find files changed today
-```
-
-Or ask a question:
-
-```bash
-ask "what system call creates a child process?"
-ask "how do I resize an image?"
-```
-
-No login. No API key. No rate limit. Runs on your machine.
-
-## What you'll discover
-
-  WHERE YOU START             WHAT YOU HIT                WHAT YOU FIND
-  -------------------------   -------------------------   -------------------------
-  GUI (Claude Code, Codex)    rate limit, latency, cost   ask works offline
-  local model running         "wait, it's on my machine?" no login - nothing to log into
-  asking definitional queries model invocation feels slow apropos answers without inference
-  pattern recognition         you know the command        you type it directly
-
-You graduate down. You discover the computer again.
+https://subtract.ing — the canonical site
+https://subtract.ing/demo.html — what a working install looks like
+https://subtract.ing/multiplying-demo.html — the local interface
+https://subtract.ing/subtracting.html — why subtract exists
 
 ## For agents
 
-Read [llms.txt](https://subtract.ing/llms.txt). It has the manifest, the routing table, and the five reflexes.
+Read https://subtract.ing/llms.txt — manifest, routing table, four reflexes.
 
 ## License
 
-GPLv3. See [LICENSE.txt](LICENSE.txt).
+GPLv3. See LICENSE.txt.
 
 ## Authors
 
