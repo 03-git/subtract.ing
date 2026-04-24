@@ -25,15 +25,12 @@ body{background:#000;color:#ccc;font-family:ui-monospace,Menlo,Consolas,monospac
 <div class="bar">this is a recording — <a href="https://subtract.ing/">install</a> to use it live · <a href="https://subtract.ing/subtracting.html">why it works this way</a></div>
 <script>
 const demos = [
-  {q:"show my files", tag:"T0:stdout", cmd:"ls .", out:"CLAUDE.md\nDocuments\nDownloads\nMusic\nPictures\nscripts"},
-  {q:"who is logged in", tag:"T0:stdout", cmd:"who", out:"josh     pts/0        Apr 23 19:21"},
-  {q:"disk usage", tag:"T0:stdout", cmd:"du -sh *", out:"4.0K\tCLAUDE.md\n12M\tDocuments\n1.2G\tDownloads\n340M\tMusic\n28K\tPictures\n8.0K\tscripts"},
-  {q:"what process is using port 8080", tag:"T2:stdout", cmd:"lsof -i :8080", out:"kiwix-ser 1234 josh    3u  IPv6 0x1234  0t0  TCP *:http-alt (LISTEN)"},
-  {q:"can you read websites", answer:"I can process and analyze text from websites, but I don't directly read them. I rely on text provided to me or accessed through URLs you give me."},
-  {q:"compress this directory", tag:"T2:stdout", cmd:"tar -czvf archive.tar.gz .", out:"a .\na ./CLAUDE.md\na ./Documents\na ./scripts"},
-  {q:"why does the computer answer first", answer:"The lookup table resolves in milliseconds. Inference takes seconds. If the answer is already written, running a model is wasted time and wasted energy. The goal is to need the model less over time, not more."},
-  {q:"find files changed today", tag:"T2:stdout", cmd:"find . -type f -mtime 0", out:"./CLAUDE.md\n./scripts/bench.sh"},
-  {q:"what happens when I learn the command", answer:"You type it directly. subtract.ing is not needed. The AI trained you toward the machine, then got out of the way."},
+  {q:"how does this work compared to claude.ai", answer:"lookdown.tsv answers instantly from a routing table on your machine. no account, no API, no rate limit. queries that need more than pattern matching fall through to a local model running on your hardware. nothing leaves your computer."},
+  {q:"what process is using port 8080", tag:"T2:stdout", cmd:"lsof -i :8080"},
+  {q:"find files changed today", tag:"T2:stdout", cmd:"find . -type f -mtime 0"},
+  {q:"why does the computer answer first", answer:"the lookup table resolves in milliseconds. inference takes seconds. if the answer is already written, running a model is wasted time and wasted energy. the goal is to need the model less over time, not more."},
+  {q:"compress this directory", tag:"T2:stdout", cmd:"tar -czvf archive.tar.gz ."},
+  {q:"what happens when I learn the command", answer:"you type it directly. subtract.ing is not needed. the AI trained you toward the machine, then got out of the way."},
 ];
 
 const term = document.getElementById('term');
@@ -71,8 +68,6 @@ async function runDemo(demo){
   } else {
     addLine('<span class="tag">['+demo.tag+'] '+demo.cmd+'</span>');
     addLine('<span class="prompt-confirm">[enter/n] </span>');
-    await sleep(400);
-    addLine('<span class="output">'+demo.out.replace(/\n/g,'<br>')+'</span>');
   }
 
   await sleep(2500);
