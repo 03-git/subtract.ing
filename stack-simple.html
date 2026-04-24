@@ -3,13 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="alternate" type="text/markdown" href="/llms.txt" title="Machine-readable version">
     <link rel="icon" type="image/png" href="/favicon.png">
-    <title>subtract.ing</title>
-    <meta name="description" content="command_not_found_handle operationalized to let you type natural language to the command line.">
-    <meta property="og:title" content="subtract.ing">
-    <meta property="og:description" content="Type natural language to the command line.">
-    <meta property="og:url" content="https://subtract.ing/">
+    <title>stack — subtract.ing</title>
     <style>
         body {
             background: #111;
@@ -18,28 +13,20 @@
             margin: 2rem auto;
             max-width: 78ch;
             padding: 0 1rem;
-            line-height: 1.5;
+            line-height: 1.3;
         }
         h1 { font-size: 1rem; font-weight: normal; margin: 0; }
-        p { margin: 0.5rem 0; }
-        hr { border: none; color: #555; margin: 1.5rem 0; }
-        hr::before { content: "* * *"; display: block; text-align: left; }
         a { color: #8be9fd; }
         a:visited { color: #bd93f9; }
         .dim { color: #666; }
         .attach { color: #f1fa8c; }
-        pre { margin: 0.5rem 0; white-space: pre; overflow-x: auto; }
+        pre { margin: 0; white-space: pre; overflow-x: auto; }
     </style>
 </head>
 <body>
-    <h1>subtract.ing</h1>
-    <p>command_not_found_handle operationalized to let you type
-    natural language to the command line.</p>
-    <p>Beside the shell, not instead of it.</p>
-
-    <hr>
-
+<h1><a href="/">subtract.ing</a> / stack</h1>
 <pre>
+
  OPERATING SYSTEM
 +--------------------------------------------------------------------------+
 | +------------+  +---------------------+  +-----------+  +-------------+  |
@@ -77,47 +64,7 @@
 +--------------------------------------------------------------------------+
 |   NIC        GPU        CPU        RAM        Keyboard        Mouse      |
 +--------------------------------------------------------------------------+
+
 </pre>
-
-<pre>
-syscall
-  |
-  +-- kernel (already there)
-  +-- shell (already there)
-  +-- subtract.ing (command_not_found_handle)
-  +-- lookdown.tsv (routing table)
-  +-- busybox httpd (ships with the OS)
-  +-- browser (already on every computer)
-  |
-  |   -- everything below this line moves control beyond your computer --
-  |
-  +-- npm/pip/cargo
-  +-- language runtime
-  +-- framework
-  +-- ORM, database server
-  +-- API gateway, auth service
-  +-- container runtime, orchestrator
-  +-- cloud provider, CI/CD, CDN
-  +-- monitoring SaaS, billing SaaS
-</pre>
-
-    <hr>
-
-    <p><strong>Install</strong></p>
-<pre>curl -sL https://subtract.ing/install.sh | bash</pre>
-    <p class="dim">or: curl -sLO https://subtract.ing/install.sh && less install.sh && bash install.sh</p>
-
-    <hr>
-
-    <p><a href="/demo.html">Demo</a> <span class="dim">— what a working install looks like</span></p>
-    <p><a href="/multiplying-demo.html">Multiplying</a> <span class="dim">— the local interface</span></p>
-    <p><a href="/subtracting.html">Subtracting</a> <span class="dim">— why subtract exists</span></p>
-
-    <hr>
-
-    <p>Repo: <a href="https://github.com/03-git/subtract.ing">github.com/03-git/subtract.ing</a></p>
-    <p>License: <a href="/LICENSE.txt">GPLv3</a></p>
-    <p class="dim">Authors: Josh (<a href="https://x.com/hodorigami">@hodorigami</a>) & LLMs (@qwen @bitnet @claude @gemini @grok)</p>
-    <p class="dim">Verify: <a href="/authorized_signers">subtract.ing/authorized_signers</a></p>
 </body>
 </html>

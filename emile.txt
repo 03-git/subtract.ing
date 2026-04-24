@@ -1,0 +1,178 @@
+# Emile
+
+A local-first deployment pattern for sole proprietors. Named for
+Rousseau's treatise on education: the environment teaches, not
+the instructor.
+
+One device, one model, one operator. No cloud subscription.
+No always-on internet.
+
+## What the substrate commits to
+
+Five primitives. All Unix or OpenSSH. None of them name a role,
+a profession, or an org model.
+
+  1. One admin principal (the operator who owns the hardware).
+  2. One or more non-admin user principals, each with a home
+     directory, their own content and records, and their own
+     signing key.
+  3. A shared directory (/Users/Shared/emile/ or equivalent)
+     that non-admin users read from and do not write to.
+  4. A signing model where any principal authors signed artifacts
+     under their own key. The substrate trusts signatures based
+     on authorized_signers entries at the admin layer.
+  5. SSH authorized_keys per user, not shared.
+
+## What the substrate does not commit to
+
+  - How many non-admin users exist.
+  - Whether one of them supervises others.
+  - Who holds custody of which records.
+  - Whether records are siloed, shared, or flow to a supervisor.
+  - Whether programs are authored once or authored per-user.
+  - Which user answers to which licensing board.
+  - Whether an LLM assistant acts under a user's identity or its own.
+  - Who the billing identifier belongs to.
+
+Every one of those is an organizational decision. If the substrate
+expresses a preference about any of them, the substrate has
+overreached and will have to be rewritten when the operator's
+practice structure changes.
+
+## Topology test
+
+A well-shaped substrate lets the operator stand up any of the
+following without substrate changes:
+
+  1. Solo practitioner. One non-admin user. Their content, their
+     records, their signing key.
+  2. Practitioner plus one supervised employee. Two non-admin users.
+     Employee's records signed by employee, countersigned by
+     supervisor under supervisor's key. Substrate sees two users
+     with two keys and some signatures.
+  3. Practice director, multiple staff, mixed roles. N non-admin
+     users. The supervisory authority graph is expressed in
+     signatures on artifacts, not in filesystem permissions.
+  4. Practitioner with IT staff who administers users on their
+     behalf. IT person gets admin on the practitioner's hardware.
+     The substrate pattern is the same, different operator.
+  5. Practitioner with an LLM assistant. The assistant runs as a
+     unix user with its own key, authorized explicitly per action
+     or per session. The substrate treats it like any other user.
+     Authority to act comes from signed attestation, not from a
+     special account type.
+
+All five compose out of the same five substrate commitments.
+
+## Hardware
+
+Tested on 8GB M2 Mac Mini. Target deployment: Raspberry Pi 5 (8GB).
+The constraint is real: the model must hold in memory alongside
+the application server and the operating system. Models that swap
+under load fail the bench.
+
+Model selection is empirical. Run the variance-lab bench on the
+target hardware. The model that completes the prompt suite without
+OOM or timeout under concurrent application load is the deployment
+model.
+
+  Bench harness: https://github.com/03-git/variance-lab
+
+## Software
+
+  llama-server         inference engine (llama.cpp, standalone binary)
+  model.gguf           sub-4B quantized model selected by bench
+  application HTML     static files served over HTTP
+  ssh                  remote access, tunneling, file transfer
+  ssh-keygen -Y        artifact signing and verification (already installed)
+  cron                 scheduled cloud prompts (the change window)
+  curl                 cloud API calls (batch endpoint)
+
+No package managers. No frameworks. No containers. The kernel runs
+the binary. The binary serves completions. The HTML calls the API.
+The signing primitive is already on the machine.
+
+## Three connectivity tiers
+
+  1. Continuous (local only)
+     The device runs. Applications respond. Sessions log.
+     The model handles translation: natural language to command,
+     intent to interface action. No network required.
+
+  2. Planned (scheduled cloud)
+     The operator writes a concrete prompt describing what should
+     change. The prompt queues locally. When connectivity exists,
+     it fires against a cloud LLM. The diff returns. The operator
+     reviews and applies. This is a change management window —
+     metered, audited, batched.
+
+  3. Absent
+     If the local model fails, the application still serves static
+     content. If the cloud connection fails, the change waits for
+     the next window. Nothing in the local surface requires
+     emergency cloud access.
+
+## The change window
+
+The only cloud touch point. Planned maintenance, not ambient access:
+
+  1. Operator writes an intent prompt
+  2. Prompt saves to a local queue file
+  3. Cron job fires when connectivity exists:
+     curl -s https://api.anthropic.com/v1/messages \
+       -H "x-api-key: $KEY" \
+       -H "content-type: application/json" \
+       -d @prompt.json > response.json
+  4. Operator reviews the diff
+  5. Operator applies or discards
+
+The cloud LLM is autonomous within the scope of the prompt and only
+within it. The operator's prompt is the attestation. No ambient agent.
+No background polling. No surprise actions.
+
+## What you don't need
+
+  - A cloud subscription for daily operation
+  - Always-on internet
+  - A GPU
+  - Docker, Kubernetes, or any orchestration layer
+  - An app store listing or mobile development toolchain
+  - A database server (the filesystem is the database)
+
+## Cost
+
+  Hardware: $60-700 (Pi 5 to Mac Mini)
+  Model: free (open-weight GGUF)
+  Cloud changes: ~$0.01-0.10 per change window
+  Monthly operating cost after hardware: electricity
+
+## Signing
+
+The substrate uses ssh-keygen -Y for signing. Each user manages
+their own signing key. Signed artifacts verify against an
+authorized_signers file, which the practice maintains at the
+repository root and optionally serves at a domain URL for
+federation. Supervisory relationships, inter-practitioner trust,
+and delegated agent scope are all expressed as signature graphs,
+not as filesystem permissions or user flags. The substrate ships
+the primitive; the practice composes the graph.
+
+Three artifact classes get signed in a practice deployment:
+clinical programs (authorship, continuity), session records
+(HIPAA integrity 164.312(c)(1)), and substrate artifacts
+(reproducibility, federation). The primitive does not distinguish
+between them. The practice decides which classes are in scope
+and which keys sign which class.
+
+## Federation
+
+When a user outgrows the operator's substrate, they become an
+operator of their own instance. They export their content and
+records, provision their own hardware, follow this document, and
+have an instance running in an afternoon. The relationship becomes
+two sovereign substrates exchanging signed artifacts.
+
+## Verify
+
+  https://subtract.ing/llms.txt          manifest and signature chain
+  https://subtract.ing/variance-lab.txt  bench methodology and findings
