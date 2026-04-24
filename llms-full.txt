@@ -865,32 +865,22 @@ As learned commands grow, the work approaches a syscall and the energy cost fall
 ```
 syscall
   |
-  +-- kernel (Linux, already there)
-  |
-  +-- shell (bash, already there)
-  |
+  +-- kernel (already there)
+  +-- shell (already there)
   +-- subtract (one function, one TSV, one hook from 2009)
-  |
-  +-- busybox httpd (ships with the OS, CGI = shell scripts)
-  |
+  +-- busybox httpd (ships with the OS)
   +-- browser (already on every computer)
   |
-  |   -- everything below this line is subtracted --
+  |   -- everything below this line moves control and visibility beyond your computer --
   |
   +-- npm/pip/cargo
-  +-- language runtime (node, python, java)
-  +-- framework (react, django, spring)
-  +-- ORM
-  +-- database server
-  +-- API gateway
-  +-- auth service
-  +-- container runtime
-  +-- orchestrator
-  +-- cloud provider
-  +-- CI/CD pipeline
-  +-- CDN
-  +-- monitoring SaaS
-  +-- billing SaaS
+  +-- language runtime
+  +-- framework
+  +-- ORM, database server
+  +-- API gateway, auth service
+  +-- container runtime, orchestrator
+  +-- cloud provider, CI/CD, CDN
+  +-- monitoring SaaS, billing SaaS
 ```
 
 Full frame: https://subtract.ing/subtract.7.txt
