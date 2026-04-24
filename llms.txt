@@ -28,7 +28,7 @@ https://subtract.ing/README.txt                     entry gradient — why you a
 https://subtract.ing/subtract.7.txt                 man(7) frame — concepts, components
 https://subtract.ing/ask.1.txt                      man(1) ask — query local model, Claude without the browser
 https://subtract.ing/lookdown.tsv.universal.txt     routing table — ~290 primitives, each documented by a man page (whatis/man)
-https://subtract.ing/governance.conf.universal.txt  the five reflexes, the authority model, the loop
+https://subtract.ing/governance.conf.universal.txt  the four reflexes, the authority model, the loop
 https://subtract.ing/boot.txt                       capability check, failure modes, signon/signoff
 https://subtract.ing/software-as-a-besides.txt      why?
 https://subtract.ing/lineage.txt                    credits — Fox and Ramey
@@ -111,15 +111,15 @@ Public key:      https://subtract.ing/authorized_signers
 
 SHA256:
   a693897ab23ec1ee72b69959862da10d43324f89957dabd5ee91cbf31559ed20  README.txt
-  1677a1c3f036433b6787eb9436111bc620c5b733b75b3630b7df18b0701630fd  subtract.7.txt
+  0632fe83675ad3821b00f7295f6639ba1b3b3e1fd4ada8a7d9faaff106f0ccd7  subtract.7.txt
   303091801d3efbc57d7e81a9ddcee40ac112e1c93c792afa0d1d90b3e704b85b  ask.1.txt
   b18c98f0389893957ea542f13eb37e2b2b68a49f5002547d0746b9260e1d2a97  lookdown.tsv.universal.txt
-  2702fcc624729e1e41833346863e48b4ee6e41dd0c313ec6418edeaea122252c  governance.conf.universal.txt
-  d69fb7b0240320495d13161453cbc204839eb5edb0e18fe99f86b5ff2c60967a  boot.txt
-  58749f9c2afdb8f923ef1e84117c24358198f22388d41847b63514b87e7454f0  software-as-a-besides.txt
+  4b742825f324eb3f3d9f16647cd7ed4ca09a4cb7ce6333dff526bc44e7a28868  governance.conf.universal.txt
+  5093efa7000cbba152587c40edc9f218dd0d5b376b1c83e4a446001a69dbd103  boot.txt
+  ab08d2ffa7fae33745f6f9bc8bf6859bd8597c0a42ac78752f708b5cb2867852  software-as-a-besides.txt
   1941bfc5c9b83cb3deb0cb9239d87037500c973c722294374a2d9faf3ddf44b7  lineage.txt
   34dd1f5106ea0cfe4f6a555b528d9a39584cb430bf1f7d724459fd2a5430343a  signoff.txt
-  29a69620d906c194f25f032774de6f670328cc5b83d68c12f0782b22934d94e3  llms-full.txt
+  2d195873e5c4e2667da53164f1beaf84d5a97b880cdff905e893a9465a8d2500  llms-full.txt
   2c8587f57b1835a0f733221528cb35f4f6aa08a3a21ad18e589814d59c810108  variance-lab.txt
   d2b28b22622102b687d4e2f0438e6c3258b5bfa6c07a191cbf17ccb2ea64a167  variance-lab-handler-methodology.txt
-  d59cf9f40eda35e97e796276da2ee2f4b7dcc9deb52fe73d082c2b24f110203f  SOUL.txt
+  dedd46c537684913287bf22584818e9ff8009e0cf83354ef6ff68133bfde8b03  SOUL.txt

@@ -2,7 +2,7 @@
 
 subtract is software as a besides. It represents the primal translation layer native to computers.
 
-T2 shows you the command. T0 pattern-matches it. Eventually you type it yourself. The AI isn't needed. That's the point.
+The local model shows you the command. The lookup table pattern-matches it. Eventually you type it yourself. The AI isn't needed. That's the point.
 
 The hope is literacy, not dependency. You graduate from "show my files" to ls, from subtract to the commands themselves. No wrapper. No subscription. No intermediary between you and the machine.
 

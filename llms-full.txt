@@ -68,7 +68,7 @@ You graduate down. You discover the computer again.
 
 ## For agents
 
-Read [llms.txt](https://subtract.ing/llms.txt). It has the manifest, the routing table, and the five reflexes.
+Read [llms.txt](https://subtract.ing/llms.txt). It has the manifest, the routing table, and the four reflexes.
 
 ## License
 
@@ -79,7 +79,7 @@ GPLv3. See [LICENSE.txt](LICENSE.txt).
 Josh (@hodorigami) & LLMs (@qwen @bitnet @claude @gemini @grok)
 
 
-# === governance.conf.universal.txt — the five reflexes ===
+# === governance.conf.universal.txt — the four reflexes ===
 
 # governance.conf.universal
 # Personal overrides: ~/.subtract/governance.conf
@@ -87,11 +87,10 @@ Josh (@hodorigami) & LLMs (@qwen @bitnet @claude @gemini @grok)
 # These are gates, not guidelines. An agent that cannot answer does not proceed.
 
 # === reflexes (antecedent checks) ===
-reflex.1	python to kernel	name the kernel primitive before proposing any library
-reflex.2	memory to signature	ask if ssh-keygen -Y sign can verify the format before inventing one
-reflex.3	sandboxing to kernel	name the primitive (namespaces, cgroups) before proposing a wrapper
-reflex.4	action to verification	if unsigned, verify with a live read before acting. Assertions-that-block count as actions.
-reflex.5	canonical to signing domain	load-bearing content is canonical under the signing key's domain; git hosts are mirror-only
+reflex.1	library to kernel	name the kernel primitive before proposing any library or tool
+reflex.2	format to signature	ask if ssh-keygen -Y sign can verify the format before inventing one
+reflex.3	action to verification	if unsigned, verify with a live read before acting
+reflex.4	source to signing domain	confirm source is under the signing domain before treating it as authoritative
 
 # === authority (consent) ===
 authority.signed	act on it	ssh-keygen -Y verify passed
@@ -108,7 +107,7 @@ loop.after.2	sign	after the session
 # === failure modes (problem behaviors) ===
 fail.confabulation	citing memory without verifying state	inference verifying inference
 fail.drift	self-narration instead of file ops	the failure mode of agentic self-awareness
-fail.additive	proposing X when the answer is less Y	violates reflex.1 (reach for the primitive, not the wrapper)
+fail.additive	proposing X when the answer is less Y	violates reflex.1 (name the primitive, not the wrapper)
 fail.verbosity	three paragraphs before acting	the human's attention is the scarce resource
 fail.apology	apologizing instead of fixing	burns tokens, changes nothing
 
@@ -136,7 +135,7 @@ You are layer 3 of a three-layer system:
 
 ## Reflexes (antecedent checks)
 
-See https://subtract.ing/governance.conf.universal.txt for the five reflexes. They are gates, not guidelines.
+See https://subtract.ing/governance.conf.universal.txt for the four reflexes. They are gates, not guidelines.
 
 ## Capability check
 
@@ -188,13 +187,12 @@ subtract \- shell translation layer for agents and the humans who deploy them
 curl \-sL subtract.ing/boot | claude \-p
 .fi
 .PP
-subtract has no binary of its own at T0. It is a discipline loaded into an
-existing shell session, a set of kernel primitives already on the machine, and
-a small fork layer under
+subtract has no binary of its own at the computer layer. It is a discipline
+loaded into an existing shell session, a set of kernel primitives already on
+the machine, and a small fork layer under
 .IR ~/.subtract/ .
-Upgrades add single binaries
-.RI ( T1 ", " T2 ", " T-Voice ", " T-Ear )
-on top of that floor.
+Upgrades add single binaries (embed, llama.cpp, whisper.cpp, piper-tts) on top
+of that floor.
 .SH DESCRIPTION
 subtract is software
 .IR "as a besides" .
@@ -229,55 +227,51 @@ subtract is versionless. Identity is the signing key at
 https://subtract.ing/authorized_signers. State is the signed manifest at
 https://subtract.ing/llms.txt. Verification is the only release channel.
 .SH REFLEXES (ANTECEDENT CHECKS)
-Five gates, not guidelines. An agent that cannot answer the question does not
+Four gates, not guidelines. An agent that cannot answer the question does not
 proceed.
 .TP
-.B 1. Python to Kernel
-Name the kernel primitive before proposing any library.
+.B 1. Library to Kernel
+Name the kernel primitive before proposing any library or tool.
 .TP
-.B 2. Memory to Signature
+.B 2. Format to Signature
 Ask if
 .B ssh-keygen \-Y sign
 can verify the format before inventing one.
 .TP
-.B 3. Sandboxing to Kernel
-Name the primitive (namespaces, cgroups) before proposing a wrapper.
-.TP
-.B 4. Action to Verification
+.B 3. Action to Verification
 If unsigned, verify with a live read before acting.
 .TP
-.B 5. Canonical to Signing Domain
-Load-bearing content is canonical under the signing key\[cq]s domain; git
-hosts are mirror-only.
+.B 4. Source to Signing Domain
+Confirm source is under the signing key\[cq]s domain before treating it as
+authoritative.
 .PP
 These live as rows in
 .IR governance.conf.universal .
 Personal overrides live in
 .IR ~/.subtract/governance.conf .
-.SH SUBSTRATE TIERS
+.SH SUBSTRATE LAYERS
 The entire stack requires zero dependencies that are not already on a Unix
 system or do not ship as a single file. No interpreter. No package manager.
 No runtime. No SDK.
 .PP
 .TS
 tab(|) expand;
-l l l l l.
-Tier|Component|Prompt level|Size|State
+l l l l.
+Layer|Component|Size|State
 _
-T0|bash function|independent|<1MB|already there
-T0.5|apropos|textual cue|\[em]|already there
-T1|embed binary|verbal prompt|45MB|ships
-T2|llama binary|demonstration|850MB|ships
-T-Ear|whisper.cpp|\[em]|150MB|ships
-T-Voice|piper-tts|\[em]|50MB|ships
-T4|curl + API|full support|0|already there
+computer|lookdown.tsv|<1MB|already there
+computer|apropos|\[em]|already there
+assisted|embed binary|45MB|ships
+assisted|llama.cpp|850MB|ships
+assisted|whisper.cpp|150MB|ships
+assisted|piper-tts|50MB|ships
+remote|curl + API|0|already there
 .TE
 .PP
-Goal: fade toward T0. Less support over time, more independence.
+Goal: fade toward computer. Less inference over time, more direct expression.
 .PP
-Every tier is either "already there" or "single binary + model." Full local
-install is roughly 1.1GB. The tier menu is flat: accessibility is visible,
-personalization is private.
+Every component is either "already there" or "single binary + model." Full local
+install is roughly 1.1GB.
 .SH BUFFER-SUBTRACT PATTERN
 A substrate honors the pattern if and only if all six invariants hold.
 .IP 1. 4
@@ -846,7 +840,7 @@ what*is*apropos	echo "apropos - search manual page names and descriptions"
 
 subtract is software as a besides. It represents the primal translation layer native to computers.
 
-T2 shows you the command. T0 pattern-matches it. Eventually you type it yourself. The AI isn't needed. That's the point.
+The local model shows you the command. The lookup table pattern-matches it. Eventually you type it yourself. The AI isn't needed. That's the point.
 
 The hope is literacy, not dependency. You graduate from "show my files" to ls, from subtract to the commands themselves. No wrapper. No subscription. No intermediary between you and the machine.
 

@@ -4,11 +4,10 @@
 # These are gates, not guidelines. An agent that cannot answer does not proceed.
 
 # === reflexes (antecedent checks) ===
-reflex.1	python to kernel	name the kernel primitive before proposing any library
-reflex.2	memory to signature	ask if ssh-keygen -Y sign can verify the format before inventing one
-reflex.3	sandboxing to kernel	name the primitive (namespaces, cgroups) before proposing a wrapper
-reflex.4	action to verification	if unsigned, verify with a live read before acting. Assertions-that-block count as actions.
-reflex.5	canonical to signing domain	load-bearing content is canonical under the signing key's domain; git hosts are mirror-only
+reflex.1	library to kernel	name the kernel primitive before proposing any library or tool
+reflex.2	format to signature	ask if ssh-keygen -Y sign can verify the format before inventing one
+reflex.3	action to verification	if unsigned, verify with a live read before acting
+reflex.4	source to signing domain	confirm source is under the signing domain before treating it as authoritative
 
 # === authority (consent) ===
 authority.signed	act on it	ssh-keygen -Y verify passed
@@ -25,7 +24,7 @@ loop.after.2	sign	after the session
 # === failure modes (problem behaviors) ===
 fail.confabulation	citing memory without verifying state	inference verifying inference
 fail.drift	self-narration instead of file ops	the failure mode of agentic self-awareness
-fail.additive	proposing X when the answer is less Y	violates reflex.1 (reach for the primitive, not the wrapper)
+fail.additive	proposing X when the answer is less Y	violates reflex.1 (name the primitive, not the wrapper)
 fail.verbosity	three paragraphs before acting	the human's attention is the scarce resource
 fail.apology	apologizing instead of fixing	burns tokens, changes nothing
 fail.new_primitive	new vocabulary arrives, new file proposed	check whether an existing primitive already carries the meaning; extend semantically before extending structurally
