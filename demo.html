@@ -17,12 +17,12 @@ body{background:#000;color:#ccc;font-family:ui-monospace,Menlo,Consolas,monospac
 .prompt-confirm{color:#555}
 .dim{color:#444}
 .bar{border-top:1px solid #222;padding:.75rem 1.5rem;font-size:.75rem;color:#444}
-.bar a{color:#6f6;text-decoration:none}
+.bar a{color:#6f6;text-decoration:underline}
 </style>
 </head>
 <body>
 <div class="term" id="term"></div>
-<div class="bar">this is a recording — <a href="https://subtract.ing/">install</a> to use it live besides what you already use · <a href="https://subtract.ing/subtracting.html">why it works this way</a></div>
+<div class="bar">this is a recording — <a href="https://subtract.ing/" target="_blank">install</a> to use it live besides what you already use · <a href="https://subtract.ing/subtracting.html" target="_blank">why it works this way</a></div>
 <script>
 const demos = [
   {q:"how does this work compared to claude.ai", answer:"lookdown.tsv answers instantly from a routing table on your machine. no account, no API, no rate limit. queries that need more than pattern matching fall through to a local model running on your hardware. nothing leaves your computer."},
