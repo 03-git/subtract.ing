@@ -58,19 +58,76 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
 
+        cloud_ai = ""
+        cloud_ai_path = os.path.join(SUBTRACT_DIR, "cloud_ai")
+        if os.path.exists(cloud_ai_path):
+            cloud_ai = open(cloud_ai_path).read().strip()
+
         if files:
             names = ", ".join(f["name"] for f in files)
-            prompt = f"Find and read these files on this machine: {names}. Then: {intent}"
+            if cloud_ai in ("xai", "grok"):
+                parts = []
+                for f in files:
+                    content = f.get("content", "")
+                    if content:
+                        parts.append(f"--- {f['name']} ---\n{content}")
+                    else:
+                        parts.append(f"--- {f['name']} --- (empty)")
+                prompt = "\n".join(parts) + f"\n\n{intent}"
+            else:
+                prompt = f"Find and read these files on this machine: {names}. Then: {intent}"
         else:
             prompt = f"Answer concisely: {intent}"
 
-        # cloud first
-        if self._try_stream_cloud(prompt, thread_id):
+        # local first
+        if self._try_stream_local(prompt):
             return
-        # local fallback
-        self._try_stream_local(prompt)
+        # cloud fallback
+        if cloud_ai in ("xai", "grok"):
+            if self._try_stream_xai(prompt, thread_id):
+                return
+        elif self._try_stream_cloud(prompt, thread_id):
+            return
 
     threads = {}
+    xai_threads = {}
+
+    def _try_stream_xai(self, prompt, thread_id="default"):
+        try:
+            xai_key_path = os.path.join(SUBTRACT_DIR, "xai_key")
+            if not os.path.exists(xai_key_path):
+                return False
+            xai_key = open(xai_key_path).read().strip()
+
+            payload = json.dumps({
+                "model": "grok-4.20-0309-reasoning",
+                "messages": [{"role": "user", "content": prompt}],
+                "max_tokens": 4096
+            }).encode()
+
+            req = urllib.request.Request(
+                "https://api.x.ai/v1/chat/completions",
+                data=payload,
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {xai_key}"
+                }
+            )
+            resp = urllib.request.urlopen(req, timeout=120)
+            result = json.loads(resp.read().decode())
+
+            text = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+
+            if text:
+                Handler.xai_threads[thread_id] = True
+                self.wfile.write(f"data: {json.dumps({'token': text, 'source': 'cloud'})}\n\n".encode())
+                self.wfile.flush()
+                self.wfile.write(b"data: [DONE]\n\n")
+                self.wfile.flush()
+                return True
+            return False
+        except Exception:
+            return False
 
     def _try_stream_cloud(self, prompt, thread_id="default"):
         try:
@@ -113,14 +170,17 @@ class Handler(BaseHTTPRequestHandler):
                 proc.stdin.close()
                 fd = proc.stdout.fileno()
             else:
-                req = urllib.request.Request(
-                    f"http://localhost:{INF_PORT}/v1/chat/completions",
-                    data=payload,
-                    headers={"Content-Type": "application/json"}
+                proc = subprocess.Popen(
+                    ["curl", "-s", "-N", f"http://localhost:{INF_PORT}/v1/chat/completions",
+                     "-H", "Content-Type: application/json", "-d", "@-"],
+                    stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                    bufsize=0
                 )
-                resp = urllib.request.urlopen(req)
-                fd = resp.fileno()
+                proc.stdin.write(payload)
+                proc.stdin.close()
+                fd = proc.stdout.fileno()
 
+            got_tokens = False
             buf = b""
             while True:
                 chunk = os.read(fd, 4096)
@@ -140,18 +200,21 @@ class Handler(BaseHTTPRequestHandler):
                         delta = obj.get("choices", [{}])[0].get("delta", {})
                         token = delta.get("content", "")
                         if token:
+                            got_tokens = True
                             self.wfile.write(f"data: {json.dumps({'token': token, 'source': 'local'})}\n\n".encode())
                             self.wfile.flush()
                     except (json.JSONDecodeError, IndexError, KeyError):
                         pass
-        except Exception:
-            self.wfile.write(f"data: {json.dumps({'token': 'no inference available'})}\n\n".encode())
-            self.wfile.flush()
-        finally:
-            self.wfile.write(b"data: [DONE]\n\n")
-            self.wfile.flush()
-            if INF_HOST != "localhost" and 'proc' in dir():
+
+            if 'proc' in dir():
                 proc.wait()
+            if got_tokens:
+                self.wfile.write(b"data: [DONE]\n\n")
+                self.wfile.flush()
+                return True
+            return False
+        except Exception:
+            return False
 
     def do_OPTIONS(self):
         self.send_response(200)
