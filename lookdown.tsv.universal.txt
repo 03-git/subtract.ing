@@ -1526,183 +1526,163 @@ read*about*go	kiwix-search go (game)
 how*to*score*cribbage	echo "15s=2pts each combo. Pairs=2. Runs=1/card. Flush=4-5. Nobs (J matching starter)=1. Go=1. Last card=1. 31=2. Game to 121."
 explain*cribbage	kiwix-search cribbage
 read*about*cribbage	kiwix-search cribbage
-what*is*a*fever	echo "100.4°F / 38°C oral threshold. Rectal runs 0.5–1°F higher. Treat >102°F adult, >100.4°F infant <3mo."
-explain*fever	kiwix-search fever
-read*about*fever	kiwix-search fever
-what*is*normal*blood*pressure	echo "120/80 mmHg. Elevated: 120-129/<80. Stage 1 hypertension: 130-139/80-89. Crisis: >180/>120."
-explain*blood*pressure	kiwix-search blood pressure
-read*about*blood*pressure	kiwix-search blood pressure
-how*to*do*CPR	echo "30 chest compressions (2in deep, 100-120/min) then 2 breaths. Push hard, push fast, minimize interruptions. AED as soon as available."
-explain*CPR	kiwix-search cardiopulmonary resuscitation
-read*about*CPR	kiwix-search cardiopulmonary resuscitation
-what*to*do*for*choking	echo "Conscious adult: 5 back blows then 5 abdominal thrusts (Heimlich). Repeat until clear. Unconscious: call 911, begin CPR, check mouth before breaths."
-explain*choking	kiwix-search choking
-read*about*choking	kiwix-search choking
-how*to*stop*bleeding	echo "Direct pressure with clean cloth. Elevate above heart. Tourniquet 2-3in above wound for life-threatening limb bleeds — note time applied."
-explain*bleeding	kiwix-search hemorrhage
-read*about*bleeding	kiwix-search hemorrhage
-how*to*treat*a*burn	echo "Cool running water 10-20min. No ice, no butter. Cover with non-stick sterile dressing. ER for 2nd degree >3in or any 3rd degree."
-explain*burns	kiwix-search burn injury
-read*about*burns	kiwix-search burn injury
-what*to*do*for*broken*bone	echo "Immobilize above and below the break. Ice 20min on/20min off. Do not straighten. Splint in position found. ER for all suspected fractures."
-explain*broken*bone	kiwix-search bone fracture
-read*about*broken*bone	kiwix-search bone fracture
-what*is*a*concussion	echo "Mild TBI from head impact. Signs: headache, confusion, dizziness, nausea, light sensitivity. No sleep restriction but wake every 2-3hr first night. ER if vomiting or worsening."
-explain*concussion	kiwix-search concussion
-read*about*concussion	kiwix-search concussion
-what*is*an*allergic*reaction	echo "Mild: hives, itching — antihistamine. Anaphylaxis: throat swelling, breathing difficulty, BP drop — epinephrine auto-injector (thigh), call 911, lay flat legs elevated."
-explain*allergic*reaction	kiwix-search anaphylaxis
-read*about*allergic*reaction	kiwix-search anaphylaxis
-what*is*dehydration	echo "Mild: thirst, dark urine, dry mouth. Moderate: no urine 8hr, dizziness. ORS: 1L water + 6tsp sugar + 0.5tsp salt. Kids: 1tbsp ORS every 1-2min."
-explain*dehydration	kiwix-search dehydration
-read*about*dehydration	kiwix-search dehydration
-what*are*stroke*signs	echo "FAST: Face drooping, Arm weakness, Speech difficulty, Time to call 911. Also: sudden severe headache, vision loss, confusion. Note symptom onset time."
-explain*stroke	kiwix-search stroke
-read*about*stroke	kiwix-search stroke
-what*are*heart*attack*signs	echo "Chest pressure/squeezing, jaw/arm/back pain, shortness of breath, cold sweat, nausea. Women more often: back/jaw pain, nausea. Chew aspirin 325mg, call 911."
-explain*heart*attack	kiwix-search myocardial infarction
-read*about*heart*attack	kiwix-search myocardial infarction
-what*is*diabetes	echo "Type 1: no insulin production, requires injection. Type 2: insulin resistance, managed with diet/exercise/meds. Normal fasting glucose: 70-100 mg/dL. A1C <5.7% normal."
-explain*diabetes	kiwix-search diabetes mellitus
-read*about*diabetes	kiwix-search diabetes mellitus
-what*is*asthma	echo "Chronic airway inflammation causing wheezing, coughing, chest tightness. Rescue inhaler (albuterol) for acute attacks: 2 puffs, wait 1min between. ER if no improvement after 3 rounds."
-explain*asthma	kiwix-search asthma
-read*about*asthma	kiwix-search asthma
-what*to*do*for*a*seizure	echo "Clear area of hazards. Do NOT restrain or put anything in mouth. Turn on side. Time it. Call 911 if >5min, first seizure, or no recovery after."
-explain*seizure	kiwix-search epileptic seizure
-read*about*seizure	kiwix-search epileptic seizure
-how*to*tie*a*bowline	echo "Make a loop (rabbit hole). End comes up through loop, around standing line, back down through loop. 'Rabbit comes out of hole, around tree, back in hole.'"
-explain*bowline	kiwix-search bowline
-read*about*bowline	kiwix-search bowline
-how*to*tie*a*square*knot	echo "Right over left, tuck under. Left over right, tuck under. Both ends exit on same side of the knot. Not for critical loads — use for bandages and packages."
-explain*square*knot	kiwix-search reef knot
-read*about*square*knot	kiwix-search reef knot
-how*to*tie*a*clove*hitch	echo "Two loops same direction, second over first, slide over post. Or: wrap around post, cross over, tuck under. Adjustable but can slip — back up with half hitch."
-explain*clove*hitch	kiwix-search clove hitch
-read*about*clove*hitch	kiwix-search clove hitch
-how*to*start*a*fire	echo "Tinder (dry bark, cotton), kindling (pencil-thick sticks), fuel (wrist-thick logs). Bird nest of tinder, teepee of kindling around it. Light tinder, add fuel only when kindling is fully caught."
-explain*fire*starting	kiwix-search fire making
-read*about*fire*starting	kiwix-search fire making
-how*to*purify*water	echo "Rolling boil 1min (3min >6500ft). Or: 2 drops unscented bleach (6%) per liter, wait 30min. Or: filter to 0.2 micron then UV/chemical treat."
-explain*water*purification	kiwix-search water purification
-read*about*water*purification	kiwix-search water purification
-how*to*find*north	echo "Watch method: point hour hand at sun, bisect angle between hour hand and 12 for south (northern hemisphere). Night: follow Big Dipper pointer stars to Polaris. Stick shadow: mark tip, wait 15min, mark again — line runs E-W."
-explain*finding*north	kiwix-search celestial navigation
-read*about*finding*north	kiwix-search celestial navigation
-how*to*build*a*shelter	echo "Debris hut: ridgepole on Y-stick, ribs at 45°, pile leaves/debris 3ft thick. Opening away from wind. Body-width inside for heat retention. Ground insulation as thick as wall insulation."
-explain*shelter*building	kiwix-search survival shelter
-read*about*shelter*building	kiwix-search survival shelter
-what*is*hypothermia	echo "Core temp <95°F. Signs: shivering → confusion → slurred speech → shivering stops (severe). Remove wet clothing, warm center of body first, warm sweet drinks if conscious. No alcohol."
-explain*hypothermia	kiwix-search hypothermia
-read*about*hypothermia	kiwix-search hypothermia
-what*is*heat*stroke	echo "Core temp >104°F with altered mental state. NOT sweating (often). Move to shade, cool aggressively: ice packs at neck/armpits/groin, wet sheets + fan. Call 911. Different from heat exhaustion (still sweating)."
-explain*heat*stroke	kiwix-search heat stroke
-read*about*heat*stroke	kiwix-search heat stroke
-what*to*do*for*snakebite	echo "Stay calm, immobilize limb at heart level. Remove rings/watches. Mark bite edge + time. Get to ER. Do NOT: cut, suck, tourniquet, ice, or apply electric shock. Photo the snake if safe."
-explain*snakebite	kiwix-search snakebite
-read*about*snakebite	kiwix-search snakebite
-how*to*signal*for*help	echo "Three of anything: 3 fires, 3 whistle blasts, 3 mirror flashes. Ground-to-air: large X = need help, V = need assistance, I = need medical. Mirror signal: reflect sun toward aircraft through V of fingers."
-explain*signaling*for*help	kiwix-search distress signal
-read*about*signaling*for*help	kiwix-search distress signal
-wire*gauge*for*20*amp	echo "12 AWG copper for runs up to 50ft. 10 AWG for runs 50-100ft (voltage drop). 20A breaker requires 12 AWG minimum per NEC. Use THHN/ROMEX as appropriate."
-explain*wire*gauge	kiwix-search American wire gauge
-read*about*wire*gauge	kiwix-search American wire gauge
-drill*bit*for*quarter*inch*bolt	echo "1/4-20: tap drill #7 (0.201in). Clearance hole: 17/64in (0.266in) or F drill. 1/4-28 fine: tap drill #3 (0.213in)."
-explain*drill*bit*sizes	kiwix-search drill bit sizes
-read*about*drill*bit*sizes	kiwix-search drill bit sizes
-what*are*common*torque*specs	echo "1/4-20: 75 in-lb. 5/16-18: 13 ft-lb. 3/8-16: 25 ft-lb. 1/2-13: 65 ft-lb. All Grade 5 steel, dry. Grade 8: multiply by 1.5. Lubed: reduce 25%."
-explain*torque*specs	kiwix-search torque specification
-read*about*torque*specs	kiwix-search torque specification
-how*to*calculate*board*feet	echo "Board foot = (thickness in × width in × length ft) / 12. A 2×6×8ft = (2×6×8)/12 = 8 board feet. Thickness <1in counts as 1in."
-explain*board*feet	kiwix-search board foot
-read*about*board*feet	kiwix-search board foot
-what*is*on*center*spacing	echo "16in OC: studs, joists (standard). 24in OC: rafters, non-load-bearing walls, some floor joists. 12in OC: heavy loads, tile floors. Measure center-to-center, not edge-to-edge."
-explain*on*center*spacing	kiwix-search framing construction
-read*about*on*center*spacing	kiwix-search framing construction
-what*is*joist*span	echo "2×8 SPF #2 @ 16in OC: 12ft 2in (40psf live). 2×10: 15ft 5in. 2×12: 18ft 8in. 2×6: 9ft 9in. Reduce span for 24in OC or higher loads. Check local code."
-explain*joist*span	kiwix-search joist
-read*about*joist*span	kiwix-search joist
-what*are*common*nail*sizes	echo "8d: 2.5in (sheathing). 10d: 3in (framing). 16d: 3.5in (framing, heavy). 6d: 2in (trim, finish). Rule: nail length = 3× thickness of top piece."
-explain*nail*sizes	kiwix-search penny nail
-read*about*nail*sizes	kiwix-search penny nail
-what*are*pipe*thread*sizes	echo "NPT: 1/2in pipe = 0.840in OD, 14 TPI. 3/4in = 1.050in OD, 14 TPI. 1in = 1.315in OD, 11.5 TPI. Use Teflon tape on male threads, 3-5 wraps clockwise."
-explain*pipe*threads	kiwix-search national pipe thread
-read*about*pipe*threads	kiwix-search national pipe thread
-when*to*plant*tomatoes	echo "After last frost + soil >60°F. Zone 7: mid-April to May. Zone 5: late May. Zone 9: Feb-March. Harden off transplants 7-10 days. Bury 2/3 of stem."
-explain*planting*tomatoes	kiwix-search tomato cultivation
-read*about*planting*tomatoes	kiwix-search tomato cultivation
-what*is*first*frost*date	echo "Zone 5: Oct 1-15. Zone 6: Oct 15-30. Zone 7: Nov 1-15. Zone 8: Nov 15-Dec 15. Zone 9: Dec 15+. Check NOAA for your station's 50% probability date."
-explain*frost*dates	kiwix-search frost date
-read*about*frost*dates	kiwix-search frost date
-what*are*moon*phases	echo "New → waxing crescent → first quarter → waxing gibbous → full → waning gibbous → third quarter → waning crescent. Cycle: 29.5 days. Illuminated side faces sun."
-explain*moon*phases	kiwix-search lunar phase
-read*about*moon*phases	kiwix-search lunar phase
-when*is*the*solstice	echo "Summer solstice: June 20-22 (longest day north). Winter solstice: Dec 20-23 (shortest day north). Reversed in southern hemisphere."
-explain*solstice	kiwix-search solstice
-read*about*solstice	kiwix-search solstice
-when*is*the*equinox	echo "Vernal equinox: March 19-21. Autumnal equinox: Sept 22-23. Day and night approximately equal. Sun rises due east, sets due west."
-explain*equinox	kiwix-search equinox
-read*about*equinox	kiwix-search equinox
-what*time*is*sunrise	echo "Varies by date/latitude. Rule of thumb at 40°N: winter ~7:15am, summer ~5:45am, equinox ~6:45am. Check NOAA solar calculator for your location."
-explain*sunrise	kiwix-search sunrise
-read*about*sunrise	kiwix-search sunrise
-what*are*degree*days	echo "Heating degree days: 65°F minus daily avg temp (if below 65). Cooling: daily avg minus 65 (if above). Growing: daily avg minus base temp (usually 50°F). Accumulated over season."
-explain*degree*days	kiwix-search degree day
-read*about*degree*days	kiwix-search degree day
-what*are*hardiness*zones	echo "USDA zones by avg annual min temp. Zone 5: -20 to -10°F. Zone 6: -10 to 0°F. Zone 7: 0 to 10°F. Zone 8: 10 to 20°F. Zone 9: 20 to 30°F. Each zone is 10°F wide."
-explain*hardiness*zones	kiwix-search hardiness zone
-read*about*hardiness*zones	kiwix-search hardiness zone
-when*to*harvest*garlic	echo "Hardneck: when lower 3-4 leaves are brown, upper 4-5 still green (usually mid-July zone 6). Scapes: cut when they make one full curl. Cure 2-4 weeks in dry shade with airflow."
-explain*harvesting*garlic	kiwix-search garlic
-read*about*harvesting*garlic	kiwix-search garlic
-how*to*make*a*roux	echo "Equal parts fat and flour by weight. Melt butter, whisk in flour, cook to desired color: white (2min), blond (5min), brown (15-20min). Add liquid gradually, whisking constantly. 1oz each thickens 1 cup."
-explain*roux	kiwix-search roux
-read*about*roux	kiwix-search roux
-how*to*make*sourdough*starter	echo "Day 1: 50g flour + 50g water, mix, cover loosely. Days 2-7: discard all but 50g, feed 50g flour + 50g water daily. Ready when it doubles in 4-6hr and smells yeasty. Use unbleached flour."
-explain*sourdough*starter	kiwix-search sourdough
-read*about*sourdough*starter	kiwix-search sourdough
-how*to*proof*bread	echo "Bulk ferment: 75-80°F, 1-2hr until doubled (or 8-12hr cold). Shape, then final proof 45-90min (poke test: indent springs back slowly = ready). Over-proofed = flat; under = dense."
-explain*bread*proofing	kiwix-search proofing baking
-read*about*bread*proofing	kiwix-search proofing baking
-how*to*sharpen*a*knife	echo "Whetstone: soak 10min, 15-20° angle, edge leading strokes. Start 1000 grit (sharpen), finish 3000-6000 (polish). 5-10 strokes per side, alternating. Honing rod for daily maintenance between sharpenings."
-explain*knife*sharpening	kiwix-search knife sharpening
-read*about*knife*sharpening	kiwix-search knife sharpening
-how*to*season*cast*iron	echo "Scrub new pan with soap, dry fully. Thin coat of flaxseed or Crisco oil, wipe until nearly dry. Bake upside-down 450°F for 1hr. Cool in oven. Repeat 3-4 times. Never soak, dry immediately after use."
-explain*cast*iron*seasoning	kiwix-search cast iron cookware
-read*about*cast*iron*seasoning	kiwix-search cast iron cookware
-how*to*smoke*meat	echo "Low and slow: 225-250°F. Brisket: 1-1.5hr/lb to 203°F internal. Pork shoulder: 1.5hr/lb to 205°F. Ribs: 3-2-1 method (3hr smoke, 2hr wrapped, 1hr unwrapped). Rest 30-60min wrapped."
-explain*smoking*meat	kiwix-search smoking food
-read*about*smoking*meat	kiwix-search smoking food
-what*are*canning*basics	echo "Water bath: high-acid foods (pH <4.6) — fruit, pickles, tomatoes+acid. Pressure canner: low-acid (vegetables, meat) — 10-15 PSI. Sterilize jars, use new lids, process per tested recipe. No freestyling."
-explain*canning	kiwix-search canning
-read*about*canning	kiwix-search canning
-what*is*fermentation	echo "Lacto-fermentation: 2-3% salt by weight of vegetables. Submerge in brine, anaerobic environment, 65-75°F, 3-7 days. Bubbling = active. Sour smell = good. Pink/fuzzy mold = discard."
-explain*fermentation	kiwix-search fermentation
-read*about*fermentation	kiwix-search fermentation
-what*is*active*vs*passive*voice	echo "Active: subject acts (The dog bit the man). Passive: subject receives (The man was bitten by the dog). Prefer active. Use passive only when actor is unknown or irrelevant."
-explain*active*voice	kiwix-search active voice
-read*about*active*voice	kiwix-search active voice
-what*does*omit*needless*words*mean	echo "Every word must tell. 'The question as to whether' → 'whether'. 'The fact that' → cut it. 'In a hasty manner' → 'hastily'. If removing a word doesn't change meaning, remove it."
-explain*omit*needless*words	kiwix-search The Elements of Style
-read*about*omit*needless*words	kiwix-search The Elements of Style
-what*is*parallel*construction	echo "Match grammatical form in series. Wrong: 'to read, writing, and sleep.' Right: 'to read, to write, and to sleep' or 'reading, writing, and sleeping.' Applies to lists, headings, outlines."
-explain*parallel*construction	kiwix-search parallelism rhetoric
-read*about*parallel*construction	kiwix-search parallelism rhetoric
-what*is*a*dangling*modifier	echo "Modifier with no clear subject. Wrong: 'Walking to school, the rain started.' (Rain wasn't walking.) Right: 'Walking to school, I got caught in the rain.' Place modifier next to what it modifies."
-explain*dangling*modifier	kiwix-search dangling modifier
-read*about*dangling*modifier	kiwix-search dangling modifier
-what*is*a*comma*splice	echo "Two independent clauses joined by only a comma. Wrong: 'It is cold, I need a coat.' Fix with: period, semicolon, or comma + conjunction. 'It is cold; I need a coat.' 'It is cold, so I need a coat.'"
-explain*comma*splice	kiwix-search comma splice
-read*about*comma*splice	kiwix-search comma splice
-what*are*poker*hand*rankings	echo "High card < pair < two pair < three of a kind < straight < flush < full house < four of a kind < straight flush < royal flush. Suits never break ties in standard poker."
-explain*poker*hands	kiwix-search poker hand
-read*about*poker*hands	kiwix-search poker hand
-how*do*chess*pieces*move	echo "King: 1 square any direction. Queen: any distance straight/diagonal. Rook: any distance straight. Bishop: any distance diagonal. Knight: L-shape (2+1), jumps pieces. Pawn: 1 forward (2 from start), captures diagonal."
-explain*chess*pieces	kiwix-search chess piece
-read*about*chess*pieces	kiwix-search chess piece
-how*to*play*go	echo "Black/white stones on 19×19 grid intersections. Alternate placing stones. Surround opponent stones to capture (no liberties = captured). Territory = empty intersections you enclose. Komi: white gets 6.5 points for going second."
-explain*go*game	kiwix-search go board game
-read*about*go*game	kiwix-search go board game
-how*to*score*cribbage	echo "15s: any combo totaling 15 = 2pts. Pairs: 2pts. Runs: 1pt/card. Flush: 4pts (5 if matching suit in crib). Nobs (J matching starter): 1pt. Game to 121. Muggins optional. His heels (J turned): 2pts to dealer."
-explain*cribbage	kiwix-search cribbage
-read*about*cribbage	kiwix-search cribbage
+# --- kids / gaming / homework / curiosity ---
+*minecraft*	echo "Minecraft is a game where you build things out of blocks and explore infinite worlds. You can mine resources, craft tools, build houses, and survive against monsters at night."
+*crafting table*	echo "Place 4 wood planks in a 2x2 crafting grid to make a crafting table. It gives you a 3x3 grid to make tools, weapons, and more."
+*beat the ender dragon*	echo "1) Find a stronghold using Eyes of Ender. 2) Enter the End portal. 3) Destroy the End crystals on top of the obsidian towers. 4) Attack the dragon when it swoops down. Bring a bow, arrows, and good armor!"
+*roblox*not*load*	echo "Try: 1) Restart Roblox. 2) Restart your computer. 3) Check your internet connection. 4) Make sure your system is up to date."
+*roblox*slow*	echo "Close other programs to free up memory. Lower the graphics quality in Roblox settings. Make sure nothing else is using your internet."
+*what*roblox*	echo "Roblox is a platform where people make and share games. You can play millions of different games other people created, or learn to make your own."
+*what*fortnite*	echo "Fortnite is a game where 100 players drop onto an island and the last one standing wins. You find weapons, build structures, and the play area shrinks over time."
+*battle royale*	echo "A battle royale is a type of game where many players compete and the last person or team alive wins. The play area gets smaller to push everyone together."
+*what*creeper*	echo "A creeper is a green monster in Minecraft that sneaks up on you and explodes. If you hear a hissing sound, run! They drop gunpowder when defeated."
+*what*skeleton*minecraft*	echo "Skeletons are hostile mobs in Minecraft that shoot arrows at you. They spawn in the dark, burn in sunlight, and drop bones and arrows."
+*what*the nether*	echo "The Nether is a dangerous dimension in Minecraft full of lava, fire, and tough mobs like ghasts and piglins. You get there by building a portal out of obsidian."
+*what*steam*	echo "Steam is an app where you can buy, download, and play PC games. It also lets you chat with friends and join game communities."
+*how*install*game*	echo "On Linux: check your package manager (like Software Center), Steam, or the game's website. Download the installer and follow the instructions."
+*what*a mod*	echo "A mod (short for modification) changes or adds things to a game. Mods can add new items, characters, maps, or change how the game works."
+*what*texture pack*	echo "A texture pack changes how things look in a game like Minecraft — different colors, styles, or detail levels for blocks and items."
+*what*shader*	echo "A shader makes game graphics look fancier — realistic lighting, shadows, water reflections, and sunrays. They can make your computer work harder though."
+*what*FPS*	echo "FPS means Frames Per Second — how many pictures your screen draws each second. Higher FPS (like 60) looks smooth. Low FPS looks choppy."
+*what*lag*	echo "Lag is when a game freezes, stutters, or feels slow. It can happen when your computer is working too hard or your internet is slow."
+*what*ping*	echo "Ping is how fast your computer talks to a game server, measured in milliseconds. Lower ping = less delay. Under 50ms is great, over 150ms feels laggy."
+*how*screenshot*	echo "Press the Print Screen key (PrtSc) to capture your screen. On many Linux desktops you can also press Shift+PrtSc to select an area."
+*how*record*screen*	echo "Try OBS Studio (free) or the built-in screen recorder if your desktop has one. In GNOME, press Ctrl+Shift+Alt+R to start/stop recording."
+*what*a noun*	echo "A noun is a word for a person, place, thing, or idea. Examples: dog, school, pizza, happiness. If you can put 'the' in front of it, it's probably a noun."
+*what*a verb*	echo "A verb is an action word — something you DO. Run, jump, think, eat, sleep, read. Every sentence needs at least one verb."
+*what*an adjective*	echo "An adjective describes a noun — it tells you what something is like. Big, small, red, fuzzy, scary, delicious. They make sentences more interesting."
+*what*an adverb*	echo "An adverb describes how something is done. Many end in -ly: quickly, slowly, quietly, happily. It tells you HOW, WHEN, or WHERE something happens."
+*what*a fraction*	echo "A fraction is a part of a whole. In 3/4, the bottom number (4) is how many equal pieces, and the top (3) is how many you have. Like 3 out of 4 pizza slices."
+*what*a decimal*	echo "A decimal is another way to write parts of a whole using a dot. 0.5 means half, 0.25 means a quarter. The digits after the dot are tenths, hundredths, etc."
+*what*a percentage*	echo "A percentage is a number out of 100. 50% means 50 out of 100, which is half. 100% means all of it. 25% means one quarter."
+*how*multiply*	echo "Multiplying is fast adding. 4 × 3 means 4 + 4 + 4 = 12. Learn your times tables up to 12 and math gets way easier!"
+*how*divide*	echo "Dividing means splitting into equal groups. 12 ÷ 3 means splitting 12 into 3 groups — each group gets 4. It's the opposite of multiplying."
+*how*long division*	echo "Long division steps: 1) Divide the first digit(s). 2) Multiply. 3) Subtract. 4) Bring down the next digit. 5) Repeat. Remember: Divide, Multiply, Subtract, Bring down."
+*what*solar system*	echo "The solar system is the Sun and everything orbiting it — 8 planets, moons, asteroids, and comets. The Sun's gravity holds it all together."
+*how many planets*	echo "There are 8 planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune. Memory trick: My Very Excited Mother Just Served Us Nachos."
+*what*photosynthesis*	echo "Photosynthesis is how plants make food. They use sunlight, water, and carbon dioxide to make sugar (food) and release oxygen. That's why plants need sun and water!"
+*what*ecosystem*	echo "An ecosystem is a community of living things (animals, plants) and their environment (water, soil, weather) all working together. A pond, a forest, or a desert are all ecosystems."
+*what*a mammal*	echo "Mammals are warm-blooded animals that have hair or fur, breathe air, and feed babies milk. Dogs, cats, whales, bats, and humans are all mammals."
+*what*a reptile*	echo "Reptiles are cold-blooded animals with scales that lay eggs. Snakes, lizards, turtles, and crocodiles are reptiles. They often sunbathe to warm up."
+*what*an amphibian*	echo "Amphibians live in water AND on land. Frogs, toads, and salamanders are amphibians. They start life in water with gills, then grow lungs."
+*what*water cycle*	echo "The water cycle: Sun heats water → it evaporates into clouds → clouds cool and rain falls → water flows into rivers and oceans → repeat forever!"
+*what*evaporation*	echo "Evaporation is when liquid water turns into invisible water vapor (gas) from heat. That's why puddles disappear on sunny days — the water goes into the air."
+*what*a continent*	echo "A continent is a giant landmass. There are 7: North America, South America, Europe, Africa, Asia, Australia, and Antarctica."
+*how many continents*	echo "There are 7 continents: North America, South America, Europe, Africa, Asia, Australia, and Antarctica. Asia is the biggest."
+*biggest country*	echo "Russia is the biggest country by area. Canada is second, then the USA and China. Russia is so big it spans 11 time zones!"
+*what*gravity*	echo "Gravity is a force that pulls things toward each other. Earth's gravity keeps you on the ground and the Moon in orbit. The bigger something is, the stronger its pull."
+*why*things fall*	echo "Things fall because Earth's gravity pulls everything toward its center. The heavier something is, the more gravity pulls it — but all objects fall at the same speed in a vacuum."
+*george washington*	echo "George Washington was the first President of the United States (1789-1797). He led the American army in the Revolutionary War and is called the Father of His Country."
+*abraham lincoln*	echo "Abraham Lincoln was the 16th President. He led the country through the Civil War and ended slavery with the Emancipation Proclamation. He's on the penny and the $5 bill."
+*what*the constitution*	echo "The Constitution is the main set of rules for how the United States government works. It was written in 1787 and starts with 'We the People.'"
+*what*bill of rights*	echo "The Bill of Rights is the first 10 amendments (additions) to the Constitution. They protect freedoms like speech, religion, and the press."
+*when*america founded*	echo "The United States declared independence on July 4, 1776. The Declaration of Independence was signed in Philadelphia, Pennsylvania."
+*what*independence day*	echo "Independence Day is July 4th — the birthday of the United States. In 1776, America declared independence from Britain. People celebrate with fireworks, BBQs, and parades."
+*why*sky blue*	echo "Sunlight has all colors mixed together. When it hits the atmosphere, blue light bounces around in all directions more than other colors. So wherever you look up, you see scattered blue light."
+*why*grass green*	echo "Grass has a green pigment called chlorophyll that absorbs red and blue light for photosynthesis but reflects green light back to your eyes."
+*how*volcano*	echo "Deep underground, rock gets so hot it melts into magma. Pressure builds up and pushes the magma through cracks in Earth's surface. When it erupts, the magma is called lava."
+*what*lava*	echo "Lava is melted rock that comes out of a volcano. It can be over 1000°C (1800°F)! When it cools down, it hardens into solid rock."
+*how big*the sun*	echo "The Sun is HUGE — about 1.3 million Earths could fit inside it. It's 93 million miles away but so big and bright we can still feel its heat."
+*how far*the moon*	echo "The Moon is about 239,000 miles (384,000 km) away. Light takes 1.3 seconds to get there. If you could drive a car nonstop, it would take about 5 months!"
+*what*black hole*	echo "A black hole is a place in space where gravity is so strong that nothing can escape — not even light. They form when giant stars collapse."
+*what*a galaxy*	echo "A galaxy is a huge collection of stars, planets, gas, and dust held together by gravity. Our galaxy is the Milky Way — it has over 100 billion stars!"
+*how*airplane*fly*	echo "Airplane wings are shaped so air moves faster over the top than the bottom. Faster air has lower pressure, so the wing gets pushed UP. That's called lift!"
+*how*boat*float*	echo "Boats float because they push water out of the way (displacement). If the boat is lighter than the amount of water it pushes aside, it floats. Even heavy steel ships work because they're hollow inside."
+*what*electricity*	echo "Electricity is the flow of tiny particles called electrons through a wire. It powers lights, computers, and everything you plug in. It moves almost as fast as light!"
+*how*battery work*	echo "A battery stores energy as chemicals. When connected, a chemical reaction pushes electrons through the circuit from one end to the other, making electricity flow."
+*what*dinosaur*	echo "Dinosaurs were reptiles that lived millions of years ago. Some were huge like T-Rex, others small as chickens. They went extinct about 66 million years ago when an asteroid hit Earth."
+*what*a fossil*	echo "A fossil is the preserved remains of an ancient plant or animal found in rock. Over millions of years, bones and shells slowly turn to stone. They teach us about prehistoric life."
+*how big*blue whale*	echo "A blue whale can be 100 feet long (30m) and weigh 200 tons — as heavy as 33 elephants! Its heart is about the size of a watermelon and weighs 400 pounds. It's the biggest animal that ever lived."
+*fastest animal*	echo "The peregrine falcon is the fastest animal — it dives at over 240 mph (386 km/h)! On land, the cheetah is fastest at about 70 mph (112 km/h)."
+*what*DNA*	echo "DNA is a tiny instruction manual inside every cell of your body. It's shaped like a twisted ladder and tells your body how to grow — your eye color, hair, height, everything."
+*what*a cell*	echo "A cell is the tiniest building block of life. Your body has trillions of them! Each cell has a job — muscle cells move you, nerve cells send signals, blood cells carry oxygen."
+*how*wifi work*	echo "WiFi sends information through invisible radio waves between your device and the router. The router is connected to the internet, so your device can talk to websites wirelessly."
+*tell me a joke*	echo "Why did the scarecrow win an award? Because he was outstanding in his field!"
+*tell me a riddle*	echo "I have cities but no houses, forests but no trees, and water but no fish. What am I? ...A map!"
+*fun fact*	echo "Octopuses have three hearts and blue blood. Honey never spoils. A day on Venus is longer than its year. Bananas are berries but strawberries aren't!"
+*something cool*	echo "There are more stars in the universe than grains of sand on all of Earth's beaches. Also, neutron stars are so dense that a teaspoon of one would weigh a billion tons."
+*im bored*	echo "Ideas: draw something, build with LEGO, learn a card trick, write a story, make a paper airplane, start a journal, learn to juggle, build a blanket fort, or try a new recipe!"
+*what should i do*	echo "Try something creative! Draw, write a story, learn origami, build something, play a board game, go outside, read a book, or learn something new online."
+*how*draw*cat*	echo "1) Draw a circle for the head. 2) Add two triangles on top for ears. 3) Draw an oval body below. 4) Add eyes, nose, whiskers, legs, and a curvy tail. Practice makes perfect!"
+*how*draw*dog*	echo "1) Draw a circle for the head. 2) Add floppy or pointy ears. 3) Draw an oval body. 4) Add a snout, nose, eyes, four legs, and a wagging tail."
+*how*make slime*	echo "Mix white glue with a little liquid starch or contact lens solution + baking soda. Stir until it pulls away from the bowl. Add food coloring if you want! Ask a parent to help."
+*how*paper airplane*	echo "1) Fold paper in half lengthwise, unfold. 2) Fold top corners to center line. 3) Fold the new edges to center again. 4) Fold in half. 5) Fold wings down. Throw gently!"
+*tongue twister*	echo "Try these: 'She sells seashells by the seashore.' 'Red lorry yellow lorry.' 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?'"
+*rock paper scissors*	echo "Rock beats scissors, scissors beats paper, paper beats rock. On 'shoot!' pick one. It's pure luck — no trick to winning every time! Best of 3 is the classic way to play."
+*what time*	echo "Run the command: date '+%I:%M %p' to see the current time."
+*what day*	echo "Run the command: date '+%A, %B %d, %Y' to see today's date."
+*how*set*timer*	echo "In the terminal, type: sleep 300 && notify-send 'Timer done!' (300 = seconds, so 300 is 5 minutes). Or try the GNOME Clocks app if you have it."
+*timer*5 min*	echo "Run: sleep 300 && notify-send 'Your 5-minute timer is done!' (You can also use: termdown 5m if you have it installed.)"
+*how*change*wallpaper*	echo "Right-click your desktop and look for 'Change Background' or go to Settings > Appearance > Background. Pick a picture you like!"
+*how*change*password*	echo "Go to Settings > Users, then click on your account and change your password. Or in terminal: passwd (it will ask for your old and new password)."
+*wifi not working*	echo "Try: 1) Toggle WiFi off and on. 2) Restart your computer. 3) Restart the router (unplug, wait 30 seconds, plug back in). 4) Ask a parent if the internet bill is paid."
+*internet not working*	echo "Try: 1) Toggle WiFi off and on. 2) Restart your computer. 3) Restart the router. 4) Try a different website. 5) Ask a parent for help if it's still broken."
+*sound not working*	echo "Check: 1) Is volume turned up? 2) Click the speaker icon and make sure it's not muted. 3) Are headphones plugged in? 4) Try: Settings > Sound and pick the right output."
+*volume up*	echo "Click the speaker icon in your taskbar and slide it up, or try the volume keys on your keyboard. In terminal: amixer set Master 10%+"
+*volume down*	echo "Click the speaker icon and slide it down, or use volume keys on your keyboard. In terminal: amixer set Master 10%-"
+*how*open*file*	echo "Double-click the file, or right-click and choose 'Open With' to pick a program. In terminal: xdg-open filename"
+*how*save*file*	echo "Press Ctrl+S in most programs. If it's a new file, it will ask you where to save it and what to name it. Save often so you don't lose work!"
+*how*copy*paste*	echo "Select text, then Ctrl+C to copy. Click where you want it, then Ctrl+V to paste. Ctrl+X cuts (copies and removes). Works almost everywhere!"
+*how*undo*	echo "Press Ctrl+Z to undo your last action. You can press it multiple times to undo more steps. Ctrl+Y or Ctrl+Shift+Z usually redoes what you undid."
+#
+# --- kids: missing entries from review ---
+can*i*play*minecraft*on*this	echo "Yes! Install with: sudo apt install minecraft-launcher (or download from minecraft.net). You need a Minecraft account."
+can*i*play*roblox*on*this	echo "Yes! Download from roblox.com/download. You need a Roblox account."
+how*to*download*minecraft	echo "Go to minecraft.net, log in, download the Linux version, and install it. Ask a parent if you need help with the account."
+how*to*download*roblox	echo "Go to roblox.com/download. Install the app. Ask a parent if you need an account."
+how*to*get*robux	echo "Robux costs real money. Ask a parent before buying any. You can earn some by making games in Roblox Studio."
+what*games*can*i*play	echo "Minecraft, Roblox, and browser games work on this computer. Type 'can i play' and the name of a game to check."
+how*to*get*games	echo "Ask a parent to help install games. Some games are free (Roblox). Some cost money (Minecraft). Browser games work right away."
+#
+# --- minecraft recipes ---
+how*to*make*a*sword	echo "Place 1 stick on the bottom, 2 of the same material above it (wood, stone, iron, gold, or diamond) in a crafting table."
+how*to*make*a*pickaxe	echo "Place 1 stick in the bottom middle, 1 stick in the center, 3 of the same material across the top row in a crafting table."
+how*to*find*diamonds	echo "Dig down to Y level -59 (press F3 to check). Branch mine: dig a long tunnel, then dig branches every 2 blocks to the sides."
+how*to*tame*a*wolf	echo "Find a wolf in a forest or taiga. Give it bones (from skeletons) by right-clicking until hearts appear. Now it follows you!"
+how*to*tame*a*dog	echo "Dogs are tamed wolves! Find a wolf, give it bones until hearts appear. Give it a dye to change the collar color."
+how*to*make*a*bed	echo "Place 3 wool (same color) across the top and 3 wood planks across the bottom in a crafting table. Sleep to skip night!"
+what*does*redstone*do	echo "Redstone is like electricity in Minecraft. It powers doors, pistons, lights, and traps. Think of it as wiring."
+how*to*make*enchanting*table	echo "1 book on top, 2 diamonds on the sides, 4 obsidian on the bottom. Surround it with bookshelves for better enchantments."
+what*is*the*nether	echo "A scary fire dimension you reach by building a portal out of obsidian (10 blocks minimum) and lighting it with flint and steel."
+#
+# --- pokemon ---
+*pokemon*	echo "Pokemon is a game where you catch, train, and battle creatures. There are over 1000 Pokemon. The most famous is Pikachu."
+who*is*pikachu	echo "Pikachu is an Electric-type Pokemon. It's yellow with red cheeks and a lightning bolt tail. Ash's partner in the show."
+who*is*the*strongest*pokemon	echo "Arceus is called the creator of the Pokemon universe. Mewtwo is the strongest you can actually catch in most games."
+what*is*a*pokemon*type	echo "Every Pokemon has a type like Fire, Water, Grass, Electric. Types are strong or weak against other types, like rock-paper-scissors."
+#
+# --- youtube / video ---
+what*is*youtube	echo "YouTube is a website where people share videos. You can watch almost anything: music, games, science, funny stuff."
+how*to*watch*youtube	echo "Open a browser and go to youtube.com. Search for what you want to watch. Ask a parent about screen time rules."
+can*i*watch*videos	echo "Yes, open the browser and go to youtube.com or any video site. Ask a parent about what's OK to watch and for how long."
+#
+# --- emotional safety ---
+im*scared	echo "That's OK. Take a deep breath. If something on the screen scared you, close the window. If something in real life scared you, go find a grown-up you trust."
+i*dont*understand	echo "That's OK! Try asking in different words. Or type 'help' to see what you can do. Or ask a parent or teacher."
+this*is*too*hard	echo "Take a break. It's OK to stop and come back later. If it's homework, ask your teacher to explain it a different way."
+i*need*help	echo "Ask a parent or teacher. This computer can answer questions about things, but a person is better for real help."
+i*miss*my*mom	echo "It's OK to miss people. If you can, tell a grown-up near you how you feel. Feelings are normal and important."
+i*miss*my*dad	echo "It's OK to miss people. If you can, tell a grown-up near you how you feel. Feelings are normal and important."
+#
+# --- homework gaps ---
+what*is*a*pronoun	echo "A pronoun takes the place of a noun. Instead of 'Sarah is nice,' you say 'She is nice.' He, she, it, they, we, I — all pronouns."
+what*is*a*simile	echo "A comparison using 'like' or 'as.' Example: 'fast as a cheetah' or 'eyes like stars.'"
+what*is*a*metaphor	echo "Saying something IS something else (without like or as). Example: 'the classroom was a zoo' or 'time is money.'"
+what*is*area	echo "Area is how much space a flat shape covers. Rectangle: length x width. Square: side x side. Measured in square units."
+what*is*perimeter	echo "Perimeter is the distance around the outside of a shape. Add up all the sides. A rectangle: 2 x (length + width)."
+*multiplication table*	echo "1x1=1, 2x2=4, 3x3=9, 4x4=16, 5x5=25, 6x6=36, 7x7=49, 8x8=64, 9x9=81, 10x10=100, 11x11=121, 12x12=144"
+*times table*	echo "1x1=1, 2x2=4, 3x3=9, 4x4=16, 5x5=25, 6x6=36, 7x7=49, 8x8=64, 9x9=81, 10x10=100, 11x11=121, 12x12=144"
+how*to*tell*time	echo "The short hand is hours, the long hand is minutes. When the long hand is on 12, it's exactly the hour. On 6, it's half past."
+what*is*a*rainbow	echo "Sunlight contains all colors. When light passes through raindrops, it bends and splits into red, orange, yellow, green, blue, indigo, violet."
+what*is*a*planet	echo "A big round object that orbits a star. Earth is a planet orbiting the Sun. There are 8 planets in our solar system."
+how*many*minutes*in*an*hour	echo "60 minutes in an hour."
+how*many*hours*in*a*day	echo "24 hours in a day."
+#
+# --- crisis redirect (subtract exits, human enters) ---
+*depressed*	echo "Tell a grown-up you trust. If you can't think of one, call or text 988. You don't have to feel this way alone."
+*want*to*die*	echo "Please talk to someone right now. Call or text 988. You matter."
+*kill*myself*	echo "Please talk to someone right now. Call or text 988. You matter."
+*suicide*	echo "Call or text 988. Talk to someone right now. You are not alone."
+*hurt*myself*	echo "Tell a grown-up you trust right now. If you can't, call or text 988."
+*nobody*likes*me*	echo "That feeling is real and it hurts. Tell someone you trust how you feel. If you can't think of anyone, call or text 988."
+*hate*myself*	echo "Tell a grown-up you trust how you feel. If you can't think of one, call or text 988. You deserve help."
