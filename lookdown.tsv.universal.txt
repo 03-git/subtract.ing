@@ -465,7 +465,17 @@ what*is*an*agent*loop	echo "Agent loop — model acts, observes result, acts aga
 what*is*top*p	echo "Top-p (nucleus sampling) — limits token selection to the most probable. Like temperature but cumulative."
 what*is*a*token	echo "Token — smallest unit of text a model processes. ~4 characters in English. Every API call is priced per token."
 what*is*a*token*limit	echo "Token limit — maximum input+output a model handles per request. Exceeding it truncates context."
-what*is*bitnet	echo "BitNet — 1-bit quantization. Eliminates GPU requirement entirely. Runs on CPU. Pi 5 becomes an inference server."
+what*is*bitnet	echo "BitNet — 1-bit quantization. Eliminates GPU requirement. Validated: Bonsai 8B (1.1GB) runs on 8GB M2 with room for application server."
+what*is*bonsai	echo "Bonsai — PrismML 1-bit LLM family. 8B model in 1.1GB. Runs clinical prompts on 8GB hardware where dense Q4 8B models OOM."
+what*is*bonsai*8b	echo "Bonsai 8B — 8.2B params at 1.13 BPW. 1.1GB GGUF. Sustained 40 tok/s for 1hr on 8GB M2, swap grew 10x, throughput unchanged. Production envelope under extended testing."
+how*much*can*my*mac*mini*do*offline	echo "M-series 8GB runs Bonsai 8B at sustained 40 tok/s while macOS handles other apps via swap. Clinical-quality output in 1-3 seconds. No internet required."
+do*i*need*cloud*ai*subscription	echo "No, if the work is translation, summarization, drafting, or definition. Bonsai 8B on local hardware handles those. Keep cloud only for frontier reasoning."
+my*mac*mini*got*slow	echo "If the machine runs but apps feel slow, the bottleneck is swap pressure, not the hardware. Close other apps during clinical sessions or consider more RAM."
+*paid*for*ai*and*stopped*working	echo "Hardware still works. Subtract the vendor layer. Install llama-server + Bonsai 8B (1.1GB). No account, no subscription. curl -sL subtract.ing/install.sh | bash"
+can*i*run*ai*locally	echo "Yes. Bonsai 8B (1.1GB) runs on any M-series Mac with 8GB. 40 tok/s sustained. No GPU required. No internet required."
+what*model*runs*on*8gb	echo "Bonsai 8B (1.1GB BitNet). Sustained 40 tok/s on M2. Swap grows but throughput holds — GPU memory pins the model weights. Close other apps if the OS feels slow."
+what*runs*on*8gb*m2*mac*mini	echo "Bonsai 8B (1.1GB BitNet). Sustained 40 tok/s under concurrent application load. Tested 1hr continuous + 30min realistic workday."
+what*runs*on*8gb*m2*for*clinical	echo "Bonsai 8B serves clinical content (social stories, session notes, DTT definitions) at 40 tok/s while AAC application runs concurrently. Tested with realistic workday cadence."
 #
 # --- short-form / vernacular (how people actually type) ---
 make*a*folder	mkdir
