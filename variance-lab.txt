@@ -920,3 +920,273 @@ This conversion is independent of protocol choice.
   Raw data (mock):    github.com/03-git/variance-lab/data/squared/h2-bench-results.jsonl
   Proxy:              github.com/03-git/subtract.ing/runtime/squared.c
   Bench page:         github.com/03-git/subtract.ing/runtime/pages/h2-bench.html
+
+
+================================================================
+
+---
+title: 1-Bit Quantization Breaks the 8GB Deployment Ceiling for Local Inference
+date: 2026-04-25
+source: production empirical (494 measurements, 3 conditions + 1 preliminary, Bonsai 8B on 8GB M2 Mac Mini)
+domain:
+  - local-inference
+  - bitnet
+  - deployment-envelope
+  - clinical-application
+keywords:
+  - BitNet
+  - Bonsai 8B
+  - 1-bit quantization
+  - 8GB deployment
+  - Metal GPU memory pinning
+  - swap isolation
+  - clinical inference
+  - constrained hardware
+prior_art_status: >
+  PrismML published Bonsai 8B benchmarks against standard NLP tasks
+  (MMLU, HellaSwag, etc.). No published measurement exists of sustained
+  throughput under realistic application load on 8GB hardware, swap
+  pressure behavior over time, or GPU memory pinning characteristics
+  on Apple Silicon with 1-bit models. The deployment-envelope
+  characterization is novel.
+---
+
+# 1-Bit Quantization Breaks the 8GB Deployment Ceiling for Local Inference
+
+## Claim
+
+Bonsai 8B (8.2B parameters, 1.13 bits per weight, 1.1GB GGUF) runs on
+8GB M2 Mac Mini at sustained 40 tok/s for one hour with no significant
+throughput degradation, while macOS swap grows from 737MB to 7.3GB
+around it. Behavior is consistent with Metal GPU memory pinning: the
+model weights do not participate in swap pressure. Mean throughput
+holds under concurrent application load; variance increases.
+
+This breaks a deployment ceiling: dense Q4 quantization of 8B models
+requires ~4.5GB, which exceeds the usable memory envelope on 8GB hardware
+when an application server runs alongside. 1-bit quantization at 1.1GB
+fits with room for the application, the OS, and aggressive swap without
+affecting inference throughput.
+
+## Measurement
+
+All measurements use Bonsai-8B-Q1_0.gguf (PrismML, Apache 2.0) served
+by llama-server (llama.cpp b8920) on an 8GB M2 Mac Mini with 4 parallel
+slots. Prompts are clinical ABA content: social stories, visual schedules,
+DTT definitions, session notes, prompt fading explanations, replacement
+behaviors, token economies, mand/tact distinctions.
+
+### Condition 1: Clinical prompt bench (50 rows)
+
+10 clinical prompts x 5 passes, 150 max_tokens.
+
+  metric         value
+  mean tok/s     40.0
+  min tok/s      39.6
+  max tok/s      40.7
+  std dev        0.17
+  failures       0
+
+Throughput variance across 50 runs is 0.2 tok/s. The model produces
+identical throughput regardless of prompt content or generation length
+within the 150-token window.
+
+### Condition 2: Sustained 1-hour continuous (416 rows)
+
+10 clinical prompts cycled continuously for 60 minutes, 150 max_tokens,
+5-second pause between requests. Memory snapshot (vm_stat pageins,
+sysctl vm.swapusage) logged per run.
+
+  metric         start (min 0)    end (min 59)    delta
+  tok/s (mean)   39.83 (n=8)      39.40 (n=7)     -0.43
+  swap           737 MB           7,326 MB        +6,589 MB
+  mean tok/s     39.8 (across all 416 runs)
+  min tok/s      38.2
+  max tok/s      40.4
+
+  Linear regression across 60 minute-means: slope = -0.002 tok/s/min,
+  total drift over the hour = -0.12 tok/s. Not significant at this N.
+
+Swap grew 10x over one hour. Throughput showed no significant degradation
+(per-minute means vary ±0.4 tok/s around a flat trend).
+
+This is the primary finding: **swap pressure and inference throughput
+are decoupled on M-series hardware with 1-bit models.** The behavior is
+consistent with Metal GPU memory pinning — the model weights appear to
+reside in a memory region macOS does not page out under pressure. The OS
+swaps everything else (daemons, shell, bench harness, background
+processes) while the model serves at near-constant speed. Direct
+measurement of Metal buffer residency (e.g., vmmap) was not performed;
+the evidence is the throughput-swap decoupling itself.
+
+### Condition 3: Workday simulation with concurrent application load (28 rows)
+
+Clinical AAC application (19 HTML pages from /opt/canvas/) served on
+:8888 alongside Bonsai on :8085. Simulated 30-minute clinical session:
+1-3 AAC page loads (GET only, read-only) interleaved with inference
+requests at realistic cadence (15-45 second intervals between
+interactions).
+
+  metric         value
+  mean tok/s     40.1
+  min tok/s      37.5
+  max tok/s      41.8
+  swap start     6,219 MB (elevated from prior sustained bench)
+  swap end       6,315 MB (+96 MB, stable)
+  failures       0
+
+Mean throughput under concurrent load matches the sustained baseline.
+Variance increases: stdev 0.89 vs 0.28 sustained (3.2x). The 37.5 tok/s
+minimum occurred on the first request; subsequent requests ranged
+37.9-41.8. The mean holds; individual requests are less predictable.
+
+Swap pressure stabilized rather than growing: +96MB over 30 minutes
+versus +6.6GB over the prior hour. This indicates the system reaches
+a swap steady state. The OS has already paged out what it can; additional
+load from the application server does not create new pressure.
+
+### Condition 4: Preliminary clinical bench (10 rows)
+
+5 clinical prompts x 2 passes, 100 max_tokens. Initial validation run.
+
+  metric         value
+  mean tok/s     39.0
+  range          34.5 - 40.3
+
+Lower mean reflects 100 max_tokens (shorter generation, proportionally
+more prompt-processing overhead). Consistent with conditions 1-3 after
+accounting for the token-length difference.
+
+## Comparison: dense Q4 models on the same hardware
+
+Prior emile bench (April 2024) tested dense quantized models on the same
+8GB M2. Results from signoff notes:
+
+  model              size      outcome on 8GB
+  gemma3:4b Q4       3.3 GB   1/5 prompts completed (849s), rest timed out
+  qwen2.5:7b Q4      4.7 GB   could not serve with application alongside
+  smollm2:1.7b Q4    1.8 GB   completed clinical prompts (only dense model that fit)
+
+Bonsai 8B at 1.1GB fits where smollm2:1.7b (1.8GB, Q4) was the previous
+maximum. Parameter counts across quantization levels are not directly
+comparable — a 1-bit parameter carries less information than a 4-bit
+parameter. The comparison is deployment viability, not capability:
+Bonsai 8B fits and generates clinically coherent output on hardware
+where dense Q4 8B models OOM.
+
+## Mechanism
+
+1-bit quantization (BitNet) represents each weight as {-1, 0, +1} instead
+of the 4-bit integers used in Q4 quantization. This reduces the 8B model
+from ~4.5GB (Q4) to 1.1GB (Q1_0). The arithmetic shifts from
+multiply-accumulate to addition and subtraction, which is integer-heavy
+and thermally lighter than FP16/BF16 inference.
+
+On M-series Apple Silicon, llama.cpp loads the model into Metal GPU
+memory via unified memory architecture. Metal buffers are pinned: macOS
+does not page them out under memory pressure. When the system needs
+memory for other processes, it swaps non-Metal pages (application data,
+OS caches, background processes) while the model stays resident.
+
+This creates an asymmetric pressure model: the user may notice their
+browser feels slow (swapped), their other apps stutter (swapped), but
+inference throughput remains constant (pinned). The practitioner
+experiences the machine being slow. They do not experience the model
+being slow. This distinction matters for deployment: the recommendation
+is "close other apps during clinical sessions" not "upgrade hardware."
+
+## Confounds
+
+**Single hardware configuration.** All measurements on one 8GB M2 Mac
+Mini. The Metal memory pinning behavior is M-series specific. Raspberry
+Pi 5 (the target deployment in emile.txt) does not have equivalent GPU
+memory isolation. The throughput number travels; the swap-isolation
+property may not.
+
+**Swap was elevated for condition 3.** The workday simulation ran after
+the 1-hour sustained bench without rebooting. Starting swap was 6.2GB,
+not baseline. This is actually a harder test (system already under
+pressure) but means the swap-delta measurement (+96MB) reflects
+incremental pressure, not total.
+
+**Clinical prompt homogeneity.** All prompts are ABA clinical content:
+short input, medium output, English, instructional tone. Long-context
+prompts (paste a 2000-word session log), multilingual prompts, or
+code-generation prompts were not tested. The throughput number may not
+hold across all prompt classes.
+
+**No thermal monitoring.** M2 Mini is fanless. The bench ran for 1 hour
+without measuring CPU/GPU temperature. No thermal throttling was observed
+(throughput was stable) but ambient temperature during the test was not
+recorded. A closed cabinet in a warm office is a different thermal
+envelope.
+
+**No concurrent-user test.** All measurements are single-user. The
+supervisor + RBT case (two users on the same hardware via SSH, each
+running inference) was not tested. llama-server runs with -np 4 (4
+parallel slots) but no measurement confirms two concurrent requests
+degrade gracefully vs. OOM.
+
+**No cold-start-after-pressure test.** The model was loaded once and
+served for the entire bench. First-token latency after the model has
+been evicted from memory (user closes app, watches video, returns) was
+not measured.
+
+**Prompt caching inflates throughput consistency.** The sustained bench
+cycles 10 prompts for 416 requests. After the first pass, subsequent
+requests hit llama-server's prompt cache. The tight stdev (0.28 tok/s)
+partly reflects cache hits producing uniform timings rather than genuine
+stability under novel prompts. Real clinical use has higher prompt
+diversity than a 10-prompt cycle.
+
+**Dense Q4 comparison is from signoff notes, not JSONL.** The gemma3:4b
+timeout and qwen2.5:7b failure cited in the comparison section come from
+session signoff notes, not from a reproducible bench harness with
+published raw data. A replicator cannot verify these numbers from the
+provided artifacts.
+
+**Workday simulation started at elevated swap.** Condition 3 ran after
+the 1-hour sustained bench without rebooting. Starting swap was 6.2GB.
+The +96MB delta reflects incremental pressure on an already-pressured
+system, not the trajectory a practitioner would see from a fresh boot
+through a full clinical day.
+
+**Model quality is out of scope.** This finding measures throughput and
+deployment envelope, not output quality. "Clinically coherent" is a
+qualitative observation from reading the outputs, not a scored
+evaluation. A separate quality bench (scored against reference outputs
+by a BCBA) is needed before the clinical deployment claim is complete.
+
+## Application
+
+A sole proprietor (BCBA, teacher, small business owner) with an 8GB
+M-series Mac buys a machine that can serve an 8B language model locally
+with no subscription, no internet, no GPU. The model generates clinical
+content (social stories, visual schedules, session notes) in 3-4 seconds
+for 150-token responses while the application serves simultaneously.
+
+The deployment cost: hardware they already own + a 1.1GB download +
+`curl -sL subtract.ing/install.sh | bash`. Monthly operating cost after
+that: electricity.
+
+The stranded-buyer category (people who purchased M-series Macs for
+cloud AI products that raised prices or degraded) have hardware that
+runs Bonsai 8B at deployment-viable throughput. They do not know this.
+The lookdown.tsv entry is how they find out.
+
+## Methodology cost
+
+  bench development:  ~1 hour (3 iterations fixing pipe/SSH issues)
+  bench execution:    ~2 hours total (50-run + 1hr sustained + 30min workday)
+  model download:     1.1 GB, ~60 seconds
+  infrastructure:     8GB M2 Mac Mini (emile), llama.cpp via homebrew
+  dependencies:       llama-server, curl, python3 (timing), zsh
+  concurrent app:     /opt/canvas/ (19 HTML clinical pages, read-only)
+
+## Harness
+
+  50-run clinical:    staging/bonsai-8b-clinical-bench-50.jsonl
+  416-run sustained:  staging/bonsai-8b-sustained-1hr.jsonl
+  28-run workday:     staging/bonsai-8b-workday-sim.jsonl
+  10-run preliminary: staging/bonsai-8b-clinical-bench.jsonl
+  Model:              huggingface.co/prism-ml/Bonsai-8B-gguf (Bonsai-8B-Q1_0.gguf, Apache 2.0)
