@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+# signon -- pre-flight briefing for the current principal
+# signature-aware, not role-aware. same script for every user.
+set -u
+
+SUBTRACT_DIR="${SUBTRACT_DIR:-$HOME/.subtract}"
+SIGNERS="${SUBTRACT_DIR}/authorized_signers"
+MANIFEST="${SUBTRACT_DIR}/llms.txt"
+MANIFEST_SIG="${MANIFEST}.sig"
+ESCALATIONS="${SUBTRACT_DIR}/escalations.log"
+PROPOSED="${SUBTRACT_DIR}/lookdown.proposed.tsv"
+WATERMARK="${SUBTRACT_DIR}/.signon-watermark"
+KEY_ID="${SIGNON_KEY_ID:-$(whoami)@$(hostname -s)}"
+
+echo "signon: ${KEY_ID} at $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+echo
+
+# 1. manifest signature
+if [ -f "$MANIFEST" ] && [ -f "$MANIFEST_SIG" ] && [ -f "$SIGNERS" ]; then
+    if ssh-keygen -Y verify -f "$SIGNERS" -I "$KEY_ID" -n subtract.ing \
+        -s "$MANIFEST_SIG" < "$MANIFEST" >/dev/null 2>&1; then
+        echo "  manifest: signed and verified"
+        # 2. hash verification of manifest contents
+        hash_fail=0
+        hash_total=0
+        while IFS= read -r line; do
+            hash=$(echo "$line" | awk '{print $1}')
+            file=$(echo "$line" | awk '{print $2}')
+            [ -z "$file" ] && continue
+            hash_total=$((hash_total + 1))
+            for search_dir in "$SUBTRACT_DIR/fork" "$SUBTRACT_DIR" "$(dirname "$MANIFEST")"; do
+                if [ -f "$search_dir/$file" ]; then
+                    actual=$(sha256sum "$search_dir/$file" 2>/dev/null || shasum -a 256 "$search_dir/$file" 2>/dev/null)
+                    actual=$(echo "$actual" | awk '{print $1}')
+                    if [ "$actual" != "$hash" ]; then
+                        echo "  HASH MISMATCH: $file"
+                        hash_fail=$((hash_fail + 1))
+                    fi
+                    break
+                fi
+            done
+        done < <(awk '/^  [0-9a-f]{64}/' "$MANIFEST")
+        if [ "$hash_fail" -eq 0 ] && [ "$hash_total" -gt 0 ]; then
+            echo "  hashes: ${hash_total} verified"
+        elif [ "$hash_total" -eq 0 ]; then
+            echo "  hashes: none in manifest"
+        fi
+    else
+        echo "  manifest: SIGNATURE INVALID"
+    fi
+else
+    echo "  manifest: not present"
+fi
+
+# 3. drift since last signon
+if [ -f "$WATERMARK" ]; then
+    drift_count=$(find "$SUBTRACT_DIR" -type f -newer "$WATERMARK" \
+        ! -name '*.sig' ! -path '*/.git/*' ! -name '.signon-watermark*' \
+        2>/dev/null | wc -l | tr -d ' ')
+    if [ "$drift_count" -gt 0 ]; then
+        echo "  drift: ${drift_count} files since last signon"
+        find "$SUBTRACT_DIR" -type f -newer "$WATERMARK" \
+            ! -name '*.sig' ! -path '*/.git/*' ! -name '.signon-watermark*' \
+            2>/dev/null | head -10 | sed 's/^/    /'
+        [ "$drift_count" -gt 10 ] && echo "    (+$((drift_count - 10)) more)"
+    else
+        echo "  drift: none"
+    fi
+else
+    echo "  drift: first signon"
+fi
+
+# 4. escalation harvest queue
+if [ -f "$ESCALATIONS" ]; then
+    total=$(wc -l < "$ESCALATIONS" | tr -d ' ')
+    last_seen=$(cat "${WATERMARK}.escalations" 2>/dev/null || echo 0)
+    pending=$((total - last_seen))
+    if [ "$pending" -gt 0 ]; then
+        echo "  escalations: ${pending} new"
+        tail -n "$pending" "$ESCALATIONS" | head -5 | \
+            awk -F'\t' '{printf "    [%s] %s\n", $2, $3}'
+        [ "$pending" -gt 5 ] && echo "    (+$((pending - 5)) more)"
+    fi
+fi
+
+# 5. proposed lookdown entries
+if [ -f "$PROPOSED" ]; then
+    proposed_count=$(grep -cv '^#' "$PROPOSED" 2>/dev/null || echo 0)
+    if [ "$proposed_count" -gt 0 ]; then
+        echo "  proposed: ${proposed_count} lookdown entries pending"
+    fi
+fi
+
+# 6. prior session context (claude sessions, if present)
+if command -v jq >/dev/null 2>&1; then
+    dir_slug=$(echo "$HOME" | tr "/." "--")
+    session_dir="$HOME/.claude/projects/${dir_slug}"
+    if [ -d "$session_dir" ]; then
+        session=$(ls -t "$session_dir"/*.jsonl 2>/dev/null | sed -n '2p')
+        if [ -n "$session" ]; then
+            echo "  --- last exchange ---"
+            tail -500 "$session" | jq -r '
+              select(.type=="user" or .type=="assistant") |
+              if .type=="user" then
+                "  Human: " + (if (.message.content | type) == "array" then ([.message.content[] | select(.type=="text") | .text] | join(" ")) // "" else .message.content // "" end)
+              else
+                "  Assistant: " + (if (.message.content | type) == "array" then ([.message.content[] | select(.type=="text") | .text] | join(" ")) // "" else .message.content // "" end)
+              end
+            ' 2>/dev/null | grep -v '^\s*\(Human\|Assistant\): $' | tail -6
+        fi
+    fi
+fi
+
+echo
+touch "$WATERMARK"

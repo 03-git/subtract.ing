@@ -25,6 +25,33 @@ fetch() {
     fi
 }
 
+# verify manifest signature before installing anything
+if [ "$MODE" = "web" ]; then
+    fetch "llms.txt" "$SUBTRACT_DIR/llms.txt"
+    fetch "llms.txt.sig" "$SUBTRACT_DIR/llms.txt.sig"
+    fetch "authorized_signers" "$SUBTRACT_DIR/authorized_signers"
+    if ! ssh-keygen -Y verify -f "$SUBTRACT_DIR/authorized_signers" \
+        -I hodori@subtract.ing -n subtract.ing \
+        -s "$SUBTRACT_DIR/llms.txt.sig" < "$SUBTRACT_DIR/llms.txt" >/dev/null 2>&1; then
+        echo "ABORT: manifest signature verification failed."
+        echo "The files at $BASE_URL may be compromised or the signing key rotated."
+        echo "Verify manually: https://subtract.ing/authorized_signers"
+        rm -f "$SUBTRACT_DIR/llms.txt" "$SUBTRACT_DIR/llms.txt.sig" "$SUBTRACT_DIR/authorized_signers"
+        exit 1
+    fi
+    echo "manifest signature verified: hodori@subtract.ing"
+elif [ "$MODE" = "local" ]; then
+    if [ -f "$SCRIPT_DIR/llms.txt" ] && [ -f "$SCRIPT_DIR/llms.txt.sig" ] && [ -f "$SCRIPT_DIR/authorized_signers" ]; then
+        if ! ssh-keygen -Y verify -f "$SCRIPT_DIR/authorized_signers" \
+            -I hodori@subtract.ing -n subtract.ing \
+            -s "$SCRIPT_DIR/llms.txt.sig" < "$SCRIPT_DIR/llms.txt" >/dev/null 2>&1; then
+            echo "WARNING: local manifest signature verification failed. Proceeding from trusted checkout."
+        else
+            echo "manifest signature verified: hodori@subtract.ing"
+        fi
+    fi
+fi
+
 # T0 core
 fetch "runtime/subtract.sh" "$SUBTRACT_DIR/subtract.sh"
 fetch "runtime/addition" "$SUBTRACT_DIR/addition"

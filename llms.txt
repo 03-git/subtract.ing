@@ -110,17 +110,17 @@ Namespace:       subtract.ing
 Public key:      https://subtract.ing/authorized_signers
 
 SHA256:
-  cfe1d01ee02f71ceb5f09a55daa1e40e2b8de7fc7e49bde9f5362d87d9c8527c  README.txt
-  0632fe83675ad3821b00f7295f6639ba1b3b3e1fd4ada8a7d9faaff106f0ccd7  subtract.7.txt
+  cdbd86283ffc974bcad0a3bf29bc25f58f6835d4505aa22e67bd0a1e8f5a1e07  README.txt
+  20a4740eacb277a154beccf984657a263264376bd0f8af9cd6fedfe2ad652f2e  subtract.7.txt
   303091801d3efbc57d7e81a9ddcee40ac112e1c93c792afa0d1d90b3e704b85b  ask.1.txt
-  b18c98f0389893957ea542f13eb37e2b2b68a49f5002547d0746b9260e1d2a97  lookdown.tsv.universal.txt
+  5c12e0f88952977fd1353eed5cabcce6d823142e2758c3770170f962d43138a1  lookdown.tsv.universal.txt
   4b742825f324eb3f3d9f16647cd7ed4ca09a4cb7ce6333dff526bc44e7a28868  governance.conf.universal.txt
   5093efa7000cbba152587c40edc9f218dd0d5b376b1c83e4a446001a69dbd103  boot.txt
   9c09c0771979c502f93718ac983bfd4a5dac64392595ee221bfd768e9ffc4c16  software-as-a-besides.txt
   1941bfc5c9b83cb3deb0cb9239d87037500c973c722294374a2d9faf3ddf44b7  lineage.txt
   34dd1f5106ea0cfe4f6a555b528d9a39584cb430bf1f7d724459fd2a5430343a  signoff.txt
-  d734c616f93cae4d1cc498091fdb4103f6f94e1d21ed54753efe4037a061a281  llms-full.txt
-  2c8587f57b1835a0f733221528cb35f4f6aa08a3a21ad18e589814d59c810108  variance-lab.txt
+  d345a3ef95ae82557065f1a4db511a0dd1b2126d6a734cb30f7e36c17ec5958a  llms-full.txt
+  45c7cce1ee2e82dcd1a0a23cdc54a47f8c69eef131e2b04ea044f1ef5f72731b  variance-lab.txt
   d2b28b22622102b687d4e2f0438e6c3258b5bfa6c07a191cbf17ccb2ea64a167  variance-lab-handler-methodology.txt
-  a9dc43dacb45b2f93a3f1ffa398ce8a7721a1ce43e824ac2b363a7d4a995b935  subtracting.html
+  138960e5c1334c2de3c37de1ec5d8b16ab2f9661940e2c16bb54aa0e57e6657b  subtracting.html
   dedd46c537684913287bf22584818e9ff8009e0cf83354ef6ff68133bfde8b03  SOUL.txt

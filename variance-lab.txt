@@ -711,3 +711,212 @@ Governor mean 3,308 and median 3,217 differ by 91 tokens at N=9, consistent with
 Full writeup, per-session TSVs, extractor, and aggregator:
 
     https://github.com/03-git/variance-lab/blob/rerun/finding-3/findings/interaction-mode-variance-rerun.md
+
+
+================================================================
+
+---
+title: HTTP/2 Multiplexing vs HTTP/1.1 for Local Inference Concurrency
+date: 2026-04-25
+source: production empirical (70 validated measurements, 3 conditions, gemma-4-26B-A4B on Apple Silicon)
+domain:
+  - local-inference
+  - protocol-engineering
+  - multiplexing
+  - latency-measurement
+keywords:
+  - h2 multiplexing
+  - llama-server
+  - concurrent inference
+  - local LLM latency
+  - browser connection limit
+  - subtract runtime
+prior_art_status: >
+  HTTP/2 multiplexing is a known property (RFC 9113). Benchmarking it
+  against local LLM inference on consumer hardware has no published
+  precedent, but the mechanism is well understood. This finding measures
+  whether the theoretical advantage produces a practical one.
+---
+
+# HTTP/2 Multiplexing vs HTTP/1.1 for Local Inference Concurrency
+
+## Claim
+
+End-to-end, HTTP/2 multiplexing through squared provides no measurable
+advantage over parallel HTTP/1.1 for local inference via curl. Inference
+time dominates wall-clock latency; the protocol is not the bottleneck.
+
+The advantage is specific to browsers: the 6-connection-per-origin limit
+in Chrome/Brave creates artificial serialization that h2 eliminates. At
+c=3 from a browser, h2 is 2.5× faster. From curl, the protocols are
+equivalent.
+
+Dispatch overhead (time to place requests on the wire, not time to receive
+responses) is 30× lower for h2 at c=3. This is a real measurement but not
+an end-to-end speedup — the user still waits for inference regardless of
+how fast the request was dispatched.
+
+## Measurement
+
+All measurements use gemma-4-26B-A4B-it-Q4_K_M (26B parameters, 4-bit
+quantized) on an M4 Max via llama-server with 4 parallel slots (-np 4).
+h2 path goes through squared, a 716-line C proxy using nghttp2. h1.1
+path hits llama-server directly via parallel background curl processes.
+
+Prompts are natural-language shell-translation requests — the actual
+workload subtract handles when lookdown.tsv misses. Examples: "rename all
+jpg files to lowercase", "find files modified in the last hour", "show
+which process is using port 8080".
+
+### End-to-end: curl, real inference, validated responses (15 rows)
+
+Both protocols measured from request start to complete response body
+received. All responses validated to contain model output (not errors).
+80 max_tokens, loopback.
+
+  concurrent  n   h1.1 mean±sd       h2 mean±sd       ratio
+  c=1         5     634±161ms          731±568ms        0.87× (h2 slightly worse)
+  c=3         5   1,553±332ms        1,415±781ms        1.10× (within noise)
+  c=6         5   2,774±396ms        2,886±1366ms       0.96× (within noise)
+
+No significant difference. Both protocols deliver identical end-to-end
+latency because inference time (300-700ms per request) dominates and is
+protocol-independent. h2 variance is higher, likely because squared
+serializes backend connect() calls while parallel curl processes connect
+independently.
+
+### Browser: Brave, mock 200ms backend (single pass, not in JSONL)
+
+Tests the browser's 6-connection-per-origin limit — the constraint that
+motivated squared.
+
+  concurrent   h1.1    h2     ratio
+  c=1           774ms   890ms   0.9×
+  c=3           533ms   215ms   2.5×
+  c=6           535ms   340ms   1.6×
+  c=12        1,068ms 1,569ms   0.7×
+
+At c=3, h2 is 2.5× faster from the browser. The browser's connection
+limit serializes h1.1 requests in a way that curl (unlimited parallel
+connections) does not. This is the one context where h2 provides a
+measurable end-to-end advantage. N=1; the ratio is directional, not
+precise.
+
+### Control: mock backend, curl, loopback (40 rows)
+
+Fixed 200ms backend latency, curl (no browser connection limit). Isolates
+protocol overhead.
+
+  concurrent  n   h1.1 mean   h2 mean   ratio
+  c=1         10    222ms       234ms     0.95×
+  c=3         10    222ms       240ms     0.93×
+  c=6         10    229ms       250ms     0.92×
+  c=12        10    246ms       277ms     0.89×
+
+h2 is slower than h1.1 at every concurrency level. The proxy (squared)
+adds ~15-30ms overhead per request. Without the browser's connection
+limit, h2 provides no advantage and adds measurable cost.
+
+### Dispatch overhead (supplementary, not end-to-end)
+
+Earlier bench runs measured dispatch time — the interval from sending
+requests to receiving the first response byte, with response bodies
+discarded. This produced large ratios (34× at c=3, 120× at c=12) that
+do not represent end-to-end speedup.
+
+These measurements are reported for completeness but are clearly labeled:
+they capture connection-setup overhead, not user-perceived latency.
+The end-to-end data above supersedes them as the primary finding.
+
+  concurrent  h1.1 dispatch   h2 dispatch   ratio    (what it measures)
+  c=3         1,078ms           32ms         34×      time to place requests
+  c=6         1,801ms           34ms         53×      not time to receive answers
+  c=12        4,228ms           36ms         117×     dominated by inference
+
+## Mechanism
+
+HTTP/1.1 with parallel curl processes opens one TCP connection per request.
+On loopback, TCP setup is near-zero cost. The h1.1 requests arrive at
+llama-server independently and are processed across its parallel slots.
+Total wall time is dominated by inference.
+
+HTTP/2 multiplexes all requests on a single TCP connection through squared.
+squared opens one backend connection per stream to llama-server. The
+requests arrive at llama-server the same way — as separate HTTP/1.1
+connections from squared's forked children. Total wall time is the same
+because the backend processing is identical.
+
+The browser is the exception. Browsers enforce a 6-connection-per-origin
+limit (Chromium, Firefox). At c>6, h1.1 requests queue behind that limit.
+h2 multiplexes all requests on one connection, bypassing the limit. This
+is the specific context where squared provides value.
+
+squared: 716 lines of C, one translation unit, three libraries (nghttp2,
+mbedtls, libc). h2c mode for curl/agents, TLS+ALPN mode for browsers.
+
+## Confounds
+
+**h2 uses same prompt for all concurrent requests.** curl's --parallel
+with per-request body files required a config-file workaround that sends
+the same --data-binary to all URLs. h1.1 sends different prompts per
+request. The h2 path may benefit from llama-server prompt caching. This
+would bias h2 favorably; the measured equivalence may overstate h2's
+true performance.
+
+**Backend parallel slots = 4.** llama-server -np 4. At c=6, requests
+queue on the backend regardless of protocol. Both protocols are equally
+affected.
+
+**High h2 variance.** h2 standard deviation at c=6 is 1,366ms vs h1.1's
+396ms. Pass 5 shows h2 at 5,128ms (2× h1.1). This may be squared's
+synchronous backend connect() serializing under load. Five passes is
+insufficient to characterize this tail behavior.
+
+**N=1 browser measurement.** The browser finding (2.5× at c=3) is a
+single pass with a mock backend. It is directional evidence, not a
+tight measurement.
+
+**Single operator, single backend, single model.** No cross-hardware
+replication. The equivalence finding is likely general (inference
+dominates regardless of hardware) but the absolute times are specific
+to this M4 Max + gemma-4-26B configuration.
+
+**Dispatch measurements used curl -o /dev/null.** curl --parallel with
+output discarded exits after writing request frames, before receiving
+full response bodies. The 30-34ms "h2 times" in the dispatch data
+are frame-writing times, not response times. This was discovered during
+review and is the reason the end-to-end measurement was added.
+
+## Lookdown.tsv design note
+
+The 12 prompts used in the end-to-end bench are natural-language phrases
+that currently fall through to inference. Each could become a lookdown.tsv
+entry resolving in 0ms:
+
+  "rename all jpg files to lowercase"         →  for f in *.jpg; do mv "$f" "${f,,}"; done
+  "find files modified in the last hour"      →  find . -mmin -60
+  "show which process is using port 8080"     →  lsof -i :8080
+  "show my ssh keys"                          →  ls ~/.ssh/*.pub
+  "show cron jobs for current user"           →  crontab -l
+  "show environment variables"                →  env
+
+Each entry added converts a ~600ms inference call to a 0ms pattern match.
+This conversion is independent of protocol choice.
+
+## Methodology cost
+
+  squared build:      ~4 hours across 2 sessions (v1 h2c → v4 TLS+dechunker)
+  bench development:  ~3 hours (5 iterations; 2 produced invalid data)
+  bench execution:    ~30 minutes total
+  review:             2 cross-node reviews (rousseau, emile) caught data
+                      contamination and asymmetric measurement errors
+  data:               55 validated rows (15 e2e + 40 mock), 1 browser pass
+  infrastructure:     M4 Max (rousseau), Surface Pro 8 (surface)
+  dependencies:       nghttp2, mbedtls, llama-server, curl, gemma-4-26B-A4B
+
+## Harness
+
+  Raw data (e2e):     github.com/03-git/variance-lab/data/squared/h2-e2e-results.jsonl
+  Raw data (mock):    github.com/03-git/variance-lab/data/squared/h2-bench-results.jsonl
+  Proxy:              github.com/03-git/subtract.ing/runtime/squared.c
+  Bench page:         github.com/03-git/subtract.ing/runtime/pages/h2-bench.html

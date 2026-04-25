@@ -30,12 +30,14 @@
 
 #include <nghttp2/nghttp2.h>
 
+#ifndef NO_TLS
 #include <mbedtls/ssl.h>
 #include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
 #include <mbedtls/x509_crt.h>
 #include <mbedtls/pk.h>
 #include <mbedtls/net_sockets.h>
+#endif
 
 #define BUF_SIZE 16384
 #define MAX_STREAMS 64
@@ -49,12 +51,14 @@ static char *backend_host = "127.0.0.1";
 static char *backend_port = "8080";
 
 static int tls_mode = 0;
+#ifndef NO_TLS
 static mbedtls_ssl_config tls_conf;
 static mbedtls_x509_crt tls_cert;
 static mbedtls_pk_context tls_pkey;
 static mbedtls_entropy_context tls_entropy;
 static mbedtls_ctr_drbg_context tls_ctr_drbg;
 static const char *tls_alpn[] = {"h2", NULL};
+#endif
 
 typedef struct {
     int32_t stream_id;
@@ -86,11 +90,16 @@ typedef struct {
 typedef struct {
     nghttp2_session *session;
     int client_fd;
+#ifndef NO_TLS
     mbedtls_ssl_context *ssl;
+#else
+    void *ssl;
+#endif
     stream_data streams[MAX_STREAMS];
     int nstreams;
 } session_data;
 
+#ifndef NO_TLS
 static int tls_bio_send(void *ctx, const unsigned char *buf, size_t len) {
     int fd = *(int *)ctx;
     ssize_t n = write(fd, buf, len);
@@ -151,6 +160,7 @@ static int init_tls(const char *cert_path, const char *key_path) {
     tls_mode = 1;
     return 0;
 }
+#endif
 
 static stream_data *find_stream(session_data *sd, int32_t stream_id) {
     for (int i = 0; i < sd->nstreams; i++)
@@ -512,12 +522,14 @@ static ssize_t send_callback(nghttp2_session *session,
     (void)flags;
     session_data *sd = user_data;
 
+#ifndef NO_TLS
     if (sd->ssl) {
         int n = mbedtls_ssl_write(sd->ssl, data, length);
         if (n == MBEDTLS_ERR_SSL_WANT_WRITE) return NGHTTP2_ERR_WOULDBLOCK;
         if (n < 0) return NGHTTP2_ERR_CALLBACK_FAILURE;
         return n;
     }
+#endif
 
     ssize_t n = write(sd->client_fd, data, length);
     if (n < 0) {
@@ -528,7 +540,11 @@ static ssize_t send_callback(nghttp2_session *session,
     return n;
 }
 
+#ifndef NO_TLS
 static void handle_client(int client_fd, mbedtls_ssl_context *ssl) {
+#else
+static void handle_client(int client_fd, void *ssl) {
+#endif
     session_data sd = {0};
     sd.client_fd = client_fd;
     sd.ssl = ssl;
@@ -590,11 +606,14 @@ static void handle_client(int client_fd, mbedtls_ssl_context *ssl) {
         if (fds[0].revents & POLLIN) {
             uint8_t buf[BUF_SIZE];
             ssize_t n;
+#ifndef NO_TLS
             if (sd.ssl) {
                 n = mbedtls_ssl_read(sd.ssl, buf, sizeof(buf));
                 if (n == MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY || n == 0) break;
                 if (n < 0) break;
-            } else {
+            } else
+#endif
+            {
                 n = read(client_fd, buf, sizeof(buf));
                 if (n <= 0) break;
             }
@@ -623,10 +642,12 @@ static void handle_client(int client_fd, mbedtls_ssl_context *ssl) {
 
     nghttp2_session_del(sd.session);
 
+#ifndef NO_TLS
     if (ssl) {
         mbedtls_ssl_close_notify(ssl);
         mbedtls_ssl_free(ssl);
     }
+#endif
 
     close(client_fd);
 }
@@ -643,12 +664,14 @@ int main(int argc, char **argv) {
             backend_port = colon + 1;
         }
     }
+#ifndef NO_TLS
     if (argc >= 5) {
         if (init_tls(argv[3], argv[4]) != 0) {
             fprintf(stderr, "TLS init failed\n");
             return 1;
         }
     }
+#endif
 
     signal(SIGPIPE, SIG_IGN);
     signal(SIGCHLD, SIG_IGN);
@@ -683,6 +706,7 @@ int main(int argc, char **argv) {
         if (pid == 0) {
             close(listenfd);
 
+#ifndef NO_TLS
             if (tls_mode) {
                 mbedtls_ssl_context ssl;
                 mbedtls_ssl_init(&ssl);
@@ -705,7 +729,9 @@ int main(int argc, char **argv) {
                 }
 
                 handle_client(fd, &ssl);
-            } else {
+            } else
+#endif
+            {
                 handle_client(fd, NULL);
             }
 
