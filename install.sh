@@ -100,6 +100,7 @@ if [ -f ~/.bashrc ] && ! grep -qF 'subtract/hooks' ~/.bashrc; then
     echo -e "\n# subtract\n$PATH_LINE\n$BASH_LINE" >> ~/.bashrc
 fi
 
+command -v zsh >/dev/null 2>&1 && [ ! -f ~/.zshrc ] && touch ~/.zshrc
 if [ -f ~/.zshrc ] && ! grep -qF 'subtract/hooks' ~/.zshrc; then
     echo -e "\n# subtract\n$PATH_LINE\n$ZSH_LINE" >> ~/.zshrc
 fi

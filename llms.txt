@@ -94,7 +94,7 @@ https://github.com/03-git/subtract.ing
 
 ## Authors
 
-Josh (@hodorigami) & LLMs (@qwen @bitnet @claude @gemini @grok)
+Josh (@hodorigami) & LLMs (@qwen @claude @gemini @grok)
 
 ## Manifest
 

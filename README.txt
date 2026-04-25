@@ -28,4 +28,4 @@ GPLv3. See LICENSE.txt.
 
 ## Authors
 
-Josh (@hodorigami) & LLMs (@qwen @bitnet @claude @gemini @grok)
+Josh (@hodorigami) & LLMs (@qwen @claude @gemini @grok)

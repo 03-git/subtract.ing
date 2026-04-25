@@ -88,6 +88,9 @@ model.
   cron                 scheduled cloud prompts (the change window)
   curl                 cloud API calls (batch endpoint)
 
+  lookdown.tsv         universal (ships besides subtract.ing)
+  lookdown.*.tsv       yours (ships beside you)
+
 No package managers. No frameworks. No containers. The kernel runs
 the binary. The binary serves completions. The HTML calls the API.
 The signing primitive is already on the machine.
@@ -171,6 +174,15 @@ operator of their own instance. They export their content and
 records, provision their own hardware, follow this document, and
 have an instance running in an afternoon. The relationship becomes
 two sovereign substrates exchanging signed artifacts.
+
+## Lineage
+
+Porat (1977) imagined information as personal infrastructure.
+Fox (1989) built the shell. Ramey (1993-present) maintained the
+hook. Rousseau (1762) argued the environment teaches, not the
+instructor. This deployment pattern inherits all four.
+
+  Full lineage: https://subtract.ing/lineage.txt
 
 ## Verify
 
