@@ -1065,8 +1065,8 @@ TMPL
             printf '[y/n] '; read -r confirm
             [ "$confirm" != "y" ] && { echo "aborted."; return 1; }
         else
-            echo "[$tier:$tag] $cmd"
-            printf '[enter/n] '; read -r confirm
+            [ "$tag" != "stdout" ] && echo "[$tier:$tag] $cmd"
+            if [ "$tag" = "stdout" ]; then confirm=""; else printf "[enter/n] "; read -r confirm; fi
             [ "$confirm" = "n" ] && return 1
         fi
 
@@ -1085,6 +1085,7 @@ TMPL
                     action=$(eval "$cmd")
                 fi
                 # canvas actions are trusted (we control the templates)
+                # TODO: when multiple signers exist, verify lookdown entry signature before eval
                 # eval directly instead of routing back through lookup
                 if [ -n "$action" ]; then
                     echo "[action] $action"
