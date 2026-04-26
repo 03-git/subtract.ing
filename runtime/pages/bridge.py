@@ -19,6 +19,7 @@ ENV["TERM"] = "dumb"
 SUBTRACT_DIR = os.path.expanduser("~/.subtract")
 INF_HOST = open(f"{SUBTRACT_DIR}/inference_host").read().strip() if os.path.exists(f"{SUBTRACT_DIR}/inference_host") else "localhost"
 INF_PORT = open(f"{SUBTRACT_DIR}/inference_port").read().strip() if os.path.exists(f"{SUBTRACT_DIR}/inference_port") else "8083"
+SYSTEM_PROMPT = open(f"{SUBTRACT_DIR}/SOUL.txt").read().strip() if os.path.exists(f"{SUBTRACT_DIR}/SOUL.txt") else ""
 
 class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -47,8 +48,25 @@ class Handler(BaseHTTPRequestHandler):
                 input="\n\n\n",
                 env=ENV
             )
+            stdout = result.stdout
+            # strip handler prompt lines, keep the answer
+            lines = stdout.splitlines()
+            clean_lines = []
+            skip_next = False
+            for line in lines:
+                stripped = line.strip()
+                if re.match(r'^\[T\d', stripped) or re.match(r'^\[apropos\]', stripped) or re.match(r'^\[skill', stripped):
+                    continue
+                if stripped in ("[enter/n]", "[y/n]", "[DESTRUCTIVE]", ""):
+                    continue
+                if stripped.startswith("[enter/n] "):
+                    line = stripped[len("[enter/n] "):]
+                elif stripped.startswith("[y/n] "):
+                    line = stripped[len("[y/n] "):]
+                clean_lines.append(line)
+            stdout = "\n".join(clean_lines).strip()
             self._respond(200, {
-                "stdout": result.stdout,
+                "stdout": stdout,
                 "stderr": result.stderr,
                 "exit": result.returncode,
                 "stream": False
@@ -157,8 +175,12 @@ class Handler(BaseHTTPRequestHandler):
             return False
 
     def _try_stream_local(self, prompt):
+        messages = []
+        if SYSTEM_PROMPT:
+            messages.append({"role": "system", "content": SYSTEM_PROMPT})
+        messages.append({"role": "user", "content": prompt})
         payload = json.dumps({
-            "messages": [{"role": "user", "content": prompt}],
+            "messages": messages,
             "max_tokens": 2048,
             "stream": True
         }).encode()
@@ -242,4 +264,4 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     print(f"bridge on :{PORT}")
-    ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()
+    ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()

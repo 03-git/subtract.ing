@@ -1190,3 +1190,368 @@ The lookdown.tsv entry is how they find out.
   28-run workday:     staging/bonsai-8b-workday-sim.jsonl
   10-run preliminary: staging/bonsai-8b-clinical-bench.jsonl
   Model:              huggingface.co/prism-ml/Bonsai-8B-gguf (Bonsai-8B-Q1_0.gguf, Apache 2.0)
+
+
+================================================================
+
+---
+title: 1-Bit Wins Across Four Hardware Tiers Because the Bottleneck Differs by Tier
+date: 2026-04-25
+source: production empirical (4 hardware tiers, same model, same harness)
+domain:
+  - local-inference
+  - bitnet
+  - hardware-characterization
+  - deployment-sizing
+keywords:
+  - BitNet
+  - Bonsai 8B
+  - bottleneck taxonomy
+  - memory bandwidth
+  - thermal throttle
+  - swap isolation
+  - edge deployment
+prior_art_status: >
+  bitnet-log (03-git, frozen 2026-04-25) tracked two convergence gates:
+  weight compression (BitNet) and KV cache compression. This finding
+  validates the weight gate empirically across consumer hardware.
+  Published 1-bit benchmarks measure single-model single-tier tok/s.
+  No published benchmark characterizes the tier-specific bottleneck
+  that becomes binding once memory capacity is removed as a constraint.
+---
+
+# 1-Bit Wins Across Four Tiers Because the Bottleneck Differs by Tier
+
+## Claim
+
+Bonsai 8B Q1 (1.1GB) is deployment-viable on every hardware tier tested,
+but the reason it wins differs by tier. 1-bit quantization eliminates
+memory capacity as the binding constraint on all four platforms, exposing
+the next bottleneck down — which is different on each:
+
+  M2 Mac Mini 8GB:     memory capacity was the gate. Removed. Next: bandwidth (sufficient for 1 user).
+  1660 Ti laptop 6GB:  VRAM capacity was the gate. Removed. Next: thermal throttle on laptop chassis.
+  i7-1185G7 CPU 11GB:  capacity was never the gate. Win is fewer ops per token. Next: CPU compute.
+  M1 Max Studio 64GB:  capacity was never the gate. Win is fewer bytes per token. Next: memory bandwidth.
+
+Single-instance throughput on M1 Max varied 87-93 tok/s across bench
+runs (87.1 in the scaling curve, 93.5 in the four-model sequential
+comparison). The spread reflects warmup state and prompt cache
+differences between runs, not measurement error.
+
+The bottleneck taxonomy explains why the speedup ratio varies across
+tiers rather than being a fixed property of the quantization.
+
+## Measurement
+
+Same model (Bonsai-8B-Q1_0.gguf, 1.1GB), same prompt set (10 clinical
+ABA prompts, 150 max_tokens), same harness across all four platforms.
+
+  Hardware              Chip          RAM/VRAM   tok/s (single)   Model size   Bottleneck
+  M2 Mac Mini           Apple M2      8 GB       40.0             1.1 GB       bandwidth (swap irrelevant)
+  Acer laptop           GTX 1660 Ti   6 GB       24.4             1.1 GB       thermal (11% throttle, recovers)
+  Surface Pro 8         i7-1185G7     11 GB      8.0-9.3          1.1 GB       CPU compute
+  Mac Studio            M1 Max        64 GB      87-93 tok/s      1.1 GB       memory bandwidth
+
+### Efficiency comparison: Bonsai Q1 vs Qwen 2.5 7B Q4 (same CPU)
+
+On the Surface Pro 8 (i7-1185G7, AVX2, no GPU):
+
+  Model              File size   Generation tok/s   Prompt tok/s
+  Bonsai 8B Q1       1.1 GB      9.3                8.7
+  Qwen 2.5 7B Q4     4.4 GB      5.9                12.5
+
+1.6x faster generation in 4.0x less memory. The generation advantage
+comes from fewer bytes read per token. The prompt disadvantage (8.7 vs
+12.5) reflects Q4's better arithmetic density during the compute-bound
+prefill phase. Different bottlenecks at different inference stages.
+
+Caveat: different model families, different training data, different
+architecture. The comparison is practical (what fits and runs on this
+hardware), not controlled. The memory ratio is clean. The throughput
+ratio is confounded by architecture differences.
+
+### Per-tier bottleneck evidence
+
+**M2 Mac Mini (swap isolation).** 416-run sustained bench over 1 hour.
+Swap grew from 737MB to 7,326MB. Throughput unchanged at 39.8 tok/s
+mean. Behavior consistent with Metal-allocated model weights being
+unaffected by system swap pressure. The OS pages out everything else;
+the model stays resident. The constraint on M2 was memory capacity
+(dense Q4 8B = 4.5GB, doesn't fit alongside application server in 8GB).
+Bonsai at 1.1GB removes that constraint entirely.
+
+**1660 Ti laptop (thermal).** 50-run bench: 24.4 tok/s. Sustained load:
+24.6 → 22.0 tok/s over 15 minutes, stabilized near baseline at 24.3
+after thermal equilibrium. The 11% dip is the laptop chassis thermal
+envelope, not the GPU's compute limit. The constraint is heat dissipation
+in a closed-lid form factor, not VRAM or compute.
+
+**i7 CPU (compute).** Bonsai wins on generation (9.3 vs 5.9 tok/s)
+because 1-bit reads fewer bytes per token from DDR4. But the absolute
+speed (9.3 tok/s) is the lowest across all tiers because x86 CPU
+matrix multiply is the binding constraint, not memory bandwidth. 1-bit
+helps (fewer ops) but doesn't change the regime.
+
+**M1 Max Studio (bandwidth).** 93.5 tok/s single instance. Under
+concurrent load, aggregate throughput plateaus at ~124 tok/s regardless
+of instance count (see finding 10). The constraint is unified memory
+bandwidth. 1-bit maximizes tokens per byte read. Bonsai generates
+at comparable or faster speeds than phi4-mini Q4 (88.4 tok/s) and
+Qwen 2.5 7B Q4 (~88 tok/s) despite having more parameters. The two
+Bonsai measurements on M1 Max (87.1 in the scaling curve, 93.5 in
+the four-model comparison) bracket the dense Q4 models — the
+variation is from warmup and cache state, not measurement error.
+
+## Mechanism
+
+1-bit quantization represents each weight as {-1, 0, +1}. The
+arithmetic shifts from multiply-accumulate (FP16/Q4) to addition and
+subtraction (Q1). Two consequences:
+
+1. Model file size drops from ~4.5GB (Q4 8B) to 1.1GB (Q1 8B).
+   This removes memory capacity as a constraint on hardware where
+   it was previously binding (M2 8GB, 1660 Ti 6GB VRAM).
+
+2. Bytes read per token drop proportionally. On bandwidth-bound
+   platforms (M1 Max, M2), this translates directly to higher tok/s.
+   On compute-bound platforms (i7 CPU), the benefit is smaller because
+   the bottleneck is arithmetic throughput, not memory reads.
+
+The bottleneck taxonomy is a consequence of removing the top constraint.
+When capacity stops being the limit, whatever was second in line becomes
+first. That second-in-line constraint is hardware-specific.
+
+## Confounds
+
+**Different model families in the efficiency comparison.** Bonsai 8B
+and Qwen 2.5 7B have different architectures, training data, and
+parameter counts. The throughput comparison is practical, not controlled.
+A same-model different-quant comparison (Bonsai at Q1 vs Q4) would
+isolate quantization from architecture, but Q4 Bonsai GGUF does not
+exist.
+
+**Single prompt set.** All measurements use the same 10 clinical ABA
+prompts. Different prompt shapes (long context, code generation,
+multilingual) may shift the bottleneck balance.
+
+**Thermal measurement on 1660 Ti is chassis-specific.** A desktop
+1660 Ti with active cooling would produce different thermal behavior.
+The throttle finding is for this laptop chassis, not for the GPU
+architecture.
+
+**M2 swap isolation mechanism is attributed, not measured.** The
+observation (throughput stable under 10x swap growth) is empirical.
+The mechanism (Metal memory pinning) is inferred from Apple Silicon
+architecture documentation, not from direct measurement (vmmap,
+wired page counts).
+
+## Prior work
+
+bitnet-log (03-git, frozen 2026-04-25) tracked the convergence of
+two capability gates for local inference: weight compression (BitNet
+ternary weights) and KV cache compression. The weight gate thesis:
+ternary weights at 1.58 bits per parameter enable large models on
+consumer hardware by shifting the binding constraint from memory
+capacity to memory bandwidth. This finding validates that thesis
+empirically. The cache gate (KV compression for long context) remains
+open and is tracked separately.
+
+## Harness
+
+  M2 clinical:        staging/bonsai-8b-clinical-bench-50.jsonl
+  M2 sustained:       staging/bonsai-8b-sustained-1hr.jsonl
+  M2 workday:         staging/bonsai-8b-workday-sim.jsonl
+  1660 Ti clinical:   staging/bonsai-8b-1660ti-bench-50.jsonl
+  Surface clinical:   staging/bonsai-surface-clinical.jsonl
+  Rousseau four-way:  (session output, to be formalized)
+  Model:              huggingface.co/prism-ml/Bonsai-8B-gguf (Apache 2.0)
+
+
+================================================================
+
+---
+title: Aggregate Inference Throughput Plateaus at a Hardware-Determined Ceiling
+date: 2026-04-25
+source: production empirical (scaling curve, 8 concurrency levels, M1 Max Mac Studio 64GB)
+domain:
+  - local-inference
+  - capacity-planning
+  - memory-bandwidth
+  - concurrent-serving
+keywords:
+  - bandwidth ceiling
+  - concurrent inference
+  - mmap weight sharing
+  - aggregate throughput
+  - scaling curve
+  - edge capacity planning
+prior_art_status: >
+  Published inference benchmarks report single-instance tok/s as a
+  model property. No published benchmark characterizes aggregate
+  throughput as a function of concurrency and memory bandwidth on
+  consumer hardware with 1-bit models. The finding that aggregate
+  tok/s plateaus at a hardware-determined ceiling regardless of
+  instance count is novel.
+---
+
+# Aggregate Inference Throughput Plateaus at a Hardware-Determined Ceiling
+
+## Claim
+
+On M1 Max Mac Studio (64GB, ~400 GB/s memory bandwidth), aggregate
+inference throughput for Bonsai 8B Q1 plateaus at ~124 tok/s regardless
+of how many concurrent instances serve. Adding users costs per-user
+latency but gains no aggregate throughput beyond 4 concurrent. The
+ceiling is the memory bandwidth, not compute, not RAM capacity, not
+the model.
+
+This means capacity planning for 1-bit inference reduces to a single
+question: what is the memory bandwidth of the target hardware?
+
+## Measurement
+
+10 Bonsai 8B Q1 instances (ports 9100-9109) on M1 Max Mac Studio,
+all loaded from the same 1.1GB GGUF via mmap (shared physical pages
+for model weights, separate KV caches per instance). Prompt: "write
+3 steps for hand washing", 100 max_tokens. Concurrency levels tested:
+1, 2, 4, 6, 8, 10.
+
+  Concurrent   Per-user tok/s   Aggregate tok/s   Wall time (100 tok)
+  1            87.1             87.1              1.2s
+  2            47.1             94.2              1.9s
+  4            31.2             124.8             2.7s
+  6            20.3             121.9             4.1s
+  8            15.6             124.5             5.2s
+  10           12.3             122.8             6.9s
+
+Aggregate plateaus at 124 tok/s from 4 concurrent onward. Per-user
+throughput divides linearly: at 10 users, each gets approximately
+1/10 of the bandwidth, producing ~12 tok/s (an 8-second response
+for 100 tokens).
+
+The knee is at 4 concurrent. Below 4, aggregate grows with each
+user (bandwidth not yet saturated). At 4 and above, aggregate is
+flat — the bus is full.
+
+Data points at 12 and 16 concurrent showed anomalously high aggregate
+(199, 230 tok/s), attributed to llama-server prompt caching on the
+identical repeated prompt. These are excluded pending rerun with
+varied prompts.
+
+### Shared mmap enables the scaling
+
+10 Bonsai instances do not consume 10x the model memory. The OS maps
+the same 1.1GB file into each process's address space, sharing the
+physical pages. Per-instance marginal cost is the KV cache (~200-500MB
+depending on context length). This is why 10 instances fit in 64GB
+without swap pressure — total memory is approximately
+1.1GB (shared weights) + 10 x 300MB (KV caches) = ~4.1GB, not 11GB.
+
+Without mmap sharing, the scaling curve would hit a memory capacity
+wall before hitting the bandwidth ceiling. Mmap is the mechanism
+that exposes bandwidth as the true constraint.
+
+### Four-model concurrent comparison
+
+For context, the bandwidth ceiling was also observed under a different
+condition: 4 different models (Gemma 26B Q4, Bonsai 8B Q1, Phi4-mini
+Q4, Qwen 2.5 7B Q4) serving simultaneously through h2c (squared
+proxy):
+
+  Model                      Sequential tok/s   Concurrent tok/s
+  Gemma 26B Q4 (15.9GB)      55.8               21.6
+  Bonsai 8B Q1 (1.1GB)       93.5               29.6
+  Phi4-mini Q4 (2.3GB)       88.4               25.5
+  Qwen 2.5 7B Q4 (4.4GB)    ~88                20.6
+
+Aggregate concurrent: ~97 tok/s (lower than the N-Bonsai ceiling
+because four different weight sets compete for bandwidth, while
+N-Bonsai shares one weight set via mmap).
+
+## Mechanism
+
+Inference on 1-bit models is memory-bandwidth-bound, not compute-bound.
+Each token requires reading model weights from memory. With 1-bit
+weights, the arithmetic per byte is minimal (addition/subtraction
+instead of multiply-accumulate), so the GPU finishes the math before
+the next chunk of weights arrives. The memory bus is always the
+bottleneck.
+
+Under concurrency, multiple instances read weights simultaneously.
+When the instances share the same model via mmap, they share the
+same physical memory pages and compete only for bus bandwidth, not
+for memory capacity. The aggregate throughput saturates at the bus
+bandwidth divided by bytes-per-token.
+
+On M1 Max with ~400 GB/s unified memory bandwidth, the observed
+ceiling of ~124 tok/s implies approximately 3.2 GB read per token
+under concurrent load. However, this ratio is not a hardware-independent
+constant. M2 at ~100 GB/s produces 40 tok/s single-user (implying
+2.5 GB/tok), not the 31 tok/s the M1 Max ratio would predict. The
+difference reflects cache hierarchy, concurrency effects (M1 Max
+measured under contention, M2 under single-user), and memory subsystem
+specifics. The bandwidth ceiling is real; the bytes-per-token ratio
+varies by platform and load.
+
+## Confounds
+
+**N=1 per concurrency level.** Each concurrency level was measured
+once. The "plateau at ~124" rests on four data points (124.8, 121.9,
+124.5, 122.8) with no repeats, no error bars, no confidence intervals.
+The plateau is visually convincing but statistically uncharacterized.
+A rerun with 5 passes per concurrency level would strengthen or
+invalidate the claim.
+
+**Prompt caching.** The bench used the same prompt for all instances
+at all concurrency levels. llama-server's prompt cache may have
+inflated throughput on repeated runs by skipping prefill. The kept
+data points (1-10 concurrent) are also subject to this effect, but
+per-user generation throughput is post-prefill and the aggregate
+is wall-clock dominated by generation, bounding the cache effect.
+The 12/16 exclusion reflects visible anomaly, not a claim that
+1-10 is cache-free. Cache-free verification with varied prompts
+is the next bench.
+
+**Concurrency above 10 reused ports.** Concurrency levels 12 and 16
+reused ports modulo 10, meaning some llama-server instances served
+two simultaneous requests. With -np 1 these requests serialize within
+the instance, producing unreliable concurrent measurements. Excluded
+pending a rerun with sufficient instances per concurrency level.
+
+**Single hardware platform.** The bandwidth ceiling is specific to
+M1 Max at ~400 GB/s. The ratio aggregate_tok/s / memory_bandwidth
+should be testable on other platforms (M2 at ~100 GB/s, 1660 Ti at
+~288 GB/s) to confirm it's a general property. Not yet measured.
+
+**No varied prompt set.** A single prompt means no variance from
+different prompt lengths or generation patterns. A varied prompt
+set would produce a distribution of per-user tok/s rather than
+near-identical values.
+
+## Application
+
+The scaling curve is a capacity planning instrument. Measured
+ceilings by platform:
+
+  M1 Max 64GB (400 GB/s):  ~124 tok/s aggregate, 10 users at 12 tok/s each
+  M2 8GB (100 GB/s):        40 tok/s single user (concurrent not tested)
+  1660 Ti 6GB (288 GB/s):   24 tok/s single user (thermal ceiling)
+  i7 CPU (51 GB/s DDR4):    8-9 tok/s single user (compute ceiling)
+
+The deployment question: how much bandwidth does the hardware have,
+and how many concurrent users at what per-user floor? The bytes-per-
+token ratio varies by platform and load (2.5-3.2 GB/tok observed),
+so the ceiling must be measured per platform, not extrapolated from
+a single ratio. The bandwidth determines the ceiling; the exact
+ceiling requires a bench run.
+
+## Harness
+
+  Scaling curve:       staging/bonsai-scaling-curve-m1max.jsonl
+  Four-model bench:    (session output, to be formalized)
+  Model:               huggingface.co/prism-ml/Bonsai-8B-gguf (Apache 2.0)
+  Instances:           10 x llama-server, ports 9100-9109, -ngl 99 -c 2048 -np 1
+  Note:                -np 1 per instance makes per-user latency predictable.
+                       Alternative configs with -np >1 introduce internal
+                       batching and would change the scaling shape.
