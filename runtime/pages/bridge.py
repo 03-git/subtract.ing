@@ -11,7 +11,7 @@ class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
     daemon_threads = True
 
 PORT = 8889
-FAST_TIMEOUT = 5
+FAST_TIMEOUT = 15
 
 ENV = os.environ.copy()
 ENV["TERM"] = "dumb"
