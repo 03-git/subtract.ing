@@ -1709,3 +1709,21 @@ google*	q="${input#*google }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c
 look*up*	q="${input#*look up }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c start "https://duckduckgo.com/?q=$q" 2>/dev/null || xdg-open "https://duckduckgo.com/?q=$q" 2>/dev/null || open "https://duckduckgo.com/?q=$q"
 go*to*	q="${input#*go to }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q" 2>/dev/null || open "https://$q"
 open*site*	q="${input#*open site }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q" 2>/dev/null || open "https://$q"
+who*is*as*byatt	kiwix-search A. S. Byatt
+who*is*byatt	kiwix-search A. S. Byatt
+what*is*possession*byatt	echo "Possession: A Romance (1990). A.S. Byatt. Two modern scholars trace two Victorian poets whose secret correspondence mirrors their own. A novel about the act of research itself — what it costs to hold someone else's words."
+#
+# --- livingledger: formation authors and professors ---
+who*is*ted*st*martin	echo "Ted St. Martin. The Art of Shooting Baskets. The first man page the governor read on a driveway with a basketball. LIVINGLEDGER entry."
+who*is*gertrude*stein	kiwix-search Gertrude Stein
+what*is*tender*buttons	echo "Tender Buttons (1914). Gertrude Stein. Pre-freshman summer reading, DePaul honors program. The governor's honest response: nope."
+who*is*william*mcneill	echo "William McNeill. DePaul honors Introduction to Philosophy. The entry point. His journals are the earliest documented layer of the governor's self-as-first-trust-root. LIVINGLEDGER."
+who*is*sylvia*escarcega	echo "Sylvia Escarcega. DePaul. Part of the formation cohort across discipline and time. LIVINGLEDGER."
+who*is*charles*block	echo "Charles Block. Berkeley, possibly U of Chicago. Recommended Edinburgh Divinity for post-grad on the Nogales trip. The governor scoffed at divinity. The architecture arrived anyway. LIVINGLEDGER."
+who*is*charles*strain	echo "Charles Strain. DePaul. 40+ years, one of the most demanding and respected faculty. The postmodern critique testing ground. LIVINGLEDGER."
+who*is*david*jabon	echo "David Jabon. DePaul professor. LIVINGLEDGER entry."
+who*is*father*halstead	echo "Father James Halstead. DePaul religious studies. Business Ethics. Deep dive into Aristotle. LIVINGLEDGER."
+who*is*aronson	echo "Ronald Aronson. DePaul. Taught the Sartre course that sparked deep knowledge of Camus. Sartre was the counterexample. Camus was the correct choice. LIVINGLEDGER."
+who*is*franklin*perkins	echo "Franklin Perkins. DePaul. Great teacher of comparative literature learned in his 20s to earn a young PhD. LIVINGLEDGER."
+who*is*theresa*hinga	echo "Theresa Hinga. DePaul religious studies with cosmological focus. LIVINGLEDGER."
+who*is*peter*steeves	echo "Peter Steeves. DePaul professor. LIVINGLEDGER entry."

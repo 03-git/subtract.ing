@@ -379,6 +379,14 @@ function finish(item) {
     item.card.appendChild(tag);
   }
 
+  if (label === 'computer' && item.text) {
+    const q = encodeURIComponent(item.text.trim());
+    const wikiLink = document.createElement('div');
+    wikiLink.style.cssText = 'padding:.3rem .6rem;font-size:.75rem';
+    wikiLink.innerHTML = '<a href="http://localhost:8080/viewer#/search?q=' + q + '" target="_blank" style="color:#8cf;border-bottom:1px solid #8cf">read more (wikipedia)</a>';
+    item.card.appendChild(wikiLink);
+  }
+
   if (item.mode === 'w' && item.fileName && item.fileName.endsWith('.html')) {
     const content = cardA.textContent;
     const htmlMatch = content.match(/<!doctype html>[\s\S]*<\/html>/i)

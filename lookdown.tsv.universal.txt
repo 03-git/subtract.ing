@@ -1709,3 +1709,30 @@ google*	q="${input#*google }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c
 look*up*	q="${input#*look up }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c start "https://duckduckgo.com/?q=$q" 2>/dev/null || xdg-open "https://duckduckgo.com/?q=$q" 2>/dev/null || open "https://duckduckgo.com/?q=$q"
 go*to*	q="${input#*go to }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q" 2>/dev/null || open "https://$q"
 open*site*	q="${input#*open site }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q" 2>/dev/null || open "https://$q"
+who*is*as*byatt	kiwix-search A. S. Byatt
+who*is*byatt	kiwix-search A. S. Byatt
+what*is*possession*byatt	echo "Possession: A Romance (1990). A.S. Byatt. Two modern scholars trace two Victorian poets whose secret correspondence mirrors their own. A novel about the act of research itself — what it costs to hold someone else's words."
+#
+# --- livingledger: formation authors and professors ---
+who*is*ted*st*martin	echo "Ted St. Martin. The Art of Shooting Baskets. The first man page the governor read on a driveway with a basketball. LIVINGLEDGER entry."
+who*is*gertrude*stein	kiwix-search Gertrude Stein
+what*is*tender*buttons	echo "Tender Buttons (1914). Gertrude Stein. Pre-freshman summer reading, DePaul honors program. The governor's honest response: nope."
+who*is*william*mcneill	echo "William McNeill. DePaul honors Introduction to Philosophy. The entry point. His journals are the earliest documented layer of the governor's self-as-first-trust-root. LIVINGLEDGER."
+who*is*sylvia*escarcega	echo "Sylvia Escarcega. DePaul. Part of the formation cohort across discipline and time. LIVINGLEDGER."
+who*is*charles*block	echo "Charles Block. Berkeley, possibly U of Chicago. Recommended Edinburgh Divinity for post-grad on the Nogales trip. The governor scoffed at divinity. The architecture arrived anyway. LIVINGLEDGER."
+who*is*charles*strain	echo "Charles Strain. DePaul. 40+ years, one of the most demanding and respected faculty. The postmodern critique testing ground. LIVINGLEDGER."
+who*is*david*jabon	echo "David Jabon. DePaul professor. LIVINGLEDGER entry."
+who*is*father*halstead	echo "Father James Halstead. DePaul religious studies. Business Ethics. Deep dive into Aristotle. LIVINGLEDGER."
+who*is*aronson	echo "Ronald Aronson. DePaul. Taught the Sartre course that sparked deep knowledge of Camus. Sartre was the counterexample. Camus was the correct choice. LIVINGLEDGER."
+who*is*franklin*perkins	echo "Franklin Perkins. DePaul. Great teacher of comparative literature learned in his 20s to earn a young PhD. LIVINGLEDGER."
+who*is*theresa*hinga	echo "Theresa Hinga. DePaul religious studies with cosmological focus. LIVINGLEDGER."
+who*is*peter*steeves	echo "Peter Steeves. DePaul professor. LIVINGLEDGER entry."
+*egg*	echo "An egg is the first stage of life for birds, reptiles, fish, insects, and amphibians. The shell or casing protects the growing animal inside. A chicken egg has a hard shell. A frog egg is soft and jelly-like. An insect egg is tiny, often laid on a leaf."
+*caterpillar*	echo "A caterpillar is the larva stage of a butterfly or moth. It hatches from an egg and eats leaves to grow bigger. Caterpillars have soft bodies with many segments and tiny legs. When it is big enough, it builds a cocoon or chrysalis and transforms inside."
+*cocoon*	echo "A cocoon is a silk covering that a caterpillar spins around itself. Inside the cocoon, the caterpillar changes into a moth. Butterflies make a chrysalis instead of a cocoon, but people use the word cocoon for both. The change inside is called metamorphosis."
+*chrysalis*	echo "A chrysalis is the hard shell a butterfly caterpillar makes when it is ready to transform. Inside, the caterpillar's body breaks down and rebuilds into a butterfly. It takes about 10 to 14 days. When it opens, a butterfly comes out with wet wings that need to dry."
+*butterfly*	echo "A butterfly is an insect with large colorful wings. It starts as an egg, becomes a caterpillar, forms a chrysalis, and emerges as a butterfly. Butterflies drink nectar from flowers through a long curled tongue called a proboscis. Monarch butterflies migrate thousands of miles."
+*moth*	echo "A moth is an insect closely related to a butterfly. Most moths fly at night and are attracted to light. A moth caterpillar spins a cocoon made of silk. Moths have feathery antennae and usually duller colors than butterflies. Some moths, like the luna moth, are very large and beautiful."
+*metamorphosis*	echo "Metamorphosis is the process where an animal completely changes its body shape as it grows. A caterpillar becoming a butterfly is metamorphosis. A tadpole becoming a frog is metamorphosis. The word comes from Greek and means 'change of form.'"
+*larva*	echo "A larva is the young form of an animal that looks very different from the adult. A caterpillar is the larva of a butterfly. A tadpole is the larva of a frog. A maggot is the larva of a fly. Larvae eat and grow until they are ready to change into their adult form."
+*pupa*	echo "A pupa is the stage between larva and adult in insects that undergo metamorphosis. The caterpillar stops eating, attaches to something, and its outer skin hardens into a protective case. Inside, the body completely reorganizes. The pupa does not eat or move. When the transformation is complete, the adult insect emerges."

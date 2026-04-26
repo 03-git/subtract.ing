@@ -1,0 +1,11 @@
+[Unit]
+Description=ttyd - terminal over websocket
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/ttyd -W -p 7681 bash
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target

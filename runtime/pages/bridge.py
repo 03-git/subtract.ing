@@ -49,13 +49,25 @@ class Handler(BaseHTTPRequestHandler):
                 env=ENV
             )
             stdout = result.stdout
-            # strip handler prompt lines, keep the answer
+            # strip handler prompt lines, keep the answer; extract source tier
             lines = stdout.splitlines()
             clean_lines = []
-            skip_next = False
+            source = None
             for line in lines:
                 stripped = line.strip()
-                if re.match(r'^\[T\d', stripped) or re.match(r'^\[apropos\]', stripped) or re.match(r'^\[skill', stripped):
+                m = re.match(r'^\[(T\d(?:\.\d)?)[:\]]', stripped)
+                if m:
+                    source = m.group(1)
+                    continue
+                if re.match(r'^\[kiwix\]', stripped):
+                    source = 'kiwix'
+                    clean_lines.append(stripped[len('[kiwix] '):])
+                    continue
+                if re.match(r'^\[apropos\]', stripped):
+                    source = 'apropos'
+                    continue
+                if re.match(r'^\[skill', stripped):
+                    source = 'skills'
                     continue
                 if stripped in ("[enter/n]", "[y/n]", "[DESTRUCTIVE]", ""):
                     continue
@@ -65,12 +77,15 @@ class Handler(BaseHTTPRequestHandler):
                     line = stripped[len("[y/n] "):]
                 clean_lines.append(line)
             stdout = "\n".join(clean_lines).strip()
-            self._respond(200, {
+            resp = {
                 "stdout": stdout,
                 "stderr": result.stderr,
                 "exit": result.returncode,
                 "stream": False
-            })
+            }
+            if source:
+                resp["source"] = source
+            self._respond(200, resp)
         except subprocess.TimeoutExpired:
             self._stream_inference(intent, mode, thread_id, files)
 
