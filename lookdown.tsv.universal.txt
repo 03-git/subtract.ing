@@ -3,6 +3,12 @@
 #   tags: [stdout] (default), [player]
 #   two-column lines (no tag) default to [stdout] for backwards compat
 # first match wins. specific before general.
+*happy*fun*time*	echo "playing happy fun time"; mpv "/mnt/media/kids/misc/Home Arcade Walkthrough! July 2023 (2023).mp4" </dev/null >/dev/null 2>&1 &
+*smurfs*	mpv "/mnt/media/kids/movies/Smurfs - The Lost Village (2017)/Smurfs.The.Lost.Village.2017.1080p.HULU.WEB-DL.DDP.5.1.H.264-PiRaTeS.mkv" </dev/null >/dev/null 2>&1 & echo "playing smurfs"
+*what*movies*	ls /mnt/media/kids/movies/ /mnt/media/movies/ 2>/dev/null
+*what*shows*	ls /mnt/media/kids/tv/ /mnt/media/tv/ 2>/dev/null
+*what*videos*	ls /mnt/media/kids/misc/ 2>/dev/null
+watch*	f=$(find /mnt/media -maxdepth 4 -iname "*${input#*watch }*" -print -quit 2>/dev/null); [ -n "$f" ] && echo "playing $f" && mpv "$f" </dev/null >/dev/null 2>&1 & || echo "not found: ${input#*watch }"
 play*game*	subtract-open http://localhost:8071/nes.html
 play*nes*	subtract-open http://localhost:8071/nes.html
 *nintendo*	subtract-open http://localhost:8071/nes.html
