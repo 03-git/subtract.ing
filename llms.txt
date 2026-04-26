@@ -113,7 +113,7 @@ SHA256:
   cdbd86283ffc974bcad0a3bf29bc25f58f6835d4505aa22e67bd0a1e8f5a1e07  README.txt
   20a4740eacb277a154beccf984657a263264376bd0f8af9cd6fedfe2ad652f2e  subtract.7.txt
   303091801d3efbc57d7e81a9ddcee40ac112e1c93c792afa0d1d90b3e704b85b  ask.1.txt
-  997623c5ff8fa7d44539ef25921304949dbcda480710442a097abeb06e5be582  lookdown.tsv.universal.txt
+  027f064a016ca9fcf9b34d67edcdf8eb21740c6c50bfb977a643e655b09e5543  lookdown.tsv.universal.txt
   4b742825f324eb3f3d9f16647cd7ed4ca09a4cb7ce6333dff526bc44e7a28868  governance.conf.universal.txt
   5093efa7000cbba152587c40edc9f218dd0d5b376b1c83e4a446001a69dbd103  boot.txt
   9c09c0771979c502f93718ac983bfd4a5dac64392595ee221bfd768e9ffc4c16  software-as-a-besides.txt
@@ -122,5 +122,5 @@ SHA256:
   d345a3ef95ae82557065f1a4db511a0dd1b2126d6a734cb30f7e36c17ec5958a  llms-full.txt
   cad54c3ebbf8cd6f2c18da05120d4422efca9aa7db354c471186086296b97184  variance-lab.txt
   d2b28b22622102b687d4e2f0438e6c3258b5bfa6c07a191cbf17ccb2ea64a167  variance-lab-handler-methodology.txt
-  138960e5c1334c2de3c37de1ec5d8b16ab2f9661940e2c16bb54aa0e57e6657b  subtracting.html
+  6c39b45afb14d6449e4832b43166ad37cf266a36295a5f731f2af4c7dab4070b  subtracting.html
   dedd46c537684913287bf22584818e9ff8009e0cf83354ef6ff68133bfde8b03  SOUL.txt

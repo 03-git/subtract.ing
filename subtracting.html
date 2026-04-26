@@ -70,26 +70,20 @@ Time    sleep, at, cron            yield to the kernel scheduler
     commands grow, the user invokes the command directly. A learned
     command has no inference cost.</p>
 
-<pre>
-syscall
-  |
-  +-- kernel (already there)
-  +-- shell (already there)
-  +-- subtract (one function, one TSV, one hook from 2009)
-  +-- busybox httpd (ships with the OS)
-  +-- browser (already on every computer)
-  |
-  |   -- everything below this line moves control and visibility beyond your computer --
-  |
-  +-- npm/pip/cargo
-  +-- language runtime
-  +-- framework
-  +-- ORM, database server
-  +-- API gateway, auth service
-  +-- container runtime, orchestrator
-  +-- cloud provider, CI/CD, CDN
-  +-- monitoring SaaS, billing SaaS
-</pre>
+<table style="width:100%;border-collapse:collapse;font-size:.85rem;margin:1.5em 0">
+<tr style="border-bottom:1px solid #333"><th style="text-align:left;padding:.4em .6em">subtract</th><th style="text-align:left;padding:.4em .6em">the alternative</th></tr>
+<tr><td style="padding:.3em .6em">command_not_found_handle (bash, 1 function)</td><td style="padding:.3em .6em">Python CLI + Click + Docker + pip install</td></tr>
+<tr><td style="padding:.3em .6em">lookdown.tsv (flat file, grep)</td><td style="padding:.3em .6em">vector database + embeddings + RAG pipeline + 47 packages</td></tr>
+<tr><td style="padding:.3em .6em">handler.sh (case statement tier routing)</td><td style="padding:.3em .6em">semantic router chain + "mixture of agents"</td></tr>
+<tr><td style="padding:.3em .6em">bridge.py (140 lines, stdlib only)</td><td style="padding:.3em .6em">FastAPI + Uvicorn + Redis + WebSocket + requirements.txt</td></tr>
+<tr><td style="padding:.3em .6em">multiplying.html (1 file, no build step)</td><td style="padding:.3em .6em">Next.js + React + Tailwind + npm install (1,200 node_modules/)</td></tr>
+<tr><td style="padding:.3em .6em">squared.c (716 lines, 3 libraries)</td><td style="padding:.3em .6em">Nginx + Docker Compose + Kubernetes ingress</td></tr>
+<tr><td style="padding:.3em .6em">ssh-keygen -Y sign (ships with the OS)</td><td style="padding:.3em .6em">Auth0 + JWT + OAuth2 + "we need a signing service"</td></tr>
+<tr><td style="padding:.3em .6em">1570 lookdown.tsv entries (text file)</td><td style="padding:.3em .6em">SaaS knowledge base + API connector + monthly license</td></tr>
+<tr><td style="padding:.3em .6em">install.sh (50 lines, curl + cp)</td><td style="padding:.3em .6em">Homebrew tap + Docker pull + helm chart + "check our docs"</td></tr>
+<tr><td style="padding:.3em .6em;border-top:1px solid #333"><strong>dependencies: 5</strong></td><td style="padding:.3em .6em;border-top:1px solid #333"><strong>dependencies: 600+, 3 cloud accounts, monthly spend</strong></td></tr>
+</table>
+<p>Both produce the same output: a person types what they need, gets an answer.</p>
 
     <p>Full frame: <a href="/subtract.7.txt">subtract.7.txt</a></p>
     <p>Full argument: <a href="/software-as-a-besides.txt">software-as-a-besides.txt</a></p>

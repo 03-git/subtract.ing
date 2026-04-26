@@ -1660,7 +1660,7 @@ can*i*watch*videos	echo "Yes, open the browser and go to youtube.com or any vide
 im*scared	echo "That's OK. Take a deep breath. If something on the screen scared you, close the window. If something in real life scared you, go find a grown-up you trust."
 i*dont*understand	echo "That's OK! Try asking in different words. Or type 'help' to see what you can do. Or ask a parent or teacher."
 this*is*too*hard	echo "Take a break. It's OK to stop and come back later. If it's homework, ask your teacher to explain it a different way."
-i*need*help	echo "Ask a parent or teacher. This computer can answer questions about things, but a person is better for real help."
+i*need*help	echo "Ask a parent or teacher. This computer can answer questions about things, but a person is better for human help."
 i*miss*my*mom	echo "It's OK to miss people. If you can, tell a grown-up near you how you feel. Feelings are normal and important."
 i*miss*my*dad	echo "It's OK to miss people. If you can, tell a grown-up near you how you feel. Feelings are normal and important."
 #

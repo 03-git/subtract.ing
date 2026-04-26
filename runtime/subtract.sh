@@ -1265,9 +1265,13 @@ __subtract_route_by_mode() {
         "mode") echo "[mode: $(__subtract_get_mode)]"; return 0 ;;
     esac
 
-    # Typo detection: single word, no spaces, looks like a command
+    # Single word, no match — welcome instead of reject
     if [[ ! "$input" =~ \  ]] && [[ "$input" =~ ^[a-z] ]]; then
-        echo "zsh: command not found: $input"
+        echo "Hi. Type what you want in plain words. Try:"
+        echo "  what files are here"
+        echo "  what time is it"
+        echo "  search for something"
+        echo "  help"
         return 127
     fi
 
@@ -1320,7 +1324,7 @@ __subtract_route_by_mode() {
                 [ "$confirm" = "n" ] && return 1
                 eval "$cmd"
             else
-                echo "could not generate command"
+                echo "Couldn't figure that one out. Try rephrasing, or type: help"
                 return 1
             fi
             ;;
