@@ -1702,9 +1702,10 @@ what*is*behavior*intervention*plan	echo "BIP: written plan based on FBA results.
 what*is*act*therapy	echo "Acceptance and Commitment Therapy. Hayes et al. Third-wave behavioral therapy. Six core processes: acceptance, defusion, present moment, self-as-context, values, committed action."
 #
 # --- web search / open URL (falls through from T0 before inference) ---
-search*for*	xdg-open "https://duckduckgo.com/?q=${*#search for }" 2>/dev/null || open "https://duckduckgo.com/?q=${*#search for }"
-search*	xdg-open "https://duckduckgo.com/?q=${*#search }" 2>/dev/null || open "https://duckduckgo.com/?q=${*#search }"
-google*	xdg-open "https://www.google.com/search?q=${*#google }" 2>/dev/null || open "https://www.google.com/search?q=${*#google }"
-look*up*	xdg-open "https://duckduckgo.com/?q=${*#look up }" 2>/dev/null || open "https://duckduckgo.com/?q=${*#look up }"
-go*to*	xdg-open "https://${*#go to }" 2>/dev/null || open "https://${*#go to }"
-open*site*	xdg-open "https://${*#open site }" 2>/dev/null || open "https://${*#open site }"
+# $input is in scope during eval from the handler
+search*for*	q="${input#*search for }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c start "https://duckduckgo.com/?q=$q" 2>/dev/null || xdg-open "https://duckduckgo.com/?q=$q"
+search*	q="${input#*search }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c start "https://duckduckgo.com/?q=$q" 2>/dev/null || xdg-open "https://duckduckgo.com/?q=$q"
+google*	q="${input#*google }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c start "https://www.google.com/search?q=$q" 2>/dev/null || xdg-open "https://www.google.com/search?q=$q"
+look*up*	q="${input#*look up }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c start "https://duckduckgo.com/?q=$q" 2>/dev/null || xdg-open "https://duckduckgo.com/?q=$q"
+go*to*	q="${input#*go to }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q"
+open*site*	q="${input#*open site }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q"
