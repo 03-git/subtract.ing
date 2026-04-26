@@ -1700,3 +1700,11 @@ what*is*essential*for*living	echo "Essential for Living (EFL). McGreevy curricul
 what*is*functional*behavior*assessment	echo "FBA: systematic process to identify the function (purpose) of a behavior. Looks at antecedents, behavior, consequences to determine why the behavior occurs."
 what*is*behavior*intervention*plan	echo "BIP: written plan based on FBA results. Describes replacement behaviors, prevention strategies, and response procedures. Required for behaviors impeding learning."
 what*is*act*therapy	echo "Acceptance and Commitment Therapy. Hayes et al. Third-wave behavioral therapy. Six core processes: acceptance, defusion, present moment, self-as-context, values, committed action."
+#
+# --- web search / open URL (falls through from T0 before inference) ---
+search*for*	xdg-open "https://duckduckgo.com/?q=${*#search for }" 2>/dev/null || open "https://duckduckgo.com/?q=${*#search for }"
+search*	xdg-open "https://duckduckgo.com/?q=${*#search }" 2>/dev/null || open "https://duckduckgo.com/?q=${*#search }"
+google*	xdg-open "https://www.google.com/search?q=${*#google }" 2>/dev/null || open "https://www.google.com/search?q=${*#google }"
+look*up*	xdg-open "https://duckduckgo.com/?q=${*#look up }" 2>/dev/null || open "https://duckduckgo.com/?q=${*#look up }"
+go*to*	xdg-open "https://${*#go to }" 2>/dev/null || open "https://${*#go to }"
+open*site*	xdg-open "https://${*#open site }" 2>/dev/null || open "https://${*#open site }"

@@ -113,7 +113,7 @@ SHA256:
   cdbd86283ffc974bcad0a3bf29bc25f58f6835d4505aa22e67bd0a1e8f5a1e07  README.txt
   20a4740eacb277a154beccf984657a263264376bd0f8af9cd6fedfe2ad652f2e  subtract.7.txt
   303091801d3efbc57d7e81a9ddcee40ac112e1c93c792afa0d1d90b3e704b85b  ask.1.txt
-  348089260fbd0f69443c78190c9545fd6ddd6f77eab6027bdf9068a9d7310565  lookdown.tsv.universal.txt
+  2ed259e229c5b331d972d8aa52ca0572f359d5dc5673fee6d335dfd350ffebf6  lookdown.tsv.universal.txt
   4b742825f324eb3f3d9f16647cd7ed4ca09a4cb7ce6333dff526bc44e7a28868  governance.conf.universal.txt
   5093efa7000cbba152587c40edc9f218dd0d5b376b1c83e4a446001a69dbd103  boot.txt
   9c09c0771979c502f93718ac983bfd4a5dac64392595ee221bfd768e9ffc4c16  software-as-a-besides.txt
