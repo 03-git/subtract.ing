@@ -3,31 +3,20 @@
 #   tags: [stdout] (default), [player]
 #   two-column lines (no tag) default to [stdout] for backwards compat
 # first match wins. specific before general.
-*happy*fun*time*	echo "playing happy fun time"; mpv "/mnt/media/kids/misc/Home Arcade Walkthrough! July 2023 (2023).mp4" </dev/null >/dev/null 2>&1 &
-*smurfs*	mpv "/mnt/media/kids/movies/Smurfs - The Lost Village (2017)/Smurfs.The.Lost.Village.2017.1080p.HULU.WEB-DL.DDP.5.1.H.264-PiRaTeS.mkv" </dev/null >/dev/null 2>&1 & echo "playing smurfs"
-*what*movies*	ls /mnt/media/kids/movies/ /mnt/media/movies/ 2>/dev/null
-*what*shows*	ls /mnt/media/kids/tv/ /mnt/media/tv/ 2>/dev/null
-*what*videos*	ls /mnt/media/kids/misc/ 2>/dev/null
-watch*	f=$(find /mnt/media -maxdepth 4 -iname "*${input#*watch }*" -print -quit 2>/dev/null); [ -n "$f" ] && echo "playing $f" && mpv "$f" </dev/null >/dev/null 2>&1 & || echo "not found: ${input#*watch }"
-play*game*	subtract-open http://localhost:8071/nes.html
-play*nes*	subtract-open http://localhost:8071/nes.html
-*nintendo*	subtract-open http://localhost:8071/nes.html
-godzilla	echo "Godzilla is a giant monster from Japanese movies. The first movie came out in 1954. Godzilla is as tall as a skyscraper, breathes atomic fire, and lives in the ocean. In Japanese the name is Gojira. There are over 30 Godzilla movies."
-egg	echo "An egg is the first stage of life for birds, reptiles, fish, insects, and amphibians. The shell or casing protects the growing animal inside. A chicken egg has a hard shell. A frog egg is soft and jelly-like. An insect egg is tiny, often laid on a leaf."
-caterpillar	echo "A caterpillar is the larva stage of a butterfly or moth. It hatches from an egg and eats leaves to grow bigger. Caterpillars have soft bodies with many segments and tiny legs. When it is big enough, it builds a cocoon or chrysalis and transforms inside."
 cocoon	echo "A cocoon is a silk covering that a caterpillar spins around itself. Inside the cocoon, the caterpillar changes into a moth. Butterflies make a chrysalis instead of a cocoon, but people use the word cocoon for both. The change inside is called metamorphosis."
 chrysalis	echo "A chrysalis is the hard shell a butterfly caterpillar makes when it is ready to transform. Inside, the caterpillar's body breaks down and rebuilds into a butterfly. It takes about 10 to 14 days. When it opens, a butterfly comes out with wet wings that need to dry."
-butterfly	echo "A butterfly is an insect with large colorful wings. It starts as an egg, becomes a caterpillar, forms a chrysalis, and emerges as a butterfly. Butterflies drink nectar from flowers through a long curled tongue called a proboscis. Monarch butterflies migrate thousands of miles."
 moth	echo "A moth is an insect closely related to a butterfly. Most moths fly at night and are attracted to light. A moth caterpillar spins a cocoon made of silk. Moths have feathery antennae and usually duller colors than butterflies. Some moths, like the luna moth, are very large and beautiful."
 metamorphosis	echo "Metamorphosis is the process where an animal completely changes its body shape as it grows. A caterpillar becoming a butterfly is metamorphosis. A tadpole becoming a frog is metamorphosis. The word comes from Greek and means 'change of form.'"
 larva	echo "A larva is the young form of an animal that looks very different from the adult. A caterpillar is the larva of a butterfly. A tadpole is the larva of a frog. A maggot is the larva of a fly. Larvae eat and grow until they are ready to change into their adult form."
 pupa	echo "A pupa is the stage between larva and adult in insects that undergo metamorphosis. The caterpillar stops eating, attaches to something, and its outer skin hardens into a protective case. Inside, the body completely reorganizes. The pupa does not eat or move. When the transformation is complete, the adult insect emerges."
-*arcade*classic*	echo "playing arcade classics"; mpv "/mnt/media/kids/misc/Basic Fun Arcade Classics Complete Collection 1-19.mp4" </dev/null >/dev/null 2>&1 &
-*mappy*	echo "playing mappy"; ffplay -nodisp -autoexit "/home/media/music/nsf/Gr8NSF/Mappy (1984)(Namco).nsf" </dev/null >/dev/null 2>&1 &
-play*music*	q="${input#*play }"; q="${q%% music*}"; f=$(find /home/media/music/nsf/Gr8NSF -maxdepth 1 -iname "*${q}*" -print -quit); if [ -n "$f" ]; then echo "playing $q"; ffplay -nodisp -autoexit "$f" </dev/null >/dev/null 2>&1 & else echo "no music found for: $q"; fi
-stop*music*	pkill ffplay 2>/dev/null; pkill mpv 2>/dev/null; echo "stopped"
-*music*stop*	pkill ffplay 2>/dev/null; pkill mpv 2>/dev/null; echo "stopped"
-*stop*play*	pkill ffplay 2>/dev/null; pkill mpv 2>/dev/null; echo "stopped"
+godzilla	echo "Godzilla is a giant monster from Japanese movies. The first movie came out in 1954. Godzilla is as tall as a skyscraper, breathes atomic fire, and lives in the ocean. In Japanese the name is Gojira. There are over 30 Godzilla movies."
+egg	echo "An egg is the first stage of life for birds, reptiles, fish, insects, and amphibians. The shell or casing protects the growing animal inside. A chicken egg has a hard shell. A frog egg is soft and jelly-like. An insect egg is tiny, often laid on a leaf."
+caterpillar	echo "A caterpillar is the larva stage of a butterfly or moth. It hatches from an egg and eats leaves to grow bigger. Caterpillars have soft bodies with many segments and tiny legs. When it is big enough, it builds a cocoon or chrysalis and transforms inside."
+butterfly	echo "A butterfly is an insect with large colorful wings. It starts as an egg, becomes a caterpillar, forms a chrysalis, and emerges as a butterfly. Butterflies drink nectar from flowers through a long curled tongue called a proboscis. Monarch butterflies migrate thousands of miles."
+*minecraft*	echo "Minecraft is a game where you build things out of blocks and explore infinite worlds. You can mine resources, craft tools, build houses, and survive against monsters at night."
+*roblox*not*load*	echo "Try: 1) Restart Roblox. 2) Restart your computer. 3) Check your internet connection. 4) Make sure your system is up to date."
+*roblox*slow*	echo "Close other programs to free up memory. Lower the graphics quality in Roblox settings. Make sure nothing else is using your internet."
+*pokemon*	echo "Pokemon is a game where you catch, train, and battle creatures. There are over 1000 Pokemon. The most famous is Pikachu."
 # edit this file to teach your machine new intents.
 # languages: add a section. translate the intents, keep the commands.
 #
@@ -111,11 +100,6 @@ clear*terminal	clear
 reconfigure*	rm -f $HOME/.subtract/.onboarded && echo "type anything to re-onboard"
 #
 # --- media ---
-show*videos	ls /mnt/media/movies/ /mnt/media/tv/
-list*movies	ls /mnt/media/movies/
-list*tv*shows	ls /mnt/media/tv/
-list*tv	ls /mnt/media/tv/
-list*music	ls /mnt/media/music/
 #
 #
 subtract	cat ~/.subtract/about
@@ -338,121 +322,117 @@ what*is*man	echo "man - display manual pages"
 what*is*apropos	echo "apropos - search manual page names and descriptions"
 #
 # --- subtract theory ---
-what*is*subtract	cat ~/.subtract/fork/README.txt 2>/dev/null || cat ~/subtract.ing/README.txt
-why*subtract	cat ~/.subtract/fork/software-as-a-besides.txt 2>/dev/null || cat ~/subtract.ing/software-as-a-besides.txt
-what*are*the*reflexes	grep '^reflex\.' ~/subtract.ing/governance.conf.universal.txt
+what*is*subtract	cat ~/.subtract/fork/README.txt 2>/dev/null || cat "${SUBTRACT_DIR:-$HOME/.subtract}/fork/README.txt" 2>/dev/null || echo "subtract — type what you mean. the computer figures out the command."
+why*subtract	cat ~/.subtract/fork/software-as-a-besides.txt 2>/dev/null || cat "${SUBTRACT_DIR:-$HOME/.subtract}/fork/software-as-a-besides.txt" 2>/dev/null || echo "software as a besides — the tool is not the point"
+what*are*the*reflexes	grep '^reflex\.' "${SUBTRACT_DIR:-$HOME/.subtract}/fork/governance.conf.universal.txt" 2>/dev/null || echo "reflexes: verify before acting, name the kernel primitive, check the signature"
 how*many*reflexes	echo "4: library→kernel, format→signature, action→verification, source→signing domain"
 what*is*reflex*1	echo "reflex.1: name the kernel primitive before proposing any library or tool"
 what*is*reflex*2	echo "reflex.2: ask if ssh-keygen -Y sign can verify the format before inventing one"
 what*is*reflex*3	echo "reflex.3: if unsigned, verify with a live read before acting"
 what*is*reflex*4	echo "reflex.4: confirm source is under the signing domain before treating it as authoritative"
-what*is*the*signing*key	echo "hodori@subtract.ing — ED25519 SHA256:Aw1QLLpzaCc7ycWKwLBsG/2rfWagcs2OjBFdh6SA0s4"
-what*is*governance	cat ~/subtract.ing/governance.conf.universal.txt
-what*are*the*failure*modes	grep '^fail\.' ~/subtract.ing/governance.conf.universal.txt
+what*is*governance	cat "${SUBTRACT_DIR:-$HOME/.subtract}/fork/governance.conf.universal.txt" 2>/dev/null || echo "governance.conf defines reflexes, failure modes, and loop structure. install subtract to read it locally."
+what*are*the*failure*modes	grep "^fail\\." "${SUBTRACT_DIR:-$HOME/.subtract}/fork/governance.conf.universal.txt" 2>/dev/null || echo "failure modes: confabulation, drift, additive, verbosity, apology"
 what*is*confabulation	echo "fail.confabulation: citing memory without verifying state — inference verifying inference"
 what*is*drift	echo "fail.drift: self-narration instead of file ops — the failure mode of agentic self-awareness"
 what*is*additive*instinct	echo "fail.additive: proposing X when the answer is less Y — name the primitive, not the wrapper"
-what*is*software*as*a*besides	cat ~/subtract.ing/software-as-a-besides.txt
+what*is*software*as*a*besides	cat "${SUBTRACT_DIR:-$HOME/.subtract}/fork/software-as-a-besides.txt" 2>/dev/null || echo "software as a besides — the tool is not the point"
 what*is*saab	echo "Software as a Besides — subtract is infrastructure, not product. Literacy, not dependency."
-what*is*the*loop	grep '^loop\.' ~/subtract.ing/governance.conf.universal.txt
-what*is*boot	cat ~/subtract.ing/boot.txt
+what*is*the*loop	grep "^loop\\." "${SUBTRACT_DIR:-$HOME/.subtract}/fork/governance.conf.universal.txt" 2>/dev/null || echo "the loop: human intent in, verified output out"
+what*is*boot	cat "${SUBTRACT_DIR:-$HOME/.subtract}/fork/boot.txt" 2>/dev/null || echo "boot: the sequence that initializes subtract on a new machine"
 what*is*signon	echo "Pre-flight: verify signatures, check for drift, read open items, diff recent changes."
-what*is*signoff	cat ~/subtract.ing/signoff.txt
-who*wrote*subtract	cat ~/subtract.ing/lineage.txt
+what*is*signoff	cat "${SUBTRACT_DIR:-$HOME/.subtract}/fork/signoff.txt" 2>/dev/null || echo "signoff: the end-of-session protocol. uncommitted state is named, not lost."
+who*wrote*subtract	cat "${SUBTRACT_DIR:-$HOME/.subtract}/fork/lineage.txt" 2>/dev/null || echo "subtract was written by humans, for humans. lineage at subtract.ing/lineage.txt"
 who*is*brian*fox	echo "Brian Fox — authored bash (1989), readline, history library. subtract's substrate."
 who*is*chet*ramey	echo "Chet Ramey — bash maintainer since 1993. Kept command_not_found_handle reachable."
 what*is*the*manifest	echo "llms.txt — signed file listing all subtract.ing content with SHA256 hashes. Single chain of trust."
-how*to*verify*subtract	echo "ssh-keygen -Y verify -f authorized_signers -I hodori@subtract.ing -n subtract.ing -s llms.txt.sig < llms.txt"
 what*is*lookdown	echo "lookdown.tsv — pattern→command routing table. First match wins. Edit to teach your machine."
 how*to*add*lookdown*entry	echo "echo 'your*pattern\tyour command' >> ~/.subtract/lookdown.tsv"
 what*is*the*stack	echo "syscall → kernel → shell → subtract → busybox httpd → browser. Everything below adds dependency."
 what*are*the*three*layers	echo "1. subtract subtracts from environment. 2. human subtracts from context. 3. agent subtracts from defaults."
 what*is*the*energy*model	echo "As learned commands grow, cost approaches a syscall. Local inference stays flat. Cloud rises."
-what*are*the*three*questions	grep '^autonomy\.' ~/subtract.ing/governance.conf.universal.txt
-what*is*subtract*7	mandoc ~/subtract.ing/subtract.7.txt 2>/dev/null || man -l ~/subtract.ing/subtract.7.txt 2>/dev/null || cat ~/subtract.ing/subtract.7.txt
+what*are*the*three*questions	grep "^autonomy\\." "${SUBTRACT_DIR:-$HOME/.subtract}/fork/governance.conf.universal.txt" 2>/dev/null || echo "three questions: what changed, what was verified, what was signed"
+what*is*subtract*7	mandoc "${SUBTRACT_DIR:-$HOME/.subtract}/fork/subtract.7.txt" 2>/dev/null || man -l "${SUBTRACT_DIR:-$HOME/.subtract}/fork/subtract.7.txt" 2>/dev/null || cat "${SUBTRACT_DIR:-$HOME/.subtract}/fork/subtract.7.txt" 2>/dev/null || echo "subtract(7) -- type what you mean. install subtract to read the full man page."
 what*is*variance*lab	echo "Empirical proof layer. Findings backed by data, signed through llms.txt manifest."
 what*is*squared	echo "squared — 716-line C proxy. h2c/TLS multiplexing. Connection efficiency for local intranet services."
 what*is*multiplying	echo "multiplying.html — browser UI for subtract. Sends concurrent requests to local inference."
-what*is*emile	cat ~/subtract.ing/emile.txt 2>/dev/null || echo "emile — clinical sandbox node, 8GB M2, repurposed for program delivery"
 what*is*please	echo "PLEASE — Provide Legal Exculpation And Sign Everything. Attestation protocol for human-only gates."
 what*is*the*authority*model	echo "Signed = act on it. Unsigned = suggestion only, possibly confabulation. The human signs."
 #
 # --- philosophical roots (kiwix ZIM lookups) ---
-what*is*via*negativa	kiwix-search via negativa
-what*is*negative*theology	kiwix-search negative theology
-what*is*negative*education	kiwix-search negative education Rousseau
-who*is*rousseau	kiwix-search Jean-Jacques Rousseau
-what*is*emile*rousseau	kiwix-search Emile or On Education
-what*is*apophatic	kiwix-search apophatic theology
-what*is*the*social*contract	kiwix-search social contract
-what*is*sovereignty	kiwix-search sovereignty
-what*is*consent*of*the*governed	kiwix-search consent of the governed
-what*is*general*will	kiwix-search general will Rousseau
-what*is*autodidact	kiwix-search autodidacticism
-what*is*literacy	kiwix-search literacy
-what*is*digital*sovereignty	kiwix-search digital sovereignty
-what*is*cryptographic*signature	kiwix-search digital signature
-what*is*public*key*cryptography	kiwix-search public-key cryptography
-what*is*chain*of*trust	kiwix-search chain of trust
-what*is*unix*philosophy	kiwix-search Unix philosophy
-who*is*ken*thompson	kiwix-search Ken Thompson
-who*is*dennis*ritchie	kiwix-search Dennis Ritchie
-what*is*free*software	kiwix-search free software movement
-what*is*gpl	kiwix-search GNU General Public License
-who*is*stallman	kiwix-search Richard Stallman
-what*is*copyleft	kiwix-search copyleft
+what*is*via*negativa	kiwix-search via negativa 2>/dev/null || echo "search your kiwix library for: via negativa. install kiwix-tools for offline search."
+what*is*negative*theology	kiwix-search negative theology 2>/dev/null || echo "search your kiwix library for: negative theology. install kiwix-tools for offline search."
+what*is*negative*education	kiwix-search negative education Rousseau 2>/dev/null || echo "search your kiwix library for: negative education Rousseau. install kiwix-tools for offline search."
+who*is*rousseau	kiwix-search Jean-Jacques Rousseau 2>/dev/null || echo "search your kiwix library for: Jean-Jacques Rousseau. install kiwix-tools for offline search."
+what*is*apophatic	kiwix-search apophatic theology 2>/dev/null || echo "search your kiwix library for: apophatic theology. install kiwix-tools for offline search."
+what*is*the*social*contract	kiwix-search social contract 2>/dev/null || echo "search your kiwix library for: social contract. install kiwix-tools for offline search."
+what*is*sovereignty	kiwix-search sovereignty 2>/dev/null || echo "search your kiwix library for: sovereignty. install kiwix-tools for offline search."
+what*is*consent*of*the*governed	kiwix-search consent of the governed 2>/dev/null || echo "search your kiwix library for: consent of the governed. install kiwix-tools for offline search."
+what*is*general*will	kiwix-search general will Rousseau 2>/dev/null || echo "search your kiwix library for: general will Rousseau. install kiwix-tools for offline search."
+what*is*autodidact	kiwix-search autodidacticism 2>/dev/null || echo "search your kiwix library for: autodidacticism. install kiwix-tools for offline search."
+what*is*literacy	kiwix-search literacy 2>/dev/null || echo "search your kiwix library for: literacy. install kiwix-tools for offline search."
+what*is*digital*sovereignty	kiwix-search digital sovereignty 2>/dev/null || echo "search your kiwix library for: digital sovereignty. install kiwix-tools for offline search."
+what*is*cryptographic*signature	kiwix-search digital signature 2>/dev/null || echo "search your kiwix library for: digital signature. install kiwix-tools for offline search."
+what*is*public*key*cryptography	kiwix-search public-key cryptography 2>/dev/null || echo "search your kiwix library for: public-key cryptography. install kiwix-tools for offline search."
+what*is*chain*of*trust	kiwix-search chain of trust 2>/dev/null || echo "search your kiwix library for: chain of trust. install kiwix-tools for offline search."
+what*is*unix*philosophy	kiwix-search Unix philosophy 2>/dev/null || echo "search your kiwix library for: Unix philosophy. install kiwix-tools for offline search."
+who*is*ken*thompson	kiwix-search Ken Thompson 2>/dev/null || echo "search your kiwix library for: Ken Thompson. install kiwix-tools for offline search."
+who*is*dennis*ritchie	kiwix-search Dennis Ritchie 2>/dev/null || echo "search your kiwix library for: Dennis Ritchie. install kiwix-tools for offline search."
+what*is*free*software	kiwix-search free software movement 2>/dev/null || echo "search your kiwix library for: free software movement. install kiwix-tools for offline search."
+what*is*gpl	kiwix-search GNU General Public License 2>/dev/null || echo "search your kiwix library for: GNU General Public License. install kiwix-tools for offline search."
+who*is*stallman	kiwix-search Richard Stallman 2>/dev/null || echo "search your kiwix library for: Richard Stallman. install kiwix-tools for offline search."
+what*is*copyleft	kiwix-search copyleft 2>/dev/null || echo "search your kiwix library for: copyleft. install kiwix-tools for offline search."
 #
 # --- literature that built subtract ---
-who*is*ursula*le*guin	kiwix-search Ursula K. Le Guin
-what*is*omelas	kiwix-search The Ones Who Walk Away from Omelas
-ones*who*walk*away	kiwix-search The Ones Who Walk Away from Omelas
-who*is*orson*scott*card	kiwix-search Orson Scott Card
-what*is*enders*game	kiwix-search Ender's Game
-who*is*encyclopedia*brown	kiwix-search Encyclopedia Brown
-who*is*donald*sobol	kiwix-search Donald J. Sobol
-what*is*walden	kiwix-search Walden Thoreau
-who*is*thoreau	kiwix-search Henry David Thoreau
-what*is*civil*disobedience	kiwix-search Civil Disobedience Thoreau
-who*is*ivan*illich	kiwix-search Ivan Illich
-what*is*deschooling*society	kiwix-search Deschooling Society
-what*is*tools*for*conviviality	kiwix-search Tools for Conviviality
-who*is*paulo*freire	kiwix-search Paulo Freire
-what*is*pedagogy*of*the*oppressed	kiwix-search Pedagogy of the Oppressed
-who*is*montessori	kiwix-search Maria Montessori
-what*is*montessori*method	kiwix-search Montessori education
-who*is*simone*weil	kiwix-search Simone Weil
-what*is*the*need*for*roots	kiwix-search The Need for Roots
-who*is*albert*camus	kiwix-search Albert Camus
-what*is*the*stranger	kiwix-search The Stranger Camus
-what*is*the*myth*of*sisyphus	kiwix-search The Myth of Sisyphus
+who*is*ursula*le*guin	kiwix-search Ursula K. Le Guin 2>/dev/null || echo "search your kiwix library for: Ursula K. Le Guin. install kiwix-tools for offline search."
+what*is*omelas	kiwix-search The Ones Who Walk Away from Omelas 2>/dev/null || echo "search your kiwix library for: The Ones Who Walk Away from Omelas. install kiwix-tools for offline search."
+ones*who*walk*away	kiwix-search The Ones Who Walk Away from Omelas 2>/dev/null || echo "search your kiwix library for: The Ones Who Walk Away from Omelas. install kiwix-tools for offline search."
+who*is*orson*scott*card	kiwix-search Orson Scott Card 2>/dev/null || echo "search your kiwix library for: Orson Scott Card. install kiwix-tools for offline search."
+what*is*enders*game	kiwix-search Ender's Game 2>/dev/null || echo "search your kiwix library for: Ender's Game. install kiwix-tools for offline search."
+who*is*encyclopedia*brown	kiwix-search Encyclopedia Brown 2>/dev/null || echo "search your kiwix library for: Encyclopedia Brown. install kiwix-tools for offline search."
+who*is*donald*sobol	kiwix-search Donald J. Sobol 2>/dev/null || echo "search your kiwix library for: Donald J. Sobol. install kiwix-tools for offline search."
+what*is*walden	kiwix-search Walden Thoreau 2>/dev/null || echo "search your kiwix library for: Walden Thoreau. install kiwix-tools for offline search."
+who*is*thoreau	kiwix-search Henry David Thoreau 2>/dev/null || echo "search your kiwix library for: Henry David Thoreau. install kiwix-tools for offline search."
+what*is*civil*disobedience	kiwix-search Civil Disobedience Thoreau 2>/dev/null || echo "search your kiwix library for: Civil Disobedience Thoreau. install kiwix-tools for offline search."
+who*is*ivan*illich	kiwix-search Ivan Illich 2>/dev/null || echo "search your kiwix library for: Ivan Illich. install kiwix-tools for offline search."
+what*is*deschooling*society	kiwix-search Deschooling Society 2>/dev/null || echo "search your kiwix library for: Deschooling Society. install kiwix-tools for offline search."
+what*is*tools*for*conviviality	kiwix-search Tools for Conviviality 2>/dev/null || echo "search your kiwix library for: Tools for Conviviality. install kiwix-tools for offline search."
+who*is*paulo*freire	kiwix-search Paulo Freire 2>/dev/null || echo "search your kiwix library for: Paulo Freire. install kiwix-tools for offline search."
+what*is*pedagogy*of*the*oppressed	kiwix-search Pedagogy of the Oppressed 2>/dev/null || echo "search your kiwix library for: Pedagogy of the Oppressed. install kiwix-tools for offline search."
+who*is*montessori	kiwix-search Maria Montessori 2>/dev/null || echo "search your kiwix library for: Maria Montessori. install kiwix-tools for offline search."
+what*is*montessori*method	kiwix-search Montessori education 2>/dev/null || echo "search your kiwix library for: Montessori education. install kiwix-tools for offline search."
+who*is*simone*weil	kiwix-search Simone Weil 2>/dev/null || echo "search your kiwix library for: Simone Weil. install kiwix-tools for offline search."
+what*is*the*need*for*roots	kiwix-search The Need for Roots 2>/dev/null || echo "search your kiwix library for: The Need for Roots. install kiwix-tools for offline search."
+who*is*albert*camus	kiwix-search Albert Camus 2>/dev/null || echo "search your kiwix library for: Albert Camus. install kiwix-tools for offline search."
+what*is*the*stranger	kiwix-search The Stranger Camus 2>/dev/null || echo "search your kiwix library for: The Stranger Camus. install kiwix-tools for offline search."
+what*is*the*myth*of*sisyphus	kiwix-search The Myth of Sisyphus 2>/dev/null || echo "search your kiwix library for: The Myth of Sisyphus. install kiwix-tools for offline search."
 who*is*meursault	echo "Meursault — narrator of Camus' The Stranger. He does not pretend to feel what he does not feel."
-what*is*absurdism	kiwix-search absurdism
-who*is*kierkegaard	kiwix-search Søren Kierkegaard
-who*is*epictetus	kiwix-search Epictetus
-what*is*stoicism	kiwix-search Stoicism
-what*is*the*enchiridion	kiwix-search Enchiridion of Epictetus
-who*is*diogenes	kiwix-search Diogenes
-what*is*cynicism	kiwix-search Cynicism philosophy
-who*is*lao*tzu	kiwix-search Laozi
-what*is*tao*te*ching	kiwix-search Tao Te Ching
-what*is*wu*wei	kiwix-search Wu wei
-what*is*wabi*sabi	kiwix-search Wabi-sabi
-what*is*ma	kiwix-search Ma negative space
-who*is*nassim*taleb	kiwix-search Nassim Nicholas Taleb
-what*is*antifragile	kiwix-search Antifragile
-what*is*black*swan	kiwix-search The Black Swan Taleb
-who*is*e*f*schumacher	kiwix-search E. F. Schumacher
-what*is*small*is*beautiful	kiwix-search Small Is Beautiful
-who*is*christopher*alexander	kiwix-search Christopher Alexander
-what*is*a*pattern*language	kiwix-search A Pattern Language
-what*is*the*timeless*way	kiwix-search The Timeless Way of Building
-who*is*richard*feynman	kiwix-search Richard Feynman
-what*is*cargo*cult*science	kiwix-search Cargo cult science
-who*is*alan*kay	kiwix-search Alan Kay
-who*is*ted*nelson	kiwix-search Ted Nelson
-what*is*computer*lib	kiwix-search Computer Lib Dream Machines
-who*is*doug*engelbart	kiwix-search Douglas Engelbart
-what*is*the*mother*of*all*demos	kiwix-search The Mother of All Demos
+what*is*absurdism	kiwix-search absurdism 2>/dev/null || echo "search your kiwix library for: absurdism. install kiwix-tools for offline search."
+who*is*kierkegaard	kiwix-search Søren Kierkegaard 2>/dev/null || echo "search your kiwix library for: Søren Kierkegaard. install kiwix-tools for offline search."
+who*is*epictetus	kiwix-search Epictetus 2>/dev/null || echo "search your kiwix library for: Epictetus. install kiwix-tools for offline search."
+what*is*stoicism	kiwix-search Stoicism 2>/dev/null || echo "search your kiwix library for: Stoicism. install kiwix-tools for offline search."
+what*is*the*enchiridion	kiwix-search Enchiridion of Epictetus 2>/dev/null || echo "search your kiwix library for: Enchiridion of Epictetus. install kiwix-tools for offline search."
+who*is*diogenes	kiwix-search Diogenes 2>/dev/null || echo "search your kiwix library for: Diogenes. install kiwix-tools for offline search."
+what*is*cynicism	kiwix-search Cynicism philosophy 2>/dev/null || echo "search your kiwix library for: Cynicism philosophy. install kiwix-tools for offline search."
+who*is*lao*tzu	kiwix-search Laozi 2>/dev/null || echo "search your kiwix library for: Laozi. install kiwix-tools for offline search."
+what*is*tao*te*ching	kiwix-search Tao Te Ching 2>/dev/null || echo "search your kiwix library for: Tao Te Ching. install kiwix-tools for offline search."
+what*is*wu*wei	kiwix-search Wu wei 2>/dev/null || echo "search your kiwix library for: Wu wei. install kiwix-tools for offline search."
+what*is*wabi*sabi	kiwix-search Wabi-sabi 2>/dev/null || echo "search your kiwix library for: Wabi-sabi. install kiwix-tools for offline search."
+what*is*ma	kiwix-search Ma negative space 2>/dev/null || echo "search your kiwix library for: Ma negative space. install kiwix-tools for offline search."
+who*is*nassim*taleb	kiwix-search Nassim Nicholas Taleb 2>/dev/null || echo "search your kiwix library for: Nassim Nicholas Taleb. install kiwix-tools for offline search."
+what*is*antifragile	kiwix-search Antifragile 2>/dev/null || echo "search your kiwix library for: Antifragile. install kiwix-tools for offline search."
+what*is*black*swan	kiwix-search The Black Swan Taleb 2>/dev/null || echo "search your kiwix library for: The Black Swan Taleb. install kiwix-tools for offline search."
+who*is*e*f*schumacher	kiwix-search E. F. Schumacher 2>/dev/null || echo "search your kiwix library for: E. F. Schumacher. install kiwix-tools for offline search."
+what*is*small*is*beautiful	kiwix-search Small Is Beautiful 2>/dev/null || echo "search your kiwix library for: Small Is Beautiful. install kiwix-tools for offline search."
+who*is*christopher*alexander	kiwix-search Christopher Alexander 2>/dev/null || echo "search your kiwix library for: Christopher Alexander. install kiwix-tools for offline search."
+what*is*a*pattern*language	kiwix-search A Pattern Language 2>/dev/null || echo "search your kiwix library for: A Pattern Language. install kiwix-tools for offline search."
+what*is*the*timeless*way	kiwix-search The Timeless Way of Building 2>/dev/null || echo "search your kiwix library for: The Timeless Way of Building. install kiwix-tools for offline search."
+who*is*richard*feynman	kiwix-search Richard Feynman 2>/dev/null || echo "search your kiwix library for: Richard Feynman. install kiwix-tools for offline search."
+what*is*cargo*cult*science	kiwix-search Cargo cult science 2>/dev/null || echo "search your kiwix library for: Cargo cult science. install kiwix-tools for offline search."
+who*is*alan*kay	kiwix-search Alan Kay 2>/dev/null || echo "search your kiwix library for: Alan Kay. install kiwix-tools for offline search."
+who*is*ted*nelson	kiwix-search Ted Nelson 2>/dev/null || echo "search your kiwix library for: Ted Nelson. install kiwix-tools for offline search."
+what*is*computer*lib	kiwix-search Computer Lib Dream Machines 2>/dev/null || echo "search your kiwix library for: Computer Lib Dream Machines. install kiwix-tools for offline search."
+who*is*doug*engelbart	kiwix-search Douglas Engelbart 2>/dev/null || echo "search your kiwix library for: Douglas Engelbart. install kiwix-tools for offline search."
+what*is*the*mother*of*all*demos	kiwix-search The Mother of All Demos 2>/dev/null || echo "search your kiwix library for: The Mother of All Demos. install kiwix-tools for offline search."
 #
 # --- modern vernacular (from 125 youtube transcripts, freq-ranked) ---
 what*is*mcp	echo "Model Context Protocol — Anthropic's standard for connecting AI to tools/data. subtract uses kernel primitives instead."
@@ -460,11 +440,11 @@ what*is*model*context*protocol	echo "MCP — protocol for AI tool integration. s
 what*is*agentic	echo "Agentic — AI that takes actions autonomously. subtract's position: the agent prepares, the human signs."
 what*is*context*window	echo "Context window — how many tokens a model can process at once. Local models: 4K-128K. Cloud: up to 1M."
 what*is*rag	echo "Retrieval Augmented Generation — feeding documents to a model at query time. subtract's equivalent: cat the file."
-what*is*retrieval*augmented*generation	kiwix-search retrieval augmented generation
+what*is*retrieval*augmented*generation	kiwix-search retrieval augmented generation 2>/dev/null || echo "search your kiwix library for: retrieval augmented generation. install kiwix-tools for offline search."
 what*is*inference	echo "Inference — running a trained model to generate output. Local: llama-server. Cloud: API call."
 what*is*a*gpu	echo "GPU — graphics processing unit, repurposed for matrix math that neural networks need. Not required: see BitNet."
-what*is*open*source	kiwix-search open-source software
-what*is*a*system*prompt	echo "System prompt — instructions given to a model before the user's message. subtract uses SOUL.txt and governance.conf."
+what*is*open*source	kiwix-search open-source software 2>/dev/null || echo "search your kiwix library for: open-source software. install kiwix-tools for offline search."
+what*is*a*system*prompt	echo "System prompt — instructions given to a model before the user's message. subtract uses a signed governance file to define behavioral reflexes."
 what*is*tool*use	echo "Tool use — model calls external functions. subtract's position: the shell IS the tool. No wrapper needed."
 what*is*function*calling	echo "Function calling — model outputs structured requests to run code. Same as tool use, different vendor name."
 what*is*fine*tuning	echo "Fine-tuning — retraining a model on specific data. subtract's position: lookdown.tsv is cheaper and editable."
@@ -472,7 +452,7 @@ what*is*temperature	echo "Temperature — controls randomness in model output. 0
 what*is*guardrails	echo "Guardrails — safety filters on model output. subtract's guardrail: ssh-keygen -Y sign. Nothing executes unsigned."
 what*is*vibe*coding	echo "Vibe coding — describing what you want and letting AI write the code. subtract graduates you past needing it."
 what*is*prompt*engineering	echo "Prompt engineering — crafting inputs to get better model outputs. subtract's position: lookdown.tsv eliminates the prompt."
-what*is*embeddings	echo "Embeddings — numeric vectors representing text meaning. Used in RAG/search. kiwix-search uses full-text index instead."
+what*is*embeddings	kiwix-search echo "Embeddings — numeric vectors representing text meaning. Used in RAG/search. uses full-text index instead." 2>/dev/null || echo "search your kiwix library for: echo "Embeddings — numeric vectors representing text meaning. Used in RAG/search. uses full-text index instead.". install kiwix-tools for offline search."
 what*is*a*vector*database	echo "Vector database — stores embeddings for similarity search. subtract's equivalent: grep."
 what*is*hallucination	echo "Hallucination — model generates plausible but false output. subtract calls it confabulation. Gate: verify before acting."
 what*is*ollama	echo "Ollama — wrapper for running local models. subtract uses llama-server directly (the primitive Ollama wraps)."
@@ -491,16 +471,12 @@ what*is*top*p	echo "Top-p (nucleus sampling) — limits token selection to the m
 what*is*a*token	echo "Token — smallest unit of text a model processes. ~4 characters in English. Every API call is priced per token."
 what*is*a*token*limit	echo "Token limit — maximum input+output a model handles per request. Exceeding it truncates context."
 what*is*bitnet	echo "BitNet — 1-bit quantization. Eliminates GPU requirement. Validated: Bonsai 8B (1.1GB) runs on 8GB M2 with room for application server."
-what*is*bonsai	echo "Bonsai — PrismML 1-bit LLM family. 8B model in 1.1GB. Runs clinical prompts on 8GB hardware where dense Q4 8B models OOM."
 what*is*bonsai*8b	echo "Bonsai 8B — 8.2B params at 1.13 BPW. 1.1GB GGUF. Sustained 40 tok/s for 1hr on 8GB M2, swap grew 10x, throughput unchanged. Production envelope under extended testing."
-how*much*can*my*mac*mini*do*offline	echo "M-series 8GB runs Bonsai 8B at sustained 40 tok/s while macOS handles other apps via swap. Clinical-quality output in 1-3 seconds. No internet required."
 do*i*need*cloud*ai*subscription	echo "No, if the work is translation, summarization, drafting, or definition. Bonsai 8B on local hardware handles those. Keep cloud only for frontier reasoning."
-my*mac*mini*got*slow	echo "If the machine runs but apps feel slow, the bottleneck is swap pressure, not the hardware. Close other apps during clinical sessions or consider more RAM."
 *paid*for*ai*and*stopped*working	echo "Hardware still works. Subtract the vendor layer. Install llama-server + Bonsai 8B (1.1GB). No account, no subscription. curl -sL subtract.ing/install.sh | bash"
 can*i*run*ai*locally	echo "Yes. Bonsai 8B (1.1GB) runs on any M-series Mac with 8GB. 40 tok/s sustained. No GPU required. No internet required."
 what*model*runs*on*8gb	echo "Bonsai 8B (1.1GB BitNet). Sustained 40 tok/s on M2. Swap grows but throughput holds — GPU memory pins the model weights. Close other apps if the OS feels slow."
 what*runs*on*8gb*m2*mac*mini	echo "Bonsai 8B (1.1GB BitNet). Sustained 40 tok/s under concurrent application load. Tested 1hr continuous + 30min realistic workday."
-what*runs*on*8gb*m2*for*clinical	echo "Bonsai 8B serves clinical content (social stories, session notes, DTT definitions) at 40 tok/s while AAC application runs concurrently. Tested with realistic workday cadence."
 #
 # --- short-form / vernacular (how people actually type) ---
 make*a*folder	mkdir
@@ -515,7 +491,7 @@ whats*my*password	echo "passwords are not stored in plain text. try: passwd (to 
 forgot*password	echo "try: sudo passwd YOUR_USERNAME (to reset it)"
 how*much*storage	df -h
 storage*left	df -h
-battery	upower -i /org/freedesktop/UPower/devices/battery_BAT0 2>/dev/null || pmset -g batt 2>/dev/null || echo "no battery info"
+battery	upower -i $(upower -e 2>/dev/null | grep -i bat | head -1) 2>/dev/null || pmset -g batt 2>/dev/null || echo "no battery info"
 screenshot	echo "Linux: gnome-screenshot or scrot. macOS: Cmd+Shift+4. Or: import screenshot.png (ImageMagick)"
 dark*mode	echo "System dependent. GNOME: gsettings set org.gnome.desktop.interface color-scheme prefer-dark. macOS: System Settings → Appearance."
 undo	echo "In terminal: there is no undo. Use git for code (git checkout -- file), cp for backups before changing."
@@ -529,7 +505,7 @@ thanks	echo "You're welcome. The command was the part worth remembering."
 thank*you	echo "You're welcome. The command was the part worth remembering."
 idk*what*to*do	echo "Try: 'show files' or 'what is subtract' or just describe what you need."
 im*lost	echo "You're in $(pwd). Try: 'show files' to see what's here, or 'go home' to go to ~/."
-im*bored	echo "Try: fortune 2>/dev/null || echo 'Read something: kiwix-search anything'"
+im*bored	echo "Try: fortune 2>/dev/null || echo 'Read something: what is something you have wondered about?'"
 this*is*cool	echo "The command that just ran is the thing worth learning. It works without subtract too."
 this*sucks	echo "What went wrong? Type what you were trying to do."
 its*broken	echo "What is broken? Describe the problem. subtract will try to find the right command."
@@ -537,7 +513,7 @@ how*do*i*learn*this	echo "Use subtract until the commands stick. Then type them 
 teach*me	echo "Type what you want to do. subtract shows the command. Eventually you'll type the command first."
 what*can*i*do	echo "Type what you want in plain words. subtract matches lookdown.tsv and runs the command. Try: what files are here"
 get*started	echo "Type what you want. subtract translates to the command. Try: what files are here"
-show*examples	echo "Try: what files are here | how much disk space | what time is it | what is fork | who is rousseau"
+show*examples	echo "Try: what files are here | how much disk space | what time is it | what is fork | show memory"
 how*does*subtract*work	echo "command_not_found_handle catches unknown input, matches it against lookdown.tsv, runs the first hit."
 show*env	env | head -30
 show*environment*variables	env
@@ -684,7 +660,7 @@ show*git*graph	git log --oneline --graph --all
 show*network*interfaces	ip addr 2>/dev/null || ifconfig
 show*my*ips	ip addr 2>/dev/null || ifconfig
 what*shell*am*i*using	echo "$SHELL"
-show*syslog	tail -20 /var/log/syslog 2>/dev/null || log show --last 20m 2>/dev/null
+show*syslog	tail -20 /var/log/syslog 2>/dev/null || journalctl -n 20 2>/dev/null || log show --last 20m 2>/dev/null || echo "no syslog available"
 find*files*owned*by*root	find ~ -user root 2>/dev/null
 count*files*by*extension	find . -maxdepth 1 -type f | sed 's/.*\.//' | sort | uniq -c | sort -rn
 show*disk*io	iostat 2>/dev/null || echo "install sysstat for iostat"
@@ -729,13 +705,8 @@ what*is*lsof*	echo "list open files. lsof -i :8080 (port), lsof -p PID (process)
 # --- clinical / ABA ---
 what*is*proc*filesystem*	echo "/proc — virtual fs exposing kernel/process state. /proc/PID/{status,maps,fd,cmdline}, /proc/meminfo, /proc/cpuinfo"
 what*is*aba*	echo "applied behavior analysis — science of behavior change using reinforcement principles. uses ABC (antecedent-behavior-consequence) framework"
-what*is*applied*behavior*analysis*	echo "ABA — systematic application of learning principles to improve socially significant behavior. evidence-based, data-driven"
-what*is*bcba*	echo "board certified behavior analyst — master's-level certification from BACB. designs and supervises ABA programs"
-what*is*rbt*	echo "registered behavior technician — paraprofessional cert from BACB. implements BIP under BCBA supervision. 40-hr training + competency assessment"
 what*is*behavior*technician*	echo "direct-service provider in ABA. implements behavior plans, collects data. RBT is the BACB credential for this role"
-what*is*dtt*	echo "discrete trial training — structured ABA teaching: SD (instruction) → response → consequence. massed trials, high repetition, table-based"
 what*is*discrete*trial*	echo "structured teaching unit: antecedent → behavior → consequence. repeated in massed or distributed trials. data per trial"
-what*is*net*teach*	echo "natural environment teaching — ABA instruction embedded in play/routines. child-led, uses motivation in context. contrasts with DTT"
 what*is*abc*data*	echo "antecedent-behavior-consequence recording. descriptive assessment method. logs what happened before, the behavior, and what followed"
 what*is*antecedent*behavior*consequence*	echo "ABC — three-term contingency. antecedent sets occasion, behavior occurs, consequence affects future probability"
 what*is*reinforcement*	echo "consequence that increases future behavior probability. positive: add stimulus. negative: remove aversive. defined by effect, not intent"
@@ -746,10 +717,6 @@ what*is*prompt*fad*	echo "systematically reducing prompts so behavior comes unde
 what*is*task*analysis*	echo "breaking complex skill into sequential component steps. each step taught individually. basis for chaining procedures"
 what*is*chaining*	echo "teaching steps of a task analysis in sequence. forward: first step first. backward: last step first. total task: all steps each trial"
 what*is*shaping*	echo "reinforcing successive approximations toward a target behavior. used when target doesn't yet occur"
-what*is*fba*	echo "functional behavior assessment — identifies function (why) of behavior: attention, escape, tangible, automatic. indirect + direct + experimental methods"
-what*is*functional*behavior*assessment*	echo "FBA — determines maintaining variables of behavior. methods: interview, ABC observation, functional analysis. drives BIP design"
-what*is*bip*	echo "behavior intervention plan — written plan based on FBA. includes antecedent strategies, replacement behaviors, consequence procedures, data collection"
-what*is*behavior*intervention*plan*	echo "BIP — function-based plan. antecedent modifications + teaching replacement behavior + consequence strategies. requires FBA"
 what*is*mand*	echo "Skinner verbal operant — request. controlled by motivation (MO). 'I want water' when thirsty. first operant typically taught"
 what*is*tact*	echo "Skinner verbal operant — label/comment. controlled by nonverbal stimulus. 'that's a dog' upon seeing dog. contact with environment"
 what*is*echoic*	echo "Skinner verbal operant — vocal imitation. repeating what was heard. point-to-point correspondence with vocal model"
@@ -757,19 +724,11 @@ what*is*intraverbal*	echo "Skinner verbal operant — verbal response to verbal 
 what*is*verbal*operant*	echo "Skinner's classification: mand (request), tact (label), echoic (imitation), intraverbal (conversational), textual, transcription. function-based, not topography"
 what*is*generalization*	echo "behavior occurs across untrained stimuli, settings, or people. stimulus generalization and response generalization. must be programmed, not assumed"
 what*is*maintenance*	echo "behavior persists after intervention ends. thinning reinforcement schedules and programming natural contingencies support maintenance"
-what*is*interobserver*agreement*	echo "IOA — percentage agreement between two independent observers on same behavior. standard: ≥80%. validates data reliability"
-what*is*ioa*	echo "interobserver agreement — two observers independently score same session. agreements/(agreements+disagreements) × 100. minimum 80% acceptable"
-what*is*session*note*	echo "documentation of ABA session: targets, data, behavior, caregiver interaction. required for billing and clinical record"
-what*is*data*collection*	echo "systematic recording of behavior: frequency, duration, latency, interval, trial-by-trial. basis for all ABA decision-making"
-what*is*graphing*	echo "visual display of behavioral data over time. standard: line graph, x=sessions, y=measure. level/trend/variability analysis drives decisions"
-what*is*837p*	echo "ANSI X12 837 Professional — electronic claim format for outpatient/professional services. replaces CMS-1500. submitted via clearinghouse"
 what*is*837i*	echo "ANSI X12 837 Institutional — electronic claim format for facility/inpatient services. replaces UB-04"
 what*is*835*	echo "ANSI X12 835 — electronic remittance advice. payer sends to provider showing payment/adjustment/denial per claim line"
 what*is*edi*	echo "electronic data interchange — structured B2B data exchange. healthcare uses ANSI X12: 837 (claims), 835 (remittance), 270/271 (eligibility), 276/277 (status)"
-what*is*icd*10*	echo "ICD-10 — WHO diagnosis code set. ICD-10-CM for US clinical. format: letter + digits (F84.0 = autistic disorder). required on claims"
 #
 # --- healthcare admin / billing ---
-what*is*cpt*code*	echo "current procedural terminology — AMA-owned procedure codes. 5 digits. category I (97153 = ABA adaptive behavior treatment), II, III. drives reimbursement"
 what*is*hcpcs*	echo "healthcare common procedure coding system. level I = CPT. level II = alphanumeric (E/M, DME, drugs). CMS-maintained"
 what*is*hipaa*	echo "health insurance portability and accountability act. privacy rule (PHI), security rule (ePHI safeguards), transaction standards (EDI). penalties for violations"
 what*is*baa*	echo "business associate agreement — HIPAA-required contract when vendor handles PHI. defines permitted uses, breach notification, safeguards"
@@ -777,17 +736,10 @@ what*is*phi*	echo "protected health information — individually identifiable he
 what*is*minimum*necessary*	echo "HIPAA principle — only access/disclose the minimum PHI needed for the purpose. applies to uses, disclosures, and requests"
 what*is*hl7*	echo "health level 7 — healthcare data exchange standards. v2 (pipe-delimited messages), v3 (XML), CDA. being superseded by FHIR"
 what*is*fhir*	echo "fast healthcare interoperability resources — HL7 standard. RESTful API, JSON/XML resources (Patient, Observation, Claim). modern EHR integration"
-what*is*ehr*	echo "electronic health record — digital patient chart. longitudinal, multi-provider. distinct from EMR (single practice). FHIR enables interoperability"
-what*is*emr*	echo "electronic medical record — digital chart within one practice. EHR is broader (cross-provider, longitudinal). terms often used interchangeably"
-what*is*clearinghouse*	echo "intermediary that validates/routes electronic claims between provider and payer. scrubs errors before submission. examples: Office Ally, Availity, Trizetto"
-what*is*office*ally*	echo "free claims clearinghouse. submits 837P/837I, receives 835 ERAs. popular with small practices and ABA providers"
 what*is*npi*	echo "national provider identifier — 10-digit unique ID for healthcare providers. type 1 (individual), type 2 (organization). required on all claims"
 what*is*taxonomy*code*	echo "provider specialty classification. 10-character alphanumeric. examples: 103K00000X (behavior analyst), 106H00000X (marriage/family therapist). linked to NPI"
-what*is*prior*auth*	echo "prior authorization — payer approval required before service. submit clinical justification. denial = no payment. common for ABA (initial + reauth)"
-what*is*claim*denial*	echo "payer refuses payment on claim. common reasons: auth missing, timely filing, coding error, medical necessity. appeal with corrected claim or documentation"
 what*is*eob*	echo "explanation of benefits — document from payer to patient showing billed amount, allowed amount, patient responsibility. not a bill"
 what*is*superbill*	echo "itemized receipt from provider: diagnosis codes, CPT codes, dates, charges. patient uses for out-of-network reimbursement or records"
-what*is*encounter*form*	echo "clinical documentation form capturing visit details: diagnoses, procedures, time. basis for claim generation. superbill is the billing-facing version"
 what*is*modifier*25*	echo "modifier 25 — significant, separately identifiable E/M service on same day as procedure. documents that evaluation was distinct from procedural service"
 what*is*modifier*59*	echo "modifier 59 — distinct procedural service. unbundles procedures that would normally be bundled. use when services are truly separate (different site, session, etc.)"
 #
@@ -1372,196 +1324,189 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 #
 # --- two-tier: echo (almanac) + kiwix-search (encyclopedia) ---
 what*is*a*fever	echo "100.4°F / 38°C oral threshold. Rectal runs 0.5–1°F higher. Treat >102°F adults, >100.4°F infants."
-explain*fever	kiwix-search fever
-read*about*fever	kiwix-search fever
+explain*fever	kiwix-search fever 2>/dev/null || echo "search your kiwix library for: fever. install kiwix-tools for offline search."
+read*about*fever	kiwix-search fever 2>/dev/null || echo "search your kiwix library for: fever. install kiwix-tools for offline search."
 what*is*normal*blood*pressure	echo "120/80 mmHg. Elevated: 120-129/<80. Stage 1 hypertension: 130-139/80-89. Crisis: >180/120."
-explain*blood*pressure	kiwix-search blood pressure
-read*about*blood*pressure	kiwix-search blood pressure
+explain*blood*pressure	kiwix-search blood pressure 2>/dev/null || echo "search your kiwix library for: blood pressure. install kiwix-tools for offline search."
+read*about*blood*pressure	kiwix-search blood pressure 2>/dev/null || echo "search your kiwix library for: blood pressure. install kiwix-tools for offline search."
 how*to*do*cpr	echo "30 chest compressions (2 inches deep, 100-120/min) then 2 rescue breaths. Repeat. Push hard, push fast."
-explain*cpr	kiwix-search cardiopulmonary resuscitation
-read*about*cpr	kiwix-search cardiopulmonary resuscitation
+explain*cpr	kiwix-search cardiopulmonary resuscitation 2>/dev/null || echo "search your kiwix library for: cardiopulmonary resuscitation. install kiwix-tools for offline search."
+read*about*cpr	kiwix-search cardiopulmonary resuscitation 2>/dev/null || echo "search your kiwix library for: cardiopulmonary resuscitation. install kiwix-tools for offline search."
 what*to*do*for*choking	echo "Conscious adult: 5 back blows then 5 abdominal thrusts (Heimlich). Repeat until clear or unconscious."
-explain*choking	kiwix-search choking
-read*about*choking	kiwix-search choking
+explain*choking	kiwix-search choking 2>/dev/null || echo "search your kiwix library for: choking. install kiwix-tools for offline search."
+read*about*choking	kiwix-search choking 2>/dev/null || echo "search your kiwix library for: choking. install kiwix-tools for offline search."
 how*to*stop*bleeding	echo "Direct pressure with clean cloth. Elevate above heart. Tourniquet 2-3in above wound only if life-threatening."
-explain*bleeding	kiwix-search hemorrhage
-read*about*bleeding	kiwix-search hemorrhage
+explain*bleeding	kiwix-search hemorrhage 2>/dev/null || echo "search your kiwix library for: hemorrhage. install kiwix-tools for offline search."
+read*about*bleeding	kiwix-search hemorrhage 2>/dev/null || echo "search your kiwix library for: hemorrhage. install kiwix-tools for offline search."
 how*to*treat*burns	echo "Cool running water 10-20 min. No ice, no butter. Cover loosely. Seek help for burns >3in or on face/joints/genitals."
-explain*burns	kiwix-search burn (injury)
-read*about*burns	kiwix-search burn (injury)
+explain*burns	kiwix-search burn (injury) 2>/dev/null || echo "search your kiwix library for: burn (injury). install kiwix-tools for offline search."
+read*about*burns	kiwix-search burn (injury) 2>/dev/null || echo "search your kiwix library for: burn (injury). install kiwix-tools for offline search."
 what*to*do*for*broken*bone	echo "Immobilize above and below fracture. Splint in position found. Ice for swelling. Do not straighten. Seek ER."
-explain*broken*bone	kiwix-search bone fracture
-read*about*broken*bone	kiwix-search bone fracture
+explain*broken*bone	kiwix-search bone fracture 2>/dev/null || echo "search your kiwix library for: bone fracture. install kiwix-tools for offline search."
+read*about*broken*bone	kiwix-search bone fracture 2>/dev/null || echo "search your kiwix library for: bone fracture. install kiwix-tools for offline search."
 what*is*a*concussion	echo "Mild TBI from head impact. Signs: headache, confusion, nausea, light sensitivity. No sleep restriction myth. Watch 24-48h."
-explain*concussion	kiwix-search concussion
-read*about*concussion	kiwix-search concussion
+explain*concussion	kiwix-search concussion 2>/dev/null || echo "search your kiwix library for: concussion. install kiwix-tools for offline search."
+read*about*concussion	kiwix-search concussion 2>/dev/null || echo "search your kiwix library for: concussion. install kiwix-tools for offline search."
 what*is*allergic*reaction	echo "Mild: hives, itching → antihistamine. Anaphylaxis: throat swelling, difficulty breathing → epinephrine (EpiPen) + 911 immediately."
-explain*allergic*reaction	kiwix-search anaphylaxis
-read*about*allergic*reaction	kiwix-search anaphylaxis
+explain*allergic*reaction	kiwix-search anaphylaxis 2>/dev/null || echo "search your kiwix library for: anaphylaxis. install kiwix-tools for offline search."
+read*about*allergic*reaction	kiwix-search anaphylaxis 2>/dev/null || echo "search your kiwix library for: anaphylaxis. install kiwix-tools for offline search."
 what*is*dehydration	echo "Fluid loss >2% body weight. Signs: dark urine, dry mouth, dizziness. Treat: small frequent sips of water + electrolytes."
-explain*dehydration	kiwix-search dehydration
-read*about*dehydration	kiwix-search dehydration
+explain*dehydration	kiwix-search dehydration 2>/dev/null || echo "search your kiwix library for: dehydration. install kiwix-tools for offline search."
+read*about*dehydration	kiwix-search dehydration 2>/dev/null || echo "search your kiwix library for: dehydration. install kiwix-tools for offline search."
 what*are*stroke*signs	echo "FAST: Face drooping, Arm weakness, Speech slurred, Time to call 911. Note onset time for treatment window."
-explain*stroke	kiwix-search stroke
-read*about*stroke	kiwix-search stroke
+explain*stroke	kiwix-search stroke 2>/dev/null || echo "search your kiwix library for: stroke. install kiwix-tools for offline search."
+read*about*stroke	kiwix-search stroke 2>/dev/null || echo "search your kiwix library for: stroke. install kiwix-tools for offline search."
 what*are*heart*attack*signs	echo "Chest pressure/squeezing, jaw/arm/back pain, shortness of breath, cold sweat, nausea. Chew aspirin 325mg, call 911."
-explain*heart*attack	kiwix-search myocardial infarction
-read*about*heart*attack	kiwix-search myocardial infarction
+explain*heart*attack	kiwix-search myocardial infarction 2>/dev/null || echo "search your kiwix library for: myocardial infarction. install kiwix-tools for offline search."
+read*about*heart*attack	kiwix-search myocardial infarction 2>/dev/null || echo "search your kiwix library for: myocardial infarction. install kiwix-tools for offline search."
 what*is*diabetes	echo "Type 1: no insulin production. Type 2: insulin resistance. Normal fasting glucose: 70-100 mg/dL. A1C <5.7% normal."
-explain*diabetes	kiwix-search diabetes mellitus
-read*about*diabetes	kiwix-search diabetes mellitus
+explain*diabetes	kiwix-search diabetes mellitus 2>/dev/null || echo "search your kiwix library for: diabetes mellitus. install kiwix-tools for offline search."
+read*about*diabetes	kiwix-search diabetes mellitus 2>/dev/null || echo "search your kiwix library for: diabetes mellitus. install kiwix-tools for offline search."
 what*is*asthma	echo "Chronic airway inflammation. Triggers: allergens, exercise, cold air. Rescue inhaler (albuterol) for attacks. Controller daily."
-explain*asthma	kiwix-search asthma
-read*about*asthma	kiwix-search asthma
+explain*asthma	kiwix-search asthma 2>/dev/null || echo "search your kiwix library for: asthma. install kiwix-tools for offline search."
+read*about*asthma	kiwix-search asthma 2>/dev/null || echo "search your kiwix library for: asthma. install kiwix-tools for offline search."
 what*to*do*for*seizure	echo "Clear area, protect head, turn on side. Do NOT restrain or put anything in mouth. Time it. Call 911 if >5 min or first seizure."
-explain*seizure	kiwix-search epileptic seizure
-read*about*seizure	kiwix-search epileptic seizure
+explain*seizure	kiwix-search epileptic seizure 2>/dev/null || echo "search your kiwix library for: epileptic seizure. install kiwix-tools for offline search."
+read*about*seizure	kiwix-search epileptic seizure 2>/dev/null || echo "search your kiwix library for: epileptic seizure. install kiwix-tools for offline search."
 how*to*tie*a*bowline	echo "Make a loop (rabbit hole). Tail up through loop, around standing line, back down through loop. 'Rabbit out, around tree, back in.'"
-explain*bowline	kiwix-search bowline
-read*about*bowline	kiwix-search bowline
+explain*bowline	kiwix-search bowline 2>/dev/null || echo "search your kiwix library for: bowline. install kiwix-tools for offline search."
+read*about*bowline	kiwix-search bowline 2>/dev/null || echo "search your kiwix library for: bowline. install kiwix-tools for offline search."
 how*to*tie*a*square*knot	echo "Right over left, tuck under. Left over right, tuck under. Both tails exit same side of loop. Flat, not granny."
-explain*square*knot	kiwix-search reef knot
-read*about*square*knot	kiwix-search reef knot
+explain*square*knot	kiwix-search reef knot 2>/dev/null || echo "search your kiwix library for: reef knot. install kiwix-tools for offline search."
+read*about*square*knot	kiwix-search reef knot 2>/dev/null || echo "search your kiwix library for: reef knot. install kiwix-tools for offline search."
 how*to*tie*a*clove*hitch	echo "Two half-hitches same direction around post. Quick temporary hold. Wrap, cross over, wrap again, tuck under second wrap."
-explain*clove*hitch	kiwix-search clove hitch
-read*about*clove*hitch	kiwix-search clove hitch
+explain*clove*hitch	kiwix-search clove hitch 2>/dev/null || echo "search your kiwix library for: clove hitch. install kiwix-tools for offline search."
+read*about*clove*hitch	kiwix-search clove hitch 2>/dev/null || echo "search your kiwix library for: clove hitch. install kiwix-tools for offline search."
 how*to*start*a*fire	echo "Tinder (dry grass/bark shavings) → kindling (pencil-thick sticks) → fuel (arm-thick wood). Teepee or log cabin lay. Shield from wind."
-explain*fire*starting	kiwix-search fire making
-read*about*fire*starting	kiwix-search fire making
+explain*fire*starting	kiwix-search fire making 2>/dev/null || echo "search your kiwix library for: fire making. install kiwix-tools for offline search."
+read*about*fire*starting	kiwix-search fire making 2>/dev/null || echo "search your kiwix library for: fire making. install kiwix-tools for offline search."
 how*to*purify*water	echo "Boil 1 min (3 min >6500ft). Or: 2 drops bleach (6% sodium hypochlorite) per quart, wait 30 min. Or commercial filter <0.2 micron."
-explain*water*purification	kiwix-search water purification
-read*about*water*purification	kiwix-search water purification
+explain*water*purification	kiwix-search water purification 2>/dev/null || echo "search your kiwix library for: water purification. install kiwix-tools for offline search."
+read*about*water*purification	kiwix-search water purification 2>/dev/null || echo "search your kiwix library for: water purification. install kiwix-tools for offline search."
 how*to*find*north	echo "Stick shadow: mark tip, wait 15 min, mark again. Line between marks runs E-W, perpendicular is N-S. Night: Polaris at end of Little Dipper handle."
-explain*finding*north	kiwix-search celestial navigation
-read*about*finding*north	kiwix-search celestial navigation
+explain*finding*north	kiwix-search celestial navigation 2>/dev/null || echo "search your kiwix library for: celestial navigation. install kiwix-tools for offline search."
+read*about*finding*north	kiwix-search celestial navigation 2>/dev/null || echo "search your kiwix library for: celestial navigation. install kiwix-tools for offline search."
 how*to*build*a*shelter	echo "Lean-to: ridgepole between two trees at 45°. Layer branches, then leaves/debris 2-3ft thick. Opening away from wind. Insulate ground."
-explain*shelter*building	kiwix-search survival shelter
-read*about*shelter*building	kiwix-search survival shelter
+explain*shelter*building	kiwix-search survival shelter 2>/dev/null || echo "search your kiwix library for: survival shelter. install kiwix-tools for offline search."
+read*about*shelter*building	kiwix-search survival shelter 2>/dev/null || echo "search your kiwix library for: survival shelter. install kiwix-tools for offline search."
 what*is*hypothermia	echo "Core temp <95°F. Shivering, confusion, slurred speech. Remove wet clothes, insulate, warm center (armpits/groin). No alcohol. Gentle handling."
-explain*hypothermia	kiwix-search hypothermia
-read*about*hypothermia	kiwix-search hypothermia
+explain*hypothermia	kiwix-search hypothermia 2>/dev/null || echo "search your kiwix library for: hypothermia. install kiwix-tools for offline search."
+read*about*hypothermia	kiwix-search hypothermia 2>/dev/null || echo "search your kiwix library for: hypothermia. install kiwix-tools for offline search."
 what*is*heat*stroke	echo "Core temp >104°F, no sweating, confusion, hot red skin. EMERGENCY. Cool immediately: ice packs neck/armpits/groin, mist+fan. Call 911."
-explain*heat*stroke	kiwix-search heat stroke
-read*about*heat*stroke	kiwix-search heat stroke
+explain*heat*stroke	kiwix-search heat stroke 2>/dev/null || echo "search your kiwix library for: heat stroke. install kiwix-tools for offline search."
+read*about*heat*stroke	kiwix-search heat stroke 2>/dev/null || echo "search your kiwix library for: heat stroke. install kiwix-tools for offline search."
 what*to*do*for*snakebite	echo "Stay calm, immobilize limb at/below heart level. Remove rings/watches. Mark swelling edge+time. NO tourniquet, NO cutting, NO sucking. ER now."
-explain*snakebite	kiwix-search snake bite
-read*about*snakebite	kiwix-search snake bite
+explain*snakebite	kiwix-search snake bite 2>/dev/null || echo "search your kiwix library for: snake bite. install kiwix-tools for offline search."
+read*about*snakebite	kiwix-search snake bite 2>/dev/null || echo "search your kiwix library for: snake bite. install kiwix-tools for offline search."
 how*to*signal*for*help	echo "Three of anything: 3 fires, 3 whistle blasts, 3 mirror flashes. Ground-to-air: large X = need help, V = need assistance, I = need medical."
-explain*signaling*for*help	kiwix-search distress signal
-read*about*signaling*for*help	kiwix-search distress signal
+explain*signaling*for*help	kiwix-search distress signal 2>/dev/null || echo "search your kiwix library for: distress signal. install kiwix-tools for offline search."
+read*about*signaling*for*help	kiwix-search distress signal 2>/dev/null || echo "search your kiwix library for: distress signal. install kiwix-tools for offline search."
 wire*gauge*for*20*amp	echo "12 AWG copper (20A). 14 AWG = 15A. 10 AWG = 30A. Romex NM-B for residential. Derate for long runs >50ft or bundling."
-explain*wire*gauge	kiwix-search American wire gauge
-read*about*wire*gauge	kiwix-search American wire gauge
+explain*wire*gauge	kiwix-search American wire gauge 2>/dev/null || echo "search your kiwix library for: American wire gauge. install kiwix-tools for offline search."
+read*about*wire*gauge	kiwix-search American wire gauge 2>/dev/null || echo "search your kiwix library for: American wire gauge. install kiwix-tools for offline search."
 drill*bit*for*quarter*bolt	echo "1/4-20 tap drill: #7 (0.201in). Clearance hole: 17/64in. For lag bolt pilot hole: 5/32in softwood, 3/16in hardwood."
-explain*drill*bit*sizes	kiwix-search drill bit sizes
-read*about*drill*bit*sizes	kiwix-search drill bit sizes
+explain*drill*bit*sizes	kiwix-search drill bit sizes 2>/dev/null || echo "search your kiwix library for: drill bit sizes. install kiwix-tools for offline search."
+read*about*drill*bit*sizes	kiwix-search drill bit sizes 2>/dev/null || echo "search your kiwix library for: drill bit sizes. install kiwix-tools for offline search."
 what*are*common*torque*specs	echo "1/4-20: 75 in-lb. 5/16-18: 132 in-lb. 3/8-16: 264 in-lb. 1/2-13: 636 in-lb. Grade 5 steel, dry. Lubed: reduce ~25%."
-explain*torque*specs	kiwix-search torque
-read*about*torque*specs	kiwix-search torque
+explain*torque*specs	kiwix-search torque 2>/dev/null || echo "search your kiwix library for: torque. install kiwix-tools for offline search."
+read*about*torque*specs	kiwix-search torque 2>/dev/null || echo "search your kiwix library for: torque. install kiwix-tools for offline search."
 how*to*calculate*board*feet	echo "Thickness(in) × Width(in) × Length(ft) / 12. Example: 2×6×8ft = 8 board feet. Nominal dimensions, not actual."
-explain*board*foot	kiwix-search board foot
-read*about*board*foot	kiwix-search board foot
+explain*board*foot	kiwix-search board foot 2>/dev/null || echo "search your kiwix library for: board foot. install kiwix-tools for offline search."
+read*about*board*foot	kiwix-search board foot 2>/dev/null || echo "search your kiwix library for: board foot. install kiwix-tools for offline search."
 what*is*on*center*spacing	echo "16in OC standard for walls/floors. 24in OC for some walls, roof rafters. Measure center-to-center of framing members."
-explain*on*center*spacing	kiwix-search wall stud
-read*about*on*center*spacing	kiwix-search wall stud
+explain*on*center*spacing	kiwix-search wall stud 2>/dev/null || echo "search your kiwix library for: wall stud. install kiwix-tools for offline search."
+read*about*on*center*spacing	kiwix-search wall stud 2>/dev/null || echo "search your kiwix library for: wall stud. install kiwix-tools for offline search."
 what*is*joist*span	echo "2×8 SPF #2 at 16in OC: ~12ft floor span. 2×10: ~15ft. 2×12: ~18ft. Check local code tables. Dead+live load 50 psf typical."
-explain*joist*span	kiwix-search joist
-read*about*joist*span	kiwix-search joist
+explain*joist*span	kiwix-search joist 2>/dev/null || echo "search your kiwix library for: joist. install kiwix-tools for offline search."
+read*about*joist*span	kiwix-search joist 2>/dev/null || echo "search your kiwix library for: joist. install kiwix-tools for offline search."
 what*are*common*nail*sizes	echo "8d=2.5in, 10d=3in, 16d=3.5in. 'd' = penny. Framing: 16d common. Sheathing: 8d. Finish: 6d-8d finish nails. Ring shank for decking."
-explain*nail*sizes	kiwix-search nail (fastener)
-read*about*nail*sizes	kiwix-search nail (fastener)
+explain*nail*sizes	kiwix-search nail (fastener) 2>/dev/null || echo "search your kiwix library for: nail (fastener). install kiwix-tools for offline search."
+read*about*nail*sizes	kiwix-search nail (fastener) 2>/dev/null || echo "search your kiwix library for: nail (fastener). install kiwix-tools for offline search."
 what*are*pipe*thread*sizes	echo "NPT: 1/2in pipe = 0.84in OD, 14 TPI. 3/4in = 1.05in OD, 14 TPI. Use Teflon tape on male threads. 1.5-3 wraps clockwise."
-explain*pipe*threads	kiwix-search national pipe thread
-read*about*pipe*threads	kiwix-search national pipe thread
+explain*pipe*threads	kiwix-search national pipe thread 2>/dev/null || echo "search your kiwix library for: national pipe thread. install kiwix-tools for offline search."
+read*about*pipe*threads	kiwix-search national pipe thread 2>/dev/null || echo "search your kiwix library for: national pipe thread. install kiwix-tools for offline search."
 when*to*plant*tomatoes	echo "After last frost, soil >60°F. Start indoors 6-8 weeks before last frost. Zone 7: mid-April transplant. Zone 5: late May."
-explain*planting*tomatoes	kiwix-search tomato cultivation
-read*about*planting*tomatoes	kiwix-search tomato cultivation
+explain*planting*tomatoes	kiwix-search tomato cultivation 2>/dev/null || echo "search your kiwix library for: tomato cultivation. install kiwix-tools for offline search."
+read*about*planting*tomatoes	kiwix-search tomato cultivation 2>/dev/null || echo "search your kiwix library for: tomato cultivation. install kiwix-tools for offline search."
 what*is*first*frost*date	echo "Zone 5: Oct 1-15. Zone 6: Oct 15-30. Zone 7: Nov 1-15. Zone 8: Nov 15-Dec 15. Check NOAA for your station's 50% probability date."
-explain*first*frost	kiwix-search frost
-read*about*first*frost	kiwix-search frost
+explain*first*frost	kiwix-search frost 2>/dev/null || echo "search your kiwix library for: frost. install kiwix-tools for offline search."
+read*about*first*frost	kiwix-search frost 2>/dev/null || echo "search your kiwix library for: frost. install kiwix-tools for offline search."
 what*are*moon*phases	echo "New → Waxing Crescent → First Quarter → Waxing Gibbous → Full → Waning Gibbous → Last Quarter → Waning Crescent. Cycle: 29.53 days."
-explain*moon*phases	kiwix-search lunar phase
-read*about*moon*phases	kiwix-search lunar phase
+explain*moon*phases	kiwix-search lunar phase 2>/dev/null || echo "search your kiwix library for: lunar phase. install kiwix-tools for offline search."
+read*about*moon*phases	kiwix-search lunar phase 2>/dev/null || echo "search your kiwix library for: lunar phase. install kiwix-tools for offline search."
 when*is*the*solstice	echo "Summer solstice: ~June 20-21 (longest day). Winter solstice: ~Dec 21-22 (shortest day). Northern hemisphere. Reversed in south."
-explain*solstice	kiwix-search solstice
-read*about*solstice	kiwix-search solstice
+explain*solstice	kiwix-search solstice 2>/dev/null || echo "search your kiwix library for: solstice. install kiwix-tools for offline search."
+read*about*solstice	kiwix-search solstice 2>/dev/null || echo "search your kiwix library for: solstice. install kiwix-tools for offline search."
 when*is*the*equinox	echo "Vernal equinox: ~March 20. Autumnal equinox: ~Sept 22. Day and night roughly equal. Marks astronomical spring/fall."
-explain*equinox	kiwix-search equinox
-read*about*equinox	kiwix-search equinox
+explain*equinox	kiwix-search equinox 2>/dev/null || echo "search your kiwix library for: equinox. install kiwix-tools for offline search."
+read*about*equinox	kiwix-search equinox 2>/dev/null || echo "search your kiwix library for: equinox. install kiwix-tools for offline search."
 what*time*is*sunrise	echo "Varies by latitude/date. Rough guide 40°N: Jun 21 ~5:30am, Dec 21 ~7:15am, equinoxes ~6:45am. Use NOAA solar calculator for exact."
-explain*sunrise	kiwix-search sunrise
-read*about*sunrise	kiwix-search sunrise
+explain*sunrise	kiwix-search sunrise 2>/dev/null || echo "search your kiwix library for: sunrise. install kiwix-tools for offline search."
+read*about*sunrise	kiwix-search sunrise 2>/dev/null || echo "search your kiwix library for: sunrise. install kiwix-tools for offline search."
 what*are*degree*days	echo "GDD = (daily high + daily low)/2 − base temp. Corn base: 50°F. Accumulate daily from planting. Corn silking: ~1400 GDD."
-explain*degree*days	kiwix-search growing degree day
-read*about*degree*days	kiwix-search growing degree day
+explain*degree*days	kiwix-search growing degree day 2>/dev/null || echo "search your kiwix library for: growing degree day. install kiwix-tools for offline search."
+read*about*degree*days	kiwix-search growing degree day 2>/dev/null || echo "search your kiwix library for: growing degree day. install kiwix-tools for offline search."
 what*are*hardiness*zones	echo "USDA zones by min winter temp. Zone 5: -20 to -10°F. Zone 7: 0 to 10°F. Zone 9: 20 to 30°F. Check planthardiness.ars.usda.gov."
-explain*hardiness*zones	kiwix-search hardiness zone
-read*about*hardiness*zones	kiwix-search hardiness zone
+explain*hardiness*zones	kiwix-search hardiness zone 2>/dev/null || echo "search your kiwix library for: hardiness zone. install kiwix-tools for offline search."
+read*about*hardiness*zones	kiwix-search hardiness zone 2>/dev/null || echo "search your kiwix library for: hardiness zone. install kiwix-tools for offline search."
 when*to*harvest*garlic	echo "When lower 3-4 leaves brown, upper 4-5 still green. Usually mid-July zone 5-7. Stop watering 2 weeks before. Cure 2-4 weeks in shade."
-explain*harvesting*garlic	kiwix-search garlic
-read*about*harvesting*garlic	kiwix-search garlic
+explain*harvesting*garlic	kiwix-search garlic 2>/dev/null || echo "search your kiwix library for: garlic. install kiwix-tools for offline search."
+read*about*harvesting*garlic	kiwix-search garlic 2>/dev/null || echo "search your kiwix library for: garlic. install kiwix-tools for offline search."
 how*to*make*a*roux	echo "Equal parts fat and flour by weight. Melt butter, whisk in flour. White: 2 min. Blond: 5 min. Dark: 15-20 min. Low-medium heat, constant stirring."
-explain*roux	kiwix-search roux
-read*about*roux	kiwix-search roux
+explain*roux	kiwix-search roux 2>/dev/null || echo "search your kiwix library for: roux. install kiwix-tools for offline search."
+read*about*roux	kiwix-search roux 2>/dev/null || echo "search your kiwix library for: roux. install kiwix-tools for offline search."
 how*to*make*sourdough*starter	echo "Day 1: 50g flour + 50g water. Daily: discard half, feed 50g flour + 50g water. Active by day 5-7. Doubles in 4-6hr when ready. Room temp."
-explain*sourdough*starter	kiwix-search sourdough
-read*about*sourdough*starter	kiwix-search sourdough
+explain*sourdough*starter	kiwix-search sourdough 2>/dev/null || echo "search your kiwix library for: sourdough. install kiwix-tools for offline search."
+read*about*sourdough*starter	kiwix-search sourdough 2>/dev/null || echo "search your kiwix library for: sourdough. install kiwix-tools for offline search."
 how*to*proof*bread	echo "Bulk ferment: 75-78°F, 4-6hr or until doubled. Shape, then cold retard 12-16hr in fridge. Poke test: indent springs back slowly = ready."
-explain*bread*proofing	kiwix-search proofing (baking)
-read*about*bread*proofing	kiwix-search proofing (baking)
+explain*bread*proofing	kiwix-search proofing (baking) 2>/dev/null || echo "search your kiwix library for: proofing (baking). install kiwix-tools for offline search."
+read*about*bread*proofing	kiwix-search proofing (baking) 2>/dev/null || echo "search your kiwix library for: proofing (baking). install kiwix-tools for offline search."
 how*to*sharpen*a*knife	echo "Coarse stone (400) → fine stone (1000) → strop. 15-20° angle. Edge leading strokes. 5-10 passes per side. Test: slice paper cleanly."
-explain*knife*sharpening	kiwix-search sharpening
-read*about*knife*sharpening	kiwix-search sharpening
+explain*knife*sharpening	kiwix-search sharpening 2>/dev/null || echo "search your kiwix library for: sharpening. install kiwix-tools for offline search."
+read*about*knife*sharpening	kiwix-search sharpening 2>/dev/null || echo "search your kiwix library for: sharpening. install kiwix-tools for offline search."
 how*to*season*cast*iron	echo "Wash, dry completely. Thin coat of flaxseed/crisco oil, wipe until looks dry. Bake upside down 450°F 1hr. Cool in oven. Repeat 3-6x."
-explain*cast*iron*seasoning	kiwix-search cast iron cookware
-read*about*cast*iron*seasoning	kiwix-search cast iron cookware
+explain*cast*iron*seasoning	kiwix-search cast iron cookware 2>/dev/null || echo "search your kiwix library for: cast iron cookware. install kiwix-tools for offline search."
+read*about*cast*iron*seasoning	kiwix-search cast iron cookware 2>/dev/null || echo "search your kiwix library for: cast iron cookware. install kiwix-tools for offline search."
 how*to*smoke*meat	echo "Low and slow: 225-250°F. Brisket: 1-1.5hr/lb to 203°F internal. Ribs 3-2-1 method (smoke/wrap/glaze). Rest 30-60 min after."
-explain*smoking*meat	kiwix-search smoking (cooking)
-read*about*smoking*meat	kiwix-search smoking (cooking)
+explain*smoking*meat	kiwix-search smoking (cooking) 2>/dev/null || echo "search your kiwix library for: smoking (cooking). install kiwix-tools for offline search."
+read*about*smoking*meat	kiwix-search smoking (cooking) 2>/dev/null || echo "search your kiwix library for: smoking (cooking). install kiwix-tools for offline search."
 what*is*canning	echo "Water bath: high-acid foods (fruit, pickles, tomatoes+acid), 212°F. Pressure canning: low-acid (meat, veg), 240°F/10-15 PSI. Follow NCHFP tested recipes."
-explain*canning	kiwix-search canning
-read*about*canning	kiwix-search canning
+explain*canning	kiwix-search canning 2>/dev/null || echo "search your kiwix library for: canning. install kiwix-tools for offline search."
+read*about*canning	kiwix-search canning 2>/dev/null || echo "search your kiwix library for: canning. install kiwix-tools for offline search."
 what*is*fermentation	echo "Anaerobic microbial conversion. Lacto-fermentation: 2-3% salt brine, submerge veg, room temp 3-7 days. Bubbles = CO2 = working. Refrigerate to slow."
-explain*fermentation	kiwix-search fermentation
-read*about*fermentation	kiwix-search fermentation
+explain*fermentation	kiwix-search fermentation 2>/dev/null || echo "search your kiwix library for: fermentation. install kiwix-tools for offline search."
+read*about*fermentation	kiwix-search fermentation 2>/dev/null || echo "search your kiwix library for: fermentation. install kiwix-tools for offline search."
 what*is*active*vs*passive*voice	echo "Active: subject acts (The dog bit the man). Passive: subject receives (The man was bitten). Prefer active. Use passive when actor is unknown or irrelevant."
-explain*active*passive*voice	kiwix-search active voice
-read*about*active*passive*voice	kiwix-search active voice
+explain*active*passive*voice	kiwix-search active voice 2>/dev/null || echo "search your kiwix library for: active voice. install kiwix-tools for offline search."
+read*about*active*passive*voice	kiwix-search active voice 2>/dev/null || echo "search your kiwix library for: active voice. install kiwix-tools for offline search."
 what*is*omit*needless*words	echo "Strunk Rule 17: 'Vigorous writing is concise.' Cut: the fact that, who is, which was, the question as to whether, there is/are, it is...that."
-explain*omit*needless*words	kiwix-search The Elements of Style
-read*about*omit*needless*words	kiwix-search The Elements of Style
+explain*omit*needless*words	kiwix-search The Elements of Style 2>/dev/null || echo "search your kiwix library for: The Elements of Style. install kiwix-tools for offline search."
+read*about*omit*needless*words	kiwix-search The Elements of Style 2>/dev/null || echo "search your kiwix library for: The Elements of Style. install kiwix-tools for offline search."
 what*is*parallel*construction	echo "Match grammatical form in lists/pairs. Wrong: 'to sing, dancing, and played.' Right: 'to sing, to dance, and to play.' Applies to correlatives (both/and, not only/but also)."
-explain*parallel*construction	kiwix-search parallelism (grammar)
-read*about*parallel*construction	kiwix-search parallelism (grammar)
+explain*parallel*construction	kiwix-search parallelism (grammar) 2>/dev/null || echo "search your kiwix library for: parallelism (grammar). install kiwix-tools for offline search."
+read*about*parallel*construction	kiwix-search parallelism (grammar) 2>/dev/null || echo "search your kiwix library for: parallelism (grammar). install kiwix-tools for offline search."
 what*is*a*dangling*modifier	echo "Modifier with no clear subject. Wrong: 'Walking to school, the rain started.' (Rain wasn't walking.) Right: 'Walking to school, I got caught in the rain.'"
-explain*dangling*modifier	kiwix-search dangling modifier
-read*about*dangling*modifier	kiwix-search dangling modifier
+explain*dangling*modifier	kiwix-search dangling modifier 2>/dev/null || echo "search your kiwix library for: dangling modifier. install kiwix-tools for offline search."
+read*about*dangling*modifier	kiwix-search dangling modifier 2>/dev/null || echo "search your kiwix library for: dangling modifier. install kiwix-tools for offline search."
 what*is*a*comma*splice	echo "Two independent clauses joined by only a comma. Wrong: 'It's cold, I need a coat.' Fix: semicolon, period, or conjunction. 'It's cold; I need a coat.'"
-explain*comma*splice	kiwix-search comma splice
-read*about*comma*splice	kiwix-search comma splice
+explain*comma*splice	kiwix-search comma splice 2>/dev/null || echo "search your kiwix library for: comma splice. install kiwix-tools for offline search."
+read*about*comma*splice	kiwix-search comma splice 2>/dev/null || echo "search your kiwix library for: comma splice. install kiwix-tools for offline search."
 what*are*poker*hand*rankings	echo "Royal flush > straight flush > four of a kind > full house > flush > straight > three of a kind > two pair > one pair > high card."
-explain*poker*hands	kiwix-search poker hand
-read*about*poker*hands	kiwix-search poker hand
+explain*poker*hands	kiwix-search poker hand 2>/dev/null || echo "search your kiwix library for: poker hand. install kiwix-tools for offline search."
+read*about*poker*hands	kiwix-search poker hand 2>/dev/null || echo "search your kiwix library for: poker hand. install kiwix-tools for offline search."
 how*do*chess*pieces*move	echo "King:1 any dir. Queen:any dist any dir. Rook:straight lines. Bishop:diagonals. Knight:L-shape (2+1), jumps. Pawn:forward 1 (2 from start), captures diagonal."
-explain*chess*pieces	kiwix-search chess piece
-read*about*chess*pieces	kiwix-search chess piece
+explain*chess*pieces	kiwix-search chess piece 2>/dev/null || echo "search your kiwix library for: chess piece. install kiwix-tools for offline search."
+read*about*chess*pieces	kiwix-search chess piece 2>/dev/null || echo "search your kiwix library for: chess piece. install kiwix-tools for offline search."
 how*to*play*go	echo "Black/white alternate placing stones on intersections. Surround territory. Capture by filling all liberties. Komi: white gets 6.5 points. Most territory wins."
-explain*go	kiwix-search go (game)
-read*about*go	kiwix-search go (game)
+explain*go	kiwix-search go (game) 2>/dev/null || echo "search your kiwix library for: go (game). install kiwix-tools for offline search."
+read*about*go	kiwix-search go (game) 2>/dev/null || echo "search your kiwix library for: go (game). install kiwix-tools for offline search."
 how*to*score*cribbage	echo "15s=2pts each combo. Pairs=2. Runs=1/card. Flush=4-5. Nobs (J matching starter)=1. Go=1. Last card=1. 31=2. Game to 121."
-explain*cribbage	kiwix-search cribbage
-read*about*cribbage	kiwix-search cribbage
+explain*cribbage	kiwix-search cribbage 2>/dev/null || echo "search your kiwix library for: cribbage. install kiwix-tools for offline search."
+read*about*cribbage	kiwix-search cribbage 2>/dev/null || echo "search your kiwix library for: cribbage. install kiwix-tools for offline search."
 # --- kids / gaming / homework / curiosity ---
-*minecraft*	echo "Minecraft is a game where you build things out of blocks and explore infinite worlds. You can mine resources, craft tools, build houses, and survive against monsters at night."
 *crafting table*	echo "Place 4 wood planks in a 2x2 crafting grid to make a crafting table. It gives you a 3x3 grid to make tools, weapons, and more."
 *beat the ender dragon*	echo "1) Find a stronghold using Eyes of Ender. 2) Enter the End portal. 3) Destroy the End crystals on top of the obsidian towers. 4) Attack the dragon when it swoops down. Bring a bow, arrows, and good armor!"
-*roblox*not*load*	echo "Try: 1) Restart Roblox. 2) Restart your computer. 3) Check your internet connection. 4) Make sure your system is up to date."
-*roblox*slow*	echo "Close other programs to free up memory. Lower the graphics quality in Roblox settings. Make sure nothing else is using your internet."
-*what*roblox*	echo "Roblox is a platform where people make and share games. You can play millions of different games other people created, or learn to make your own."
-*what*fortnite*	echo "Fortnite is a game where 100 players drop onto an island and the last one standing wins. You find weapons, build structures, and the play area shrinks over time."
 *battle royale*	echo "A battle royale is a type of game where many players compete and the last person or team alive wins. The play area gets smaller to push everyone together."
-*what*creeper*	echo "A creeper is a green monster in Minecraft that sneaks up on you and explodes. If you hear a hissing sound, run! They drop gunpowder when defeated."
-*what*skeleton*minecraft*	echo "Skeletons are hostile mobs in Minecraft that shoot arrows at you. They spawn in the dark, burn in sunlight, and drop bones and arrows."
 *what*the nether*	echo "The Nether is a dangerous dimension in Minecraft full of lava, fire, and tough mobs like ghasts and piglins. You get there by building a portal out of obsidian."
 *what*steam*	echo "Steam is an app where you can buy, download, and play PC games. It also lets you chat with friends and join game communities."
 *how*install*game*	echo "On Linux: check your package manager (like Software Center), Steam, or the game's website. Download the installer and follow the instructions."
@@ -1651,10 +1596,7 @@ read*about*cribbage	kiwix-search cribbage
 *how*undo*	echo "Press Ctrl+Z to undo your last action. You can press it multiple times to undo more steps. Ctrl+Y or Ctrl+Shift+Z usually redoes what you undid."
 #
 # --- kids: missing entries from review ---
-can*i*play*minecraft*on*this	echo "Yes! Install with: sudo apt install minecraft-launcher (or download from minecraft.net). You need a Minecraft account."
-can*i*play*roblox*on*this	echo "Yes! Download from roblox.com/download. You need a Roblox account."
 how*to*download*minecraft	echo "Go to minecraft.net, log in, download the Linux version, and install it. Ask a parent if you need help with the account."
-how*to*download*roblox	echo "Go to roblox.com/download. Install the app. Ask a parent if you need an account."
 how*to*get*robux	echo "Robux costs real money. Ask a parent before buying any. You can earn some by making games in Roblox Studio."
 what*games*can*i*play	echo "Minecraft, Roblox, and browser games work on this computer. Type 'can i play' and the name of a game to check."
 how*to*get*games	echo "Ask a parent to help install games. Some games are free (Roblox). Some cost money (Minecraft). Browser games work right away."
@@ -1671,10 +1613,8 @@ how*to*make*enchanting*table	echo "1 book on top, 2 diamonds on the sides, 4 obs
 what*is*the*nether	echo "A scary fire dimension you reach by building a portal out of obsidian (10 blocks minimum) and lighting it with flint and steel."
 #
 # --- pokemon ---
-*pokemon*	echo "Pokemon is a game where you catch, train, and battle creatures. There are over 1000 Pokemon. The most famous is Pikachu."
 who*is*pikachu	echo "Pikachu is an Electric-type Pokemon. It's yellow with red cheeks and a lightning bolt tail. Ash's partner in the show."
 who*is*the*strongest*pokemon	echo "Arceus is called the creator of the Pokemon universe. Mewtwo is the strongest you can actually catch in most games."
-what*is*a*pokemon*type	echo "Every Pokemon has a type like Fire, Water, Grass, Electric. Types are strong or weak against other types, like rock-paper-scissors."
 #
 # --- youtube / video ---
 what*is*youtube	echo "YouTube is a website where people share videos. You can watch almost anything: music, games, science, funny stuff."
@@ -1713,18 +1653,11 @@ how*many*hours*in*a*day	echo "24 hours in a day."
 *hate*myself*	echo "Tell a grown-up you trust how you feel. If you can't think of one, call or text 988. You deserve help."
 #
 # --- clinical proper nouns (confabulation-unsafe at T1) ---
-what*is*aim*aba	echo "AIM: Accept, Identify, Move. Mark Dixon's ACT-derived curriculum for building psychological flexibility in ABA contexts."
 what*is*aim*program	echo "AIM: Accept, Identify, Move. Mark Dixon's ACT-derived curriculum. Distinct from PEAK."
 what*is*an*antecedent	echo "A stimulus or event that precedes a behavior. The A in ABC (antecedent-behavior-consequence). Identifies what triggers the behavior."
 what*is*abc*aba	echo "Antecedent, Behavior, Consequence. Three-term contingency. Foundation of functional assessment in ABA."
 what*are*reinforcement*principles	echo "Consequences that increase future probability of behavior. Positive: adding a stimulus. Negative: removing a stimulus. Defined by effect on behavior, not by valence."
 what*is*peak	echo "PEAK: Promoting the Emergence of Advanced Knowledge. Dixon. Relational frame theory applied to skill acquisition."
-what*is*vb*mapp	echo "VB-MAPP: Verbal Behavior Milestones Assessment and Placement Program. Sundberg. Assesses language and social skills based on Skinner's verbal behavior."
-what*is*ablls	echo "ABLLS-R: Assessment of Basic Language and Learning Skills, Revised. Partington. Criterion-referenced assessment for children with ASD."
-what*is*essential*for*living	echo "Essential for Living (EFL). McGreevy curriculum. Skills assessment and curriculum for individuals with significant disabilities."
-what*is*functional*behavior*assessment	echo "FBA: systematic process to identify the function (purpose) of a behavior. Looks at antecedents, behavior, consequences to determine why the behavior occurs."
-what*is*behavior*intervention*plan	echo "BIP: written plan based on FBA results. Describes replacement behaviors, prevention strategies, and response procedures. Required for behaviors impeding learning."
-what*is*act*therapy	echo "Acceptance and Commitment Therapy. Hayes et al. Third-wave behavioral therapy. Six core processes: acceptance, defusion, present moment, self-as-context, values, committed action."
 #
 # --- web search / open URL (falls through from T0 before inference) ---
 # $input is in scope during eval from the handler
@@ -1734,21 +1667,147 @@ google*	q="${input#*google }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c
 look*up*	q="${input#*look up }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c start "https://duckduckgo.com/?q=$q" 2>/dev/null || xdg-open "https://duckduckgo.com/?q=$q" 2>/dev/null || open "https://duckduckgo.com/?q=$q"
 go*to*	q="${input#*go to }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q" 2>/dev/null || open "https://$q"
 open*site*	q="${input#*open site }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q" 2>/dev/null || open "https://$q"
-who*is*as*byatt	kiwix-search A. S. Byatt
-who*is*byatt	kiwix-search A. S. Byatt
 what*is*possession*byatt	echo "Possession: A Romance (1990). A.S. Byatt. Two modern scholars trace two Victorian poets whose secret correspondence mirrors their own. A novel about the act of research itself — what it costs to hold someone else's words."
 #
 # --- livingledger: formation authors and professors ---
-who*is*ted*st*martin	echo "Ted St. Martin. The Art of Shooting Baskets. The first man page the governor read on a driveway with a basketball. LIVINGLEDGER entry."
-who*is*gertrude*stein	kiwix-search Gertrude Stein
 what*is*tender*buttons	echo "Tender Buttons (1914). Gertrude Stein. Pre-freshman summer reading, DePaul honors program. The governor's honest response: nope."
-who*is*william*mcneill	echo "William McNeill. DePaul honors Introduction to Philosophy. The entry point. His journals are the earliest documented layer of the governor's self-as-first-trust-root. LIVINGLEDGER."
-who*is*sylvia*escarcega	echo "Sylvia Escarcega. DePaul. Part of the formation cohort across discipline and time. LIVINGLEDGER."
-who*is*charles*block	echo "Charles Block. Berkeley, possibly U of Chicago. Recommended Edinburgh Divinity for post-grad on the Nogales trip. The governor scoffed at divinity. The architecture arrived anyway. LIVINGLEDGER."
-who*is*charles*strain	echo "Charles Strain. DePaul. 40+ years, one of the most demanding and respected faculty. The postmodern critique testing ground. LIVINGLEDGER."
-who*is*david*jabon	echo "David Jabon. DePaul professor. LIVINGLEDGER entry."
-who*is*father*halstead	echo "Father James Halstead. DePaul religious studies. Business Ethics. Deep dive into Aristotle. LIVINGLEDGER."
-who*is*aronson	echo "Ronald Aronson. DePaul. Taught the Sartre course that sparked deep knowledge of Camus. Sartre was the counterexample. Camus was the correct choice. LIVINGLEDGER."
-who*is*franklin*perkins	echo "Franklin Perkins. DePaul. Great teacher of comparative literature learned in his 20s to earn a young PhD. LIVINGLEDGER."
-who*is*theresa*hinga	echo "Theresa Hinga. DePaul religious studies with cosmological focus. LIVINGLEDGER."
-who*is*peter*steeves	echo "Peter Steeves. DePaul professor. LIVINGLEDGER entry."
+*what*skeleton*minecraft*	echo "Skeletons are hostile mobs in Minecraft that shoot arrows at you. They spawn in the dark, burn in sunlight, and drop bones and arrows."
+can*i*play*minecraft*on*this	echo "Yes! Install with: download from minecraft.net. no package in standard repos. (or download from minecraft.net). You need a Minecraft account."
+what*is*a*pokemon*type	echo "Every Pokemon has a type like Fire, Water, Grass, Electric. Types are strong or weak against other types, like rock-paper-scissors."
+what*is*applied*behavior*analysis*	echo "ABA — systematic application of learning principles to improve socially significant behavior. evidence-based, data-driven"
+what*is*bcba*	echo "board certified behavior analyst — master's-level certification from BACB. designs and supervises ABA programs"
+what*is*rbt*	echo "registered behavior technician — paraprofessional cert from BACB. implements BIP under BCBA supervision. 40-hr training + competency assessment"
+what*is*dtt*	echo "discrete trial training — structured ABA teaching: SD (instruction) → response → consequence. massed trials, high repetition, table-based"
+what*is*net*teach*	echo "natural environment teaching — ABA instruction embedded in play/routines. child-led, uses motivation in context. contrasts with DTT"
+what*is*fba*	echo "functional behavior assessment — identifies function (why) of behavior: attention, escape, tangible, automatic. indirect + direct + experimental methods"
+what*is*functional*behavior*assessment*	echo "FBA — determines maintaining variables of behavior. methods: interview, ABC observation, functional analysis. drives BIP design"
+what*is*bip*	echo "behavior intervention plan — written plan based on FBA. includes antecedent strategies, replacement behaviors, consequence procedures, data collection"
+what*is*behavior*intervention*plan*	echo "BIP — function-based plan. antecedent modifications + teaching replacement behavior + consequence strategies. requires FBA"
+what*is*interobserver*agreement*	echo "IOA — percentage agreement between two independent observers on same behavior. standard: ≥80%. validates data reliability"
+what*is*ioa*	echo "interobserver agreement — two observers independently score same session. agreements/(agreements+disagreements) × 100. minimum 80% acceptable"
+what*is*session*note*	echo "documentation of ABA session: targets, data, behavior, caregiver interaction. required for billing and clinical record"
+what*is*data*collection*	echo "systematic recording of behavior: frequency, duration, latency, interval, trial-by-trial. basis for all ABA decision-making"
+what*is*graphing*	echo "visual display of behavioral data over time. standard: line graph, x=sessions, y=measure. level/trend/variability analysis drives decisions"
+what*is*837p*	echo "ANSI X12 837 Professional — electronic claim format for outpatient/professional services. replaces CMS-1500. submitted via clearinghouse"
+what*is*icd*10*	echo "ICD-10 — WHO diagnosis code set. ICD-10-CM for US clinical. format: letter + digits (F84.0 = autistic disorder). required on claims"
+what*is*cpt*code*	echo "current procedural terminology — AMA-owned procedure codes. 5 digits. category I (97153 = ABA adaptive behavior treatment), II, III. drives reimbursement"
+what*is*ehr*	echo "electronic health record — digital patient chart. longitudinal, multi-provider. distinct from EMR (single practice). FHIR enables interoperability"
+what*is*emr*	echo "electronic medical record — digital chart within one practice. EHR is broader (cross-provider, longitudinal). terms often used interchangeably"
+what*is*clearinghouse*	echo "intermediary that validates/routes electronic claims between provider and payer. scrubs errors before submission. examples: Office Ally, Availity, Trizetto"
+what*is*prior*auth*	echo "prior authorization — payer approval required before service. submit clinical justification. denial = no payment. common for ABA (initial + reauth)"
+what*is*claim*denial*	echo "payer refuses payment on claim. common reasons: auth missing, timely filing, coding error, medical necessity. appeal with corrected claim or documentation"
+what*is*encounter*form*	echo "clinical documentation form capturing visit details: diagnoses, procedures, time. basis for claim generation. superbill is the billing-facing version"
+*what*roblox*	echo "Roblox is a platform where people make and share games. You can play millions of different games other people created, or learn to make your own."
+*what*fortnite*	echo "Fortnite is a game where 100 players drop onto an island and the last one standing wins. You find weapons, build structures, and the play area shrinks over time."
+*what*creeper*	echo "A creeper is a green monster in Minecraft that sneaks up on you and explodes. If you hear a hissing sound, run! They drop gunpowder when defeated."
+can*i*play*roblox*on*this	echo "Yes! Download from roblox.com/download. You need a Roblox account."
+how*to*download*roblox	echo "Go to roblox.com/download. Install the app. Ask a parent if you need an account."
+what*is*aim*aba	echo "AIM: Accept, Identify, Move. Mark Dixon's ACT-derived curriculum for building psychological flexibility in ABA contexts."
+what*is*vb*mapp	echo "VB-MAPP: Verbal Behavior Milestones Assessment and Placement Program. Sundberg. Assesses language and social skills based on Skinner's verbal behavior."
+what*is*ablls	echo "ABLLS-R: Assessment of Basic Language and Learning Skills, Revised. Partington. Criterion-referenced assessment for children with ASD."
+what*is*essential*for*living	echo "Essential for Living (EFL). McGreevy curriculum. Skills assessment and curriculum for individuals with significant disabilities."
+what*is*functional*behavior*assessment	echo "FBA: systematic process to identify the function (purpose) of a behavior. Looks at antecedents, behavior, consequences to determine why the behavior occurs."
+what*is*behavior*intervention*plan	echo "BIP: written plan based on FBA results. Describes replacement behaviors, prevention strategies, and response procedures. Required for behaviors impeding learning."
+what*is*act*therapy	echo "Acceptance and Commitment Therapy. Hayes et al. Third-wave behavioral therapy. Six core processes: acceptance, defusion, present moment, self-as-context, values, committed action."
+# --- content creation (aspirational child) ---
+*i*want*make*youtube*	echo "OBS to record, Kdenlive to edit, GIMP for thumbnails. All free. Pick one and start."
+*i*want*be*youtuber*	echo "OBS to record, Kdenlive to edit, upload it. That's the whole path. Make one video first."
+*how*start*youtube*	echo "Record something with OBS. Edit it in Kdenlive. Upload it. That's how everyone starts."
+*how*did*they*start*	echo "OBS for recording, Kdenlive for editing, GIMP for thumbnails, Audacity for audio. All free. They started with one video."
+*how*start*stream*	echo "OBS. Install it, add a Scene, add a Game Capture source, hit Start Streaming. That's the whole setup."
+*how*stream*	echo "OBS does the streaming. Free, open source, what actual streamers use. First step is adding a scene."
+*can*i*stream*for*free*	echo "Yes. OBS is free. Twitch is free. You need an account and OBS pointed at your stream key."
+*record*screen*	echo "OBS. Add a Display Capture source. Hit Start Recording. File lands wherever you set the output path."
+*record*game*	echo "OBS. Add a Game Capture source. It finds the window automatically. Hit record."
+*how*record*video*	echo "OBS. Download it, pick your camera or screen as a source, hit record."
+*edit*video*	echo "Kdenlive. Import your clip, drag it to the timeline, use the blade tool to cut, delete the bad parts, export."
+*cut*video*	echo "Kdenlive. Drag video in, click where you want to split, right-click Cut."
+*add*music*video*	echo "Kdenlive. Drag your audio file into the audio track below your video. Trim it to fit."
+*add*subtitles*	echo "Kdenlive has a subtitle track. Right-click the timeline, add subtitle track, type your lines at the right timestamps."
+*add*effects*video*	echo "Kdenlive has effects under the Effects panel. Drag one onto a clip. Start with nothing — cuts matter more."
+*speed*up*video*	echo "Kdenlive. Right-click clip, Speed, pick faster."
+*make*intro*	echo "Kdenlive. An intro is just a short clip at the front of your timeline. Make it under 5 seconds or skip it."
+*export*video*	echo "Kdenlive Render menu. MP4 is safe, pick resolution, wait for export, use the file."
+*make*thumbnail*	echo "GIMP. New image, 1280x720 pixels, paste a screenshot, add big readable text. Export as JPG."
+*make*logo*	echo "GIMP. New image, transparent background, type or draw something, export as PNG."
+*green*screen*	echo "OBS Filters. Add Chroma Key filter to a Video Capture source, pick green, adjust."
+*background*noise*	echo "Audacity. Select a moment of silence first, then Effects > Noise Reduction > Get Profile, then apply to the whole clip."
+*voice*sound*better*	echo "Audacity. Noise Reduction removes hiss. Amplify boosts level. Don't touch anything else yet."
+*remove*echo*	echo "Audacity can reduce it but can't fix a bad room. A blanket behind you helps more than software."
+*how*get*viewers*	echo "Ship something first. One video. Viewers come after content exists, not before."
+*live*youtube*	echo "OBS. Create a stream key in YouTube Studio, paste it in OBS Settings, go live."
+*overlay*logo*stream*	echo "OBS. Make the image in GIMP first, then OBS Sources > Image, position it."
+*record*multiple*camera*	echo "OBS. Add two Video Capture Devices as separate Sources, switch or scale them."
+# music: aspirational child, wants to make beats/songs, no DAW vocabulary
+*make*beat*	echo "Open LMMS. The Beat+Bassline editor is where beats live. Pick a drum kit, click the grid to turn on hits."
+*sound like*	echo "You can't copy their exact sound, but you can get close. Figure out their tempo and main instruments, then build it in LMMS."
+*make*song*	echo "In LMMS, the Song Editor is your canvas. Make drum patterns in Beat+Bassline, add melody with instrument tracks."
+*record*voice*	echo "Audacity is for recording. Plug in a mic, hit record, say your part, stop. Export it and import the file into LMMS."
+*how*add*bass*	echo "In LMMS add an instrument track, pick something low like ZynAddSubFX, then draw notes in the piano roll. Low notes = bass."
+*trap*	echo "Trap: fast hi-hats, slow heavy 808 bass, minimal kick. LMMS has samples for the drums and ZynAddSubFX can approximate an 808."
+*lo.fi*	echo "Lo-fi: 70-90 BPM, mellow chords, soft drums, maybe a vinyl crackle sample layered on top. All doable in LMMS."
+*loop*	echo "In LMMS's Song Editor, draw your pattern block and drag it to repeat. That's all a loop is."
+*remix*	echo "Audacity can open the original audio and let you cut and rearrange it. LMMS doesn't remix existing songs - different job."
+*change*tempo*	echo "The BPM counter is at the top of LMMS. Click it and type your number. Pop is usually 90-130, trap runs 130-150."
+*add*drums*	echo "Beat+Bassline editor in LMMS. Each row is a drum sound, each column is a beat division. Click to toggle hits on or off."
+*effects*voice*	echo "In Audacity, select your audio and go to Effect. Reverb makes it sound bigger. Compression evens out loud and quiet parts."
+*export*save*	echo "LMMS: File > Export. Pick WAV for quality or MP3 to share. WAV is bigger but nothing gets lost."
+*share*music*	echo "Export to MP3 in LMMS, then upload to SoundCloud. It's free to start and people can actually hear it."
+*add*melody*	echo "Add an instrument track in LMMS, double-click a segment to open the piano roll, then click notes onto the grid."
+*sound*professional*	echo "Use headphones when you mix, not speakers. Less reverb than you think you need. That gets you 80% of the way there."
+*how*start*making*music*	echo "Download LMMS (free). Open it. Make a drum beat first in Beat+Bassline. Everything else comes after you have a beat."
+*what*do*i*need*	echo "Just LMMS (free) and headphones. A keyboard controller helps eventually but you don't need one to start."
+*how*long*	echo "First beat that doesn't embarrass you: a few weeks of daily messing around. First song you're proud of: a few months. Worth it."
+*piano*roll*notes*	echo "The piano roll is where you draw the actual notes for melody and chords. Click to place, drag to resize, right-click to delete."
+# games: aspirational child, wants to make a game like ones they play, no engine vocabulary
+*make*game*like*minecraft*	echo "Voxel worlds like Minecraft are genuinely hard. Start with a 2D game first to learn how Godot works, then level up."
+*make*game*like*fortnite*	echo "A multiplayer shooter like Fortnite is years of work for whole studios. A 2D shooter? That's actually learnable. Start there."
+*make*game*like*mario*	echo "A platformer is a great first game. Godot's official docs have a full platformer tutorial. Do that one first, seriously."
+*character*move*	echo "In Godot, add a CharacterBody2D, attach a GDScript, and use move_and_slide(). The docs show a working example you can copy."
+*add*enemies*	echo "Enemies are just nodes with their own scripts. Start with one that moves toward the player. One behavior at a time."
+*make*a*world*	echo "In Godot, use a TileMap node for 2D worlds. You paint terrain with tiles like a stamp. Start small, one screen."
+*add*sound*	echo "Add an AudioStreamPlayer node, load your audio file into it, call play() from your script. Sounds are just files."
+*make*menu*	echo "Godot has a UI system. Add a Control node, put Button nodes inside it, connect the button's pressed signal to a function."
+*add*story*	echo "Story is just text on screen plus choices. Get a dialogue box working before you worry about branching paths."
+*publish*share*game*	echo "Godot exports to Windows, Mac, and HTML5. HTML5 means you can put it on a website and share a link. Set that up last."
+*add*score*	echo "Score is just a variable: var score = 0. Add to it when the player does something good. Show it with a Label node."
+*shooting*shoot*	echo "Bullets are their own scene. Spawn one, give it a script that moves forward, delete it when it hits something. Build it in pieces."
+*respawn*die*restart*	echo "Save the player's start position. When health hits zero, move the player back there. Add the death check before the respawn."
+*add*health*	echo "Health is a variable: var health = 100. Subtract when hit, check if it's zero, then trigger death. Show it with a ProgressBar node."
+*skins*costumes*outfits*	echo "Skins are just different image files on the same character. Swap the Sprite2D texture and save the player's pick in a variable."
+*multiplayer*	echo "Multiplayer is genuinely hard. Finish a single-player game first. Godot has a multiplayer API but it's not where to start."
+*what*language*code*	echo "Godot uses GDScript, which looks like Python. You don't need Python first. Follow examples, break things, look up errors."
+*how*start*making*game*	echo "Download Godot free from godotengine.org. Do the official 2D game tutorial in the docs. Don't skip it - it's actually good."
+*how*long*make*	echo "A tiny complete game takes 1-3 months of regular work. Something like Minecraft takes years. Start tiny and finish it."
+*art*draw*sprites*	echo "Draw sprites in Aseprite (cheap) or even MS Paint. Godot just loads the image files. The engine doesn't care where they came from."
+# --- free alternatives (economically motivated adult) ---
+*free*office*	echo "LibreOffice. Full suite, reads MS Office formats, no account."
+*free*word*processor*	echo "LibreOffice Writer. Reads and writes .docx."
+*free*spreadsheet*	echo "LibreOffice Calc. Compatible with Excel."
+*free*presentation*	echo "LibreOffice Impress. Opens .pptx."
+*free*photoshop*	echo "GIMP."
+*free*image*editor*	echo "GIMP for photos, Inkscape for vectors."
+*free*illustrator*	echo "Inkscape. SVG vector editor."
+*free*video*editor*	echo "Kdenlive. Timeline-based, handles 4K."
+*free*audio*editor*	echo "Audacity for editing. Ardour for multi-track."
+*free*accounting*	echo "GnuCash. Double-entry bookkeeping."
+*free*quickbooks*	echo "GnuCash."
+*free*media*server*	echo "Jellyfin. Self-hosted, no account required."
+*free*plex*alternative*	echo "Jellyfin."
+*alternative*to*adobe*	echo "GIMP, Inkscape, Kdenlive, Scribus. All free."
+*alternative*to*microsoft*office*	echo "LibreOffice."
+*without*subscription*	echo "GIMP, Kdenlive, Audacity, LibreOffice, Blender. No subscriptions."
+# --- open source by choice (mature adult) ---
+*self*host*media*	echo "Jellyfin."
+*self*host*cloud*	echo "Nextcloud."
+*self*host*photos*	echo "darktable for RAW. Immich or Nextcloud for library."
+*open*source*photo*editor*	echo "darktable for RAW. GIMP for raster."
+*privacy*dns*	echo "dnsmasq."
+*open*source*dns*	echo "dnsmasq for LAN. Unbound for recursive. Pi-hole for web UI."
+*open*source*firewall*	echo "OPNsense or pfSense."
+*no*telemetry*	echo "Open source is the verification. Read the source or trust the packager."
+*self*host*everything*	echo "Nextcloud, Jellyfin, Gitea, dnsmasq. All on one box."
+*own*my*data*	echo "Self-host. The moment it is on someone else's server, it is not yours."
+*local*first*	echo "LibreOffice, GIMP, Kdenlive, Audacity, darktable, GnuCash. All offline, all local."
+*open*source*daw*	echo "Ardour."
+*lightroom*alternative*	echo "darktable."
