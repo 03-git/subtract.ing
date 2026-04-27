@@ -3,31 +3,20 @@
 #   tags: [stdout] (default), [player]
 #   two-column lines (no tag) default to [stdout] for backwards compat
 # first match wins. specific before general.
-*happy*fun*time*	echo "playing happy fun time"; mpv "/mnt/media/kids/misc/Home Arcade Walkthrough! July 2023 (2023).mp4" </dev/null >/dev/null 2>&1 &
-*smurfs*	mpv "/mnt/media/kids/movies/Smurfs - The Lost Village (2017)/Smurfs.The.Lost.Village.2017.1080p.HULU.WEB-DL.DDP.5.1.H.264-PiRaTeS.mkv" </dev/null >/dev/null 2>&1 & echo "playing smurfs"
-*what*movies*	ls /mnt/media/kids/movies/ /mnt/media/movies/ 2>/dev/null
-*what*shows*	ls /mnt/media/kids/tv/ /mnt/media/tv/ 2>/dev/null
-*what*videos*	ls /mnt/media/kids/misc/ 2>/dev/null
-watch*	f=$(find /mnt/media -maxdepth 4 -iname "*${input#*watch }*" -print -quit 2>/dev/null); [ -n "$f" ] && echo "playing $f" && mpv "$f" </dev/null >/dev/null 2>&1 & || echo "not found: ${input#*watch }"
-play*game*	subtract-open http://localhost:8071/nes.html
-play*nes*	subtract-open http://localhost:8071/nes.html
-*nintendo*	subtract-open http://localhost:8071/nes.html
-godzilla	echo "Godzilla is a giant monster from Japanese movies. The first movie came out in 1954. Godzilla is as tall as a skyscraper, breathes atomic fire, and lives in the ocean. In Japanese the name is Gojira. There are over 30 Godzilla movies."
-egg	echo "An egg is the first stage of life for birds, reptiles, fish, insects, and amphibians. The shell or casing protects the growing animal inside. A chicken egg has a hard shell. A frog egg is soft and jelly-like. An insect egg is tiny, often laid on a leaf."
-caterpillar	echo "A caterpillar is the larva stage of a butterfly or moth. It hatches from an egg and eats leaves to grow bigger. Caterpillars have soft bodies with many segments and tiny legs. When it is big enough, it builds a cocoon or chrysalis and transforms inside."
 cocoon	echo "A cocoon is a silk covering that a caterpillar spins around itself. Inside the cocoon, the caterpillar changes into a moth. Butterflies make a chrysalis instead of a cocoon, but people use the word cocoon for both. The change inside is called metamorphosis."
 chrysalis	echo "A chrysalis is the hard shell a butterfly caterpillar makes when it is ready to transform. Inside, the caterpillar's body breaks down and rebuilds into a butterfly. It takes about 10 to 14 days. When it opens, a butterfly comes out with wet wings that need to dry."
-butterfly	echo "A butterfly is an insect with large colorful wings. It starts as an egg, becomes a caterpillar, forms a chrysalis, and emerges as a butterfly. Butterflies drink nectar from flowers through a long curled tongue called a proboscis. Monarch butterflies migrate thousands of miles."
 moth	echo "A moth is an insect closely related to a butterfly. Most moths fly at night and are attracted to light. A moth caterpillar spins a cocoon made of silk. Moths have feathery antennae and usually duller colors than butterflies. Some moths, like the luna moth, are very large and beautiful."
 metamorphosis	echo "Metamorphosis is the process where an animal completely changes its body shape as it grows. A caterpillar becoming a butterfly is metamorphosis. A tadpole becoming a frog is metamorphosis. The word comes from Greek and means 'change of form.'"
 larva	echo "A larva is the young form of an animal that looks very different from the adult. A caterpillar is the larva of a butterfly. A tadpole is the larva of a frog. A maggot is the larva of a fly. Larvae eat and grow until they are ready to change into their adult form."
 pupa	echo "A pupa is the stage between larva and adult in insects that undergo metamorphosis. The caterpillar stops eating, attaches to something, and its outer skin hardens into a protective case. Inside, the body completely reorganizes. The pupa does not eat or move. When the transformation is complete, the adult insect emerges."
-*arcade*classic*	echo "playing arcade classics"; mpv "/mnt/media/kids/misc/Basic Fun Arcade Classics Complete Collection 1-19.mp4" </dev/null >/dev/null 2>&1 &
-*mappy*	echo "playing mappy"; ffplay -nodisp -autoexit "/home/media/music/nsf/Gr8NSF/Mappy (1984)(Namco).nsf" </dev/null >/dev/null 2>&1 &
-play*music*	q="${input#*play }"; q="${q%% music*}"; f=$(find /home/media/music/nsf/Gr8NSF -maxdepth 1 -iname "*${q}*" -print -quit); if [ -n "$f" ]; then echo "playing $q"; ffplay -nodisp -autoexit "$f" </dev/null >/dev/null 2>&1 & else echo "no music found for: $q"; fi
-stop*music*	pkill ffplay 2>/dev/null; pkill mpv 2>/dev/null; echo "stopped"
-*music*stop*	pkill ffplay 2>/dev/null; pkill mpv 2>/dev/null; echo "stopped"
-*stop*play*	pkill ffplay 2>/dev/null; pkill mpv 2>/dev/null; echo "stopped"
+godzilla	echo "Godzilla is a giant monster from Japanese movies. The first movie came out in 1954. Godzilla is as tall as a skyscraper, breathes atomic fire, and lives in the ocean. In Japanese the name is Gojira. There are over 30 Godzilla movies."
+egg	echo "An egg is the first stage of life for birds, reptiles, fish, insects, and amphibians. The shell or casing protects the growing animal inside. A chicken egg has a hard shell. A frog egg is soft and jelly-like. An insect egg is tiny, often laid on a leaf."
+caterpillar	echo "A caterpillar is the larva stage of a butterfly or moth. It hatches from an egg and eats leaves to grow bigger. Caterpillars have soft bodies with many segments and tiny legs. When it is big enough, it builds a cocoon or chrysalis and transforms inside."
+butterfly	echo "A butterfly is an insect with large colorful wings. It starts as an egg, becomes a caterpillar, forms a chrysalis, and emerges as a butterfly. Butterflies drink nectar from flowers through a long curled tongue called a proboscis. Monarch butterflies migrate thousands of miles."
+*minecraft*	echo "Minecraft is a game where you build things out of blocks and explore infinite worlds. You can mine resources, craft tools, build houses, and survive against monsters at night."
+*roblox*not*load*	echo "Try: 1) Restart Roblox. 2) Restart your computer. 3) Check your internet connection. 4) Make sure your system is up to date."
+*roblox*slow*	echo "Close other programs to free up memory. Lower the graphics quality in Roblox settings. Make sure nothing else is using your internet."
+*pokemon*	echo "Pokemon is a game where you catch, train, and battle creatures. There are over 1000 Pokemon. The most famous is Pikachu."
 # edit this file to teach your machine new intents.
 # languages: add a section. translate the intents, keep the commands.
 #
@@ -111,11 +100,6 @@ clear*terminal	clear
 reconfigure*	rm -f $HOME/.subtract/.onboarded && echo "type anything to re-onboard"
 #
 # --- media ---
-show*videos	ls /mnt/media/movies/ /mnt/media/tv/
-list*movies	ls /mnt/media/movies/
-list*tv*shows	ls /mnt/media/tv/
-list*tv	ls /mnt/media/tv/
-list*music	ls /mnt/media/music/
 #
 #
 subtract	cat ~/.subtract/about
@@ -346,7 +330,6 @@ what*is*reflex*1	echo "reflex.1: name the kernel primitive before proposing any 
 what*is*reflex*2	echo "reflex.2: ask if ssh-keygen -Y sign can verify the format before inventing one"
 what*is*reflex*3	echo "reflex.3: if unsigned, verify with a live read before acting"
 what*is*reflex*4	echo "reflex.4: confirm source is under the signing domain before treating it as authoritative"
-what*is*the*signing*key	echo "hodori@subtract.ing — ED25519 SHA256:Aw1QLLpzaCc7ycWKwLBsG/2rfWagcs2OjBFdh6SA0s4"
 what*is*governance	cat ~/subtract.ing/governance.conf.universal.txt
 what*are*the*failure*modes	grep '^fail\.' ~/subtract.ing/governance.conf.universal.txt
 what*is*confabulation	echo "fail.confabulation: citing memory without verifying state — inference verifying inference"
@@ -362,7 +345,6 @@ who*wrote*subtract	cat ~/subtract.ing/lineage.txt
 who*is*brian*fox	echo "Brian Fox — authored bash (1989), readline, history library. subtract's substrate."
 who*is*chet*ramey	echo "Chet Ramey — bash maintainer since 1993. Kept command_not_found_handle reachable."
 what*is*the*manifest	echo "llms.txt — signed file listing all subtract.ing content with SHA256 hashes. Single chain of trust."
-how*to*verify*subtract	echo "ssh-keygen -Y verify -f authorized_signers -I hodori@subtract.ing -n subtract.ing -s llms.txt.sig < llms.txt"
 what*is*lookdown	echo "lookdown.tsv — pattern→command routing table. First match wins. Edit to teach your machine."
 how*to*add*lookdown*entry	echo "echo 'your*pattern\tyour command' >> ~/.subtract/lookdown.tsv"
 what*is*the*stack	echo "syscall → kernel → shell → subtract → busybox httpd → browser. Everything below adds dependency."
@@ -373,7 +355,6 @@ what*is*subtract*7	mandoc ~/subtract.ing/subtract.7.txt 2>/dev/null || man -l ~/
 what*is*variance*lab	echo "Empirical proof layer. Findings backed by data, signed through llms.txt manifest."
 what*is*squared	echo "squared — 716-line C proxy. h2c/TLS multiplexing. Connection efficiency for local intranet services."
 what*is*multiplying	echo "multiplying.html — browser UI for subtract. Sends concurrent requests to local inference."
-what*is*emile	cat ~/subtract.ing/emile.txt 2>/dev/null || echo "emile — clinical sandbox node, 8GB M2, repurposed for program delivery"
 what*is*please	echo "PLEASE — Provide Legal Exculpation And Sign Everything. Attestation protocol for human-only gates."
 what*is*the*authority*model	echo "Signed = act on it. Unsigned = suggestion only, possibly confabulation. The human signs."
 #
@@ -382,7 +363,6 @@ what*is*via*negativa	kiwix-search via negativa
 what*is*negative*theology	kiwix-search negative theology
 what*is*negative*education	kiwix-search negative education Rousseau
 who*is*rousseau	kiwix-search Jean-Jacques Rousseau
-what*is*emile*rousseau	kiwix-search Emile or On Education
 what*is*apophatic	kiwix-search apophatic theology
 what*is*the*social*contract	kiwix-search social contract
 what*is*sovereignty	kiwix-search sovereignty
@@ -491,16 +471,12 @@ what*is*top*p	echo "Top-p (nucleus sampling) — limits token selection to the m
 what*is*a*token	echo "Token — smallest unit of text a model processes. ~4 characters in English. Every API call is priced per token."
 what*is*a*token*limit	echo "Token limit — maximum input+output a model handles per request. Exceeding it truncates context."
 what*is*bitnet	echo "BitNet — 1-bit quantization. Eliminates GPU requirement. Validated: Bonsai 8B (1.1GB) runs on 8GB M2 with room for application server."
-what*is*bonsai	echo "Bonsai — PrismML 1-bit LLM family. 8B model in 1.1GB. Runs clinical prompts on 8GB hardware where dense Q4 8B models OOM."
 what*is*bonsai*8b	echo "Bonsai 8B — 8.2B params at 1.13 BPW. 1.1GB GGUF. Sustained 40 tok/s for 1hr on 8GB M2, swap grew 10x, throughput unchanged. Production envelope under extended testing."
-how*much*can*my*mac*mini*do*offline	echo "M-series 8GB runs Bonsai 8B at sustained 40 tok/s while macOS handles other apps via swap. Clinical-quality output in 1-3 seconds. No internet required."
 do*i*need*cloud*ai*subscription	echo "No, if the work is translation, summarization, drafting, or definition. Bonsai 8B on local hardware handles those. Keep cloud only for frontier reasoning."
-my*mac*mini*got*slow	echo "If the machine runs but apps feel slow, the bottleneck is swap pressure, not the hardware. Close other apps during clinical sessions or consider more RAM."
 *paid*for*ai*and*stopped*working	echo "Hardware still works. Subtract the vendor layer. Install llama-server + Bonsai 8B (1.1GB). No account, no subscription. curl -sL subtract.ing/install.sh | bash"
 can*i*run*ai*locally	echo "Yes. Bonsai 8B (1.1GB) runs on any M-series Mac with 8GB. 40 tok/s sustained. No GPU required. No internet required."
 what*model*runs*on*8gb	echo "Bonsai 8B (1.1GB BitNet). Sustained 40 tok/s on M2. Swap grows but throughput holds — GPU memory pins the model weights. Close other apps if the OS feels slow."
 what*runs*on*8gb*m2*mac*mini	echo "Bonsai 8B (1.1GB BitNet). Sustained 40 tok/s under concurrent application load. Tested 1hr continuous + 30min realistic workday."
-what*runs*on*8gb*m2*for*clinical	echo "Bonsai 8B serves clinical content (social stories, session notes, DTT definitions) at 40 tok/s while AAC application runs concurrently. Tested with realistic workday cadence."
 #
 # --- short-form / vernacular (how people actually type) ---
 make*a*folder	mkdir
@@ -729,13 +705,8 @@ what*is*lsof*	echo "list open files. lsof -i :8080 (port), lsof -p PID (process)
 # --- clinical / ABA ---
 what*is*proc*filesystem*	echo "/proc — virtual fs exposing kernel/process state. /proc/PID/{status,maps,fd,cmdline}, /proc/meminfo, /proc/cpuinfo"
 what*is*aba*	echo "applied behavior analysis — science of behavior change using reinforcement principles. uses ABC (antecedent-behavior-consequence) framework"
-what*is*applied*behavior*analysis*	echo "ABA — systematic application of learning principles to improve socially significant behavior. evidence-based, data-driven"
-what*is*bcba*	echo "board certified behavior analyst — master's-level certification from BACB. designs and supervises ABA programs"
-what*is*rbt*	echo "registered behavior technician — paraprofessional cert from BACB. implements BIP under BCBA supervision. 40-hr training + competency assessment"
 what*is*behavior*technician*	echo "direct-service provider in ABA. implements behavior plans, collects data. RBT is the BACB credential for this role"
-what*is*dtt*	echo "discrete trial training — structured ABA teaching: SD (instruction) → response → consequence. massed trials, high repetition, table-based"
 what*is*discrete*trial*	echo "structured teaching unit: antecedent → behavior → consequence. repeated in massed or distributed trials. data per trial"
-what*is*net*teach*	echo "natural environment teaching — ABA instruction embedded in play/routines. child-led, uses motivation in context. contrasts with DTT"
 what*is*abc*data*	echo "antecedent-behavior-consequence recording. descriptive assessment method. logs what happened before, the behavior, and what followed"
 what*is*antecedent*behavior*consequence*	echo "ABC — three-term contingency. antecedent sets occasion, behavior occurs, consequence affects future probability"
 what*is*reinforcement*	echo "consequence that increases future behavior probability. positive: add stimulus. negative: remove aversive. defined by effect, not intent"
@@ -746,10 +717,6 @@ what*is*prompt*fad*	echo "systematically reducing prompts so behavior comes unde
 what*is*task*analysis*	echo "breaking complex skill into sequential component steps. each step taught individually. basis for chaining procedures"
 what*is*chaining*	echo "teaching steps of a task analysis in sequence. forward: first step first. backward: last step first. total task: all steps each trial"
 what*is*shaping*	echo "reinforcing successive approximations toward a target behavior. used when target doesn't yet occur"
-what*is*fba*	echo "functional behavior assessment — identifies function (why) of behavior: attention, escape, tangible, automatic. indirect + direct + experimental methods"
-what*is*functional*behavior*assessment*	echo "FBA — determines maintaining variables of behavior. methods: interview, ABC observation, functional analysis. drives BIP design"
-what*is*bip*	echo "behavior intervention plan — written plan based on FBA. includes antecedent strategies, replacement behaviors, consequence procedures, data collection"
-what*is*behavior*intervention*plan*	echo "BIP — function-based plan. antecedent modifications + teaching replacement behavior + consequence strategies. requires FBA"
 what*is*mand*	echo "Skinner verbal operant — request. controlled by motivation (MO). 'I want water' when thirsty. first operant typically taught"
 what*is*tact*	echo "Skinner verbal operant — label/comment. controlled by nonverbal stimulus. 'that's a dog' upon seeing dog. contact with environment"
 what*is*echoic*	echo "Skinner verbal operant — vocal imitation. repeating what was heard. point-to-point correspondence with vocal model"
@@ -757,19 +724,11 @@ what*is*intraverbal*	echo "Skinner verbal operant — verbal response to verbal 
 what*is*verbal*operant*	echo "Skinner's classification: mand (request), tact (label), echoic (imitation), intraverbal (conversational), textual, transcription. function-based, not topography"
 what*is*generalization*	echo "behavior occurs across untrained stimuli, settings, or people. stimulus generalization and response generalization. must be programmed, not assumed"
 what*is*maintenance*	echo "behavior persists after intervention ends. thinning reinforcement schedules and programming natural contingencies support maintenance"
-what*is*interobserver*agreement*	echo "IOA — percentage agreement between two independent observers on same behavior. standard: ≥80%. validates data reliability"
-what*is*ioa*	echo "interobserver agreement — two observers independently score same session. agreements/(agreements+disagreements) × 100. minimum 80% acceptable"
-what*is*session*note*	echo "documentation of ABA session: targets, data, behavior, caregiver interaction. required for billing and clinical record"
-what*is*data*collection*	echo "systematic recording of behavior: frequency, duration, latency, interval, trial-by-trial. basis for all ABA decision-making"
-what*is*graphing*	echo "visual display of behavioral data over time. standard: line graph, x=sessions, y=measure. level/trend/variability analysis drives decisions"
-what*is*837p*	echo "ANSI X12 837 Professional — electronic claim format for outpatient/professional services. replaces CMS-1500. submitted via clearinghouse"
 what*is*837i*	echo "ANSI X12 837 Institutional — electronic claim format for facility/inpatient services. replaces UB-04"
 what*is*835*	echo "ANSI X12 835 — electronic remittance advice. payer sends to provider showing payment/adjustment/denial per claim line"
 what*is*edi*	echo "electronic data interchange — structured B2B data exchange. healthcare uses ANSI X12: 837 (claims), 835 (remittance), 270/271 (eligibility), 276/277 (status)"
-what*is*icd*10*	echo "ICD-10 — WHO diagnosis code set. ICD-10-CM for US clinical. format: letter + digits (F84.0 = autistic disorder). required on claims"
 #
 # --- healthcare admin / billing ---
-what*is*cpt*code*	echo "current procedural terminology — AMA-owned procedure codes. 5 digits. category I (97153 = ABA adaptive behavior treatment), II, III. drives reimbursement"
 what*is*hcpcs*	echo "healthcare common procedure coding system. level I = CPT. level II = alphanumeric (E/M, DME, drugs). CMS-maintained"
 what*is*hipaa*	echo "health insurance portability and accountability act. privacy rule (PHI), security rule (ePHI safeguards), transaction standards (EDI). penalties for violations"
 what*is*baa*	echo "business associate agreement — HIPAA-required contract when vendor handles PHI. defines permitted uses, breach notification, safeguards"
@@ -777,17 +736,10 @@ what*is*phi*	echo "protected health information — individually identifiable he
 what*is*minimum*necessary*	echo "HIPAA principle — only access/disclose the minimum PHI needed for the purpose. applies to uses, disclosures, and requests"
 what*is*hl7*	echo "health level 7 — healthcare data exchange standards. v2 (pipe-delimited messages), v3 (XML), CDA. being superseded by FHIR"
 what*is*fhir*	echo "fast healthcare interoperability resources — HL7 standard. RESTful API, JSON/XML resources (Patient, Observation, Claim). modern EHR integration"
-what*is*ehr*	echo "electronic health record — digital patient chart. longitudinal, multi-provider. distinct from EMR (single practice). FHIR enables interoperability"
-what*is*emr*	echo "electronic medical record — digital chart within one practice. EHR is broader (cross-provider, longitudinal). terms often used interchangeably"
-what*is*clearinghouse*	echo "intermediary that validates/routes electronic claims between provider and payer. scrubs errors before submission. examples: Office Ally, Availity, Trizetto"
-what*is*office*ally*	echo "free claims clearinghouse. submits 837P/837I, receives 835 ERAs. popular with small practices and ABA providers"
 what*is*npi*	echo "national provider identifier — 10-digit unique ID for healthcare providers. type 1 (individual), type 2 (organization). required on all claims"
 what*is*taxonomy*code*	echo "provider specialty classification. 10-character alphanumeric. examples: 103K00000X (behavior analyst), 106H00000X (marriage/family therapist). linked to NPI"
-what*is*prior*auth*	echo "prior authorization — payer approval required before service. submit clinical justification. denial = no payment. common for ABA (initial + reauth)"
-what*is*claim*denial*	echo "payer refuses payment on claim. common reasons: auth missing, timely filing, coding error, medical necessity. appeal with corrected claim or documentation"
 what*is*eob*	echo "explanation of benefits — document from payer to patient showing billed amount, allowed amount, patient responsibility. not a bill"
 what*is*superbill*	echo "itemized receipt from provider: diagnosis codes, CPT codes, dates, charges. patient uses for out-of-network reimbursement or records"
-what*is*encounter*form*	echo "clinical documentation form capturing visit details: diagnoses, procedures, time. basis for claim generation. superbill is the billing-facing version"
 what*is*modifier*25*	echo "modifier 25 — significant, separately identifiable E/M service on same day as procedure. documents that evaluation was distinct from procedural service"
 what*is*modifier*59*	echo "modifier 59 — distinct procedural service. unbundles procedures that would normally be bundled. use when services are truly separate (different site, session, etc.)"
 #
@@ -1552,16 +1504,9 @@ how*to*score*cribbage	echo "15s=2pts each combo. Pairs=2. Runs=1/card. Flush=4-5
 explain*cribbage	kiwix-search cribbage
 read*about*cribbage	kiwix-search cribbage
 # --- kids / gaming / homework / curiosity ---
-*minecraft*	echo "Minecraft is a game where you build things out of blocks and explore infinite worlds. You can mine resources, craft tools, build houses, and survive against monsters at night."
 *crafting table*	echo "Place 4 wood planks in a 2x2 crafting grid to make a crafting table. It gives you a 3x3 grid to make tools, weapons, and more."
 *beat the ender dragon*	echo "1) Find a stronghold using Eyes of Ender. 2) Enter the End portal. 3) Destroy the End crystals on top of the obsidian towers. 4) Attack the dragon when it swoops down. Bring a bow, arrows, and good armor!"
-*roblox*not*load*	echo "Try: 1) Restart Roblox. 2) Restart your computer. 3) Check your internet connection. 4) Make sure your system is up to date."
-*roblox*slow*	echo "Close other programs to free up memory. Lower the graphics quality in Roblox settings. Make sure nothing else is using your internet."
-*what*roblox*	echo "Roblox is a platform where people make and share games. You can play millions of different games other people created, or learn to make your own."
-*what*fortnite*	echo "Fortnite is a game where 100 players drop onto an island and the last one standing wins. You find weapons, build structures, and the play area shrinks over time."
 *battle royale*	echo "A battle royale is a type of game where many players compete and the last person or team alive wins. The play area gets smaller to push everyone together."
-*what*creeper*	echo "A creeper is a green monster in Minecraft that sneaks up on you and explodes. If you hear a hissing sound, run! They drop gunpowder when defeated."
-*what*skeleton*minecraft*	echo "Skeletons are hostile mobs in Minecraft that shoot arrows at you. They spawn in the dark, burn in sunlight, and drop bones and arrows."
 *what*the nether*	echo "The Nether is a dangerous dimension in Minecraft full of lava, fire, and tough mobs like ghasts and piglins. You get there by building a portal out of obsidian."
 *what*steam*	echo "Steam is an app where you can buy, download, and play PC games. It also lets you chat with friends and join game communities."
 *how*install*game*	echo "On Linux: check your package manager (like Software Center), Steam, or the game's website. Download the installer and follow the instructions."
@@ -1651,10 +1596,7 @@ read*about*cribbage	kiwix-search cribbage
 *how*undo*	echo "Press Ctrl+Z to undo your last action. You can press it multiple times to undo more steps. Ctrl+Y or Ctrl+Shift+Z usually redoes what you undid."
 #
 # --- kids: missing entries from review ---
-can*i*play*minecraft*on*this	echo "Yes! Install with: sudo apt install minecraft-launcher (or download from minecraft.net). You need a Minecraft account."
-can*i*play*roblox*on*this	echo "Yes! Download from roblox.com/download. You need a Roblox account."
 how*to*download*minecraft	echo "Go to minecraft.net, log in, download the Linux version, and install it. Ask a parent if you need help with the account."
-how*to*download*roblox	echo "Go to roblox.com/download. Install the app. Ask a parent if you need an account."
 how*to*get*robux	echo "Robux costs real money. Ask a parent before buying any. You can earn some by making games in Roblox Studio."
 what*games*can*i*play	echo "Minecraft, Roblox, and browser games work on this computer. Type 'can i play' and the name of a game to check."
 how*to*get*games	echo "Ask a parent to help install games. Some games are free (Roblox). Some cost money (Minecraft). Browser games work right away."
@@ -1671,10 +1613,8 @@ how*to*make*enchanting*table	echo "1 book on top, 2 diamonds on the sides, 4 obs
 what*is*the*nether	echo "A scary fire dimension you reach by building a portal out of obsidian (10 blocks minimum) and lighting it with flint and steel."
 #
 # --- pokemon ---
-*pokemon*	echo "Pokemon is a game where you catch, train, and battle creatures. There are over 1000 Pokemon. The most famous is Pikachu."
 who*is*pikachu	echo "Pikachu is an Electric-type Pokemon. It's yellow with red cheeks and a lightning bolt tail. Ash's partner in the show."
 who*is*the*strongest*pokemon	echo "Arceus is called the creator of the Pokemon universe. Mewtwo is the strongest you can actually catch in most games."
-what*is*a*pokemon*type	echo "Every Pokemon has a type like Fire, Water, Grass, Electric. Types are strong or weak against other types, like rock-paper-scissors."
 #
 # --- youtube / video ---
 what*is*youtube	echo "YouTube is a website where people share videos. You can watch almost anything: music, games, science, funny stuff."
@@ -1713,18 +1653,11 @@ how*many*hours*in*a*day	echo "24 hours in a day."
 *hate*myself*	echo "Tell a grown-up you trust how you feel. If you can't think of one, call or text 988. You deserve help."
 #
 # --- clinical proper nouns (confabulation-unsafe at T1) ---
-what*is*aim*aba	echo "AIM: Accept, Identify, Move. Mark Dixon's ACT-derived curriculum for building psychological flexibility in ABA contexts."
 what*is*aim*program	echo "AIM: Accept, Identify, Move. Mark Dixon's ACT-derived curriculum. Distinct from PEAK."
 what*is*an*antecedent	echo "A stimulus or event that precedes a behavior. The A in ABC (antecedent-behavior-consequence). Identifies what triggers the behavior."
 what*is*abc*aba	echo "Antecedent, Behavior, Consequence. Three-term contingency. Foundation of functional assessment in ABA."
 what*are*reinforcement*principles	echo "Consequences that increase future probability of behavior. Positive: adding a stimulus. Negative: removing a stimulus. Defined by effect on behavior, not by valence."
 what*is*peak	echo "PEAK: Promoting the Emergence of Advanced Knowledge. Dixon. Relational frame theory applied to skill acquisition."
-what*is*vb*mapp	echo "VB-MAPP: Verbal Behavior Milestones Assessment and Placement Program. Sundberg. Assesses language and social skills based on Skinner's verbal behavior."
-what*is*ablls	echo "ABLLS-R: Assessment of Basic Language and Learning Skills, Revised. Partington. Criterion-referenced assessment for children with ASD."
-what*is*essential*for*living	echo "Essential for Living (EFL). McGreevy curriculum. Skills assessment and curriculum for individuals with significant disabilities."
-what*is*functional*behavior*assessment	echo "FBA: systematic process to identify the function (purpose) of a behavior. Looks at antecedents, behavior, consequences to determine why the behavior occurs."
-what*is*behavior*intervention*plan	echo "BIP: written plan based on FBA results. Describes replacement behaviors, prevention strategies, and response procedures. Required for behaviors impeding learning."
-what*is*act*therapy	echo "Acceptance and Commitment Therapy. Hayes et al. Third-wave behavioral therapy. Six core processes: acceptance, defusion, present moment, self-as-context, values, committed action."
 #
 # --- web search / open URL (falls through from T0 before inference) ---
 # $input is in scope during eval from the handler
@@ -1734,21 +1667,45 @@ google*	q="${input#*google }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c
 look*up*	q="${input#*look up }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c start "https://duckduckgo.com/?q=$q" 2>/dev/null || xdg-open "https://duckduckgo.com/?q=$q" 2>/dev/null || open "https://duckduckgo.com/?q=$q"
 go*to*	q="${input#*go to }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q" 2>/dev/null || open "https://$q"
 open*site*	q="${input#*open site }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q" 2>/dev/null || open "https://$q"
-who*is*as*byatt	kiwix-search A. S. Byatt
-who*is*byatt	kiwix-search A. S. Byatt
 what*is*possession*byatt	echo "Possession: A Romance (1990). A.S. Byatt. Two modern scholars trace two Victorian poets whose secret correspondence mirrors their own. A novel about the act of research itself — what it costs to hold someone else's words."
 #
 # --- livingledger: formation authors and professors ---
-who*is*ted*st*martin	echo "Ted St. Martin. The Art of Shooting Baskets. The first man page the governor read on a driveway with a basketball. LIVINGLEDGER entry."
-who*is*gertrude*stein	kiwix-search Gertrude Stein
 what*is*tender*buttons	echo "Tender Buttons (1914). Gertrude Stein. Pre-freshman summer reading, DePaul honors program. The governor's honest response: nope."
-who*is*william*mcneill	echo "William McNeill. DePaul honors Introduction to Philosophy. The entry point. His journals are the earliest documented layer of the governor's self-as-first-trust-root. LIVINGLEDGER."
-who*is*sylvia*escarcega	echo "Sylvia Escarcega. DePaul. Part of the formation cohort across discipline and time. LIVINGLEDGER."
-who*is*charles*block	echo "Charles Block. Berkeley, possibly U of Chicago. Recommended Edinburgh Divinity for post-grad on the Nogales trip. The governor scoffed at divinity. The architecture arrived anyway. LIVINGLEDGER."
-who*is*charles*strain	echo "Charles Strain. DePaul. 40+ years, one of the most demanding and respected faculty. The postmodern critique testing ground. LIVINGLEDGER."
-who*is*david*jabon	echo "David Jabon. DePaul professor. LIVINGLEDGER entry."
-who*is*father*halstead	echo "Father James Halstead. DePaul religious studies. Business Ethics. Deep dive into Aristotle. LIVINGLEDGER."
-who*is*aronson	echo "Ronald Aronson. DePaul. Taught the Sartre course that sparked deep knowledge of Camus. Sartre was the counterexample. Camus was the correct choice. LIVINGLEDGER."
-who*is*franklin*perkins	echo "Franklin Perkins. DePaul. Great teacher of comparative literature learned in his 20s to earn a young PhD. LIVINGLEDGER."
-who*is*theresa*hinga	echo "Theresa Hinga. DePaul religious studies with cosmological focus. LIVINGLEDGER."
-who*is*peter*steeves	echo "Peter Steeves. DePaul professor. LIVINGLEDGER entry."
+*what*skeleton*minecraft*	echo "Skeletons are hostile mobs in Minecraft that shoot arrows at you. They spawn in the dark, burn in sunlight, and drop bones and arrows."
+can*i*play*minecraft*on*this	echo "Yes! Install with: sudo apt install minecraft-launcher (or download from minecraft.net). You need a Minecraft account."
+what*is*a*pokemon*type	echo "Every Pokemon has a type like Fire, Water, Grass, Electric. Types are strong or weak against other types, like rock-paper-scissors."
+what*is*applied*behavior*analysis*	echo "ABA — systematic application of learning principles to improve socially significant behavior. evidence-based, data-driven"
+what*is*bcba*	echo "board certified behavior analyst — master's-level certification from BACB. designs and supervises ABA programs"
+what*is*rbt*	echo "registered behavior technician — paraprofessional cert from BACB. implements BIP under BCBA supervision. 40-hr training + competency assessment"
+what*is*dtt*	echo "discrete trial training — structured ABA teaching: SD (instruction) → response → consequence. massed trials, high repetition, table-based"
+what*is*net*teach*	echo "natural environment teaching — ABA instruction embedded in play/routines. child-led, uses motivation in context. contrasts with DTT"
+what*is*fba*	echo "functional behavior assessment — identifies function (why) of behavior: attention, escape, tangible, automatic. indirect + direct + experimental methods"
+what*is*functional*behavior*assessment*	echo "FBA — determines maintaining variables of behavior. methods: interview, ABC observation, functional analysis. drives BIP design"
+what*is*bip*	echo "behavior intervention plan — written plan based on FBA. includes antecedent strategies, replacement behaviors, consequence procedures, data collection"
+what*is*behavior*intervention*plan*	echo "BIP — function-based plan. antecedent modifications + teaching replacement behavior + consequence strategies. requires FBA"
+what*is*interobserver*agreement*	echo "IOA — percentage agreement between two independent observers on same behavior. standard: ≥80%. validates data reliability"
+what*is*ioa*	echo "interobserver agreement — two observers independently score same session. agreements/(agreements+disagreements) × 100. minimum 80% acceptable"
+what*is*session*note*	echo "documentation of ABA session: targets, data, behavior, caregiver interaction. required for billing and clinical record"
+what*is*data*collection*	echo "systematic recording of behavior: frequency, duration, latency, interval, trial-by-trial. basis for all ABA decision-making"
+what*is*graphing*	echo "visual display of behavioral data over time. standard: line graph, x=sessions, y=measure. level/trend/variability analysis drives decisions"
+what*is*837p*	echo "ANSI X12 837 Professional — electronic claim format for outpatient/professional services. replaces CMS-1500. submitted via clearinghouse"
+what*is*icd*10*	echo "ICD-10 — WHO diagnosis code set. ICD-10-CM for US clinical. format: letter + digits (F84.0 = autistic disorder). required on claims"
+what*is*cpt*code*	echo "current procedural terminology — AMA-owned procedure codes. 5 digits. category I (97153 = ABA adaptive behavior treatment), II, III. drives reimbursement"
+what*is*ehr*	echo "electronic health record — digital patient chart. longitudinal, multi-provider. distinct from EMR (single practice). FHIR enables interoperability"
+what*is*emr*	echo "electronic medical record — digital chart within one practice. EHR is broader (cross-provider, longitudinal). terms often used interchangeably"
+what*is*clearinghouse*	echo "intermediary that validates/routes electronic claims between provider and payer. scrubs errors before submission. examples: Office Ally, Availity, Trizetto"
+what*is*prior*auth*	echo "prior authorization — payer approval required before service. submit clinical justification. denial = no payment. common for ABA (initial + reauth)"
+what*is*claim*denial*	echo "payer refuses payment on claim. common reasons: auth missing, timely filing, coding error, medical necessity. appeal with corrected claim or documentation"
+what*is*encounter*form*	echo "clinical documentation form capturing visit details: diagnoses, procedures, time. basis for claim generation. superbill is the billing-facing version"
+*what*roblox*	echo "Roblox is a platform where people make and share games. You can play millions of different games other people created, or learn to make your own."
+*what*fortnite*	echo "Fortnite is a game where 100 players drop onto an island and the last one standing wins. You find weapons, build structures, and the play area shrinks over time."
+*what*creeper*	echo "A creeper is a green monster in Minecraft that sneaks up on you and explodes. If you hear a hissing sound, run! They drop gunpowder when defeated."
+can*i*play*roblox*on*this	echo "Yes! Download from roblox.com/download. You need a Roblox account."
+how*to*download*roblox	echo "Go to roblox.com/download. Install the app. Ask a parent if you need an account."
+what*is*aim*aba	echo "AIM: Accept, Identify, Move. Mark Dixon's ACT-derived curriculum for building psychological flexibility in ABA contexts."
+what*is*vb*mapp	echo "VB-MAPP: Verbal Behavior Milestones Assessment and Placement Program. Sundberg. Assesses language and social skills based on Skinner's verbal behavior."
+what*is*ablls	echo "ABLLS-R: Assessment of Basic Language and Learning Skills, Revised. Partington. Criterion-referenced assessment for children with ASD."
+what*is*essential*for*living	echo "Essential for Living (EFL). McGreevy curriculum. Skills assessment and curriculum for individuals with significant disabilities."
+what*is*functional*behavior*assessment	echo "FBA: systematic process to identify the function (purpose) of a behavior. Looks at antecedents, behavior, consequences to determine why the behavior occurs."
+what*is*behavior*intervention*plan	echo "BIP: written plan based on FBA results. Describes replacement behaviors, prevention strategies, and response procedures. Required for behaviors impeding learning."
+what*is*act*therapy	echo "Acceptance and Commitment Therapy. Hayes et al. Third-wave behavioral therapy. Six core processes: acceptance, defusion, present moment, self-as-context, values, committed action."
