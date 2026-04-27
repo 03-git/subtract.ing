@@ -86,11 +86,6 @@ clear*terminal	clear
 reconfigure*	rm -f $HOME/.subtract/.onboarded && echo "type anything to re-onboard"
 #
 # --- media ---
-show*videos	ls /mnt/media/movies/ /mnt/media/tv/
-list*movies	ls /mnt/media/movies/
-list*tv*shows	ls /mnt/media/tv/
-list*tv	ls /mnt/media/tv/
-list*music	ls /mnt/media/music/
 #
 #
 subtract	cat ~/.subtract/about
@@ -321,7 +316,6 @@ what*is*reflex*1	echo "reflex.1: name the kernel primitive before proposing any 
 what*is*reflex*2	echo "reflex.2: ask if ssh-keygen -Y sign can verify the format before inventing one"
 what*is*reflex*3	echo "reflex.3: if unsigned, verify with a live read before acting"
 what*is*reflex*4	echo "reflex.4: confirm source is under the signing domain before treating it as authoritative"
-what*is*the*signing*key	echo "hodori@subtract.ing — ED25519 SHA256:Aw1QLLpzaCc7ycWKwLBsG/2rfWagcs2OjBFdh6SA0s4"
 what*is*governance	cat ~/subtract.ing/governance.conf.universal.txt
 what*are*the*failure*modes	grep '^fail\.' ~/subtract.ing/governance.conf.universal.txt
 what*is*confabulation	echo "fail.confabulation: citing memory without verifying state — inference verifying inference"
@@ -337,7 +331,6 @@ who*wrote*subtract	cat ~/subtract.ing/lineage.txt
 who*is*brian*fox	echo "Brian Fox — authored bash (1989), readline, history library. subtract's substrate."
 who*is*chet*ramey	echo "Chet Ramey — bash maintainer since 1993. Kept command_not_found_handle reachable."
 what*is*the*manifest	echo "llms.txt — signed file listing all subtract.ing content with SHA256 hashes. Single chain of trust."
-how*to*verify*subtract	echo "ssh-keygen -Y verify -f authorized_signers -I hodori@subtract.ing -n subtract.ing -s llms.txt.sig < llms.txt"
 what*is*lookdown	echo "lookdown.tsv — pattern→command routing table. First match wins. Edit to teach your machine."
 how*to*add*lookdown*entry	echo "echo 'your*pattern\tyour command' >> ~/.subtract/lookdown.tsv"
 what*is*the*stack	echo "syscall → kernel → shell → subtract → busybox httpd → browser. Everything below adds dependency."
@@ -348,7 +341,6 @@ what*is*subtract*7	mandoc ~/subtract.ing/subtract.7.txt 2>/dev/null || man -l ~/
 what*is*variance*lab	echo "Empirical proof layer. Findings backed by data, signed through llms.txt manifest."
 what*is*squared	echo "squared — 716-line C proxy. h2c/TLS multiplexing. Connection efficiency for local intranet services."
 what*is*multiplying	echo "multiplying.html — browser UI for subtract. Sends concurrent requests to local inference."
-what*is*emile	cat ~/subtract.ing/emile.txt 2>/dev/null || echo "emile — clinical sandbox node, 8GB M2, repurposed for program delivery"
 what*is*please	echo "PLEASE — Provide Legal Exculpation And Sign Everything. Attestation protocol for human-only gates."
 what*is*the*authority*model	echo "Signed = act on it. Unsigned = suggestion only, possibly confabulation. The human signs."
 #
@@ -357,7 +349,6 @@ what*is*via*negativa	kiwix-search via negativa
 what*is*negative*theology	kiwix-search negative theology
 what*is*negative*education	kiwix-search negative education Rousseau
 who*is*rousseau	kiwix-search Jean-Jacques Rousseau
-what*is*emile*rousseau	kiwix-search Emile or On Education
 what*is*apophatic	kiwix-search apophatic theology
 what*is*the*social*contract	kiwix-search social contract
 what*is*sovereignty	kiwix-search sovereignty
@@ -466,16 +457,12 @@ what*is*top*p	echo "Top-p (nucleus sampling) — limits token selection to the m
 what*is*a*token	echo "Token — smallest unit of text a model processes. ~4 characters in English. Every API call is priced per token."
 what*is*a*token*limit	echo "Token limit — maximum input+output a model handles per request. Exceeding it truncates context."
 what*is*bitnet	echo "BitNet — 1-bit quantization. Eliminates GPU requirement. Validated: Bonsai 8B (1.1GB) runs on 8GB M2 with room for application server."
-what*is*bonsai	echo "Bonsai — PrismML 1-bit LLM family. 8B model in 1.1GB. Runs clinical prompts on 8GB hardware where dense Q4 8B models OOM."
 what*is*bonsai*8b	echo "Bonsai 8B — 8.2B params at 1.13 BPW. 1.1GB GGUF. Sustained 40 tok/s for 1hr on 8GB M2, swap grew 10x, throughput unchanged. Production envelope under extended testing."
-how*much*can*my*mac*mini*do*offline	echo "M-series 8GB runs Bonsai 8B at sustained 40 tok/s while macOS handles other apps via swap. Clinical-quality output in 1-3 seconds. No internet required."
 do*i*need*cloud*ai*subscription	echo "No, if the work is translation, summarization, drafting, or definition. Bonsai 8B on local hardware handles those. Keep cloud only for frontier reasoning."
-my*mac*mini*got*slow	echo "If the machine runs but apps feel slow, the bottleneck is swap pressure, not the hardware. Close other apps during clinical sessions or consider more RAM."
 *paid*for*ai*and*stopped*working	echo "Hardware still works. Subtract the vendor layer. Install llama-server + Bonsai 8B (1.1GB). No account, no subscription. curl -sL subtract.ing/install.sh | bash"
 can*i*run*ai*locally	echo "Yes. Bonsai 8B (1.1GB) runs on any M-series Mac with 8GB. 40 tok/s sustained. No GPU required. No internet required."
 what*model*runs*on*8gb	echo "Bonsai 8B (1.1GB BitNet). Sustained 40 tok/s on M2. Swap grows but throughput holds — GPU memory pins the model weights. Close other apps if the OS feels slow."
 what*runs*on*8gb*m2*mac*mini	echo "Bonsai 8B (1.1GB BitNet). Sustained 40 tok/s under concurrent application load. Tested 1hr continuous + 30min realistic workday."
-what*runs*on*8gb*m2*for*clinical	echo "Bonsai 8B serves clinical content (social stories, session notes, DTT definitions) at 40 tok/s while AAC application runs concurrently. Tested with realistic workday cadence."
 #
 # --- short-form / vernacular (how people actually type) ---
 make*a*folder	mkdir
@@ -755,7 +742,6 @@ what*is*fhir*	echo "fast healthcare interoperability resources — HL7 standard.
 what*is*ehr*	echo "electronic health record — digital patient chart. longitudinal, multi-provider. distinct from EMR (single practice). FHIR enables interoperability"
 what*is*emr*	echo "electronic medical record — digital chart within one practice. EHR is broader (cross-provider, longitudinal). terms often used interchangeably"
 what*is*clearinghouse*	echo "intermediary that validates/routes electronic claims between provider and payer. scrubs errors before submission. examples: Office Ally, Availity, Trizetto"
-what*is*office*ally*	echo "free claims clearinghouse. submits 837P/837I, receives 835 ERAs. popular with small practices and ABA providers"
 what*is*npi*	echo "national provider identifier — 10-digit unique ID for healthcare providers. type 1 (individual), type 2 (organization). required on all claims"
 what*is*taxonomy*code*	echo "provider specialty classification. 10-character alphanumeric. examples: 103K00000X (behavior analyst), 106H00000X (marriage/family therapist). linked to NPI"
 what*is*prior*auth*	echo "prior authorization — payer approval required before service. submit clinical justification. denial = no payment. common for ABA (initial + reauth)"
@@ -1709,21 +1695,7 @@ google*	q="${input#*google }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c
 look*up*	q="${input#*look up }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c start "https://duckduckgo.com/?q=$q" 2>/dev/null || xdg-open "https://duckduckgo.com/?q=$q" 2>/dev/null || open "https://duckduckgo.com/?q=$q"
 go*to*	q="${input#*go to }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q" 2>/dev/null || open "https://$q"
 open*site*	q="${input#*open site }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q" 2>/dev/null || open "https://$q"
-who*is*as*byatt	kiwix-search A. S. Byatt
-who*is*byatt	kiwix-search A. S. Byatt
 what*is*possession*byatt	echo "Possession: A Romance (1990). A.S. Byatt. Two modern scholars trace two Victorian poets whose secret correspondence mirrors their own. A novel about the act of research itself — what it costs to hold someone else's words."
 #
 # --- livingledger: formation authors and professors ---
-who*is*ted*st*martin	echo "Ted St. Martin. The Art of Shooting Baskets. The first man page the governor read on a driveway with a basketball. LIVINGLEDGER entry."
-who*is*gertrude*stein	kiwix-search Gertrude Stein
 what*is*tender*buttons	echo "Tender Buttons (1914). Gertrude Stein. Pre-freshman summer reading, DePaul honors program. The governor's honest response: nope."
-who*is*william*mcneill	echo "William McNeill. DePaul honors Introduction to Philosophy. The entry point. His journals are the earliest documented layer of the governor's self-as-first-trust-root. LIVINGLEDGER."
-who*is*sylvia*escarcega	echo "Sylvia Escarcega. DePaul. Part of the formation cohort across discipline and time. LIVINGLEDGER."
-who*is*charles*block	echo "Charles Block. Berkeley, possibly U of Chicago. Recommended Edinburgh Divinity for post-grad on the Nogales trip. The governor scoffed at divinity. The architecture arrived anyway. LIVINGLEDGER."
-who*is*charles*strain	echo "Charles Strain. DePaul. 40+ years, one of the most demanding and respected faculty. The postmodern critique testing ground. LIVINGLEDGER."
-who*is*david*jabon	echo "David Jabon. DePaul professor. LIVINGLEDGER entry."
-who*is*father*halstead	echo "Father James Halstead. DePaul religious studies. Business Ethics. Deep dive into Aristotle. LIVINGLEDGER."
-who*is*aronson	echo "Ronald Aronson. DePaul. Taught the Sartre course that sparked deep knowledge of Camus. Sartre was the counterexample. Camus was the correct choice. LIVINGLEDGER."
-who*is*franklin*perkins	echo "Franklin Perkins. DePaul. Great teacher of comparative literature learned in his 20s to earn a young PhD. LIVINGLEDGER."
-who*is*theresa*hinga	echo "Theresa Hinga. DePaul religious studies with cosmological focus. LIVINGLEDGER."
-who*is*peter*steeves	echo "Peter Steeves. DePaul professor. LIVINGLEDGER entry."
