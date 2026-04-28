@@ -1,0 +1,269 @@
+#!/usr/bin/env bash
+# hosuni — tool-use daemon for local inference
+# listens on a port via nc. receives JSON, checks lookdown,
+# routes inference through squared, parses tool calls,
+# executes, loops, logs. pure bash + jq + curl.
+#
+# run:   hosuni.sh [port]
+# call:  echo '{"input":"list files","channel":"terminal"}' | nc localhost 8091
+
+set -euo pipefail
+
+SUBTRACT_DIR="${SUBTRACT_DIR:-$HOME/.subtract}"
+HOSUNI_DIR="${HOSUNI_DIR:-$HOME/.hosuni}"
+INFERENCE_HOST=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null || echo "localhost")
+INFERENCE_PORT=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null || echo "8085")
+LOOKDOWN="$SUBTRACT_DIR/lookdown.tsv"
+LOOKDOWN_PERSONAL="$SUBTRACT_DIR/lookdown.personal.tsv"
+TOOLS_FILE="$HOSUNI_DIR/tools.tsv"
+LOG_DIR="$SUBTRACT_DIR/log"
+DAEMON_LOG="$HOME/human/sessions/hosuni.log"
+MAX_TURNS=20
+
+mkdir -p "$LOG_DIR" "$HOSUNI_DIR"
+
+ts() { date -u +%Y-%m-%dT%H:%M:%SZ; }
+
+log_daemon() { printf "[%s] %s\n" "$(ts)" "$1" >> "$DAEMON_LOG"; }
+
+log_session() {
+    local channel="$1" role="$2" content="$3"
+    local safe; safe=$(printf '%s' "$content" | tr '\t\n' '  ' | cut -c1-500)
+    printf "%s\t%s\t%s\n" "$(ts)" "$role" "$safe" >> "$LOG_DIR/hosuni-${channel}.log"
+}
+
+# --- lookdown check ---
+
+check_lookdown() {
+    local input; input=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
+    local line pattern cmd
+    for file in "$LOOKDOWN_PERSONAL" "$LOOKDOWN"; do
+        [ -f "$file" ] || continue
+        while IFS=$'\t' read -r pattern cmd rest; do
+            [ -z "$pattern" ] && continue
+            [[ "$pattern" == \#* ]] && continue
+            # glob match
+            case "$input" in
+                $pattern) echo "$cmd"; return 0 ;;
+            esac
+        done < "$file"
+    done
+    return 1
+}
+
+# --- tool loading ---
+
+load_tools() {
+    local tools="[]"
+    [ -f "$TOOLS_FILE" ] || { echo "$tools"; return; }
+    while IFS=$'\t' read -r name desc template; do
+        [ -z "$name" ] && continue
+        [[ "$name" == \#* ]] && continue
+        # check if the command exists on this system
+        local bin; bin=$(echo "$template" | awk '{print $1}')
+        command -v "$bin" >/dev/null 2>&1 || continue
+        tools=$(echo "$tools" | jq --arg n "$name" --arg d "$desc" \
+            '. + [{"type":"function","function":{"name":$n,"description":$d,"parameters":{"type":"object","properties":{"input":{"type":"string"}}}}}]')
+    done < "$TOOLS_FILE"
+    echo "$tools"
+}
+
+# --- tool execution ---
+
+execute_tool() {
+    local name="$1" args="$2"
+    local template
+    template=$(awk -F'\t' -v n="$name" '$1==n {print $3}' "$TOOLS_FILE" 2>/dev/null)
+    [ -z "$template" ] && { echo "tool not found: $name"; return 1; }
+
+    local input; input=$(echo "$args" | jq -r '.input // empty')
+    # substitute {input} or {path} or {command} or {script} in template
+    local cmd; cmd=$(echo "$template" | sed "s|{[^}]*}|$input|g")
+
+    log_daemon "tool: $name -> $cmd"
+    local output
+    output=$(eval "$cmd" 2>&1 | head -c 4096) || true
+    echo "$output"
+}
+
+# --- inference ---
+
+call_inference() {
+    local messages="$1" tools="$2"
+    local payload
+    if [ "$tools" = "[]" ]; then
+        payload=$(jq -n --argjson msgs "$messages" \
+            '{messages: $msgs, max_tokens: 2048, stream: false}')
+    else
+        payload=$(jq -n --argjson msgs "$messages" --argjson tools "$tools" \
+            '{messages: $msgs, max_tokens: 2048, stream: false, tools: $tools}')
+    fi
+
+    local response
+    response=$(curl -s --connect-timeout 10 -m 300 \
+        -X POST "http://${INFERENCE_HOST}:${INFERENCE_PORT}/v1/chat/completions" \
+        -H "Content-Type: application/json" \
+        -d "$payload" 2>/dev/null)
+
+    echo "$response"
+}
+
+fallback_claude() {
+    local prompt="$1"
+    claude -p -c "$prompt" 2>/dev/null || true
+}
+
+# --- conversation state ---
+
+get_messages_file() { echo "$LOG_DIR/hosuni-${1}.messages.json"; }
+
+load_messages() {
+    local file; file=$(get_messages_file "$1")
+    if [ -f "$file" ]; then
+        cat "$file"
+    else
+        echo "[]"
+    fi
+}
+
+save_messages() {
+    local channel="$1" messages="$2"
+    # truncate to last MAX_TURNS * 2 entries
+    local count; count=$(echo "$messages" | jq 'length')
+    if [ "$count" -gt $((MAX_TURNS * 2)) ]; then
+        messages=$(echo "$messages" | jq ".[-$((MAX_TURNS * 2)):]")
+    fi
+    echo "$messages" > "$(get_messages_file "$channel")"
+}
+
+# --- core loop ---
+
+handle_request() {
+    local request="$1"
+    local input channel context
+    input=$(echo "$request" | jq -r '.input // empty')
+    channel=$(echo "$request" | jq -r '.channel // "default"')
+    context=$(echo "$request" | jq -r '.context // empty')
+
+    [ -z "$input" ] && { echo '{"error":"no input"}'; return; }
+
+    log_daemon "[${channel}] input: $input"
+    log_session "$channel" "Q" "$input"
+
+    # T0: lookdown check
+    local lookdown_result
+    if lookdown_result=$(check_lookdown "$input"); then
+        log_daemon "[${channel}] lookdown hit: $lookdown_result"
+        log_session "$channel" "A" "$lookdown_result"
+        jq -n --arg r "$lookdown_result" --arg s "lookdown" \
+            '{response: $r, source: $s}'
+        return
+    fi
+
+    # load conversation state
+    local messages; messages=$(load_messages "$channel")
+    local user_content="$input"
+    [ -n "$context" ] && user_content="${input}
+
+Context:
+${context}"
+    messages=$(echo "$messages" | jq --arg content "$user_content" \
+        '. + [{"role":"user","content":$content}]')
+
+    # load tools
+    local tools; tools=$(load_tools)
+
+    # inference loop (tool calls may require multiple turns)
+    local max_rounds=5 round=0
+    local source="local"
+    while [ "$round" -lt "$max_rounds" ]; do
+        round=$((round + 1))
+
+        local response; response=$(call_inference "$messages" "$tools")
+
+        # check if inference returned anything
+        local content; content=$(echo "$response" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+        local tool_calls; tool_calls=$(echo "$response" | jq -r '.choices[0].message.tool_calls // empty' 2>/dev/null)
+        local finish; finish=$(echo "$response" | jq -r '.choices[0].finish_reason // empty' 2>/dev/null)
+
+        # if local failed entirely, cloud fallback
+        if [ -z "$content" ] && [ -z "$tool_calls" ] && [ "$round" -eq 1 ]; then
+            log_daemon "[${channel}] local empty, falling back to cloud"
+            content=$(fallback_claude "$user_content")
+            source="cloud"
+            if [ -n "$content" ]; then
+                messages=$(echo "$messages" | jq --arg c "$content" \
+                    '. + [{"role":"assistant","content":$c}]')
+                save_messages "$channel" "$messages"
+                log_session "$channel" "A" "$content"
+                log_daemon "[${channel}] [$source] reply: $(echo "$content" | head -c 200)"
+                jq -n --arg r "$content" --arg s "$source" \
+                    '{response: $r, source: $s}'
+                return
+            fi
+            jq -n '{error:"no model available"}'
+            return
+        fi
+
+        # if tool calls present, execute them
+        if [ -n "$tool_calls" ] && [ "$tool_calls" != "null" ]; then
+            # append assistant message with tool calls
+            local assistant_msg; assistant_msg=$(echo "$response" | jq '.choices[0].message')
+            messages=$(echo "$messages" | jq --argjson msg "$assistant_msg" '. + [$msg]')
+
+            # execute each tool call
+            local n_calls; n_calls=$(echo "$tool_calls" | jq 'length')
+            local i=0
+            while [ "$i" -lt "$n_calls" ]; do
+                local tc_id; tc_id=$(echo "$tool_calls" | jq -r ".[$i].id")
+                local tc_name; tc_name=$(echo "$tool_calls" | jq -r ".[$i].function.name")
+                local tc_args; tc_args=$(echo "$tool_calls" | jq -r ".[$i].function.arguments")
+
+                log_daemon "[${channel}] tool call: $tc_name($tc_args)"
+                local tc_result; tc_result=$(execute_tool "$tc_name" "$tc_args")
+                log_daemon "[${channel}] tool result: $(echo "$tc_result" | head -c 200)"
+
+                # append tool result
+                messages=$(echo "$messages" | jq \
+                    --arg id "$tc_id" \
+                    --arg content "$tc_result" \
+                    '. + [{"role":"tool","tool_call_id":$id,"content":$content}]')
+
+                i=$((i + 1))
+            done
+            # loop back to inference with tool results
+            continue
+        fi
+
+        # no tool calls, we have a final response
+        if [ -n "$content" ]; then
+            messages=$(echo "$messages" | jq --arg c "$content" \
+                '. + [{"role":"assistant","content":$c}]')
+            save_messages "$channel" "$messages"
+            log_session "$channel" "A" "$content"
+            log_daemon "[${channel}] [$source] reply: $(echo "$content" | head -c 200)"
+            jq -n --arg r "$content" --arg s "$source" \
+                '{response: $r, source: $s}'
+            return
+        fi
+
+        break
+    done
+
+    jq -n '{error:"no response after tool loop"}'
+}
+
+# --- listener ---
+
+log_daemon "hosuni starting (stdin/stdout mode)"
+log_daemon "inference: ${INFERENCE_HOST}:${INFERENCE_PORT}"
+log_daemon "lookdown: $LOOKDOWN"
+log_daemon "tools: $TOOLS_FILE"
+
+# stdin/stdout mode: read JSON request, write JSON response
+# usage: echo '{"input":"hello","channel":"test"}' | hosuni.sh
+#        or spawned by hosuni-discord.ts per message
+
+request=$(cat)
+log_daemon "raw request: $(echo "$request" | head -c 200)"
+handle_request "$request"
