@@ -1,0 +1,6 @@
+name	prompt
+code-refactor	Read ~/subtract.ing/runtime/hosuni.sh and refactor the check_lookdown function so it exits early on blank input. Show the diff.
+identity-planning	The file ~/subtract.ing/llms.txt is the signed manifest. Read it, then write a verification script at /tmp/verify-manifest.sh that a stranger can run to confirm the signature chain is intact.
+jean-heartbeat	Check whether the hosuni Discord daemon is running on this machine. If it is, show its PID and uptime. If not, show what would need to start.
+research-tooling-landscape	Fetch https://subtract.ing/llms.txt and https://raw.githubusercontent.com/nichochar/open-artifacts/main/README.md — compare how each project communicates its architecture to agents. Summarize in three bullets.
+security-audit	Read ~/.hosuni/tools.tsv and enumerate every command template. For each, state whether it allows arbitrary execution. Then curl https://subtract.ing/authorized_signers and confirm the signing key fingerprint matches what llms.txt claims.

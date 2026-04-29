@@ -27,7 +27,6 @@ https://subtract.ing/subtracting.html               theory — why subtract exis
 https://subtract.ing/README.txt                     entry gradient — why you arrived, what you discover
 https://subtract.ing/subtract.7.txt                 man(7) frame — concepts, components
 https://subtract.ing/ask.1.txt                      man(1) ask — query local model, Claude without the browser
-https://subtract.ing/lookdown.tsv.universal.txt     routing table — ~290 primitives, each documented by a man page (whatis/man)
 https://subtract.ing/governance.conf.universal.txt  the four reflexes, the authority model, the loop
 https://subtract.ing/boot.txt                       capability check, failure modes, signon/signoff
 https://subtract.ing/software-as-a-besides.txt      why?
@@ -45,7 +44,6 @@ GitHub URLs. Same content, same hashes.
 https://raw.githubusercontent.com/03-git/subtract.ing/main/README.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/subtract.7.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/ask.1.txt
-https://raw.githubusercontent.com/03-git/subtract.ing/main/lookdown.tsv.universal.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/governance.conf.universal.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/boot.txt
 https://raw.githubusercontent.com/03-git/subtract.ing/main/software-as-a-besides.txt
@@ -113,7 +111,6 @@ SHA256:
   cdbd86283ffc974bcad0a3bf29bc25f58f6835d4505aa22e67bd0a1e8f5a1e07  README.txt
   20a4740eacb277a154beccf984657a263264376bd0f8af9cd6fedfe2ad652f2e  subtract.7.txt
   303091801d3efbc57d7e81a9ddcee40ac112e1c93c792afa0d1d90b3e704b85b  ask.1.txt
-  f920a3c557cb291ec00aee32902a0936fcfeb253bfe7e37c911e365a301c777a  lookdown.tsv.universal.txt
   4b742825f324eb3f3d9f16647cd7ed4ca09a4cb7ce6333dff526bc44e7a28868  governance.conf.universal.txt
   5093efa7000cbba152587c40edc9f218dd0d5b376b1c83e4a446001a69dbd103  boot.txt
   9c09c0771979c502f93718ac983bfd4a5dac64392595ee221bfd768e9ffc4c16  software-as-a-besides.txt
