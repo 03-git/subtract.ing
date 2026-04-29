@@ -1,0 +1,27 @@
+# lookdown.<hostname>.tsv — host-specific overrides
+# copy to ~/.subtract/lookdown.<hostname>.tsv
+# these entries are checked BEFORE lookdown.universal.tsv
+# first match wins. use this for:
+#   - machine-specific commands (services, hardware, paths)
+#   - personal shortcuts
+#   - child-specific or user-specific content
+#
+# format: glob_pattern<TAB>command
+#   or:   glob_pattern<TAB>[tag]<TAB>command
+
+# --- host-specific services ---
+start*jellyfin	sudo systemctl start jellyfin
+stop*jellyfin	sudo systemctl stop jellyfin
+restart*jellyfin	sudo systemctl restart jellyfin
+*jellyfin*status*	systemctl is-active jellyfin && echo "running" || echo "stopped"
+
+# --- hardware this machine has ---
+*gpu*status*	nvidia-smi 2>/dev/null || echo "no nvidia gpu found"
+*temperature*	sensors 2>/dev/null || echo "install lm-sensors: sudo apt install lm-sensors"
+
+# --- personal shortcuts ---
+*my*projects*	ls ~/repos/
+*work*notes*	cat ~/human/via-negativa/notes.txt 2>/dev/null || echo "no notes yet"
+
+# --- child entries (override or extend universal) ---
+*favorite*movie*	echo "Ask me about Godzilla, Totoro, or Minecraft!"

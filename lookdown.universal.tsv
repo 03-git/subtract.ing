@@ -3,6 +3,19 @@
 #   tags: [stdout] (default), [player]
 #   two-column lines (no tag) default to [stdout] for backwards compat
 # first match wins. specific before general.
+
+# children — these entries go first
+*godzilla*	echo "Godzilla is a giant monster from Japan, first appearing in a 1954 movie. The name comes from the Japanese word Gojira, combining gorilla and whale. Godzilla has fought over 30 legendary opponents including King Ghidorah, Mothra, Mechagodzilla, and King Kong across more than 35 films — the longest-running film franchise in history."
+*what*dinosaur*	echo "Dinosaurs were reptiles that lived millions of years ago. Some were huge like T-Rex, others small as chickens. They went extinct about 66 million years ago when an asteroid hit Earth."
+*caterpillar*	echo "A caterpillar is the larva stage of a butterfly or moth. It hatches from an egg and eats leaves to grow bigger. Caterpillars have soft bodies with many segments and tiny legs. When it is big enough, it builds a cocoon or chrysalis and transforms inside."
+*cocoon*	echo "A cocoon is a silk covering that a caterpillar spins around itself. Inside the cocoon, the caterpillar changes into a moth. Butterflies make a chrysalis instead of a cocoon, but people use the word cocoon for both. The change inside is called metamorphosis."
+*chrysalis*	echo "A chrysalis is the hard shell a butterfly caterpillar makes when it is ready to transform. Inside, the caterpillar's body breaks down and rebuilds into a butterfly. It takes about 10 to 14 days. When it opens, a butterfly comes out with wet wings that need to dry."
+*butterfly*	echo "A butterfly is an insect with large colorful wings. It starts as an egg, becomes a caterpillar, forms a chrysalis, and emerges as a butterfly. Butterflies drink nectar from flowers through a long curled tongue called a proboscis. Monarch butterflies migrate thousands of miles."
+*moth*	echo "A moth is an insect closely related to a butterfly. Most moths fly at night and are attracted to light. A moth caterpillar spins a cocoon made of silk. Moths have feathery antennae and usually duller colors than butterflies. Some moths, like the luna moth, are very large and beautiful."
+*metamorphosis*	echo "Metamorphosis is the process where an animal completely changes its body shape as it grows. A caterpillar becoming a butterfly is metamorphosis. A tadpole becoming a frog is metamorphosis. The word comes from Greek and means 'change of form.'"
+*larva*	echo "A larva is the young form of an animal that looks very different from the adult. A caterpillar is the larva of a butterfly. A tadpole is the larva of a frog. A maggot is the larva of a fly. Larvae eat and grow until they are ready to change into their adult form."
+*pupa*	echo "A pupa is the stage between larva and adult in insects that undergo metamorphosis. The caterpillar stops eating, attaches to something, and its outer skin hardens into a protective case. Inside, the body completely reorganizes. The pupa does not eat or move. When the transformation is complete, the adult insect emerges."
+
 # edit this file to teach your machine new intents.
 # languages: add a section. translate the intents, keep the commands.
 #
@@ -1576,7 +1589,6 @@ read*about*cribbage	kiwix-search cribbage
 *how*boat*float*	echo "Boats float because they push water out of the way (displacement). If the boat is lighter than the amount of water it pushes aside, it floats. Even heavy steel ships work because they're hollow inside."
 *what*electricity*	echo "Electricity is the flow of tiny particles called electrons through a wire. It powers lights, computers, and everything you plug in. It moves almost as fast as light!"
 *how*battery work*	echo "A battery stores energy as chemicals. When connected, a chemical reaction pushes electrons through the circuit from one end to the other, making electricity flow."
-*what*dinosaur*	echo "Dinosaurs were reptiles that lived millions of years ago. Some were huge like T-Rex, others small as chickens. They went extinct about 66 million years ago when an asteroid hit Earth."
 *what*a fossil*	echo "A fossil is the preserved remains of an ancient plant or animal found in rock. Over millions of years, bones and shells slowly turn to stone. They teach us about prehistoric life."
 *how big*blue whale*	echo "A blue whale can be 100 feet long (30m) and weigh 200 tons — as heavy as 33 elephants! Its heart is about the size of a watermelon and weighs 400 pounds. It's the biggest animal that ever lived."
 *fastest animal*	echo "The peregrine falcon is the fastest animal — it dives at over 240 mph (386 km/h)! On land, the cheetah is fastest at about 70 mph (112 km/h)."

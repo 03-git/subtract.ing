@@ -15,7 +15,8 @@ SUBTRACT_DIR="${SUBTRACT_DIR:-$HOME/.subtract}"
 # bash hangs on unclosed quotes (what's, don't, can't) with a bare "> " prompt.
 # user doesn't know what happened. replace PS2 with an explanation.
 PS2="(unclosed quote -- press ctrl-c and rephrase without apostrophes) "
-SUBTRACT_LOOKUP="$SUBTRACT_DIR/lookdown.tsv"
+SUBTRACT_LOOKUP_HOST="$SUBTRACT_DIR/lookdown.$(hostname -s).tsv"
+SUBTRACT_LOOKUP_UNIVERSAL="$SUBTRACT_DIR/lookdown.universal.tsv"
 SUBTRACT_SKILLS="$SUBTRACT_DIR/skills"
 SUBTRACT_KIWIX="${SUBTRACT_KIWIX:-http://localhost:8888}"
 SUBTRACT_LAST_OUTPUT=""
@@ -261,7 +262,7 @@ __subtract_skills() {
 
 # --- T0: lookup table ---
 
-__subtract_lookup() {
+__subtract_lookup_file() {
     local input_lower
     input_lower=$(__subtract_lower "$1")
     local pattern tag cmd rest pattern_lower
@@ -269,24 +270,30 @@ __subtract_lookup() {
         [[ "$pattern" =~ ^#.*$ || -z "$pattern" ]] && continue
         pattern_lower=$(__subtract_lower "$pattern")
         # shellcheck disable=SC2254
-        # zsh needs $~ for glob expansion in variables
         if [ -n "$ZSH_VERSION" ]; then
             [[ "$input_lower" == $~pattern_lower ]] || continue
         else
             [[ "$input_lower" == $pattern_lower ]] || continue
         fi
-        # three-column: pattern<TAB>[tag]<TAB>command
-        # two-column:   pattern<TAB>command (backwards compat)
         if [[ "$rest" =~ ^\[([a-z]+)\] ]]; then
             if [ -n "$ZSH_VERSION" ]; then tag="${match[1]}"; else tag="${BASH_REMATCH[1]}"; fi
-            cmd="${rest#*$'\t'}"
+            cmd="${rest#*	}"
         else
             tag="stdout"
             cmd="$rest"
         fi
         echo "${tag}	${cmd}"
         return 0
-    done < "$SUBTRACT_LOOKUP"
+    done < "$lookdown_file"
+    return 1
+}
+
+__subtract_lookup() {
+    local result lookdown_file
+    for lookdown_file in "$SUBTRACT_LOOKUP_HOST" "$SUBTRACT_LOOKUP_UNIVERSAL"; do
+        [ -f "$lookdown_file" ] || continue
+        result=$(__subtract_lookup_file "$1") && { echo "$result"; return 0; }
+    done
     return 1
 }
 
