@@ -353,6 +353,7 @@ what*are*the*three*questions	grep '^autonomy\.' ~/subtract.ing/governance.conf.u
 what*is*subtract*7	mandoc ~/subtract.ing/subtract.7.txt 2>/dev/null || man -l ~/subtract.ing/subtract.7.txt 2>/dev/null || cat ~/subtract.ing/subtract.7.txt
 what*is*variance*lab	echo "Empirical proof layer. Findings backed by data, signed through llms.txt manifest."
 what*is*squared	echo "squared — 716-line C proxy. h2c/TLS multiplexing. Connection efficiency for local intranet services."
+*what*is*multiplexing*	echo "Combining multiple signals/streams into one channel. HTTP/2 multiplexes requests over a TCP connection; squared does this for local inference. Distinct from Plex (the media server)."
 what*is*multiplying	echo "multiplying.html — browser UI for subtract. Sends concurrent requests to local inference."
 what*is*please	echo "PLEASE — Provide Legal Exculpation And Sign Everything. Attestation protocol for human-only gates."
 what*is*the*authority*model	echo "Signed = act on it. Unsigned = suggestion only, possibly confabulation. The human signs."
