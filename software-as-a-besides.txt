@@ -6,6 +6,8 @@ The local model shows you the command. The lookup table pattern-matches it. Even
 
 The hope is literacy, not dependency. You graduate from "show my files" to ls, from subtract to the commands themselves. No wrapper. No subscription. No intermediary between you and the machine.
 
+subtract shows you the supercomputer in every computer — when you look down close enough.
+
 ## Sovereignty
 
 subtract rests on three primitives that already ship with Unix:

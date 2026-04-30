@@ -7,6 +7,8 @@ the instructor.
 One device, one model, one operator. No cloud subscription.
 No always-on internet.
 
+subtract shows you the supercomputer in every computer — when you look down close enough.
+
 ## What the substrate commits to
 
 Five primitives. All Unix or OpenSSH. None of them name a role,
