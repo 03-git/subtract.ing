@@ -14,6 +14,7 @@ HOSUNI_DIR="${HOSUNI_DIR:-$HOME/.hosuni}"
 INFERENCE_HOST=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null || echo "localhost")
 INFERENCE_PORT=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null || echo "8085")
 RESEARCH_PORT=$(cat "$SUBTRACT_DIR/research_port" 2>/dev/null || echo "")
+RESEARCH_HOST=$(cat "$SUBTRACT_DIR/research_host" 2>/dev/null || echo "")
 LOOKDOWN="$SUBTRACT_DIR/lookdown.tsv"
 LOOKDOWN_PERSONAL="$SUBTRACT_DIR/lookdown.personal.tsv"
 TOOLS_FILE="$HOSUNI_DIR/tools.tsv"
@@ -105,10 +106,15 @@ call_inference() {
 
     log_daemon "payload: $(echo "$payload" | jq -c '{msg_count: (.messages | length), has_tools: (.tools != null), first_role: .messages[0].role}' 2>/dev/null)"
     local response
-    response=$(curl -s --connect-timeout 10 -m 300 \
-        -X POST "http://${INFERENCE_HOST}:${INFERENCE_PORT}/v1/chat/completions" \
-        -H "Content-Type: application/json" \
-        -d "$payload" 2>/dev/null)
+    if [ "$INFERENCE_HOST" != "localhost" ] && [ -n "$INFERENCE_HOST" ]; then
+        response=$(echo "$payload" | ssh -o ConnectTimeout=5 "$INFERENCE_HOST" \
+            "curl -s -m 300 -X POST http://localhost:${INFERENCE_PORT}/v1/chat/completions -H 'Content-Type: application/json' -d @-" 2>/dev/null)
+    else
+        response=$(curl -s --connect-timeout 10 -m 300 \
+            -X POST "http://localhost:${INFERENCE_PORT}/v1/chat/completions" \
+            -H "Content-Type: application/json" \
+            -d "$payload" 2>/dev/null)
+    fi
 
     echo "$response"
 }
@@ -251,10 +257,12 @@ ${context}"
         # if research port available and tools were used, hand off to research model
         if [ -n "$RESEARCH_PORT" ] && [ "$round" -gt 1 ]; then
             log_daemon "[${channel}] handing off to research model on port $RESEARCH_PORT"
-            local saved_port="$INFERENCE_PORT"
+            local saved_port="$INFERENCE_PORT" saved_host="$INFERENCE_HOST"
             INFERENCE_PORT="$RESEARCH_PORT"
+            [ -n "$RESEARCH_HOST" ] && INFERENCE_HOST="$RESEARCH_HOST"
             local research_resp; research_resp=$(call_inference "$messages" "[]")
             INFERENCE_PORT="$saved_port"
+            INFERENCE_HOST="$saved_host"
             local research_content; research_content=$(echo "$research_resp" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
             if [ -n "$research_content" ]; then
                 content="$research_content"
