@@ -87,7 +87,35 @@ class Handler(BaseHTTPRequestHandler):
                 resp["source"] = source
             self._respond(200, resp)
         except subprocess.TimeoutExpired:
-            self._stream_inference(intent, mode, thread_id, files)
+            self._hosuni_fallback(intent, thread_id, files)
+
+    def _hosuni_fallback(self, intent, thread_id="default", files=None):
+        hosuni = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "hosuni.sh")
+        req = json.dumps({"input": intent, "channel": thread_id})
+        try:
+            result = subprocess.run(
+                ["bash", hosuni],
+                input=req, capture_output=True, text=True, timeout=300,
+                env=ENV
+            )
+            if result.stdout.strip():
+                resp = json.loads(result.stdout.strip())
+                reply = resp.get("response") or resp.get("error") or ""
+                source = resp.get("source", "hosuni")
+                if reply:
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/event-stream")
+                    self.send_header("Cache-Control", "no-cache")
+                    self.send_header("Access-Control-Allow-Origin", "*")
+                    self.end_headers()
+                    self.wfile.write(f"data: {json.dumps({'token': reply, 'source': source})}\n\n".encode())
+                    self.wfile.flush()
+                    self.wfile.write(b"data: [DONE]\n\n")
+                    self.wfile.flush()
+                    return
+        except Exception:
+            pass
+        self._respond(200, {"stdout": "Couldn't resolve that.", "stderr": "", "exit": 1, "stream": False})
 
     def _stream_inference(self, intent, mode, thread_id="default", files=None):
         self.send_response(200)

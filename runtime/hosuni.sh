@@ -13,12 +13,17 @@ SUBTRACT_DIR="${SUBTRACT_DIR:-$HOME/.subtract}"
 HOSUNI_DIR="${HOSUNI_DIR:-$HOME/.hosuni}"
 INFERENCE_HOST=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null || echo "localhost")
 INFERENCE_PORT=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null || echo "8085")
+RESEARCH_PORT=$(cat "$SUBTRACT_DIR/research_port" 2>/dev/null || echo "")
 LOOKDOWN="$SUBTRACT_DIR/lookdown.tsv"
 LOOKDOWN_PERSONAL="$SUBTRACT_DIR/lookdown.personal.tsv"
 TOOLS_FILE="$HOSUNI_DIR/tools.tsv"
 LOG_DIR="$SUBTRACT_DIR/log"
 DAEMON_LOG="$HOME/human/sessions/hosuni.log"
 MAX_TURNS=20
+TOOL_TIMEOUT=300
+
+SOUL_FILE="$HOME/subtract.ing/SOUL.txt"
+SYSTEM_MSG=$(cat "$SOUL_FILE" 2>/dev/null || echo "")
 
 mkdir -p "$LOG_DIR" "$HOSUNI_DIR"
 
@@ -77,12 +82,11 @@ execute_tool() {
     [ -z "$template" ] && { echo "tool not found: $name"; return 1; }
 
     local input; input=$(echo "$args" | jq -r '.input // empty')
-    # substitute {input} or {path} or {command} or {script} in template
-    local cmd; cmd=$(echo "$template" | sed "s|{[^}]*}|$input|g")
 
-    log_daemon "tool: $name -> $cmd"
+    log_daemon "tool: $name (arg: $(echo "$input" | head -c 100))"
     local output
-    output=$(eval "$cmd" 2>&1 | head -c 4096) || true
+    output=$(HOSUNI_ARG="$input" perl -e 'alarm shift; exec @ARGV' "$TOOL_TIMEOUT" bash -c "$template 2>/dev/null" 2>/dev/null | head -c 4096) || true
+    output=${output:-"no results"}
     echo "$output"
 }
 
@@ -99,6 +103,7 @@ call_inference() {
             '{messages: $msgs, max_tokens: 2048, stream: false, tools: $tools}')
     fi
 
+    log_daemon "payload: $(echo "$payload" | jq -c '{msg_count: (.messages | length), has_tools: (.tools != null), first_role: .messages[0].role}' 2>/dev/null)"
     local response
     response=$(curl -s --connect-timeout 10 -m 300 \
         -X POST "http://${INFERENCE_HOST}:${INFERENCE_PORT}/v1/chat/completions" \
@@ -162,8 +167,14 @@ handle_request() {
 
     # load conversation state
     local messages; messages=$(load_messages "$channel")
+    # inject system prompt as first message on first turn
     local user_content="$input"
-    [ -n "$context" ] && user_content="${input}
+    local msg_count; msg_count=$(echo "$messages" | jq 'length')
+    if [ "$msg_count" -eq 0 ] && [ -n "$SYSTEM_MSG" ]; then
+        messages=$(echo "$messages" | jq --arg sys "$SYSTEM_MSG" \
+            '[{"role":"system","content":$sys}]')
+    fi
+    [ -n "$context" ] && user_content="${user_content}
 
 Context:
 ${context}"
@@ -180,6 +191,7 @@ ${context}"
         round=$((round + 1))
 
         local response; response=$(call_inference "$messages" "$tools")
+        log_daemon "[${channel}] round $round raw: $(echo "$response" | jq -c '.choices[0].message | {content: (.content // null), tool_calls: (.tool_calls // null) | length, finish: .finish_reason}' 2>/dev/null || echo 'PARSE_FAIL')"
 
         # check if inference returned anything
         local content; content=$(echo "$response" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
@@ -235,7 +247,21 @@ ${context}"
             continue
         fi
 
-        # no tool calls, we have a final response
+        # no tool calls — either we have a final response, or model returned nothing
+        # if research port available and tools were used, hand off to research model
+        if [ -n "$RESEARCH_PORT" ] && [ "$round" -gt 1 ]; then
+            log_daemon "[${channel}] handing off to research model on port $RESEARCH_PORT"
+            local saved_port="$INFERENCE_PORT"
+            INFERENCE_PORT="$RESEARCH_PORT"
+            local research_resp; research_resp=$(call_inference "$messages" "[]")
+            INFERENCE_PORT="$saved_port"
+            local research_content; research_content=$(echo "$research_resp" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+            if [ -n "$research_content" ]; then
+                content="$research_content"
+                source="research"
+            fi
+        fi
+
         if [ -n "$content" ]; then
             messages=$(echo "$messages" | jq --arg c "$content" \
                 '. + [{"role":"assistant","content":$c}]')

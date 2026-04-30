@@ -25,24 +25,13 @@ SESSION_LOG_DIR = os.path.expanduser("~/.subtract/log")
 SUBTRACT_DIR = os.path.expanduser("~/.subtract")
 HOSUNI_CHANNEL_IDS = {1318691951146434622, 1489355263361286204}
 
-conversations = {}
-MAX_TURNS = 20
+HOSUNI_SH = os.path.expanduser("~/subtract.ing/runtime/hosuni.sh")
 
 
 def log(msg):
     ts = datetime.datetime.now().isoformat()
     with open(LOG_PATH, "a") as f:
         f.write(f"[{ts}] {msg}\n")
-
-
-def session_log(channel_id, role, content):
-    os.makedirs(SESSION_LOG_DIR, exist_ok=True)
-    path = os.path.join(SESSION_LOG_DIR, f"hosuni-{channel_id}.log")
-    ts = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-    tag = "Q" if role == "user" else "A"
-    line = content.replace("\t", "\\t").replace("\n", " ")[:500]
-    with open(path, "a") as f:
-        f.write(f"{ts}\t{tag}\t{line}\n")
 
 
 def load_whitelist():
@@ -52,72 +41,23 @@ def load_whitelist():
         return set(line.strip() for line in f if line.strip())
 
 
-def get_inference_endpoint():
-    host = "localhost"
-    port = "8085"
-    host_file = os.path.join(SUBTRACT_DIR, "inference_host")
-    port_file = os.path.join(SUBTRACT_DIR, "inference_port")
-    if os.path.exists(host_file):
-        with open(host_file) as f:
-            h = f.read().strip()
-            if h:
-                host = h
-    if os.path.exists(port_file):
-        with open(port_file) as f:
-            p = f.read().strip()
-            if p:
-                port = p
-    return f"http://{host}:{port}/v1/chat/completions"
-
-
-def get_messages(channel_id):
-    if channel_id not in conversations:
-        conversations[channel_id] = []
-    return conversations[channel_id]
-
-
-def add_message(channel_id, role, content):
-    msgs = get_messages(channel_id)
-    msgs.append({"role": role, "content": content})
-    if len(msgs) > MAX_TURNS * 2:
-        conversations[channel_id] = msgs[-(MAX_TURNS * 2):]
-
-
-def ask_local(messages):
-    endpoint = get_inference_endpoint()
-    payload = json.dumps({
-        "messages": messages,
-        "max_tokens": 2048,
-        "temperature": 0.7,
-        "stream": False,
-    }).encode("utf-8")
-    req = urllib.request.Request(
-        endpoint, data=payload,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=300) as resp:
-            body = json.loads(resp.read().decode("utf-8"))
-        choices = body.get("choices", [])
-        if choices:
-            return choices[0]["message"]["content"].strip()
-    except (urllib.error.URLError, Exception) as e:
-        log(f"  -> local inference error: {e}")
-    return None
-
-
-def ask_cloud(prompt):
+def ask_hosuni(prompt, channel_id, context=None):
+    req = {"input": prompt, "channel": channel_id}
+    if context:
+        req["context"] = context
     try:
         result = subprocess.run(
-            [os.path.expanduser("~/.local/bin/claude"), "-p", "-c",
-             "--allowedTools", "WebSearch"],
-            input=prompt, capture_output=True, text=True, timeout=300,
+            ["bash", HOSUNI_SH],
+            input=json.dumps(req), capture_output=True, text=True, timeout=300,
         )
-        return result.stdout.strip() or None
+        if result.stdout.strip():
+            resp = json.loads(result.stdout.strip())
+            reply = resp.get("response") or resp.get("error")
+            source = resp.get("source", "unknown")
+            return reply, source
     except Exception as e:
-        log(f"  -> claude -p error: {e}")
-        return None
+        log(f"  -> hosuni error: {e}")
+    return None, "error"
 
 
 intents = discord.Intents.default()
@@ -195,34 +135,18 @@ async def on_message(message):
             log(f"  -> transcript fetch error: {e}")
 
     # Build user prompt
+    prompt = content
+    context = None
     if transcript_json:
-        user_text = re.sub(r"https?://\S+", "", content).strip()
-        if user_text:
-            prompt = f"{user_text}\n\nThe transcript has already been fetched. Do not attempt to access the URL. Analyze the following transcript data:\n\n{transcript_json}"
-        else:
-            prompt = f"Analyze the following YouTube video transcript. Do not attempt to access the URL -- the full transcript is provided below.\n\n{transcript_json}"
-    else:
-        prompt = content
+        prompt = re.sub(r"https?://\S+", "", content).strip() or "Analyze this video transcript."
+        context = transcript_json
 
-    add_message(channel_id, "user", prompt)
-    session_log(channel_id, "user", prompt)
-
-    # Local first, cloud fallback
-    messages = get_messages(channel_id)
-    reply = ask_local(messages)
-    inference_source = "local"
+    reply, inference_source = ask_hosuni(prompt, channel_id, context)
 
     if not reply:
-        log(f"  -> local empty, falling back to cloud")
-        reply = ask_cloud(prompt)
-        inference_source = "cloud"
-
-    if not reply:
-        log(f"  -> no model available")
+        log(f"  -> no response from hosuni")
         return
 
-    add_message(channel_id, "assistant", reply)
-    session_log(channel_id, "assistant", reply)
     log(f"  -> [{inference_source}] reply: {reply[:200]}")
 
     try:
