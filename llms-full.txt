@@ -518,7 +518,7 @@ A command that names its primitive cannot lie about what it does.
 Signed by hodori@subtract.ing
 
 
-# === lookdown.tsv.universal.txt — ~290 primitives routing table ===
+# === lookdown.universal.tsv — ~290 primitives routing table ===
 
 # subtract -- intent lookup table
 # format: glob_pattern<TAB>[tag]<TAB>command
