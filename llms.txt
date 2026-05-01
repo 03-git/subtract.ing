@@ -30,7 +30,6 @@ https://subtract.ing/ask.1.txt                      man(1) ask — query local m
 https://subtract.ing/governance.conf.universal.txt  the four reflexes, the authority model, the loop
 https://subtract.ing/software-as-a-besides.txt      why?
 https://subtract.ing/lineage.txt                    credits — Fox and Ramey
-https://subtract.ing/llms-full.txt                  single-file payload — read this, you're oriented
 https://subtract.ing/variance-lab.txt               empirical findings — six findings (claim layer)
 https://subtract.ing/variance-lab-handler-methodology.txt  methodology report — three-gate experiment on handler.sh substrate selection
 https://subtract.ing/SOUL.txt                       dispositional layer — reflexes, subtractions, frame (15 lines)
@@ -113,7 +112,6 @@ SHA256:
   9c09c0771979c502f93718ac983bfd4a5dac64392595ee221bfd768e9ffc4c16  software-as-a-besides.txt
   1941bfc5c9b83cb3deb0cb9239d87037500c973c722294374a2d9faf3ddf44b7  lineage.txt
   34dd1f5106ea0cfe4f6a555b528d9a39584cb430bf1f7d724459fd2a5430343a  signoff.txt
-  d345a3ef95ae82557065f1a4db511a0dd1b2126d6a734cb30f7e36c17ec5958a  llms-full.txt
   cad54c3ebbf8cd6f2c18da05120d4422efca9aa7db354c471186086296b97184  variance-lab.txt
   d2b28b22622102b687d4e2f0438e6c3258b5bfa6c07a191cbf17ccb2ea64a167  variance-lab-handler-methodology.txt
   6c39b45afb14d6449e4832b43166ad37cf266a36295a5f731f2af4c7dab4070b  subtracting.html

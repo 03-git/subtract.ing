@@ -9,14 +9,16 @@
 
 set -euo pipefail
 
+export PATH="$HOME/.subtract/bin:$HOME/.subtract:$PATH"
+
 SUBTRACT_DIR="${SUBTRACT_DIR:-$HOME/.subtract}"
 HOSUNI_DIR="${HOSUNI_DIR:-$HOME/.hosuni}"
 INFERENCE_HOST=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null || echo "localhost")
 INFERENCE_PORT=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null || echo "8085")
 RESEARCH_PORT=$(cat "$SUBTRACT_DIR/research_port" 2>/dev/null || echo "")
 RESEARCH_HOST=$(cat "$SUBTRACT_DIR/research_host" 2>/dev/null || echo "")
-LOOKDOWN="$SUBTRACT_DIR/lookdown.tsv"
-LOOKDOWN_PERSONAL="$SUBTRACT_DIR/lookdown.personal.tsv"
+LOOKDOWN_NODE="$SUBTRACT_DIR/lookdown.$(hostname).tsv"
+LOOKDOWN_UNIVERSAL="$SUBTRACT_DIR/lookdown.universal.tsv"
 TOOLS_FILE="$HOSUNI_DIR/tools.tsv"
 LOG_DIR="$SUBTRACT_DIR/log"
 DAEMON_LOG="$HOME/human/sessions/hosuni.log"
@@ -43,7 +45,7 @@ log_session() {
 check_lookdown() {
     local input; input=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
     local line pattern cmd
-    for file in "$LOOKDOWN_PERSONAL" "$LOOKDOWN"; do
+    for file in "$LOOKDOWN_NODE" "$LOOKDOWN_UNIVERSAL"; do
         [ -f "$file" ] || continue
         while IFS=$'\t' read -r pattern cmd rest; do
             [ -z "$pattern" ] && continue
@@ -165,8 +167,11 @@ handle_request() {
     local lookdown_result
     if lookdown_result=$(check_lookdown "$input"); then
         log_daemon "[${channel}] lookdown hit: $lookdown_result"
-        log_session "$channel" "A" "$lookdown_result"
-        jq -n --arg r "$lookdown_result" --arg s "lookdown" \
+        local output
+        output=$(eval "$lookdown_result" 2>&1) || true
+        [ -z "$output" ] && output="ok"
+        log_session "$channel" "A" "$output"
+        jq -n --arg r "$output" --arg s "lookdown" \
             '{response: $r, source: $s}'
         return
     fi
@@ -291,7 +296,7 @@ ${context}"
 
 log_daemon "hosuni starting (stdin/stdout mode)"
 log_daemon "inference: ${INFERENCE_HOST}:${INFERENCE_PORT}"
-log_daemon "lookdown: $LOOKDOWN"
+log_daemon "lookdown: $LOOKDOWN_NODE $LOOKDOWN_UNIVERSAL"
 log_daemon "tools: $TOOLS_FILE"
 
 # stdin/stdout mode: read JSON request, write JSON response
