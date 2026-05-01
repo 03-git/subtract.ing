@@ -5,82 +5,376 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>subtract.ing — demo</title>
 <style>
-body{background:#000;color:#ccc;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;margin:0;padding:0;height:100vh;display:flex;flex-direction:column}
-.term{flex:1;padding:1.5rem;overflow-y:auto}
-.line{margin-bottom:.2rem;line-height:1.5}
-.ps1{color:#6f6}
-.typing{color:#fff}
-.cursor{display:inline-block;width:7px;height:14px;background:#6f6;animation:blink 1s step-end infinite;vertical-align:text-bottom}
-@keyframes blink{50%{opacity:0}}
-.output{color:#ccc}
-.tag{color:#555}
-.prompt-confirm{color:#555}
-.dim{color:#444}
-.bar{border-top:1px solid #222;padding:1.5rem;font-size:.9rem;color:#666}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#ccc;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;height:100vh;display:flex;flex-direction:column}
+#screen{flex:1;overflow:hidden;position:relative}
+#grid{position:absolute;top:0;left:0;right:0;bottom:0;white-space:pre;line-height:1.4;padding:4px}
+.bar{border-top:1px solid #222;padding:1rem;font-size:.85rem;color:#666}
 .bar a{color:#6f6;text-decoration:underline}
+#replay{cursor:pointer;color:#6f6}
 </style>
 </head>
 <body>
-<div class="term" id="term"></div>
-<div class="bar">this is a recording — <a href="https://subtract.ing/" target="_blank">install</a> to use it live besides what you already use · <a href="https://subtract.ing/subtracting.html" target="_blank">why it works this way</a></div>
+<div id="screen"><div id="grid"></div></div>
+<div class="bar"><span id="replay">↻ replay</span> · this is a recording from a real terminal session — <a href="https://subtract.ing/">subtract.ing</a></div>
+<script id="cast" type="text/plain">
+{"version": 2, "width": 80, "height": 24}
+[1.002, "o", "\u001b[1;32myou@your-computer\u001b[0m:\u001b[1;34m~\u001b[0m$ g"]
+[1.045, "o", "o"]
+[1.089, "o", "d"]
+[1.132, "o", "z"]
+[1.175, "o", "i"]
+[1.219, "o", "l"]
+[1.262, "o", "l"]
+[1.306, "o", "a"]
+[1.349, "o", "\n"]
+[1.412, "o", "Godzilla is a giant monster from Japan, first appearing in a 1954 movie. The name comes from the Japanese word Gojira, combining gorilla and whale. Godzilla has fought over 30 legendary opponents including King Ghidorah, Mothra, Mechagodzilla, and King Kong across more than 35 films \u2014 the longest-running film franchise in history.\n"]
+[4.414, "o", "\u001b[1;32myou@your-computer\u001b[0m:\u001b[1;34m~\u001b[0m$ p"]
+[4.457, "o", "l"]
+[4.5, "o", "a"]
+[4.544, "o", "t"]
+[4.587, "o", "y"]
+[4.63, "o", "p"]
+[4.674, "o", "u"]
+[4.717, "o", "s"]
+[4.761, "o", "\nType what you want in plain words. Try:\n  what files are here\n  what time is it\n  what programs can the kids run\n  search for something\n"]
+[7.764, "o", "\u001b[1;32myou@your-computer\u001b[0m:\u001b[1;34m~\u001b[0m$ s"]
+[7.808, "o", "h"]
+[7.851, "o", "o"]
+[7.895, "o", "u"]
+[7.938, "o", "l"]
+[7.981, "o", "d"]
+[8.025, "o", " "]
+[8.068, "o", "I"]
+[8.111, "o", " "]
+[8.155, "o", "w"]
+[8.198, "o", "a"]
+[8.242, "o", "l"]
+[8.285, "o", "k"]
+[8.328, "o", " "]
+[8.372, "o", "o"]
+[8.415, "o", "r"]
+[8.458, "o", " "]
+[8.502, "o", "d"]
+[8.545, "o", "r"]
+[8.589, "o", "i"]
+[8.632, "o", "v"]
+[8.675, "o", "e"]
+[8.719, "o", " "]
+[8.762, "o", "t"]
+[8.806, "o", "o"]
+[8.849, "o", " "]
+[8.893, "o", "t"]
+[8.936, "o", "h"]
+[8.98, "o", "e"]
+[9.023, "o", " "]
+[9.067, "o", "c"]
+[9.11, "o", "a"]
+[9.154, "o", "r"]
+[9.197, "o", " "]
+[9.241, "o", "w"]
+[9.284, "o", "a"]
+[9.328, "o", "s"]
+[9.371, "o", "h"]
+[9.414, "o", "?"]
+[9.458, "o", "\n"]
+[9.555, "o", "Drive. The car has to be at the car wash.\n"]
+[12.556, "o", "\u001b[1;32myou@your-computer\u001b[0m:\u001b[1;34m~\u001b[0m$ w"]
+[12.6, "o", "h"]
+[12.643, "o", "a"]
+[12.687, "o", "t"]
+[12.73, "o", " "]
+[12.774, "o", "d"]
+[12.817, "o", "i"]
+[12.861, "o", "e"]
+[12.904, "o", "r"]
+[12.948, "o", "c"]
+[12.991, "o", "t"]
+[13.034, "o", "o"]
+[13.078, "o", "r"]
+[13.121, "o", "y"]
+[13.165, "o", " "]
+[13.208, "o", "a"]
+[13.251, "o", "m"]
+[13.295, "o", " "]
+[13.338, "o", "i"]
+[13.382, "o", " "]
+[13.425, "o", "i"]
+[13.469, "o", "n"]
+[13.512, "o", "?"]
+[13.556, "o", "\n"]
+[17.36, "o", "/home/media\n"]
+[20.362, "o", "\u001b[1;32myou@your-computer\u001b[0m:\u001b[1;34m~\u001b[0m$ w"]
+[20.406, "o", "h"]
+[20.45, "o", "a"]
+[20.494, "o", "t"]
+[20.537, "o", " "]
+[20.581, "o", "d"]
+[20.625, "o", "i"]
+[20.669, "o", "r"]
+[20.713, "o", "e"]
+[20.756, "o", "c"]
+[20.8, "o", "t"]
+[20.844, "o", "o"]
+[20.888, "o", "r"]
+[20.931, "o", "y"]
+[20.975, "o", " "]
+[21.019, "o", "a"]
+[21.062, "o", "m"]
+[21.106, "o", " "]
+[21.15, "o", "I"]
+[21.194, "o", " "]
+[21.237, "o", "i"]
+[21.281, "o", "n"]
+[21.325, "o", "?"]
+[21.368, "o", "\n"]
+[23.196, "o", "/home/media\n"]
+[26.198, "o", "\u001b[1;32myou@your-computer\u001b[0m:\u001b[1;34m~\u001b[0m$ w"]
+[26.242, "o", "h"]
+[26.286, "o", "a"]
+[26.329, "o", "t"]
+[26.373, "o", " "]
+[26.417, "o", "p"]
+[26.46, "o", "r"]
+[26.504, "o", "o"]
+[26.548, "o", "g"]
+[26.592, "o", "r"]
+[26.635, "o", "a"]
+[26.679, "o", "m"]
+[26.723, "o", "s"]
+[26.766, "o", " "]
+[26.81, "o", "c"]
+[26.854, "o", "a"]
+[26.897, "o", "n"]
+[26.941, "o", " "]
+[26.985, "o", "t"]
+[27.028, "o", "h"]
+[27.072, "o", "e"]
+[27.116, "o", " "]
+[27.159, "o", "k"]
+[27.203, "o", "i"]
+[27.247, "o", "d"]
+[27.291, "o", "s"]
+[27.335, "o", " "]
+[27.379, "o", "r"]
+[27.422, "o", "u"]
+[27.466, "o", "n"]
+[27.51, "o", "?"]
+[27.554, "o", "\n"]
+[27.635, "o", "subtract-program yes-no\nsubtract-program one-step\nsubtract-program wh-flashcards\nsubtract-program sight-words-spanish\n"]
+[30.637, "o", "\u001b[1;32myou@your-computer\u001b[0m:\u001b[1;34m~\u001b[0m$ s"]
+[30.681, "o", "u"]
+[30.725, "o", "b"]
+[30.769, "o", "t"]
+[30.812, "o", "r"]
+[30.856, "o", "a"]
+[30.9, "o", "c"]
+[30.943, "o", "t"]
+[30.987, "o", "-"]
+[31.031, "o", "p"]
+[31.075, "o", "r"]
+[31.119, "o", "o"]
+[31.163, "o", "g"]
+[31.206, "o", "r"]
+[31.25, "o", "a"]
+[31.294, "o", "m"]
+[31.338, "o", " "]
+[31.381, "o", "y"]
+[31.425, "o", "e"]
+[31.469, "o", "s"]
+[31.512, "o", "-"]
+[31.556, "o", "n"]
+[31.6, "o", "o"]
+[31.643, "o", "\n"]
+[32.659, "o", "\u001b[H\u001b[J\u001b[3J"]
+[32.674, "o", "\u001b[H\u001b[J\u001b[3J\n\n\n\n\n\n                                       \ud83c\udf4c\n\n\n\u001b[1;97m                              Is a banana a fruit?\u001b[0m\n\n\n\u001b[1;93m                                  yes or no?  \u001b[0m"]
+[36.652, "o", "yes"]
+[37.18, "o", "\u001b[1;97;42m                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n                                                                                \n\u001b[13;1H                                       \u2713\u001b[0m\u001b[24;1H"]
+[39.21, "o", "\u001b[H\u001b[J\u001b[3J\n\n\n\n\n\n                                       \ud83c\udf4e\n\n\n\u001b[1;97m                             Can you eat an apple?\u001b[0m\n\n\n\u001b[1;93m                                  yes or no?  \u001b[0m"]
+[42.16, "o", "^C\n"]
+[44.164, "o", "\u001b[1;32myou@your-computer\u001b[0m:\u001b[1;34m~\u001b[0m$ i"]
+[44.207, "o", "s"]
+[44.251, "o", " "]
+[44.294, "o", "t"]
+[44.337, "o", "h"]
+[44.381, "o", "e"]
+[44.424, "o", "r"]
+[44.468, "o", "e"]
+[44.511, "o", " "]
+[44.554, "o", "k"]
+[44.598, "o", "o"]
+[44.641, "o", "r"]
+[44.684, "o", "e"]
+[44.728, "o", "a"]
+[44.771, "o", "n"]
+[44.815, "o", " "]
+[44.858, "o", "s"]
+[44.901, "o", "o"]
+[44.945, "o", "y"]
+[44.988, "o", " "]
+[45.032, "o", "s"]
+[45.075, "o", "a"]
+[45.118, "o", "u"]
+[45.162, "o", "c"]
+[45.205, "o", "e"]
+[45.249, "o", "?"]
+[45.292, "o", "\n"]
+[46.298, "o", "Yes. Korean soy sauce (\uac04\uc7a5, *ganjang*) has distinct varieties:\n\n**Joseon-ganjang (\uc870\uc120\uac04\uc7a5)** \u2014 traditional Korean style\n- Made from fermented soybean blocks (*meju*) and brine only \u2014 no wheat\n- Byproduct of making *doenjang* (soybean paste)\n- Lighter, saltier, used for soups and seasoning vegetables\n- Also called *guk-ganjang* (soup soy sauce)\n\n**Yangjo-ganjang (\uc591\uc870\uac04\uc7a5)** \u2014 brewed style\n- Japanese-influenced, uses wheat\n- Darker, sweeter, more umami\n- Common for dipping, marinades, everyday cooking\n\n**Jin-ganjang (\uc9c4\uac04\uc7a5)** \u2014 aged/dark\n- Aged longer or mixed with caramel\n- Used when deeper color is needed\n\n**Mat-ganjang** \u2014 flavored/seasoned\n- Blended with garlic, sesame, other aromatics\n\nThe wheat-free *joseon-ganjang* is the oldest Korean style and remains essential for traditional dishes like *namul* (seasoned vegetables) and *guk* (soups), where the lighter flavor doesn't overpower.\n"]
+[50.302, "o", "\u001b[1;32myou@your-computer\u001b[0m:\u001b[1;34m~\u001b[0m$ w"]
+[50.345, "o", "h"]
+[50.389, "o", "a"]
+[50.432, "o", "t"]
+[50.476, "o", " "]
+[50.519, "o", "i"]
+[50.562, "o", "s"]
+[50.606, "o", " "]
+[50.649, "o", "t"]
+[50.693, "o", "h"]
+[50.736, "o", "e"]
+[50.779, "o", " "]
+[50.823, "o", "s"]
+[50.866, "o", "p"]
+[50.91, "o", "o"]
+[50.953, "o", "t"]
+[50.997, "o", " "]
+[51.04, "o", "p"]
+[51.083, "o", "r"]
+[51.127, "o", "i"]
+[51.17, "o", "c"]
+[51.214, "o", "e"]
+[51.257, "o", " "]
+[51.3, "o", "o"]
+[51.344, "o", "f"]
+[51.387, "o", " "]
+[51.431, "o", "s"]
+[51.474, "o", "o"]
+[51.517, "o", "y"]
+[51.561, "o", "b"]
+[51.604, "o", "e"]
+[51.648, "o", "a"]
+[51.691, "o", "n"]
+[51.734, "o", "s"]
+[51.778, "o", "?"]
+[51.821, "o", "\n"]
+[52.827, "o", "I need web search permission to look up current prices \u2014 the prompt should appear in your terminal. Without it, I can't fetch live market data.\n\nAlternatively, check directly:\n- **CME Group**: cmegroup.com (ZS futures)\n- **Trading Economics**: tradingeconomics.com/commodity/soybeans\n- **Barchart**: barchart.com/futures/quotes/ZS*0\n"]
+</script>
 <script>
-const demos = [
-  {q:"how does this work compared to claude.ai", answer:"lookdown.tsv answers instantly from a routing table on your machine. no account, no API, no rate limit. queries that need more than pattern matching fall through to a local model running on your hardware. nothing leaves your computer."},
-  {q:"what process is using port 8080", tag:"assisted", cmd:"lsof -i :8080"},
-  {q:"find files changed today", tag:"assisted", cmd:"find . -type f -mtime 0"},
-  {q:"why does the computer answer first", answer:"the lookup table resolves in milliseconds. inference takes seconds. if the answer is already written, running a model is wasted time and wasted energy. the goal is to need the model less over time, not more."},
-  {q:"compress this directory", tag:"assisted", cmd:"tar -czvf archive.tar.gz ."},
-  {q:"what happens when I learn the command", answer:"you type it directly. subtract.ing is not needed. the AI trained you toward the machine, then got out of the way."},
-];
+var COLS=80,ROWS=24;
+var C={0:'#ccc',30:'#000',31:'#c44',32:'#4c4',33:'#cc4',34:'#48f',35:'#c4c',36:'#4cc',37:'#ccc',90:'#888',91:'#f66',92:'#6f6',93:'#ff6',94:'#6af',95:'#f6f',96:'#ff6',97:'#fff'};
+var BG={40:'#000',41:'#c44',42:'#4c4',43:'#cc4',44:'#48f',45:'#c4c',46:'#4cc',47:'#ccc'};
+var cells,fgA,bgA,curFg,curBg,row,col;
 
-const term = document.getElementById('term');
-function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
-
-function addLine(html){
-  const d=document.createElement('div');
-  d.className='line';
-  d.innerHTML=html;
-  term.appendChild(d);
-  term.scrollTop=term.scrollHeight;
-  return d;
+function reset(){
+  cells=[];fgA=[];bgA=[];
+  for(var r=0;r<ROWS;r++){cells[r]=[];fgA[r]=[];bgA[r]=[];for(var c=0;c<COLS;c++){cells[r][c]=' ';fgA[r][c]='#ccc';bgA[r][c]=null;}}
+  curFg='#ccc';curBg=null;row=0;col=0;
 }
 
-async function typeText(el,text,speed){
-  for(let i=0;i<text.length;i++){
-    el.textContent+=text[i];
-    term.scrollTop=term.scrollHeight;
-    await sleep(speed);
+function scroll(){
+  cells.shift();fgA.shift();bgA.shift();
+  var cr=[],cf=[],cb=[];
+  for(var c=0;c<COLS;c++){cr[c]=' ';cf[c]='#ccc';cb[c]=null;}
+  cells.push(cr);fgA.push(cf);bgA.push(cb);
+  row=ROWS-1;
+}
+
+function putch(ch){
+  if(row>=ROWS)scroll();
+  if(col>=COLS){col=0;row++;if(row>=ROWS)scroll();}
+  cells[row][col]=ch;fgA[row][col]=curFg;bgA[row][col]=curBg;col++;
+}
+
+function processAnsi(params,cmd){
+  if(cmd==='H'||cmd==='f'){
+    var p=params?params.split(';').map(Number):[1,1];
+    row=Math.min((p[0]||1)-1,ROWS-1);col=Math.min((p[1]||1)-1,COLS-1);return;
+  }
+  if(cmd==='J'){
+    var n=Number(params)||0;
+    if(n===0||n===2){
+      var sr=n===2?0:row,sc=n===2?0:col;
+      for(var r=sr;r<ROWS;r++)for(var c=(r===sr?sc:0);c<COLS;c++){cells[r][c]=' ';fgA[r][c]='#ccc';bgA[r][c]=null;}
+    }
+    if(n===2){row=0;col=0;}return;
+  }
+  if(cmd==='K'){
+    for(var c=col;c<COLS;c++){cells[row][c]=' ';fgA[row][c]='#ccc';bgA[row][c]=null;}return;
+  }
+  if(cmd==='m'){
+    if(!params||params==='0'){curFg='#ccc';curBg=null;return;}
+    var ps=params.split(';');
+    for(var i=0;i<ps.length;i++){
+      var v=Number(ps[i]);
+      if(v===0){curFg='#ccc';curBg=null;}
+      else if(v===1){/* bold — handled via bright colors */}
+      else if(C[v])curFg=C[v];
+      else if(BG[v])curBg=BG[v];
+    }return;
   }
 }
 
-async function runDemo(demo){
-  const line=addLine('<span class="ps1">you@your-computer:~$ </span><span class="typing"></span><span class="cursor">&nbsp;</span>');
-  const typing=line.querySelector('.typing');
-  const cursor=line.querySelector('.cursor');
-
-  await typeText(typing,demo.q,40);
-  await sleep(300);
-  cursor.remove();
-
-  if(demo.answer){
-    await sleep(500);
-    addLine('<span class="output">'+demo.answer.replace(/\n/g,'<br>')+'</span>');
-  } else {
-    addLine('<span class="tag">['+demo.tag+'] '+demo.cmd+'</span>');
-    addLine('<span class="prompt-confirm">[enter/n] </span>');
-  }
-
-  await sleep(2500);
-}
-
-async function loop(){
-  while(true){
-    for(const d of demos) await runDemo(d);
-    await sleep(3000);
-    term.innerHTML='';
+function feed(str){
+  var i=0;
+  while(i<str.length){
+    var c=str.charCodeAt(i);
+    if(c===27&&str.charAt(i+1)==='['){
+      i+=2;var buf='';
+      while(i<str.length&&str.charCodeAt(i)>=0x20&&str.charCodeAt(i)<=0x3f){buf+=str.charAt(i);i++;}
+      if(i<str.length){processAnsi(buf,str.charAt(i));i++;}
+      continue;
+    }
+    if(c===10){row++;col=0;if(row>=ROWS)scroll();i++;continue;}
+    if(c===13){col=0;i++;continue;}
+    if(c===27){i++;continue;}
+    putch(str.charAt(i));i++;
   }
 }
-loop();
+
+var grid=document.getElementById('grid');
+function render(){
+  var html='';
+  for(var r=0;r<ROWS;r++){
+    var seg='',sf='',sb='';
+    for(var c=0;c<COLS;c++){
+      var f=fgA[r][c],b=bgA[r][c]||'';
+      if(f!==sf||b!==sb){
+        if(seg.length)html+='<span style="color:'+sf+(sb?';background:'+sb:'')+'">'+seg+'</span>';
+        seg='';sf=f;sb=b;
+      }
+      var ch=cells[r][c];
+      seg+=ch==='<'?'&lt;':ch==='>'?'&gt;':ch==='&'?'&amp;':ch;
+    }
+    if(seg.length)html+='<span style="color:'+sf+(sb?';background:'+sb:'')+'">'+seg+'</span>';
+    html+='\n';
+  }
+  grid.innerHTML=html;
+}
+
+var events=[];
+var lines=document.getElementById('cast').textContent.trim().split('\n');
+for(var i=1;i<lines.length;i++){
+  var l=lines[i].trim();
+  if(l)try{events.push(JSON.parse(l));}catch(e){}
+}
+
+function play(){
+  reset();render();
+  var idx=0;
+  function step(){
+    if(idx>=events.length)return;
+    var ev=events[idx];
+    feed(ev[2]);render();
+    idx++;
+    if(idx<events.length){
+      var delay=(events[idx][0]-ev[0])*1000;
+      setTimeout(step,Math.max(delay,5));
+    }
+  }
+  setTimeout(step,events[0][0]*1000);
+}
+
+document.getElementById('replay').addEventListener('click',play);
+play();
 </script>
 </body>
 </html>

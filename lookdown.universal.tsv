@@ -15,6 +15,12 @@
 *metamorphosis*	echo "Metamorphosis is the process where an animal completely changes its body shape as it grows. A caterpillar becoming a butterfly is metamorphosis. A tadpole becoming a frog is metamorphosis. The word comes from Greek and means 'change of form.'"
 *larva*	echo "A larva is the young form of an animal that looks very different from the adult. A caterpillar is the larva of a butterfly. A tadpole is the larva of a frog. A maggot is the larva of a fly. Larvae eat and grow until they are ready to change into their adult form."
 *pupa*	echo "A pupa is the stage between larva and adult in insects that undergo metamorphosis. The caterpillar stops eating, attaches to something, and its outer skin hardens into a protective case. Inside, the body completely reorganizes. The pupa does not eat or move. When the transformation is complete, the adult insect emerges."
+# children — clinical program fallbacks (host-specific overrides take precedence)
+*yes*no*	command -v subtract-program >/dev/null 2>&1 && subtract-program yes-no || echo "Yes/No practice needs subtract-program. Use the big computer."
+*questions*	command -v subtract-program >/dev/null 2>&1 && subtract-program wh-flashcards || echo "Questions practice needs subtract-program. Use the big computer."
+*words*	command -v subtract-program >/dev/null 2>&1 && subtract-program sight-words-spanish || echo "Sight words practice needs subtract-program. Use the big computer."
+*follow*	command -v subtract-program >/dev/null 2>&1 && subtract-program one-step || echo "Follow directions practice needs subtract-program. Use the big computer."
+*draw*	command -v subtract-draw >/dev/null 2>&1 && subtract-draw || echo "Drawing needs subtract-draw. Use the big computer."
 
 # edit this file to teach your machine new intents.
 # languages: add a section. translate the intents, keep the commands.
