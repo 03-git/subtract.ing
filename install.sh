@@ -87,7 +87,7 @@ chmod +x "$SUBTRACT_DIR/bin/shell-web" "$SUBTRACT_DIR/bin/subtract-shell" "$SUBT
 
 # clinical data (don't overwrite user edits)
 for prog in yes-no one-step wh-flashcards sight-words-spanish; do
-    [ ! -f "$SUBTRACT_DIR/clinical/$prog.json" ] && fetch "runtime/clinical/$prog.json" "$SUBTRACT_DIR/clinical/$prog.json"
+    [ ! -f "$SUBTRACT_DIR/clinical/$prog.json" ] && fetch "runtime/pages/clinical/$prog.json" "$SUBTRACT_DIR/clinical/$prog.json"
 done
 
 # pages
