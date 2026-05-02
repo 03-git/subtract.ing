@@ -1923,3 +1923,31 @@ who*is*peter*steeves	echo "Peter Steeves. DePaul professor. LIVINGLEDGER entry."
 *what*is*dhcp*	echo "Dynamic Host Configuration Protocol — automatically assigns IP addresses to devices on a network. Your router runs a DHCP server. Lease expires, device asks again. Static IP: configure the device directly."
 *what*is*arp*	echo "Address Resolution Protocol — maps IP addresses to MAC addresses on a local network. arp -a shows the table. Only works within the same subnet. The glue between IP and Ethernet."
 *what*is*mac*address*	echo "Hardware address burned into every network interface — 48 bits, hex notation (aa:bb:cc:dd:ee:ff). Unique per device. Used for local network delivery. ip link show displays yours."
+# === OPERATIONS (parameterized single-command recipes) ===
+read*	f="${input##* }"; cat "$f" 2>/dev/null | head -200 || echo "file not found: $f"
+show*contents*of*	f="${input##* }"; cat "$f" 2>/dev/null | head -200 || echo "file not found: $f"
+run*	f="${input##* }"; bash "$f" 2>&1 | head -100
+execute*	f="${input##* }"; bash "$f" 2>&1 | head -100
+make*executable*	f="${input##* }"; chmod +x "$f" && echo "done: $f is now executable"
+edit*replace*with*in*	old="${input#*replace }"; old="${old%% with *}"; rest="${input#*with }"; new="${rest%% in *}"; f="${rest##* in }"; sed -i.bak "s|$old|$new|g" "$f" && echo "replaced '$old' with '$new' in $f" || echo "failed"
+append*to*	line="${input#*append }"; line="${line%% to *}"; f="${input##* to }"; printf '%s\n' "$line" >> "$f" && echo "appended to $f"
+delete*line*from*	pattern="${input#*delete }"; pattern="${pattern%% from *}"; f="${input##* from }"; sed -i.bak "/$pattern/d" "$f" && echo "deleted lines matching '$pattern' from $f"
+count*lines*in*	f="${input##* }"; wc -l < "$f" 2>/dev/null || echo "file not found: $f"
+diff*and*	a="${input#*diff }"; a="${a%% and *}"; b="${input##* and }"; diff "$a" "$b" 2>/dev/null || echo "one or both files not found"
+head*of*	f="${input##* }"; head -20 "$f" 2>/dev/null || echo "file not found: $f"
+tail*of*	f="${input##* }"; tail -20 "$f" 2>/dev/null || echo "file not found: $f"
+find*named*	name="${input##*named }"; find . -name "$name" 2>/dev/null | head -20
+find*containing*	pattern="${input##*containing }"; grep -rl "$pattern" . 2>/dev/null | head -20
+grep*in*	pattern="${input#*grep }"; pattern="${pattern%% in *}"; f="${input##* in }"; grep -n "$pattern" "$f" 2>/dev/null || echo "no match"
+copy*to*	src="${input#*copy }"; src="${src%% to *}"; dst="${input##* to }"; cp "$src" "$dst" 2>/dev/null && echo "copied $src → $dst" || echo "failed"
+move*to*	src="${input#*move }"; src="${src%% to *}"; dst="${input##* to }"; mv "$src" "$dst" 2>/dev/null && echo "moved $src → $dst" || echo "failed"
+rename*to*	src="${input#*rename }"; src="${src%% to *}"; dst="${input##* to }"; mv "$src" "$dst" 2>/dev/null && echo "renamed $src → $dst" || echo "failed"
+backup*	f="${input##*backup }"; cp "$f" "$f.bak" 2>/dev/null && echo "backed up to $f.bak" || echo "failed"
+size*of*	f="${input##* }"; du -sh "$f" 2>/dev/null || echo "not found: $f"
+check*syntax*of*	f="${input##* }"; bash -n "$f" 2>&1 && echo "syntax OK" || true
+what*changed*in*	f="${input##* }"; git diff "$f" 2>/dev/null || diff "$f.bak" "$f" 2>/dev/null || echo "no changes or no backup"
+who*last*changed*	f="${input##* }"; git log -1 --format='%an %ar: %s' -- "$f" 2>/dev/null || echo "not in a git repo"
+restart*service*	s="${input##*restart }"; systemctl restart "$s" 2>/dev/null || sudo launchctl kickstart -k "system/$s" 2>/dev/null || echo "could not restart $s"
+stop*service*	s="${input##*stop }"; systemctl stop "$s" 2>/dev/null || launchctl bootout "gui/$(id -u)/$s" 2>/dev/null || echo "could not stop $s"
+start*service*	s="${input##*start }"; systemctl start "$s" 2>/dev/null || launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/"$s".plist 2>/dev/null || echo "could not start $s"
+status*of*service*	s="${input##* }"; systemctl status "$s" 2>/dev/null || launchctl list | grep "$s" 2>/dev/null || echo "not found: $s"
