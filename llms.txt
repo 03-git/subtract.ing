@@ -103,7 +103,7 @@ Namespace:       subtract.ing
 Public key:      https://subtract.ing/authorized_signers
 
 SHA256:
-  cdbd86283ffc974bcad0a3bf29bc25f58f6835d4505aa22e67bd0a1e8f5a1e07  README.txt
+  4972bcd36e77e15a19fe5eb120bfdeb50f9872719cee44c70e9c6e592bec0b61  README.txt
   20a4740eacb277a154beccf984657a263264376bd0f8af9cd6fedfe2ad652f2e  subtract.7.txt
   4b742825f324eb3f3d9f16647cd7ed4ca09a4cb7ce6333dff526bc44e7a28868  governance.conf.universal.txt
   60ad058459008c7903a9fe60b44e0d73a02ff21d3fb8b77a397a8e430af36245  software-as-a-besides.txt
@@ -112,4 +112,4 @@ SHA256:
   cad54c3ebbf8cd6f2c18da05120d4422efca9aa7db354c471186086296b97184  variance-lab.txt
   d2b28b22622102b687d4e2f0438e6c3258b5bfa6c07a191cbf17ccb2ea64a167  variance-lab-handler-methodology.txt
   4d00699f59c4d15b1fecdcfd2042ab12c78221f87240a23125f4dbaa51d30358  subtracting.html
-  c382c4b85c6c152212fcea41865dcb6880b1a74e9c008932dcf11a941824508a  SOUL.txt
+  8041a0a2af5ca2c7feb51c625af7022df9079b60e85bb109f4959e05ac3cdab9  SOUL.txt
