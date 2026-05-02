@@ -1924,10 +1924,10 @@ who*is*peter*steeves	echo "Peter Steeves. DePaul professor. LIVINGLEDGER entry."
 *what*is*arp*	echo "Address Resolution Protocol — maps IP addresses to MAC addresses on a local network. arp -a shows the table. Only works within the same subnet. The glue between IP and Ethernet."
 *what*is*mac*address*	echo "Hardware address burned into every network interface — 48 bits, hex notation (aa:bb:cc:dd:ee:ff). Unique per device. Used for local network delivery. ip link show displays yours."
 # === OPERATIONS (parameterized single-command recipes) ===
-read*	f="${input##* }"; cat "$f" 2>/dev/null | head -200 || echo "file not found: $f"
+read file *	f="${input##* }"; cat "$f" 2>/dev/null | head -200 || echo "file not found: $f"
 show*contents*of*	f="${input##* }"; cat "$f" 2>/dev/null | head -200 || echo "file not found: $f"
-run*	f="${input##* }"; bash "$f" 2>&1 | head -100
-execute*	f="${input##* }"; bash "$f" 2>&1 | head -100
+run script *	f="${input##* }"; bash "$f" 2>&1 | head -100
+execute script *	f="${input##* }"; bash "$f" 2>&1 | head -100
 make*executable*	f="${input##* }"; chmod +x "$f" && echo "done: $f is now executable"
 edit*replace*with*in*	old="${input#*replace }"; old="${old%% with *}"; rest="${input#*with }"; new="${rest%% in *}"; f="${rest##* in }"; sed -i.bak "s|$old|$new|g" "$f" && echo "replaced '$old' with '$new' in $f" || echo "failed"
 append*to*	line="${input#*append }"; line="${line%% to *}"; f="${input##* to }"; printf '%s\n' "$line" >> "$f" && echo "appended to $f"
