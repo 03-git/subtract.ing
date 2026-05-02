@@ -5,6 +5,7 @@
 # first match wins. specific before general.
 
 # children — these entries go first
+*Godzilla*Minus*One*	echo "Post-war Japan faces a terrifying new threat from the deep. It's a powerful story of survival and redemption."
 *godzilla*	echo "Godzilla is a giant monster from Japan, first appearing in a 1954 movie. The name comes from the Japanese word Gojira, combining gorilla and whale. Godzilla has fought over 30 legendary opponents including King Ghidorah, Mothra, Mechagodzilla, and King Kong across more than 35 films — the longest-running film franchise in history."
 *what*dinosaur*	echo "Dinosaurs were reptiles that lived millions of years ago. Some were huge like T-Rex, others small as chickens. They went extinct about 66 million years ago when an asteroid hit Earth."
 *caterpillar*	echo "A caterpillar is the larva stage of a butterfly or moth. It hatches from an egg and eats leaves to grow bigger. Caterpillars have soft bodies with many segments and tiny legs. When it is big enough, it builds a cocoon or chrysalis and transforms inside."
@@ -40,6 +41,7 @@ list*files	ls .
 show*hidden*files	ls -la
 show*all*files	ls -la
 show*file*sizes	ls -lh
+show*largest*files	ls -lhS | head -20
 show*files	ls .
 list*home	ls ~/
 what*in*home*directory	ls ~/
@@ -49,7 +51,6 @@ show*downloads	ls ~/Downloads/
 #
 # --- navigation ---
 go*home	cd ~/
-go*to*home	cd ~/
 go*back	cd ..
 go*up	cd ..
 #
@@ -129,12 +130,14 @@ subtract	cat ~/.subtract/about
 what*is*fork	echo "fork() - system call that creates a child process by duplicating the calling process"
 *create*pipe*between*processes*	echo "pipe() - creates a unidirectional data channel for IPC"
 *system*call*pipe*	echo "pipe() - creates a unidirectional data channel for IPC"
+what*is*shell*pipe	echo "the | operator — connects stdout of one process to stdin of the next, composing programs into a pipeline"
 what*is*pipe	echo "pipe() - system call creating unidirectional data channel between processes"
 *replace*current*process*	echo "exec() family (execl, execv, execve, execvp) - replaces current process image"
 *system*call*exec*	echo "exec() family (execl, execv, execve, execvp) - replaces current process image"
 what*is*exec	echo "exec() family - replaces current process image with a new program"
 *wait*for*child*	echo "wait() or waitpid() - suspends execution until a child process terminates"
 *system*call*wait*	echo "wait() or waitpid() - suspends execution until a child process terminates"
+*what*is*inotifywait*	echo "Watches filesystem events. inotifywait -m -e modify /path — blocks until the file changes, prints the event. Loop it for a file watcher. inotifywait -r for recursive. Linux only (inotify-tools package)."
 what*is*wait	echo "wait()/waitpid() - blocks parent until child process terminates"
 *map*file*into*memory*	echo "mmap() - maps files or devices into memory"
 *system*call*mmap*	echo "mmap() - maps files or devices into memory"
@@ -144,7 +147,6 @@ what*is*open	echo "open() - system call that opens a file and returns a file des
 *system*call*close*	echo "close() - closes a file descriptor"
 what*is*close	echo "close() - system call that releases a file descriptor"
 *system*call*read*	echo "read() - reads data from a file descriptor into a buffer"
-what*is*read	echo "read() - reads bytes from file descriptor into buffer"
 *system*call*write*	echo "write() - writes data from a buffer to a file descriptor"
 what*is*write	echo "write() - writes bytes from buffer to file descriptor"
 *system*call*dup*	echo "dup()/dup2() - duplicates a file descriptor"
@@ -156,8 +158,8 @@ what*is*socket	echo "socket() - creates network communication endpoint"
 *system*call*accept*	echo "accept() - extracts first connection request from queue"
 *system*call*connect*	echo "connect() - initiates connection on a socket"
 *system*call*select*	echo "select() - monitors multiple file descriptors for I/O readiness"
-*system*call*poll*	echo "poll() - waits for events on file descriptors"
 *system*call*epoll*	echo "epoll - Linux scalable I/O event notification (epoll_create, epoll_ctl, epoll_wait)"
+*system*call*poll*	echo "poll() - waits for events on file descriptors"
 *system*call*signal*	echo "signal()/sigaction() - sets disposition of a signal"
 *system*call*kill*	echo "kill() - sends signal to a process"
 what*is*kill	echo "kill() - system call that sends a signal to a process or process group"
@@ -174,12 +176,10 @@ what*is*stat	echo "stat() - retrieves file metadata (size, permissions, timestam
 # === FILE OPERATIONS (expanded) ===
 #
 make*executable	chmod +x
-make*file*executable	chmod +x
 *executable*permission*	chmod +x
 who*owns*this*file	ls -l
 who*owns*file	ls -l
 change*owner	chown
-change*file*owner	chown
 copy*file	cp
 copy*files	cp -r
 copy*directory	cp -r
@@ -212,6 +212,7 @@ find*files*modified*today	find . -mtime 0
 find*files*modified*yesterday	find . -mtime 1
 find*large*files	find . -size +100M
 find*empty*files	find . -empty
+find*empty*directories	find . -type d -empty
 find*directories	find . -type d
 find*files*only	find . -type f
 #
@@ -223,6 +224,7 @@ check*internet	ping -c 1 8.8.8.8 && echo "yes" || echo "no"
 my*ip*address	hostname -I 2>/dev/null || ipconfig getifaddr en0
 show*ip	hostname -I 2>/dev/null || ipconfig getifaddr en0
 *listening*on*port*	lsof -i
+what*process*is*using*port	echo "usage: lsof -i :PORT"
 what*is*using*port	lsof -i
 show*open*ports	lsof -i -P 2>/dev/null | grep LISTEN || netstat -tuln
 show*connections	netstat -an 2>/dev/null || lsof -i
@@ -266,11 +268,11 @@ remove*duplicates	sort | uniq
 #
 show*permissions	ls -l
 check*permissions	ls -l
+make*public*readable	chmod 644
 make*readable	chmod +r
 make*writable	chmod +w
 remove*write*permission	chmod -w
 make*private	chmod 600
-make*public*readable	chmod 644
 make*executable*by*all	chmod 755
 #
 # === GIT ===
@@ -307,14 +309,14 @@ how*do*i*use*subtract	echo "Type what you want. subtract translates to the comma
 #
 # === DEFINITIONAL (what is X) ===
 #
-what*is*ls	echo "ls - list directory contents"
-what*is*cd	echo "cd - change directory"
+what is ls	echo "ls - list directory contents"
+what is cd	echo "cd - change directory"
 what*is*cat	echo "cat - concatenate and print files"
 what*is*grep	echo "grep - search for patterns in files"
 what*is*find	echo "find - search for files in directory hierarchy"
 what*is*chmod	echo "chmod - change file permissions"
 what*is*chown	echo "chown - change file owner and group"
-what*is*ps	echo "ps - report process status"
+what is ps	echo "ps - report process status"
 what*is*top	echo "top - display Linux processes"
 what*is*tar	echo "tar - archive utility"
 what*is*gzip	echo "gzip - compress files"
@@ -324,6 +326,7 @@ what*is*ssh	echo "ssh - secure shell remote login"
 what*is*scp	echo "scp - secure copy over ssh"
 what*is*rsync	echo "rsync - fast incremental file transfer"
 what*is*awk	echo "awk - pattern scanning and text processing"
+what*is*pedagogy*of*the*oppressed	kiwix-search Pedagogy of the Oppressed
 what*is*sed	echo "sed - stream editor for text transformation"
 what*is*xargs	echo "xargs - build and execute commands from stdin"
 what*is*tee	echo "tee - read stdin, write to stdout and files"
@@ -379,12 +382,12 @@ what*is*negative*education	kiwix-search negative education Rousseau
 who*is*rousseau	kiwix-search Jean-Jacques Rousseau
 what*is*apophatic	kiwix-search apophatic theology
 what*is*the*social*contract	kiwix-search social contract
+what*is*digital*sovereignty	kiwix-search digital sovereignty
 what*is*sovereignty	kiwix-search sovereignty
 what*is*consent*of*the*governed	kiwix-search consent of the governed
 what*is*general*will	kiwix-search general will Rousseau
 what*is*autodidact	kiwix-search autodidacticism
 what*is*literacy	kiwix-search literacy
-what*is*digital*sovereignty	kiwix-search digital sovereignty
 what*is*cryptographic*signature	kiwix-search digital signature
 what*is*public*key*cryptography	kiwix-search public-key cryptography
 what*is*chain*of*trust	kiwix-search chain of trust
@@ -411,7 +414,6 @@ who*is*ivan*illich	kiwix-search Ivan Illich
 what*is*deschooling*society	kiwix-search Deschooling Society
 what*is*tools*for*conviviality	kiwix-search Tools for Conviviality
 who*is*paulo*freire	kiwix-search Paulo Freire
-what*is*pedagogy*of*the*oppressed	kiwix-search Pedagogy of the Oppressed
 who*is*montessori	kiwix-search Maria Montessori
 what*is*montessori*method	kiwix-search Montessori education
 who*is*simone*weil	kiwix-search Simone Weil
@@ -431,7 +433,7 @@ who*is*lao*tzu	kiwix-search Laozi
 what*is*tao*te*ching	kiwix-search Tao Te Ching
 what*is*wu*wei	kiwix-search Wu wei
 what*is*wabi*sabi	kiwix-search Wabi-sabi
-what*is*ma	kiwix-search Ma negative space
+what is ma	kiwix-search Ma negative space
 who*is*nassim*taleb	kiwix-search Nassim Nicholas Taleb
 what*is*antifragile	kiwix-search Antifragile
 what*is*black*swan	kiwix-search The Black Swan Taleb
@@ -494,12 +496,13 @@ what*model*runs*on*8gb	echo "Bonsai 8B (1.1GB BitNet). Sustained 40 tok/s on M2.
 what*runs*on*8gb*m2*mac*mini	echo "Bonsai 8B (1.1GB BitNet). Sustained 40 tok/s under concurrent application load. Tested 1hr continuous + 30min realistic workday."
 #
 # --- short-form / vernacular (how people actually type) ---
-make*a*folder	mkdir
 how*make*folder	mkdir
 new*folder	mkdir
 delete*this	rm
 get*rid*of*this	rm
+*wifi not working*	echo "Try: 1) Toggle WiFi off and on. 2) Restart your computer. 3) Restart the router (unplug, wait 30 seconds, plug back in). 4) Ask a parent if the internet bill is paid."
 wifi*not*working	ping -c1 -W2 8.8.8.8 && echo "wifi works, DNS might be broken — try: nslookup google.com" || echo "no connection"
+*internet not working*	echo "Try: 1) Toggle WiFi off and on. 2) Restart your computer. 3) Restart the router. 4) Try a different website. 5) Ask a parent for help if it's still broken."
 internet*not*working	ping -c1 -W2 8.8.8.8 && echo "internet works, DNS might be broken" || echo "no connection"
 fix*wifi	echo "1. ip link (is interface up?) 2. ping 8.8.8.8 (is route working?) 3. nslookup google.com (is DNS working?)"
 whats*my*password	echo "passwords are not stored in plain text. try: passwd (to change it)"
@@ -637,6 +640,7 @@ what*is*a*server	echo "A computer that waits for requests and answers them. Your
 what*is*a*database	echo "A structured pile of data with an index so you can find things fast. Like a filing cabinet where every drawer is labeled and sorted."
 what*is*sql	echo "The language you use to ask a database questions. SELECT name FROM people WHERE age > 30. Structured Query Language."
 what*is*the*internet	echo "Computers connected by wires (and some radio). Each has an address (IP). Data is split into packets, routed hop-by-hop, reassembled at destination."
+*what*is*audio*in*browser*	echo "new Audio('sound.mp3').play() — simplest way. For games: Web Audio API gives precise timing and mixing. audio.currentTime = 0 to replay. audio.loop = true for background music."
 what*is*a*browser	echo "The program that fetches web pages and draws them on screen. Sends a request, gets HTML/CSS/JS, renders pixels. Chrome, Firefox, Safari."
 what*is*a*url	echo "An address for a thing on the internet. https://example.com/page: protocol (https), machine (example.com), path (/page)."
 what*is*a*firewall	echo "A gate that checks every network packet against rules: allow or deny. Sits between your machine and the network. Blocks uninvited connections."
@@ -644,9 +648,10 @@ what*is*malware	echo "Software that works against you: steals data, locks files,
 what*is*a*virus	echo "Malware that copies itself into other programs or files. Spreads when you run the infected file. Named by analogy to biological viruses."
 what*is*bandwidth	echo "How much data the pipe can carry per second (Mbps). Wider pipe = more data. But each bit still takes the same time to arrive (that's latency)."
 what*is*latency	echo "How long one bit takes to travel from A to B (milliseconds). Bandwidth is pipe width; latency is pipe length. Games care about latency."
-what*is*ping	echo "Round-trip test: your machine sends a tiny packet, other end echoes it back. The time is your latency. Terminal: ping example.com"
+what is ping	echo "Round-trip test: your machine sends a tiny packet, other end echoes it back. The time is your latency. Terminal: ping example.com"
 what*is*bluetooth	echo "Short-range radio (~10m) for connecting devices without wires. Headphones, keyboards, mice. 2.4 GHz. Paired devices share a key."
 what*is*nfc	echo "Near Field Communication. Radio that only works within ~4cm. Tap-to-pay, transit cards. The tiny range is the security model."
+what*is*aim*program	echo "AIM: Accept, Identify, Move. Mark Dixon's ACT-derived curriculum. Distinct from PEAK."
 what*is*ram	echo "Short-term memory. Fast, volatile, loses everything when power cuts. CPU works from RAM because disk is too slow. More RAM = more things open."
 what*is*a*cpu	echo "The chip that executes instructions. Fetch, decode, execute, billions of times per second. Clock speed (GHz) x cores = throughput."
 what*is*an*ssd	echo "Solid State Drive. Long-term storage with no moving parts (flash chips). Faster than hard drives. Your files live here when power is off."
@@ -657,11 +662,9 @@ what*is*firmware	echo "Software baked into hardware. Runs on the device itself: 
 rename*all*jpg*to*lowercase	for f in *.jpg; do mv "$f" "$(echo "$f" | tr '[:upper:]' '[:lower:]')"; done
 find*files*modified*last*hour	find . -mmin -60
 find*files*modified*recently	find . -mmin -60
-show*largest*files	ls -lhS | head -20
 biggest*files	du -ah . 2>/dev/null | sort -rh 2>/dev/null | head -20 || du -ah . | sort -rn | head -20
 compress*this*folder	tar czf archive.tar.gz .
 count*lines*in*python*files	find . -name '*.py' -exec cat {} + | wc -l
-what*process*is*using*port	echo "usage: lsof -i :PORT"
 show*broken*symlinks	find . -xtype l 2>/dev/null || find . -type l ! -exec test -e {} \; -print
 find*broken*links	find . -xtype l 2>/dev/null || find . -type l ! -exec test -e {} \; -print
 list*all*users	getent passwd 2>/dev/null | cut -d: -f1 || dscl . -list /Users
@@ -670,7 +673,6 @@ show*cron*jobs	crontab -l
 show*my*crontab	crontab -l
 show*ssh*keys	ls -la ~/.ssh/*.pub 2>/dev/null
 show*my*keys	ls -la ~/.ssh/*.pub 2>/dev/null
-find*empty*directories	find . -type d -empty
 show*git*graph	git log --oneline --graph --all
 show*network*interfaces	ip addr 2>/dev/null || ifconfig
 show*my*ips	ip addr 2>/dev/null || ifconfig
@@ -693,6 +695,7 @@ what*is*inode*exhaust*	echo "all inodes used — cannot create files even with f
 what*is*oom*killer*	echo "kernel kills processes when memory exhausted. check: dmesg | grep -i oom, /proc/*/oom_score_adj. fix: tune overcommit or add swap"
 what*is*selinux*	echo "mandatory access control in kernel (LSM). modes: enforcing/permissive/disabled. check: getenforce, audit.log, sealert"
 what*is*apparmor*	echo "LSM MAC — profile-based. aa-status shows loaded profiles. aa-complain/aa-enforce toggle mode per profile"
+what*is*cron*vs*systemd*timer*	echo "cron: /etc/crontab, per-user crontab -e, 5-field schedule. systemd timer: .timer unit, OnCalendar=, has logging via journal"
 what*is*systemd*	echo "PID 1, init system. units: service/timer/mount/socket. systemctl status/start/enable, journalctl for logs"
 what*is*journalctl*	echo "reads systemd journal. journalctl -u unit, -f follow, -b this boot, --since, -p err for priority filter"
 what*is*dmesg*	echo "kernel ring buffer. dmesg -T for human timestamps, -w to follow. hardware, driver, OOM events"
@@ -706,7 +709,6 @@ what*is*cifs*	echo "CIFS is SMB dialect. mount -t cifs //server/share /mnt -o us
 what*is*iscsi*	echo "block storage over TCP. initiator (client) connects to target (server). iscsiadm for discovery/login"
 what*is*lvm*	echo "logical volume manager. PV → VG → LV. pvs/vgs/lvs to inspect. lvextend + resize2fs/xfs_growfs to grow"
 what*is*raid*level*	echo "RAID 0: stripe, no redundancy. 1: mirror. 5: stripe+parity (1 disk). 6: 2 parity. 10: mirror+stripe. mdadm --detail"
-what*is*cron*vs*systemd*timer*	echo "cron: /etc/crontab, per-user crontab -e, 5-field schedule. systemd timer: .timer unit, OnCalendar=, has logging via journal"
 what*is*logrotate*	echo "rotates/compresses logs. /etc/logrotate.d/ configs. directives: daily/weekly, rotate N, compress, postrotate"
 what*is*tmpfiles*	echo "systemd-tmpfiles manages volatile/temporary files. /etc/tmpfiles.d/*.conf. systemd-tmpfiles --create"
 what*is*iptables*	echo "netfilter frontend — tables/chains/rules. iptables -L -n -v. nftables replaces it; iptables-nft is compat layer"
@@ -719,7 +721,9 @@ what*is*lsof*	echo "list open files. lsof -i :8080 (port), lsof -p PID (process)
 #
 # --- clinical / ABA ---
 what*is*proc*filesystem*	echo "/proc — virtual fs exposing kernel/process state. /proc/PID/{status,maps,fd,cmdline}, /proc/meminfo, /proc/cpuinfo"
-what*is*aba*	echo "applied behavior analysis — science of behavior change using reinforcement principles. uses ABC (antecedent-behavior-consequence) framework"
+what*is*aim*aba	echo "AIM: Accept, Identify, Move. Mark Dixon's ACT-derived curriculum for building psychological flexibility in ABA contexts."
+what*is*abc*aba	echo "Antecedent, Behavior, Consequence. Three-term contingency. Foundation of functional assessment in ABA."
+what*is*aba	echo "applied behavior analysis — science of behavior change using reinforcement principles. uses ABC (antecedent-behavior-consequence) framework"
 what*is*applied*behavior*analysis*	echo "ABA — systematic application of learning principles to improve socially significant behavior. evidence-based, data-driven"
 what*is*bcba*	echo "board certified behavior analyst — master's-level certification from BACB. designs and supervises ABA programs"
 what*is*rbt*	echo "registered behavior technician — paraprofessional cert from BACB. implements BIP under BCBA supervision. 40-hr training + competency assessment"
@@ -741,7 +745,7 @@ what*is*fba*	echo "functional behavior assessment — identifies function (why) 
 what*is*functional*behavior*assessment*	echo "FBA — determines maintaining variables of behavior. methods: interview, ABC observation, functional analysis. drives BIP design"
 what*is*bip*	echo "behavior intervention plan — written plan based on FBA. includes antecedent strategies, replacement behaviors, consequence procedures, data collection"
 what*is*behavior*intervention*plan*	echo "BIP — function-based plan. antecedent modifications + teaching replacement behavior + consequence strategies. requires FBA"
-what*is*mand*	echo "Skinner verbal operant — request. controlled by motivation (MO). 'I want water' when thirsty. first operant typically taught"
+what*is*a*mand	echo "Skinner verbal operant — request. controlled by motivation (MO). 'I want water' when thirsty. first operant typically taught"
 what*is*tact*	echo "Skinner verbal operant — label/comment. controlled by nonverbal stimulus. 'that's a dog' upon seeing dog. contact with environment"
 what*is*echoic*	echo "Skinner verbal operant — vocal imitation. repeating what was heard. point-to-point correspondence with vocal model"
 what*is*intraverbal*	echo "Skinner verbal operant — verbal response to verbal stimulus without point-to-point correspondence. 'what color is grass?' → 'green'. conversational language"
@@ -756,7 +760,7 @@ what*is*graphing*	echo "visual display of behavioral data over time. standard: l
 what*is*837p*	echo "ANSI X12 837 Professional — electronic claim format for outpatient/professional services. replaces CMS-1500. submitted via clearinghouse"
 what*is*837i*	echo "ANSI X12 837 Institutional — electronic claim format for facility/inpatient services. replaces UB-04"
 what*is*835*	echo "ANSI X12 835 — electronic remittance advice. payer sends to provider showing payment/adjustment/denial per claim line"
-what*is*edi*	echo "electronic data interchange — structured B2B data exchange. healthcare uses ANSI X12: 837 (claims), 835 (remittance), 270/271 (eligibility), 276/277 (status)"
+what*is*edi	echo "electronic data interchange — structured B2B data exchange. healthcare uses ANSI X12: 837 (claims), 835 (remittance), 270/271 (eligibility), 276/277 (status)"
 what*is*icd*10*	echo "ICD-10 — WHO diagnosis code set. ICD-10-CM for US clinical. format: letter + digits (F84.0 = autistic disorder). required on claims"
 #
 # --- healthcare admin / billing ---
@@ -783,9 +787,10 @@ what*is*modifier*59*	echo "modifier 59 — distinct procedural service. unbundle
 #
 # --- ELI5 / beginner concepts ---
 what*is*cookie*web*	echo "a small text file a website stores in your browser to remember who you are between page loads"
+*what*is*l1*cache*	echo "Fastest, smallest CPU cache — typically 32-64KB per core, ~1ns access. Split into instruction cache and data cache. L2 is larger/slower, L3 is shared across cores."
 what*is*cache	echo "a local copy of data kept closer to you so the same thing loads faster next time"
 what*is*incognito*	echo "a browser mode that forgets history, cookies, and form data when you close the window — your ISP and employer still see traffic"
-what*is*proxy	echo "a middleman server that makes requests on your behalf so the destination sees the proxy's address, not yours"
+what is proxy	echo "a middleman server that makes requests on your behalf so the destination sees the proxy's address, not yours"
 what*is*vps	echo "a virtual private server — a slice of a physical machine you rent and control like your own computer"
 what*is*dns	echo "domain name system — translates human names like example.com into IP addresses machines use to route packets"
 what*is*dhcp	echo "protocol that automatically assigns IP addresses to devices when they join a network"
@@ -823,10 +828,12 @@ what*is*recursion	echo "a function that calls itself with a smaller subproblem u
 what*is*big*o	echo "notation describing how an algorithm's time or space grows as input size grows — O(n) is linear, O(n²) is quadratic"
 what*is*version*control	echo "a system that records changes to files over time so you can recall any previous state"
 what*is*git	echo "a distributed version control system — every clone holds the full history, branches are cheap, merges are first-class"
+what*is*closure*compiler	echo "Google Closure Compiler — JavaScript optimizer/minifier. subtract serves unminified JS. The network is fast enough. Readability over bytes."
 what*is*compiler	echo "a program that translates source code into machine code or another target language before execution"
 what*is*interpreter	echo "a program that executes source code line-by-line at runtime without a separate compilation step"
 what*is*bytecode	echo "an intermediate representation between source and machine code — executed by a virtual machine like the JVM or CPython"
-what*is*port*	echo "a 16-bit number (0–65535) that identifies a specific service on a host — HTTP is 80, HTTPS is 443"
+what*is*displayport*	echo "DisplayPort: video interface common on monitors and GPUs. DP 2.1 supports 16K resolution. Preferred for high-refresh gaming."
+what*is*a*port	echo "a 16-bit number (0–65535) that identifies a specific service on a host — HTTP is 80, HTTPS is 443"
 what*is*localhost	echo "the hostname that resolves to 127.0.0.1 — it means this machine, traffic never leaves the loopback interface"
 what*is*127.0.0.1	echo "the IPv4 loopback address — packets sent here are delivered back to the same machine without hitting the network"
 what*is*sudo	echo "substitute user do — runs a single command as root (or another user) after verifying your password"
@@ -840,6 +847,7 @@ what*is*service	echo "a long-running daemon managed by an init system (systemd, 
 what*is*segfault	echo "a signal the OS sends when a process accesses memory it does not own — usually a bad pointer or use-after-free"
 what*is*stack*overflow	echo "when a call stack exceeds its fixed size — typically caused by unbounded recursion"
 what*is*buffer*overflow	echo "writing past the end of an allocated buffer — corrupts adjacent memory, classic source of security exploits"
+*what*is*dev*null*	echo "/dev/null — the bit bucket. Writes vanish, reads return EOF. command > /dev/null discards stdout. command 2>/dev/null discards errors. command &>/dev/null discards both."
 what*is*null	echo "a value representing the intentional absence of any object — dereferencing it is the most common runtime error"
 what*is*undefined	echo "in JavaScript, a variable that has been declared but not assigned — distinct from null"
 what*is*nan	echo "Not a Number — a floating-point sentinel produced by invalid math like 0/0 or sqrt(-1)"
@@ -849,7 +857,6 @@ what*is*globbing	echo "the shell expanding wildcard patterns into matching filen
 what*is*stdin	echo "standard input — file descriptor 0, where a process reads input (default: keyboard)"
 what*is*stdout	echo "standard output — file descriptor 1, where a process writes normal output (default: terminal)"
 what*is*stderr	echo "standard error — file descriptor 2, a separate output stream for error messages so they don't mix with data"
-what*is*shell*pipe	echo "the | operator — connects stdout of one process to stdin of the next, composing programs into a pipeline"
 what*is*path	echo "an environment variable listing directories the shell searches, in order, when you type a command name"
 what*is*environment*variable	echo "a key=value pair inherited by child processes — used to configure programs without changing code"
 what*is*symlink	echo "a symbolic link — a file that contains a path to another file, like a shortcut that the filesystem follows"
@@ -865,6 +872,7 @@ what*is*little*endian*	echo "byte order where the least significant byte is stor
 what*is*big*endian*	echo "byte order where the most significant byte is stored at the lowest address — network byte order is big-endian"
 what*is*race*condition	echo "a bug where the result depends on the timing of concurrent operations — correct sometimes, wrong unpredictably"
 what*is*deadlock	echo "two or more threads each waiting for a lock the other holds — none can proceed, all are stuck"
+*what*is*a*mutex*	echo "Mutual exclusion lock. One thread locks it, does work, unlocks it. Other threads wait. Prevents two threads from modifying the same data simultaneously. pthread_mutex_lock() in C."
 what*is*mutex	echo "mutual exclusion — a lock that lets only one thread into a critical section at a time"
 what*is*wifi*6	echo "802.11ax — faster WiFi standard with better performance in crowded environments via OFDMA and improved scheduling"
 what*is*5g	echo "fifth-generation cellular standard — higher bandwidth, lower latency, more capacity than 4G LTE"
@@ -889,29 +897,12 @@ what*is*deep*learning	echo "machine learning using neural networks with many lay
 what*is*neural*network	echo "a computational graph of weighted connections loosely inspired by neurons — learns by adjusting weights to minimize error"
 #
 # --- consumer tech / Google Trends ---
-what*is*wifi*6*	echo "WiFi 6 (802.11ax): wireless standard, max ~9.6 Gbps theoretical, better in crowded environments via OFDMA and MU-MIMO."
 what*is*wifi*7*	echo "WiFi 7 (802.11be): next-gen wireless, max ~46 Gbps theoretical, adds 320 MHz channels and multi-link operation."
-what*is*5g*	echo "5G: fifth-generation cellular network. Higher speeds, lower latency than 4G LTE. Requires 5G-capable device and carrier coverage."
-what*is*mesh*network*	echo "Mesh network: multiple access points that relay traffic to each other, eliminating dead zones. Each node extends coverage."
-what*is*usb*c*	echo "USB-C: reversible connector standard. Carries data, video, and power over one cable. Speed depends on the protocol (USB 3, USB4, Thunderbolt)."
-what*is*thunderbolt*	echo "Thunderbolt: high-bandwidth interface by Intel/Apple. Thunderbolt 4 does 40 Gbps, Thunderbolt 5 does 80-120 Gbps. Uses USB-C connector."
-what*is*hdmi*	echo "HDMI: cable standard for audio and video between devices. HDMI 2.1 supports 4K@120Hz and 8K@60Hz."
-what*is*displayport*	echo "DisplayPort: video interface common on monitors and GPUs. DP 2.1 supports 16K resolution. Preferred for high-refresh gaming."
-what*is*4k*	echo "4K: display resolution of 3840x2160 pixels — four times 1080p. Requires 4K content and compatible cable to see the difference."
-what*is*hdr*	echo "HDR (High Dynamic Range): wider brightness and color range on supported displays. Content, display, and cable must all support it."
 what*is*oled*	echo "OLED: display tech where each pixel emits its own light. Perfect blacks, wide viewing angles, risk of burn-in on static images."
-what*is*refresh*rate*	echo "Refresh rate: how many times per second the screen redraws, measured in Hz. 60 Hz is standard, 120+ Hz is noticeably smoother."
 what*is*response*time*	echo "Response time: how fast a pixel changes color, in milliseconds. Lower is better — reduces motion blur and ghosting."
-what*is*smart*home*	echo "Smart home: network of devices (lights, locks, thermostats) controllable remotely or by voice. Common ecosystems: Apple Home, Google Home, Alexa."
 what*is*matter*protocol*	echo "Matter: open smart-home standard backed by Apple, Google, Amazon, Samsung. Lets devices from different brands work together."
-what*is*zigbee*	echo "Zigbee: low-power wireless protocol for smart-home devices. Needs a hub. Devices form a mesh — more devices, better coverage."
 what*is*z*wave*	echo "Z-Wave: low-power smart-home protocol, similar to Zigbee. Operates on sub-GHz band (less interference). Requires a Z-Wave hub."
-what*is*thread*	echo "Thread: mesh networking protocol for smart-home devices. IP-based, no hub required. Foundation layer for Matter."
-what*is*qr*code*	echo "QR code: two-dimensional barcode readable by phone cameras. Encodes URLs, text, or data. Invented 1994 by Denso Wave."
-what*is*barcode*	echo "Barcode: machine-readable pattern of lines or dots encoding data. 1D barcodes (UPC) encode numbers; 2D (QR) encode arbitrary data."
-what*is*cryptocurrency*	echo "Cryptocurrency: digital currency secured by cryptography on a distributed ledger. No central bank. Bitcoin was the first (2009)."
-what*is*blockchain*	echo "Blockchain: append-only ledger replicated across nodes. Each block is cryptographically chained to the previous. Hard to tamper, expensive to run."
-what*is*wallet*crypto*	echo "Crypto wallet: software or hardware that stores your private keys. You control the keys, you control the funds. Lose the keys, lose the funds."
+what*is*thread*protocol	echo "Thread: mesh networking protocol for smart-home devices. IP-based, no hub required. Foundation layer for Matter."
 what*is*mining*crypto*	echo "Mining: using compute power to validate blockchain transactions and earn new coins. Consumes electricity proportional to difficulty."
 what*is*proof*of*work*	echo "Proof of work: consensus mechanism where miners compete to solve a puzzle. Secure but energy-intensive. Used by Bitcoin."
 what*is*proof*of*stake*	echo "Proof of stake: consensus mechanism where validators lock up coins as collateral. Less energy than proof of work. Used by Ethereum."
@@ -961,12 +952,10 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 *differ*RAM*and*storage*	echo "RAM is fast, temporary, volatile memory — it holds what the CPU is actively working on and loses everything when power is cut. Storage (SSD/HDD) is slower, persistent — it keeps your files and programs when the machine is off."
 *differ*process*and*thread*	echo "A process is an isolated running program with its own memory space. A thread is a unit of execution within a process that shares that memory space. One process can have many threads; threads are cheaper to create than processes."
 *why*computers*binary*	echo "Transistors are tiny switches: on or off, 1 or 0. Two clear states are easy to distinguish electrically, even with noise. All higher abstractions — numbers, text, images — are encoded as patterns of these two states."
-*what*is*binary*	echo "A number system with two digits: 0 and 1. Each digit (bit) represents a power of 2. Computers use it because their circuits are switches with two states. Eight bits make a byte (0-255), enough to represent a character."
 *how*touchscreen*work*	echo "Capacitive touchscreens have a grid of transparent conductors. Your finger, being conductive, disturbs the electrostatic field at the point of contact. A controller chip measures the change at each grid intersection to determine where you touched."
 *what*happens*delete*file*	echo "The OS removes the file's entry from the filesystem directory and marks its disk space as available. The actual data remains on disk until new data is written over it. This is why recovery tools can often undelete files."
 *why*computer*slower*over*time*	echo "Software updates demand more resources, startup programs accumulate, storage fills up leaving less room for temporary files and swap, and on HDDs fragmentation increases seek times. Dust buildup can also cause thermal throttling."
 *what*is*defragment*	echo "On an HDD, files get split into pieces scattered across the disk. Defragmentation rearranges them so each file's blocks are contiguous, reducing the time the read head spends seeking. SSDs don't need it — they have no read head."
-*what*is*backup*	echo "A separate copy of your data stored on a different device or location. If your drive fails, you get ransomware, or you accidentally delete something, the backup lets you restore. The 3-2-1 rule: 3 copies, 2 media types, 1 offsite."
 *why*should*backup*	echo "Drives fail, files get deleted, ransomware encrypts things, laptops get stolen. Without a backup, that data is gone permanently. A backup is the only reliable recovery path. If it doesn't exist in two places, it doesn't exist."
 *what*is*docker*compose*	echo "A YAML file that defines multiple Docker containers, their networks, volumes, and environment variables in one place. Run 'docker compose up' and it starts everything together. It's declarative: you describe what you want, not how to do it."
 *what*is*container*image*	echo "A read-only template containing an application and everything it needs to run: code, runtime, libraries, config. When you run an image, Docker creates a container from it — a live, isolated instance. Images are built in layers and shared via registries."
@@ -1011,7 +1000,6 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 *what*last*longer*SSD*HDD*	echo "HDDs have moving parts that wear but are recoverable and understood. SSDs have finite write cycles and fail without warning. For archival storage, HDDs last longer in cold storage. For daily use, SSDs last longer mechanically. Neither is archival — both need rotation."
 *SSD*or*HDD*	echo "HDDs: moving parts, recoverable failures, proven 20+ year cold storage. SSDs: no moving parts, faster, but finite writes and sudden death. For longevity: rotate both. Trust neither alone."
 *what*is*planned*obsolescence*	echo "Planned obsolescence — designing products to fail or become unusable after a predetermined period. Unreplaceable batteries, software updates that slow old hardware, proprietary parts, discontinued consumables. The business model that makes BIFL a counterculture."
-*what*is*right*to*repair*	echo "Right to repair — the principle that you should be able to fix what you own. Access to parts, schematics, diagnostic tools, and the legal right to use them. Opposed by manufacturers who profit from replacement cycles."
 *what*is*repairability*score*	echo "Repairability score — rating (typically 1-10) of how easily a product can be fixed. France mandates them on electronics. Factors: fasteners vs glue, parts availability, documentation, battery replaceability, software locks."
 *leather*vs*synthetic*	echo "Full-grain leather develops patina and lasts decades with care — a leather bag or boot can outlive its owner. Synthetic leather (PU/PVC) peels and cracks in 2-5 years and cannot be restored. The synthetic is cheaper until you replace it four times."
 *wool*vs*polyester*	echo "Wool is naturally antimicrobial, temperature-regulating, fire-resistant, and biodegradable. Polyester is plastic — it pills, retains odor, melts in heat, and sheds microplastics in every wash. Wool garments last decades; polyester is landfill in 3-5 years."
@@ -1101,6 +1089,9 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 *what*aquaponics*	echo "A closed-loop system combining fish farming (aquaculture) with hydroponics. Fish waste provides nitrogen for plants; plants filter the water for fish. Requires balancing fish feed, bacteria, and plant uptake."
 *what*greenhouse*	echo "An enclosed glass or plastic structure that traps solar heat and protects plants from wind, frost, and pests. Extends growing seasons. Passive greenhouses use thermal mass; active ones add heating and ventilation."
 *what*cold*frame*	echo "A low, unheated structure with a transparent lid (often an old window) placed over a garden bed. Traps solar heat to extend the season by weeks. Used for hardening off seedlings and overwintering hardy crops."
+what*are*hardiness*zones	echo "USDA zones by min winter temp. Zone 5: -20 to -10°F. Zone 7: 0 to 10°F. Zone 9: 20 to 30°F. Check planthardiness.ars.usda.gov."
+explain*hardiness*zones	kiwix-search hardiness zone
+read*about*hardiness*zones	kiwix-search hardiness zone
 *hardiness*zone*	echo "A geographic zone defined by average annual minimum winter temperature (USDA system). Tells you which perennial plants survive winter in your area. Zone 6 means -10 to 0°F minimums. Does not predict summer heat."
 *heirloom*seed*	echo "Open-pollinated plant varieties passed down through generations, typically 50+ years old. Seeds saved from heirlooms grow true to type. Valued for flavor and genetic diversity. Contrast with hybrid (F1) and GMO seeds."
 *grafting*plant*	echo "Joining a cutting (scion) from one plant onto the rootstock of another so they grow as one. Combines desirable fruit varieties with vigorous or disease-resistant roots. Standard practice for fruit trees and wine grapes."
@@ -1110,6 +1101,9 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 *what*braising*	echo "A two-step cooking method: first sear the meat at high heat for browning, then cook slowly in a covered pot with a small amount of liquid. Converts tough collagen to gelatin. Low and slow. Chuck roast, short ribs, osso buco."
 *what*searing*	echo "Cooking the surface of meat at very high heat to create a browned crust via the Maillard reaction. Does not seal in juices (a myth). Adds flavor and texture. Use a dry surface, hot pan, and do not move the meat."
 *what*deglazing*	echo "Adding liquid (wine, stock, vinegar) to a hot pan after searing to dissolve the browned bits (fond) stuck to the bottom. Those bits are concentrated flavor. The resulting liquid becomes a pan sauce."
+how*to*make*sourdough*starter	echo "Day 1: 50g flour + 50g water. Daily: discard half, feed 50g flour + 50g water. Active by day 5-7. Doubles in 4-6hr when ready. Room temp."
+explain*sourdough*starter	kiwix-search sourdough
+read*about*sourdough*starter	kiwix-search sourdough
 *sourdough*starter*	echo "A culture of wild yeast and lactobacillus bacteria maintained in a flour-water mixture. Fed regularly, it leavens bread without commercial yeast and produces the sour flavor from lactic and acetic acids. Takes 5-14 days to establish."
 *wild*yeast*	echo "Yeast naturally present on grain, fruit skins, and in the air. Saccharomyces and other species that leaven bread and ferment beverages without adding commercial yeast. Slower and less predictable but produces complex flavors."
 *what*fermentation*	echo "Metabolic process where microorganisms (yeast, bacteria) convert sugars into acids, gases, or alcohol. Preserves food, develops flavor, and increases nutrient availability. Examples: beer, yogurt, sauerkraut, soy sauce, bread."
@@ -1118,6 +1112,8 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 *what*curing*	echo "Preserving meat or fish with salt, sugar, nitrates, or nitrites. Draws out moisture, inhibits bacterial growth, and develops flavor. Methods: dry cure (rubbed on), wet cure (brined), or injection. Produces bacon, prosciutto, gravlax."
 *smoking*food*preservation*	echo "Exposing food to wood smoke for flavor and preservation. Cold smoking (below 90°F) flavors without cooking. Hot smoking (126-275°F) cooks and flavors simultaneously. Smoke contains antimicrobial compounds that inhibit bacteria."
 *what*whetstone*	echo "A flat stone used to sharpen blades by grinding a new edge. Modern whetstones are graded by grit: coarse (200-400) reshapes edges, medium (1000) sharpens, fine (3000-8000) polishes. Most are used with water, not oil."
+how*to*sharpen*a*knife	echo "Coarse stone (400) → fine stone (1000) → strop. 15-20° angle. Edge leading strokes. 5-10 passes per side. Test: slice paper cleanly."
+sharpen*kitchen*knife*	echo "Use a whetstone with water, moving the blade at a consistent angle."
 *sharpen*knife*	echo "Hold the blade at 15-20° against a whetstone. Draw the edge across the stone from heel to tip, alternating sides evenly. Start with coarse grit, finish with fine. Strop on leather to remove the burr. Test on paper or tomato."
 *mise*en*place*	echo "French for 'everything in its place.' The practice of measuring, cutting, and preparing all ingredients before cooking begins. Professional kitchen discipline. Reduces errors, prevents burning, and makes cooking calm and sequential."
 *maillard*reaction*	echo "A chemical reaction between amino acids and reducing sugars at 280-330°F that creates browning, flavor, and aroma. Not caramelization (that is sugar alone). Responsible for the crust on bread, seared meat, roasted coffee, and toasted marshmallows."
@@ -1125,19 +1121,32 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 *proofing*bread*	echo "The final rise of shaped bread dough before baking. Yeast produces CO2 gas that expands the gluten network. Under-proofed: dense and tight crumb. Over-proofed: collapsed and flat. Test by poking — dough should spring back slowly."
 #
 # --- almanac / weather / units / seasons ---
+what*is*first*frost*date	echo "Zone 5: Oct 1-15. Zone 6: Oct 15-30. Zone 7: Nov 1-15. Zone 8: Nov 15-Dec 15. Check NOAA for your station's 50% probability date."
 *frost*date*	echo "A frost date is the average date of the last spring frost or first fall frost in your area. Last frost (spring) tells you when it's safe to plant tender crops. First frost (fall) tells you when to harvest. Varies by location — check USDA zone maps. Typical last frost: Apr-May in temperate US; first frost: Sep-Nov."
+explain*first*frost	kiwix-search frost
+read*about*first*frost	kiwix-search frost
 *first*frost*	echo "The first frost is the earliest fall date when air temperature drops to 32°F (0°C). Signals end of growing season for tender crops. Average dates vary by region and elevation."
 *last*frost*	echo "The last frost is the final spring date when temperature hits 32°F (0°C). Wait until after this date to transplant warm-season crops like tomatoes and peppers."
 *growing*season*	echo "The growing season is the number of frost-free days between the last spring frost and first fall frost. Ranges from ~90 days in northern climates to 300+ days in the deep south. Determines which crops you can grow to maturity."
+when*to*plant*tomatoes	echo "After last frost, soil >60°F. Start indoors 6-8 weeks before last frost. Zone 7: mid-April transplant. Zone 5: late May."
 *when*to*plant*tomato*	echo "Plant tomatoes outdoors 2 weeks after your last frost date, when soil temperature is at least 60°F. Start seeds indoors 6-8 weeks before last frost. They need full sun and consistent moisture."
 *when*to*plant*garlic*	echo "Plant garlic in fall, 4-6 weeks before the ground freezes (usually October-November). Cloves need cold exposure to develop bulbs. Harvest the following summer when lower leaves brown."
 *when*to*plant*potato*	echo "Plant potatoes 2-4 weeks before your last frost date, when soil is at least 45°F. They tolerate light frost. Cut seed potatoes so each piece has 2-3 eyes. Hill soil around stems as they grow."
 *full*moon*	echo "A full moon occurs when the Earth is between the sun and moon, fully illuminating the moon's face. Happens every 29.5 days. Rises at sunset, sets at sunrise."
 *new*moon*	echo "A new moon occurs when the moon is between the Earth and sun, with its illuminated side facing away. The sky is darkest. Rises and sets with the sun."
+what*are*moon*phases	echo "New → Waxing Crescent → First Quarter → Waxing Gibbous → Full → Waning Gibbous → Last Quarter → Waning Crescent. Cycle: 29.53 days."
+explain*moon*phases	kiwix-search lunar phase
+read*about*moon*phases	kiwix-search lunar phase
 *moon*phase*	echo "The moon cycles through 8 phases every 29.5 days: new moon → waxing crescent → first quarter → waxing gibbous → full moon → waning gibbous → last quarter → waning crescent → new moon."
 *harvest*moon*	echo "The harvest moon is the full moon nearest the autumnal equinox (around Sep 22). It rises near sunset for several nights in a row, giving farmers extra light to bring in crops."
 *blue*moon*	echo "A blue moon is the second full moon in a single calendar month, occurring roughly every 2.5 years. Older definition: the third full moon in a season that has four. The moon does not actually turn blue."
+when*is*the*solstice	echo "Summer solstice: ~June 20-21 (longest day). Winter solstice: ~Dec 21-22 (shortest day). Northern hemisphere. Reversed in south."
+explain*solstice	kiwix-search solstice
+read*about*solstice	kiwix-search solstice
 *solstice*	echo "A solstice is when the sun reaches its highest or lowest point in the sky. Summer solstice (~Jun 21): longest day. Winter solstice (~Dec 21): shortest day. Marks the start of summer and winter."
+when*is*the*equinox	echo "Vernal equinox: ~March 20. Autumnal equinox: ~Sept 22. Day and night roughly equal. Marks astronomical spring/fall."
+explain*equinox	kiwix-search equinox
+read*about*equinox	kiwix-search equinox
 *equinox*	echo "An equinox is when the sun crosses the celestial equator, making day and night roughly equal (~12 hours each). Vernal equinox ~Mar 20, autumnal equinox ~Sep 22."
 *daylight*saving*	echo "Daylight saving time shifts clocks forward 1 hour in spring ('spring forward') and back in fall ('fall back'). In the US: second Sunday in March (forward), first Sunday in November (back). Not observed everywhere."
 *when*do*clocks*change*	echo "In the US, clocks spring forward the second Sunday in March and fall back the first Sunday in November. EU: last Sundays of March and October."
@@ -1167,22 +1176,23 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 *perennial*	echo "A perennial is a plant that lives for more than two years, regrowing each spring from its root system. Examples: asparagus, rhubarb, lavender, most trees and shrubs. Plant once, harvest for years."
 *annual*	echo "An annual is a plant that completes its entire life cycle — germination, flowering, seed production, death — in one growing season. Examples: tomatoes, basil, marigolds, lettuce."
 *biennial*	echo "A biennial is a plant that takes two years to complete its life cycle. First year: grows leaves and roots. Second year: flowers, sets seed, and dies. Examples: carrots, parsley, foxglove, onions."
-*pollination*	echo "Pollination is the transfer of pollen from the male anther to the female stigma of a flower, enabling fertilization and seed/fruit production. Done by bees, wind, butterflies, birds, and other pollinators."
 *cross*pollination*	echo "Cross-pollination is the transfer of pollen between flowers of different plants of the same species. Increases genetic diversity. Important for squash, apples, and corn. Can cause unexpected traits in saved seeds."
+*pollination*	echo "Pollination is the transfer of pollen from the male anther to the female stigma of a flower, enabling fertilization and seed/fruit production. Done by bees, wind, butterflies, birds, and other pollinators."
 *cover*crop*	echo "A cover crop is planted to protect and improve soil rather than for harvest. Prevents erosion, suppresses weeds, fixes nitrogen (legumes), and adds organic matter when turned under. Examples: clover, rye, vetch."
 *green*manure*	echo "Green manure is a cover crop that is tilled into the soil while still green to add organic matter and nutrients. Legumes like clover and vetch fix nitrogen. Turn under 2-3 weeks before planting the next crop."
 *composting*	echo "Composting is the aerobic decomposition of organic matter into humus. Mix 'greens' (nitrogen: food scraps, grass) with 'browns' (carbon: leaves, straw) at roughly 1:3 ratio. Turn regularly. Ready in 2-12 months."
 *what*is*humus*	echo "Humus is the dark, stable, fully decomposed organic matter in soil. It improves soil structure, water retention, and nutrient availability. The end product of composting. Not the same as hummus (the food)."
-*crop*rotation*	echo "Crop rotation is the practice of growing different crop families in the same plot in successive seasons. Prevents nutrient depletion, breaks pest and disease cycles. Classic: legumes → brassicas → roots → fruiting crops."
 *bushel*	echo "A bushel is a unit of dry volume equal to 4 pecks, 8 gallons, or 32 quarts. Weight varies by commodity: wheat ~60 lbs, corn ~56 lbs, apples ~42 lbs, oats ~32 lbs."
 *what*is*a*peck*	echo "A peck is a unit of dry volume equal to 8 quarts or 1/4 of a bushel. About 2 gallons. 'A peck of peppers' ≈ 10-14 lbs of peppers."
 *what*is*a*cord*	echo "A cord is a unit of stacked firewood measuring 4 feet wide × 4 feet high × 8 feet long = 128 cubic feet. A face cord (or rick) is one row, typically 4×8 feet × 16 inches deep."
 *canning*pressure*	echo "Pressure canning processes food at 240°F (10-15 PSI) to kill botulism spores. Required for all low-acid foods: meats, vegetables, soups. Use a tested recipe and a proper pressure canner — no shortcuts."
 *water*bath*canning*	echo "Water bath canning processes high-acid foods (pH below 4.6) in boiling water (212°F). Safe for fruits, pickles, jams, tomatoes with added acid. Submerge sealed jars 1-2 inches and process for the specified time."
 *root*cellar*	echo "A root cellar is an underground or semi-underground storage space that stays cool (32-40°F) and humid (85-95%). Used to store root vegetables, apples, and preserves through winter without refrigeration."
-*degree*day*	echo "Degree days measure accumulated heat above a base temperature over time. Used to predict crop maturity, pest emergence, and heating/cooling needs. One degree day = one degree above base for one day."
 *growing*degree*day*	echo "Growing degree days (GDD) track accumulated warmth for crop development. GDD = (daily high + daily low) / 2 − base temp (usually 50°F). Corn needs ~2,700 GDD to mature; peas ~1,200."
-*hardiness*zone*	echo "USDA hardiness zones map average annual minimum winter temperatures in 10°F increments (Zone 1: −60°F to Zone 13: 60°F). Determines which perennials survive winter in your area. Find yours at planthardiness.ars.usda.gov."
+what*are*degree*days	echo "GDD = (daily high + daily low)/2 − base temp. Corn base: 50°F. Accumulate daily from planting. Corn silking: ~1400 GDD."
+explain*degree*days	kiwix-search growing degree day
+read*about*degree*days	kiwix-search growing degree day
+*degree*day*	echo "Degree days measure accumulated heat above a base temperature over time. Used to predict crop maturity, pest emergence, and heating/cooling needs. One degree day = one degree above base for one day."
 *sunrise*sunset*	echo "Sunrise and sunset times vary by latitude, longitude, and date. Check: date +%Y-%m-%d && curl -s 'wttr.in/?format=%S+%s' (shows sunrise and sunset for your location)."
 *what*phase*is*the*moon*	echo "Current moon phase: curl -s 'wttr.in/Moon' | head -24"
 *cups*in*a*quart*	echo "4 cups in a quart."
@@ -1207,6 +1217,7 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 #
 #
 # --- practical reference / writing / survival / games ---
+*foot*pound*newton*meter*	echo "1 ft·lb = 1.35582 N·m. 1 N·m = 0.7376 ft·lb. Multiply ft·lb by 1.356 to get N·m"
 *foot*meter*	echo "1 foot = 0.3048 meters"
 *meter*feet*	echo "1 meter = 3.28084 feet"
 *kilogram*pound*	echo "1 kilogram = 2.20462 pounds"
@@ -1220,33 +1231,46 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 *what*AWG*	echo "AWG: American Wire Gauge. Lower number = thicker. 14 AWG = 1.63mm (15A circuits), 12 AWG = 2.05mm (20A), 10 AWG = 2.59mm (30A), 8 AWG = 3.26mm (40A), 6 AWG = 4.11mm (55A)"
 *wire*size*	echo "Common wire: 14 AWG = 15A, 12 AWG = 20A, 10 AWG = 30A, 8 AWG = 40A, 6 AWG = 55A. Romex: 14/2 for lighting, 12/2 for outlets, 10/3 for dryers, 6/3 for ranges"
 *what*BTU*	echo "1 BTU = 1,055 joules = energy to raise 1 lb water by 1°F. 1 BTU/hr = 0.293 watts"
-*what*watt*	echo "1 watt = 1 joule/sec = 3.412 BTU/hr. 1 horsepower = 746 watts"
 *what*kilowatt*hour*	echo "1 kWh = 3,600,000 joules = 3,412 BTU. Average US home uses ~30 kWh/day"
+*what*watt*	echo "1 watt = 1 joule/sec = 3.412 BTU/hr. 1 horsepower = 746 watts"
 *what*PSI*	echo "PSI = pounds per square inch. 1 PSI = 0.06895 bar = 6.895 kPa. Atmosphere = 14.696 PSI = 1.01325 bar"
 *what*bar*pressure*	echo "1 bar = 14.5038 PSI = 100 kPa. 1 atm = 1.01325 bar"
 *what*board*foot*	echo "1 board foot = 1 ft × 1 ft × 1 in = 144 cubic inches = 2,359.7 cm³. Lumber pricing unit"
+what*are*common*torque*specs	echo "1/4-20: 75 in-lb. 5/16-18: 132 in-lb. 3/8-16: 264 in-lb. 1/2-13: 636 in-lb. Grade 5 steel, dry. Lubed: reduce ~25%."
 *what*torque*	echo "Torque = force × distance. 1 ft·lb = 1.35582 N·m. 1 N·m = 0.7376 ft·lb"
-*foot*pound*newton*meter*	echo "1 ft·lb = 1.35582 N·m. 1 N·m = 0.7376 ft·lb. Multiply ft·lb by 1.356 to get N·m"
 *thread*pitch*	echo "Thread pitch: distance between threads. UNC = Unified National Coarse (e.g., 1/4-20 = 20 TPI). Metric = mm pitch (e.g., M6×1.0 = 1.0mm pitch). UNC is default in US, metric everywhere else"
 *what*UNC*metric*	echo "UNC: Unified National Coarse, measured in TPI (threads per inch). Metric: measured in mm pitch. Common: 1/4-20 UNC ≈ M6×1.0, 5/16-18 ≈ M8×1.25, 3/8-16 ≈ M10×1.5, 1/2-13 ≈ M12×1.75"
+explain*drill*bit*sizes	kiwix-search drill bit sizes
+read*about*drill*bit*sizes	kiwix-search drill bit sizes
 *drill*bit*size*	echo "Common drill bits: #7=0.201in (1/4-20 tap), #29=0.136in (#8-32 tap), F=0.257in (5/16-18 tap), 5/16=0.3125in (3/8-16 tap), 27/64=0.4219in (1/2-13 tap). Metric: 5mm for M6, 6.8mm for M8, 8.5mm for M10, 10.2mm for M12"
 *nail*size*penny*	echo "Nail penny sizes: 2d=1in, 4d=1.5in, 6d=2in, 8d=2.5in, 10d=3in, 12d=3.25in, 16d=3.5in, 20d=4in, 40d=5in, 60d=6in. 'd' = penny. 16d common nail is the standard framing nail"
+what*is*joist*span	echo "2×8 SPF #2 at 16in OC: ~12ft floor span. 2×10: ~15ft. 2×12: ~18ft. Check local code tables. Dead+live load 50 psf typical."
 *what*joist*	echo "Joist: horizontal framing member supporting a floor or ceiling. Typically 2×8, 2×10, or 2×12 lumber spaced 16in on center"
 *what*stud*	echo "Stud: vertical framing member in a wall. Standard: 2×4 or 2×6, 92-5/8in precut for 8ft walls, spaced 16in on center"
+what*is*on*center*spacing	echo "16in OC standard for walls/floors. 24in OC for some walls, roof rafters. Measure center-to-center of framing members."
 *what*on*center*	echo "On-center (OC): measurement from center of one framing member to center of the next. Standard spacing: 16in OC for walls/floors, 24in OC for some walls/rafters"
+what*is*omit*needless*words	echo "Strunk Rule 17: 'Vigorous writing is concise.' Cut: the fact that, who is, which was, the question as to whether, there is/are, it is...that."
+explain*omit*needless*words	kiwix-search The Elements of Style
+read*about*omit*needless*words	kiwix-search The Elements of Style
 *omit*needless*word*	echo "Omit needless words. Vigorous writing is concise. Every word should tell. Not 'the question as to whether' but 'whether'. Not 'the fact that' but 'since/because'. Not 'in a hasty manner' but 'hastily'."
 *active*voice*passive*voice*	echo "Active voice: subject acts (The dog bit the man). Passive voice: subject receives (The man was bitten). Use active by default — it is direct and vigorous. Passive is acceptable when the actor is unknown or the receiver matters more."
+what*is*parallel*construction	echo "Match grammatical form in lists/pairs. Wrong: 'to sing, dancing, and played.' Right: 'to sing, to dance, and to play.' Applies to correlatives (both/and, not only/but also)."
 *what*parallel*construction*	echo "Parallel construction: express coordinate ideas in the same grammatical form. Not 'She likes hiking, to swim, and bikes' but 'She likes hiking, swimming, and biking.' Applies to lists, comparisons, and correlatives (both/and, not only/but also)."
+what*is*a*dangling*modifier	echo "Modifier with no clear subject. Wrong: 'Walking to school, the rain started.' (Rain wasn't walking.) Right: 'Walking to school, I got caught in the rain.'"
 *what*dangling*modifier*	echo "Dangling modifier: a phrase that modifies a word not present in the sentence. Wrong: 'Walking to school, the rain started.' (rain wasn't walking). Right: 'Walking to school, I got caught in the rain.'"
 *subject*verb*agreement*	echo "Subject-verb agreement: singular subjects take singular verbs, plural take plural. Traps: 'each/every' = singular, 'neither/either' = singular, collective nouns = usually singular (the team is), phrases between subject and verb don't change number."
 *concrete*language*	echo "Use concrete language. Prefer the specific to the general, the definite to the vague. Not 'a period of unfavorable weather' but 'it rained every day for a week.' Not 'He showed satisfaction' but 'He grinned.'"
 *what*topic*sentence*	echo "Topic sentence: the sentence (usually first) that states the paragraph's main idea. Every paragraph should have one. The rest of the paragraph supports, illustrates, or qualifies it."
 *what*thesis*statement*	echo "Thesis statement: a single sentence declaring the essay's central argument. It is specific, debatable, and guides the entire piece. Usually at the end of the introduction."
+how*to*tie*a*bowline	echo "Make a loop (rabbit hole). Tail up through loop, around standing line, back down through loop. 'Rabbit out, around tree, back in.'"
 *how*tie*bowline*	echo "Bowline (non-slip loop): Make a small loop in the standing line. Pass the free end up through the loop, around behind the standing line, and back down through the loop. 'Rabbit comes out of the hole, goes around the tree, back down the hole.' Secure under load, easy to untie."
+how*to*tie*a*clove*hitch	echo "Two half-hitches same direction around post. Quick temporary hold. Wrap, cross over, wrap again, tuck under second wrap."
 *how*tie*clove*hitch*	echo "Clove hitch (quick post/pole tie): Wrap rope around post, cross over itself, wrap around post again, tuck end under last wrap. Fast to tie/untie, can slip under variable load. Good for temporary ties."
+how*to*tie*a*square*knot	echo "Right over left, tuck under. Left over right, tuck under. Both tails exit same side of loop. Flat, not granny."
 *how*tie*square*knot*	echo "Square knot (joining two ends): Right over left and tuck, then left over right and tuck. Lies flat. For bandages and non-critical joining. NOT for joining ropes under load — use a sheet bend instead."
 *how*tie*taut*line*	echo "Taut-line hitch (adjustable loop, tent guy lines): Wrap free end around standing line twice inside the loop, then once outside, and pass through. Slides to adjust tension, holds under load."
 *how*start*fire*without*match*	echo "Fire without matches: 1) Friction (bow drill): notched fireboard, spindle, bow, socket. Spin spindle in notch to create ember in tinder bundle. 2) Flint+steel: strike steel against flint into char cloth. 3) Lens: focus sunlight through lens onto tinder. Always: tinder → kindling → fuel. Tinder must be dry and fine."
+how*to*purify*water	echo "Boil 1 min (3 min >6500ft). Or: 2 drops bleach (6% sodium hypochlorite) per quart, wait 30 min. Or commercial filter <0.2 micron."
 *how*purify*water*	echo "Purify water: 1) Boiling: rolling boil for 1 minute (3 min above 6,500 ft). 2) Chemical: 2 drops unscented bleach per quart, wait 30 min. 3) Filter: commercial filter or improvised (sand/charcoal/gravel layers). Always filter sediment first before chemical treatment."
 *how*find*north*without*compass*	echo "Find north without compass: 1) Stick shadow: plant stick, mark tip of shadow, wait 15 min, mark again. Line between marks runs east-west (first mark = west). 2) Night (N hemisphere): find Big Dipper, extend pointer stars 5× to Polaris. 3) Watch: point hour hand at sun, halfway between it and 12 is south."
 *rule*of*three*survival*	echo "Rule of Threes: survive ~3 minutes without air, ~3 hours without shelter (extreme weather), ~3 days without water, ~3 weeks without food. Prioritize in that order."
@@ -1254,10 +1278,12 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 *first*aid*burn*	echo "Burns: Cool with cool (not ice) running water for 10-20 min. Cover loosely with sterile non-stick dressing. Do NOT apply butter/ointment to serious burns. Do NOT pop blisters. Seek help for burns larger than palm, on face/joints/genitals, or full thickness."
 *first*aid*choking*	echo "Choking (adult): Ask 'are you choking?' If they can't speak/cough: stand behind, fist above navel, grasp with other hand, give firm upward abdominal thrusts (Heimlich). Repeat until object clears or person goes unconscious. If unconscious: call 911, begin CPR, check mouth before breaths."
 *CPR*steps*	echo "CPR (adult): 1) Call 911. 2) Place heel of hand on center of chest (between nipples). 3) Push hard and fast: 2 inches deep, 100-120 compressions/min. 4) After 30 compressions, tilt head, lift chin, give 2 breaths. 5) Repeat 30:2. Use AED as soon as available. Don't stop until help arrives."
+how*to*signal*for*help	echo "Three of anything: 3 fires, 3 whistle blasts, 3 mirror flashes. Ground-to-air: large X = need help, V = need assistance, I = need medical."
 *how*signal*for*help*	echo "Signal for help: 3 of anything = distress (3 fires, 3 whistle blasts, 3 gunshots). Mirror flash toward aircraft. Ground signals: large X = need help, V = need assistance, → = traveling this way. Bright/contrasting materials on ground. Whistle carries farther than voice."
 *what*do*if*lost*	echo "If lost: STOP. Sit down, Think, Observe, Plan. Stay put if possible — searchers look near last known position. Make yourself visible/audible. Build shelter before dark. Signal in threes. Conserve energy. Do NOT panic-walk deeper into unknown terrain."
 *what*hypothermia*	echo "Hypothermia: core temp below 95°F/35°C. Signs: shivering, confusion, slurred speech, drowsiness. Treatment: get to shelter, remove wet clothes, warm core first (blankets, body heat, warm drinks if conscious). Do NOT rub extremities, give alcohol, or use direct heat. Severe: call 911."
 *what*heat*stroke*	echo "Heat stroke: core temp above 104°F/40°C. Signs: hot dry skin (or profuse sweating), confusion, rapid pulse, unconsciousness. EMERGENCY: call 911. Move to shade, cool aggressively (ice packs on neck/armpits/groin, cool water immersion). Do NOT give fluids if unconscious."
+how*to*build*a*shelter	echo "Lean-to: ridgepole between two trees at 45°. Layer branches, then leaves/debris 2-3ft thick. Opening away from wind. Insulate ground."
 *how*build*shelter*	echo "Emergency shelter: 1) Lean-to: ridgepole between two trees, lean branches at 45°, layer with leaves/debris. 2) Debris hut: ridgepole on ground to crotched stick, pile debris thick (2-3 ft) over frame, stuff inside with leaves for insulation. Face opening away from wind. Smaller = warmer."
 *what*quorum*	echo "Quorum: the minimum number of members who must be present to conduct business. Typically a majority (more than half) of the membership. No quorum = no votes, only adjourn or take measures to obtain a quorum."
 *what*motion*how*make*motion*	echo "A motion is a formal proposal for the group to take action. To make one: obtain the floor ('Mr./Madam Chair'), state 'I move that [specific action].' Must be seconded before discussion. Chair restates the motion, opens debate, then calls the vote."
@@ -1267,6 +1293,7 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 *what*roll*call*vote*	echo "Roll call vote: the secretary calls each member's name; each responds yea, nay, or abstain. Used when a record of individual votes is required. Can be requested by rule or by motion (typically requires a majority or specified fraction to order)."
 *what*unanimous*consent*	echo "Unanimous consent: the chair asks 'Without objection, [action].' If no one objects, it passes immediately. One objection = must use a formal vote. Speeds up routine/uncontroversial business."
 *what*agenda*	echo "Agenda: the order of business. Standard (Robert's): 1) Call to order, 2) Reading/approval of minutes, 3) Reports of officers, 4) Reports of committees, 5) Special orders, 6) Unfinished business, 7) New business, 8) Adjournment. Can be modified by majority vote."
+what*are*poker*hand*rankings	echo "Royal flush > straight flush > four of a kind > full house > flush > straight > three of a kind > two pair > one pair > high card."
 *poker*hand*rank*	echo "Poker hand rankings (high to low): Royal flush, Straight flush, Four of a kind, Full house, Flush, Straight, Three of a kind, Two pair, One pair, High card. Suits never break ties in standard poker."
 *rules*of*poker*	echo "Poker basics (Texas Hold'em): each player gets 2 hole cards. 5 community cards dealt in stages (flop 3, turn 1, river 1). Betting rounds after deal, flop, turn, river. Best 5-card hand from any combo of hole + community cards wins. Blinds force action."
 *rules*of*chess*how*pieces*move*	echo "Chess: 16 pieces each. King: 1 square any direction. Queen: any number, any direction. Rook: any number, rank/file. Bishop: any number, diagonal. Knight: L-shape (2+1), jumps pieces. Pawn: forward 1 (2 from start), captures diagonally. Special: castling, en passant, promotion. Checkmate wins."
@@ -1340,10 +1367,12 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 *resting*heart*rate*	echo "Heart rate measured at rest, sitting or lying, calm. Normal adult: 60-100 bpm. Well-conditioned athletes: 40-60 bpm. Consistently above 100 at rest (tachycardia) or below 60 with symptoms warrants evaluation."
 *what*is*BMI*	echo "Body Mass Index: weight(kg) / height(m)². Underweight: <18.5, Normal: 18.5-24.9, Overweight: 25-29.9, Obese: 30+. A rough screening tool, not a diagnosis — doesn't distinguish muscle from fat or account for frame."
 *how*to*calculate*BMI*	echo "BMI = weight in kg ÷ (height in meters)². Or: (weight in pounds × 703) ÷ (height in inches)². Example: 70 kg, 1.75 m → 70 / 3.0625 = 22.9. It's a screening number, not a health verdict."
-*what*is*a*fever*	echo "Body temperature elevated above the normal range, typically above 100.4°F (38°C). A fever is the immune system's response to infection — it's a symptom, not a disease. Treat the cause; manage discomfort if needed."
 *what*temperature*is*a*fever*	echo "100.4°F (38°C) or higher is generally considered a fever. Normal body temp averages 98.6°F (37°C) but varies by person, time of day, and measurement site. Seek care for fever above 103°F or lasting more than 3 days."
-*dehydration*	echo "Insufficient body water. Signs: dark urine, dry mouth, thirst, dizziness, fatigue, reduced urine output. Severe: rapid heartbeat, confusion, fainting. Causes: inadequate intake, vomiting, diarrhea, heat, exertion. Treat: drink water and electrolytes."
+*what*is*a*fever*	echo "Body temperature elevated above the normal range, typically above 100.4°F (38°C). A fever is the immune system's response to infection — it's a symptom, not a disease. Treat the cause; manage discomfort if needed."
 *signs*of*dehydration*	echo "Thirst, dark yellow urine, dry mouth/lips, headache, fatigue, dizziness. Severe: sunken eyes, rapid pulse, low blood pressure, confusion, no tears when crying (in children). Skin turgor test: pinched skin tents instead of snapping back."
+explain*dehydration	kiwix-search dehydration
+read*about*dehydration	kiwix-search dehydration
+*dehydration*	echo "Insufficient body water. Signs: dark urine, dry mouth, thirst, dizziness, fatigue, reduced urine output. Severe: rapid heartbeat, confusion, fainting. Causes: inadequate intake, vomiting, diarrhea, heat, exertion. Treat: drink water and electrolytes."
 *what*is*anemia*	echo "Low red blood cell count or hemoglobin, reducing oxygen delivery. Symptoms: fatigue, pallor, shortness of breath, dizziness. Causes: iron deficiency (most common), B12/folate deficiency, chronic disease, blood loss. Diagnosed by CBC blood test."
 *what*is*an*antibiotic*	echo "A drug that kills or inhibits bacteria. Does NOT work on viruses (colds, flu, COVID). Types: penicillins, cephalosporins, macrolides, fluoroquinolones. Always complete the full course. Overuse drives resistance."
 *antibiotic*resistance*	echo "Bacteria evolving to survive antibiotics. Caused by overuse, misuse, and incomplete courses. Resistant infections are harder and more expensive to treat. A serious global health threat. Use antibiotics only when prescribed and finish the course."
@@ -1386,10 +1415,10 @@ read*about*concussion	kiwix-search concussion
 what*is*allergic*reaction	echo "Mild: hives, itching → antihistamine. Anaphylaxis: throat swelling, difficulty breathing → epinephrine (EpiPen) + 911 immediately."
 explain*allergic*reaction	kiwix-search anaphylaxis
 read*about*allergic*reaction	kiwix-search anaphylaxis
-explain*dehydration	kiwix-search dehydration
-read*about*dehydration	kiwix-search dehydration
 what*are*stroke*signs	echo "FAST: Face drooping, Arm weakness, Speech slurred, Time to call 911. Note onset time for treatment window."
+explain*heat*stroke	kiwix-search heat stroke
 explain*stroke	kiwix-search stroke
+read*about*heat*stroke	kiwix-search heat stroke
 read*about*stroke	kiwix-search stroke
 what*are*heart*attack*signs	echo "Chest pressure/squeezing, jaw/arm/back pain, shortness of breath, cold sweat, nausea. Chew aspirin 325mg, call 911."
 explain*heart*attack	kiwix-search myocardial infarction
@@ -1402,53 +1431,40 @@ read*about*asthma	kiwix-search asthma
 what*to*do*for*seizure	echo "Clear area, protect head, turn on side. Do NOT restrain or put anything in mouth. Time it. Call 911 if >5 min or first seizure."
 explain*seizure	kiwix-search epileptic seizure
 read*about*seizure	kiwix-search epileptic seizure
-how*to*tie*a*bowline	echo "Make a loop (rabbit hole). Tail up through loop, around standing line, back down through loop. 'Rabbit out, around tree, back in.'"
 explain*bowline	kiwix-search bowline
 read*about*bowline	kiwix-search bowline
-how*to*tie*a*square*knot	echo "Right over left, tuck under. Left over right, tuck under. Both tails exit same side of loop. Flat, not granny."
 explain*square*knot	kiwix-search reef knot
 read*about*square*knot	kiwix-search reef knot
-how*to*tie*a*clove*hitch	echo "Two half-hitches same direction around post. Quick temporary hold. Wrap, cross over, wrap again, tuck under second wrap."
 explain*clove*hitch	kiwix-search clove hitch
 read*about*clove*hitch	kiwix-search clove hitch
 how*to*start*a*fire	echo "Tinder (dry grass/bark shavings) → kindling (pencil-thick sticks) → fuel (arm-thick wood). Teepee or log cabin lay. Shield from wind."
 explain*fire*starting	kiwix-search fire making
 read*about*fire*starting	kiwix-search fire making
-how*to*purify*water	echo "Boil 1 min (3 min >6500ft). Or: 2 drops bleach (6% sodium hypochlorite) per quart, wait 30 min. Or commercial filter <0.2 micron."
 explain*water*purification	kiwix-search water purification
 read*about*water*purification	kiwix-search water purification
 how*to*find*north	echo "Stick shadow: mark tip, wait 15 min, mark again. Line between marks runs E-W, perpendicular is N-S. Night: Polaris at end of Little Dipper handle."
 explain*finding*north	kiwix-search celestial navigation
 read*about*finding*north	kiwix-search celestial navigation
-how*to*build*a*shelter	echo "Lean-to: ridgepole between two trees at 45°. Layer branches, then leaves/debris 2-3ft thick. Opening away from wind. Insulate ground."
 explain*shelter*building	kiwix-search survival shelter
 read*about*shelter*building	kiwix-search survival shelter
 explain*hypothermia	kiwix-search hypothermia
 read*about*hypothermia	kiwix-search hypothermia
-explain*heat*stroke	kiwix-search heat stroke
-read*about*heat*stroke	kiwix-search heat stroke
 what*to*do*for*snakebite	echo "Stay calm, immobilize limb at/below heart level. Remove rings/watches. Mark swelling edge+time. NO tourniquet, NO cutting, NO sucking. ER now."
 explain*snakebite	kiwix-search snake bite
 read*about*snakebite	kiwix-search snake bite
-how*to*signal*for*help	echo "Three of anything: 3 fires, 3 whistle blasts, 3 mirror flashes. Ground-to-air: large X = need help, V = need assistance, I = need medical."
 explain*signaling*for*help	kiwix-search distress signal
 read*about*signaling*for*help	kiwix-search distress signal
 wire*gauge*for*20*amp	echo "12 AWG copper (20A). 14 AWG = 15A. 10 AWG = 30A. Romex NM-B for residential. Derate for long runs >50ft or bundling."
 explain*wire*gauge	kiwix-search American wire gauge
 read*about*wire*gauge	kiwix-search American wire gauge
 drill*bit*for*quarter*bolt	echo "1/4-20 tap drill: #7 (0.201in). Clearance hole: 17/64in. For lag bolt pilot hole: 5/32in softwood, 3/16in hardwood."
-explain*drill*bit*sizes	kiwix-search drill bit sizes
-read*about*drill*bit*sizes	kiwix-search drill bit sizes
-what*are*common*torque*specs	echo "1/4-20: 75 in-lb. 5/16-18: 132 in-lb. 3/8-16: 264 in-lb. 1/2-13: 636 in-lb. Grade 5 steel, dry. Lubed: reduce ~25%."
 explain*torque*specs	kiwix-search torque
 read*about*torque*specs	kiwix-search torque
 how*to*calculate*board*feet	echo "Thickness(in) × Width(in) × Length(ft) / 12. Example: 2×6×8ft = 8 board feet. Nominal dimensions, not actual."
 explain*board*foot	kiwix-search board foot
 read*about*board*foot	kiwix-search board foot
-what*is*on*center*spacing	echo "16in OC standard for walls/floors. 24in OC for some walls, roof rafters. Measure center-to-center of framing members."
 explain*on*center*spacing	kiwix-search wall stud
 read*about*on*center*spacing	kiwix-search wall stud
-what*is*joist*span	echo "2×8 SPF #2 at 16in OC: ~12ft floor span. 2×10: ~15ft. 2×12: ~18ft. Check local code tables. Dead+live load 50 psf typical."
 explain*joist*span	kiwix-search joist
 read*about*joist*span	kiwix-search joist
 what*are*common*nail*sizes	echo "8d=2.5in, 10d=3in, 16d=3.5in. 'd' = penny. Framing: 16d common. Sheathing: 8d. Finish: 6d-8d finish nails. Ring shank for decking."
@@ -1457,73 +1473,40 @@ read*about*nail*sizes	kiwix-search nail (fastener)
 what*are*pipe*thread*sizes	echo "NPT: 1/2in pipe = 0.84in OD, 14 TPI. 3/4in = 1.05in OD, 14 TPI. Use Teflon tape on male threads. 1.5-3 wraps clockwise."
 explain*pipe*threads	kiwix-search national pipe thread
 read*about*pipe*threads	kiwix-search national pipe thread
-when*to*plant*tomatoes	echo "After last frost, soil >60°F. Start indoors 6-8 weeks before last frost. Zone 7: mid-April transplant. Zone 5: late May."
 explain*planting*tomatoes	kiwix-search tomato cultivation
 read*about*planting*tomatoes	kiwix-search tomato cultivation
-what*is*first*frost*date	echo "Zone 5: Oct 1-15. Zone 6: Oct 15-30. Zone 7: Nov 1-15. Zone 8: Nov 15-Dec 15. Check NOAA for your station's 50% probability date."
-explain*first*frost	kiwix-search frost
-read*about*first*frost	kiwix-search frost
-what*are*moon*phases	echo "New → Waxing Crescent → First Quarter → Waxing Gibbous → Full → Waning Gibbous → Last Quarter → Waning Crescent. Cycle: 29.53 days."
-explain*moon*phases	kiwix-search lunar phase
-read*about*moon*phases	kiwix-search lunar phase
-when*is*the*solstice	echo "Summer solstice: ~June 20-21 (longest day). Winter solstice: ~Dec 21-22 (shortest day). Northern hemisphere. Reversed in south."
-explain*solstice	kiwix-search solstice
-read*about*solstice	kiwix-search solstice
-when*is*the*equinox	echo "Vernal equinox: ~March 20. Autumnal equinox: ~Sept 22. Day and night roughly equal. Marks astronomical spring/fall."
-explain*equinox	kiwix-search equinox
-read*about*equinox	kiwix-search equinox
 what*time*is*sunrise	echo "Varies by latitude/date. Rough guide 40°N: Jun 21 ~5:30am, Dec 21 ~7:15am, equinoxes ~6:45am. Use NOAA solar calculator for exact."
 explain*sunrise	kiwix-search sunrise
 read*about*sunrise	kiwix-search sunrise
-what*are*degree*days	echo "GDD = (daily high + daily low)/2 − base temp. Corn base: 50°F. Accumulate daily from planting. Corn silking: ~1400 GDD."
-explain*degree*days	kiwix-search growing degree day
-read*about*degree*days	kiwix-search growing degree day
-what*are*hardiness*zones	echo "USDA zones by min winter temp. Zone 5: -20 to -10°F. Zone 7: 0 to 10°F. Zone 9: 20 to 30°F. Check planthardiness.ars.usda.gov."
-explain*hardiness*zones	kiwix-search hardiness zone
-read*about*hardiness*zones	kiwix-search hardiness zone
 when*to*harvest*garlic	echo "When lower 3-4 leaves brown, upper 4-5 still green. Usually mid-July zone 5-7. Stop watering 2 weeks before. Cure 2-4 weeks in shade."
 explain*harvesting*garlic	kiwix-search garlic
 read*about*harvesting*garlic	kiwix-search garlic
 how*to*make*a*roux	echo "Equal parts fat and flour by weight. Melt butter, whisk in flour. White: 2 min. Blond: 5 min. Dark: 15-20 min. Low-medium heat, constant stirring."
 explain*roux	kiwix-search roux
 read*about*roux	kiwix-search roux
-how*to*make*sourdough*starter	echo "Day 1: 50g flour + 50g water. Daily: discard half, feed 50g flour + 50g water. Active by day 5-7. Doubles in 4-6hr when ready. Room temp."
-explain*sourdough*starter	kiwix-search sourdough
-read*about*sourdough*starter	kiwix-search sourdough
 how*to*proof*bread	echo "Bulk ferment: 75-78°F, 4-6hr or until doubled. Shape, then cold retard 12-16hr in fridge. Poke test: indent springs back slowly = ready."
 explain*bread*proofing	kiwix-search proofing (baking)
 read*about*bread*proofing	kiwix-search proofing (baking)
-how*to*sharpen*a*knife	echo "Coarse stone (400) → fine stone (1000) → strop. 15-20° angle. Edge leading strokes. 5-10 passes per side. Test: slice paper cleanly."
 explain*knife*sharpening	kiwix-search sharpening
 read*about*knife*sharpening	kiwix-search sharpening
-how*to*season*cast*iron	echo "Wash, dry completely. Thin coat of flaxseed/crisco oil, wipe until looks dry. Bake upside down 450°F 1hr. Cool in oven. Repeat 3-6x."
 explain*cast*iron*seasoning	kiwix-search cast iron cookware
 read*about*cast*iron*seasoning	kiwix-search cast iron cookware
-how*to*smoke*meat	echo "Low and slow: 225-250°F. Brisket: 1-1.5hr/lb to 203°F internal. Ribs 3-2-1 method (smoke/wrap/glaze). Rest 30-60 min after."
 explain*smoking*meat	kiwix-search smoking (cooking)
 read*about*smoking*meat	kiwix-search smoking (cooking)
-what*is*canning	echo "Water bath: high-acid foods (fruit, pickles, tomatoes+acid), 212°F. Pressure canning: low-acid (meat, veg), 240°F/10-15 PSI. Follow NCHFP tested recipes."
 explain*canning	kiwix-search canning
 read*about*canning	kiwix-search canning
-what*is*fermentation	echo "Anaerobic microbial conversion. Lacto-fermentation: 2-3% salt brine, submerge veg, room temp 3-7 days. Bubbles = CO2 = working. Refrigerate to slow."
 explain*fermentation	kiwix-search fermentation
 read*about*fermentation	kiwix-search fermentation
 what*is*active*vs*passive*voice	echo "Active: subject acts (The dog bit the man). Passive: subject receives (The man was bitten). Prefer active. Use passive when actor is unknown or irrelevant."
 explain*active*passive*voice	kiwix-search active voice
 read*about*active*passive*voice	kiwix-search active voice
-what*is*omit*needless*words	echo "Strunk Rule 17: 'Vigorous writing is concise.' Cut: the fact that, who is, which was, the question as to whether, there is/are, it is...that."
-explain*omit*needless*words	kiwix-search The Elements of Style
-read*about*omit*needless*words	kiwix-search The Elements of Style
-what*is*parallel*construction	echo "Match grammatical form in lists/pairs. Wrong: 'to sing, dancing, and played.' Right: 'to sing, to dance, and to play.' Applies to correlatives (both/and, not only/but also)."
 explain*parallel*construction	kiwix-search parallelism (grammar)
 read*about*parallel*construction	kiwix-search parallelism (grammar)
-what*is*a*dangling*modifier	echo "Modifier with no clear subject. Wrong: 'Walking to school, the rain started.' (Rain wasn't walking.) Right: 'Walking to school, I got caught in the rain.'"
 explain*dangling*modifier	kiwix-search dangling modifier
 read*about*dangling*modifier	kiwix-search dangling modifier
 what*is*a*comma*splice	echo "Two independent clauses joined by only a comma. Wrong: 'It's cold, I need a coat.' Fix: semicolon, period, or conjunction. 'It's cold; I need a coat.'"
 explain*comma*splice	kiwix-search comma splice
 read*about*comma*splice	kiwix-search comma splice
-what*are*poker*hand*rankings	echo "Royal flush > straight flush > four of a kind > full house > flush > straight > three of a kind > two pair > one pair > high card."
 explain*poker*hands	kiwix-search poker hand
 read*about*poker*hands	kiwix-search poker hand
 how*do*chess*pieces*move	echo "King:1 any dir. Queen:any dist any dir. Rook:straight lines. Bishop:diagonals. Knight:L-shape (2+1), jumps. Pawn:forward 1 (2 from start), captures diagonal."
@@ -1536,6 +1519,9 @@ how*to*score*cribbage	echo "15s=2pts each combo. Pairs=2. Runs=1/card. Flush=4-5
 explain*cribbage	kiwix-search cribbage
 read*about*cribbage	kiwix-search cribbage
 # --- kids / gaming / homework / curiosity ---
+*what*skeleton*minecraft*	echo "Skeletons are hostile mobs in Minecraft that shoot arrows at you. They spawn in the dark, burn in sunlight, and drop bones and arrows."
+can*i*play*minecraft*on*this	echo "Yes! Install with: sudo apt install minecraft-launcher (or download from minecraft.net). You need a Minecraft account."
+how*to*download*minecraft	echo "Go to minecraft.net, log in, download the Linux version, and install it. Ask a parent if you need help with the account."
 *minecraft*	echo "Minecraft is a game where you build things out of blocks and explore infinite worlds. You can mine resources, craft tools, build houses, and survive against monsters at night."
 *crafting table*	echo "Place 4 wood planks in a 2x2 crafting grid to make a crafting table. It gives you a 3x3 grid to make tools, weapons, and more."
 *beat the ender dragon*	echo "1) Find a stronghold using Eyes of Ender. 2) Enter the End portal. 3) Destroy the End crystals on top of the obsidian towers. 4) Attack the dragon when it swoops down. Bring a bow, arrows, and good armor!"
@@ -1545,7 +1531,6 @@ read*about*cribbage	kiwix-search cribbage
 *what*fortnite*	echo "Fortnite is a game where 100 players drop onto an island and the last one standing wins. You find weapons, build structures, and the play area shrinks over time."
 *battle royale*	echo "A battle royale is a type of game where many players compete and the last person or team alive wins. The play area gets smaller to push everyone together."
 *what*creeper*	echo "A creeper is a green monster in Minecraft that sneaks up on you and explodes. If you hear a hissing sound, run! They drop gunpowder when defeated."
-*what*skeleton*minecraft*	echo "Skeletons are hostile mobs in Minecraft that shoot arrows at you. They spawn in the dark, burn in sunlight, and drop bones and arrows."
 *what*the nether*	echo "The Nether is a dangerous dimension in Minecraft full of lava, fire, and tough mobs like ghasts and piglins. You get there by building a portal out of obsidian."
 *what*steam*	echo "Steam is an app where you can buy, download, and play PC games. It also lets you chat with friends and join game communities."
 *how*install*game*	echo "On Linux: check your package manager (like Software Center), Steam, or the game's website. Download the installer and follow the instructions."
@@ -1554,6 +1539,7 @@ read*about*cribbage	kiwix-search cribbage
 *what*shader*	echo "A shader makes game graphics look fancier — realistic lighting, shadows, water reflections, and sunrays. They can make your computer work harder though."
 *what*FPS*	echo "FPS means Frames Per Second — how many pictures your screen draws each second. Higher FPS (like 60) looks smooth. Low FPS looks choppy."
 *what*lag*	echo "Lag is when a game freezes, stutters, or feels slow. It can happen when your computer is working too hard or your internet is slow."
+*what*is*ping*	echo "Sends ICMP echo request, measures round-trip time. ping -c4 8.8.8.8. Tests if a host is reachable. If ping works but browser doesn't, it's DNS."
 *what*ping*	echo "Ping is how fast your computer talks to a game server, measured in milliseconds. Lower ping = less delay. Under 50ms is great, over 150ms feels laggy."
 *how*screenshot*	echo "Press the Print Screen key (PrtSc) to capture your screen. On many Linux desktops you can also press Shift+PrtSc to select an area."
 *how*record*screen*	echo "Try OBS Studio (free) or the built-in screen recorder if your desktop has one. In GNOME, press Ctrl+Shift+Alt+R to start/stop recording."
@@ -1609,7 +1595,6 @@ read*about*cribbage	kiwix-search cribbage
 *tell me a riddle*	echo "I have cities but no houses, forests but no trees, and water but no fish. What am I? ...A map!"
 *fun fact*	echo "Octopuses have three hearts and blue blood. Honey never spoils. A day on Venus is longer than its year. Bananas are berries but strawberries aren't!"
 *something cool*	echo "There are more stars in the universe than grains of sand on all of Earth's beaches. Also, neutron stars are so dense that a teaspoon of one would weigh a billion tons."
-*im so bored*	echo "Ideas: draw something, build with LEGO, learn a card trick, write a story, make a paper airplane, start a journal, learn to juggle, build a blanket fort, or try a new recipe!"
 *what should i do*	echo "Try something creative! Draw, write a story, learn origami, build something, play a board game, go outside, read a book, or learn something new online."
 *how*draw*cat*	echo "1) Draw a circle for the head. 2) Add two triangles on top for ears. 3) Draw an oval body below. 4) Add eyes, nose, whiskers, legs, and a curvy tail. Practice makes perfect!"
 *how*draw*dog*	echo "1) Draw a circle for the head. 2) Add floppy or pointy ears. 3) Draw an oval body. 4) Add a snout, nose, eyes, four legs, and a wagging tail."
@@ -1623,8 +1608,6 @@ read*about*cribbage	kiwix-search cribbage
 *timer*5 min*	echo "Run: sleep 300 && notify-send 'Your 5-minute timer is done!' (You can also use: termdown 5m if you have it installed.)"
 *how*change*wallpaper*	echo "Right-click your desktop and look for 'Change Background' or go to Settings > Appearance > Background. Pick a picture you like!"
 *how*change*password*	echo "Go to Settings > Users, then click on your account and change your password. Or in terminal: passwd (it will ask for your old and new password)."
-*wifi not working*	echo "Try: 1) Toggle WiFi off and on. 2) Restart your computer. 3) Restart the router (unplug, wait 30 seconds, plug back in). 4) Ask a parent if the internet bill is paid."
-*internet not working*	echo "Try: 1) Toggle WiFi off and on. 2) Restart your computer. 3) Restart the router. 4) Try a different website. 5) Ask a parent for help if it's still broken."
 *sound not working*	echo "Check: 1) Is volume turned up? 2) Click the speaker icon and make sure it's not muted. 3) Are headphones plugged in? 4) Try: Settings > Sound and pick the right output."
 *volume up*	echo "Click the speaker icon in your taskbar and slide it up, or try the volume keys on your keyboard. In terminal: amixer set Master 10%+"
 *volume down*	echo "Click the speaker icon and slide it down, or use volume keys on your keyboard. In terminal: amixer set Master 10%-"
@@ -1634,9 +1617,7 @@ read*about*cribbage	kiwix-search cribbage
 *how*undo*	echo "Press Ctrl+Z to undo your last action. You can press it multiple times to undo more steps. Ctrl+Y or Ctrl+Shift+Z usually redoes what you undid."
 #
 # --- kids: missing entries from review ---
-can*i*play*minecraft*on*this	echo "Yes! Install with: sudo apt install minecraft-launcher (or download from minecraft.net). You need a Minecraft account."
 can*i*play*roblox*on*this	echo "Yes! Download from roblox.com/download. You need a Roblox account."
-how*to*download*minecraft	echo "Go to minecraft.net, log in, download the Linux version, and install it. Ask a parent if you need help with the account."
 how*to*download*roblox	echo "Go to roblox.com/download. Install the app. Ask a parent if you need an account."
 how*to*get*robux	echo "Robux costs real money. Ask a parent before buying any. You can earn some by making games in Roblox Studio."
 what*games*can*i*play	echo "Minecraft, Roblox, and browser games work on this computer. Type 'can i play' and the name of a game to check."
@@ -1654,10 +1635,10 @@ how*to*make*enchanting*table	echo "1 book on top, 2 diamonds on the sides, 4 obs
 what*is*the*nether	echo "A scary fire dimension you reach by building a portal out of obsidian (10 blocks minimum) and lighting it with flint and steel."
 #
 # --- pokemon ---
-*pokemon*	echo "Pokemon is a game where you catch, train, and battle creatures. There are over 1000 Pokemon. The most famous is Pikachu."
-who*is*pikachu	echo "Pikachu is an Electric-type Pokemon. It's yellow with red cheeks and a lightning bolt tail. Ash's partner in the show."
 who*is*the*strongest*pokemon	echo "Arceus is called the creator of the Pokemon universe. Mewtwo is the strongest you can actually catch in most games."
 what*is*a*pokemon*type	echo "Every Pokemon has a type like Fire, Water, Grass, Electric. Types are strong or weak against other types, like rock-paper-scissors."
+*pokemon*	echo "Pokemon is a game where you catch, train, and battle creatures. There are over 1000 Pokemon. The most famous is Pikachu."
+who*is*pikachu	echo "Pikachu is an Electric-type Pokemon. It's yellow with red cheeks and a lightning bolt tail. Ash's partner in the show."
 #
 # --- youtube / video ---
 what*is*youtube	echo "YouTube is a website where people share videos. You can watch almost anything: music, games, science, funny stuff."
@@ -1697,17 +1678,12 @@ how*many*hours*in*a*day	echo "24 hours in a day."
 *hate*myself*	echo "Tell a grown-up you trust how you feel. If you can't think of one, call or text 988. You deserve help."
 #
 # --- clinical proper nouns (confabulation-unsafe at T1) ---
-what*is*aim*aba	echo "AIM: Accept, Identify, Move. Mark Dixon's ACT-derived curriculum for building psychological flexibility in ABA contexts."
-what*is*aim*program	echo "AIM: Accept, Identify, Move. Mark Dixon's ACT-derived curriculum. Distinct from PEAK."
 what*is*an*antecedent	echo "A stimulus or event that precedes a behavior. The A in ABC (antecedent-behavior-consequence). Identifies what triggers the behavior."
-what*is*abc*aba	echo "Antecedent, Behavior, Consequence. Three-term contingency. Foundation of functional assessment in ABA."
 what*are*reinforcement*principles	echo "Consequences that increase future probability of behavior. Positive: adding a stimulus. Negative: removing a stimulus. Defined by effect on behavior, not by valence."
 what*is*peak	echo "PEAK: Promoting the Emergence of Advanced Knowledge. Dixon. Relational frame theory applied to skill acquisition."
 what*is*vb*mapp	echo "VB-MAPP: Verbal Behavior Milestones Assessment and Placement Program. Sundberg. Assesses language and social skills based on Skinner's verbal behavior."
 what*is*ablls	echo "ABLLS-R: Assessment of Basic Language and Learning Skills, Revised. Partington. Criterion-referenced assessment for children with ASD."
 what*is*essential*for*living	echo "Essential for Living (EFL). McGreevy curriculum. Skills assessment and curriculum for individuals with significant disabilities."
-what*is*functional*behavior*assessment	echo "FBA: systematic process to identify the function (purpose) of a behavior. Looks at antecedents, behavior, consequences to determine why the behavior occurs."
-what*is*behavior*intervention*plan	echo "BIP: written plan based on FBA results. Describes replacement behaviors, prevention strategies, and response procedures. Required for behaviors impeding learning."
 what*is*act*therapy	echo "Acceptance and Commitment Therapy. Hayes et al. Third-wave behavioral therapy. Six core processes: acceptance, defusion, present moment, self-as-context, values, committed action."
 #
 # --- web search / open URL (falls through from T0 before inference) ---
@@ -1754,8 +1730,8 @@ who*is*peter*steeves	echo "Peter Steeves. DePaul professor. LIVINGLEDGER entry."
 *father*and*son*accident*surgeon*	echo "The surgeon is his mother."
 # === BITWISE OPERATIONS ===
 *what*is*bitwise*and*	echo "& — compares each bit pair, result is 1 only when both are 1. 0b1100 & 0b1010 = 0b1000. Used for masking: value & 0xFF extracts the low byte."
-*what*is*bitwise*or*	echo "| — compares each bit pair, result is 1 when either is 1. 0b1100 | 0b1010 = 0b1110. Used to set flags: flags |= FLAG_READ."
 *what*is*bitwise*xor*	echo "^ — compares each bit pair, result is 1 when bits differ. 0b1100 ^ 0b1010 = 0b0110. XOR with itself = 0. XOR is its own inverse: a ^ b ^ b = a."
+*what*is*bitwise*or*	echo "| — compares each bit pair, result is 1 when either is 1. 0b1100 | 0b1010 = 0b1110. Used to set flags: flags |= FLAG_READ."
 *what*is*bitwise*not*	echo "~ — flips every bit. ~0b1100 = 0b0011 (in a 4-bit word). Used to clear flags: flags &= ~FLAG_WRITE."
 *what*is*left*shift*	echo "<< — shifts bits left, filling with zeros. x << n multiplies x by 2^n. 1 << 3 = 8. Fast power-of-two multiplication."
 *what*is*right*shift*	echo ">> — shifts bits right. x >> n divides x by 2^n (integer). Arithmetic shift preserves sign bit; logical shift fills with zeros."
@@ -1764,7 +1740,6 @@ who*is*peter*steeves	echo "Peter Steeves. DePaul professor. LIVINGLEDGER entry."
 *what*are*bitwise*operations*	echo "Operations on individual bits: & (AND), | (OR), ^ (XOR), ~ (NOT), << (left shift), >> (right shift). The language hardware speaks."
 # === NUMBER REPRESENTATIONS ===
 *what*is*hexadecimal*	echo "Base-16 notation using 0-9 and A-F. Each hex digit = 4 bits. 0xFF = 255. 0xDEADBEEF. Compact way to read binary. printf '%x' to convert."
-*what*is*hex*	echo "Base-16: 0-9 then A-F. Each digit is 4 bits (a nibble). Two hex digits = one byte. 0xFF = 255. 0x0A = newline. printf '%02x' converts."
 *what*is*octal*	echo "Base-8 notation using digits 0-7. Each octal digit = 3 bits. Unix file permissions use it: 755 = rwxr-xr-x. Prefix 0 in C: 010 = 8, not 10."
 *what*is*twos*complement*	echo "How computers represent negative integers. Flip all bits, add 1. In 8 bits: -1 = 0xFF, -128 = 0x80. Addition works the same for signed and unsigned — that's the point."
 *what*is*ones*complement*	echo "Older negative number encoding: flip all bits. Problem: two zeros (+0 and -0). Two's complement fixed this and won."
@@ -1772,36 +1747,29 @@ who*is*peter*steeves	echo "Peter Steeves. DePaul professor. LIVINGLEDGER entry."
 *what*is*floating*point*	echo "Numbers stored as sign × mantissa × 2^exponent. Fast but imprecise — 0.1 + 0.2 = 0.30000000000000004. Never compare floats with ==. Use integers for money."
 *what*is*integer*overflow*	echo "When arithmetic exceeds the type's range and wraps around. 127 + 1 = -128 in signed 8-bit. Undefined behavior in C. Security bugs live here."
 # === MEMORY FUNDAMENTALS ===
+*what*is*dangling*pointer*	echo "A pointer to memory that has been freed. Reading it is undefined behavior — might work, might crash, might return garbage. Use-after-free bugs."
 *what*is*a*pointer*	echo "A variable that holds a memory address. *p dereferences it (reads what's at that address). &x takes the address of x. Pointers are how C talks to hardware."
 *what*is*null*pointer*	echo "A pointer set to address 0 (NULL). Dereferencing it crashes (segfault). Convention for 'points to nothing.' Always check before dereferencing."
-*what*is*dangling*pointer*	echo "A pointer to memory that has been freed. Reading it is undefined behavior — might work, might crash, might return garbage. Use-after-free bugs."
 *what*is*malloc*	echo "malloc(size) — asks the OS for a chunk of heap memory. Returns a pointer. You must free() it when done or you leak memory. calloc() zeros it, realloc() resizes."
 *what*is*free*	echo "free(ptr) — returns heap memory to the allocator. Double-free is undefined behavior. Use-after-free is a security vulnerability. Set pointer to NULL after freeing."
 *what*is*memory*leak*	echo "Allocated memory that is never freed and no pointer references it anymore. The program grows until it runs out of RAM. valgrind detects them."
 *what*is*heap*vs*stack*	echo "Stack: automatic, fast, fixed-size per thread, LIFO, dies with the function. Heap: manual (malloc/free), slower, grows as needed, lives until freed. Local variables go on stack, dynamic allocations on heap."
 *what*is*stack*vs*heap*	echo "Stack: automatic, fast, fixed-size per thread, LIFO, dies with the function. Heap: manual (malloc/free), slower, grows as needed, lives until freed. Local variables go on stack, dynamic allocations on heap."
-*what*is*buffer*overflow*	echo "Writing past the end of an allocated buffer. Overwrites adjacent memory — return addresses, function pointers, heap metadata. Most exploited bug class in C. Stack canaries and ASLR mitigate but don't eliminate."
 *what*is*endianness*	echo "Byte order. Big-endian: most significant byte first (network order). Little-endian: least significant byte first (x86, ARM). htonl()/ntohl() convert between them."
 *what*is*byte*order*	echo "Whether the most significant byte comes first (big-endian, network) or last (little-endian, x86/ARM). Matters when reading binary data across machines."
-*what*is*alignment*	echo "CPUs read memory at aligned addresses (4-byte value at address divisible by 4). Misaligned access is slow or crashes on some architectures. Compilers pad structs to maintain alignment."
 # === HARDWARE-LEVEL ===
 *what*is*a*register*	echo "Tiny, fast storage inside the CPU. x86-64 has 16 general-purpose registers (rax, rbx, ...). Instructions operate on registers. Everything else (RAM, disk) is slower by orders of magnitude."
 *what*is*an*interrupt*	echo "A signal to the CPU that something needs attention — hardware (keyboard, disk, NIC) or software (syscall, exception). CPU saves state, runs the handler, resumes. IRQ = interrupt request."
 *what*is*irq*	echo "Interrupt Request — hardware signal from a device to the CPU. Each device gets an IRQ number. The kernel's interrupt handler decides what to do. cat /proc/interrupts on Linux."
 *what*is*dma*	echo "Direct Memory Access — hardware transfers data between device and RAM without the CPU doing each byte. Disk controllers, NICs, GPUs all use DMA. Frees the CPU to do other work."
 *what*is*cache*line*	echo "The unit of transfer between RAM and CPU cache — typically 64 bytes. Accessing one byte loads the whole line. Adjacent data is fast (spatial locality). Cache misses are expensive."
-*what*is*l1*cache*	echo "Fastest, smallest CPU cache — typically 32-64KB per core, ~1ns access. Split into instruction cache and data cache. L2 is larger/slower, L3 is shared across cores."
 *what*is*page*fault*	echo "CPU tries to access a virtual page not in physical RAM. Minor fault: page is in memory but not mapped (just update page table). Major fault: must read from disk (slow). mmap relies on this."
 *what*is*tlb*	echo "Translation Lookaside Buffer — CPU cache of virtual-to-physical page mappings. TLB miss means walking the page table in memory. Huge pages reduce TLB pressure."
 *what*is*virtual*memory*	echo "Each process sees its own flat address space. The kernel + MMU translate virtual addresses to physical RAM. Enables isolation, overcommit, memory-mapped files, and swapping."
 # === CONCURRENCY ===
-*what*is*a*mutex*	echo "Mutual exclusion lock. One thread locks it, does work, unlocks it. Other threads wait. Prevents two threads from modifying the same data simultaneously. pthread_mutex_lock() in C."
 *what*is*a*semaphore*	echo "A counter that controls access to a shared resource. sem_wait() decrements (blocks if 0), sem_post() increments. Mutex is a binary semaphore. Used for producer-consumer queues."
-*what*is*deadlock*	echo "Two threads each hold a lock the other needs. Neither can proceed. Prevention: always acquire locks in the same order. Detection: cycle in the wait-for graph."
-*what*is*race*condition*	echo "Outcome depends on timing of concurrent operations. Thread A reads x, Thread B modifies x, Thread A writes stale x. Fix with locks, atomics, or lock-free data structures."
 *what*is*atomic*operation*	echo "An operation that completes entirely or not at all — no other thread can see it half-done. Compare-and-swap (CAS), atomic increment. Lock-free programming builds on these."
 *what*is*volatile*	echo "C keyword: tells the compiler this variable may change outside the current code's control (hardware register, signal handler). Prevents optimization that would cache the value in a register. Not a threading primitive."
-*what*is*context*switch*	echo "CPU saves one process's registers/state, loads another's. Costs thousands of cycles — TLB flush, cache cold. Why too many threads hurt performance. Why async I/O exists."
 # === C LANGUAGE ===
 *what*is*a*struct*	echo "A C type that groups related variables under one name. struct point { int x; int y; }; Members are laid out contiguously in memory (with possible padding for alignment)."
 *what*is*a*union*	echo "Like a struct but all members share the same memory. Size = largest member. Only one member is valid at a time. Used for type-punning and variant types."
@@ -1827,7 +1795,6 @@ who*is*peter*steeves	echo "Peter Steeves. DePaul professor. LIVINGLEDGER entry."
 *what*is*collision*detection*	echo "Checking if two game objects overlap. Simplest: axis-aligned bounding box (AABB) — if rectangles overlap in both x and y, they collide. if (a.x < b.x+b.w && a.x+a.w > b.x && a.y < b.y+b.h && a.y+a.h > b.y)."
 *what*is*a*keydown*event*	echo "Fires when a key is pressed. document.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') moveLeft(); }). keyup fires on release. Use for game controls, keyboard shortcuts."
 *what*is*touchstart*	echo "Mobile touch event. element.addEventListener('touchstart', fn). Also: touchmove, touchend. e.touches[0].clientX/Y for position. Pair with mouse events for cross-device support."
-*what*is*audio*in*browser*	echo "new Audio('sound.mp3').play() — simplest way. For games: Web Audio API gives precise timing and mixing. audio.currentTime = 0 to replay. audio.loop = true for background music."
 *what*is*localstorage*	echo "Browser key-value store that persists across page loads. localStorage.setItem('score', '42'). getItem() to read. 5-10MB limit. Strings only — JSON.stringify for objects. No server needed."
 *how*to*make*button*	echo "<button onclick=\"doSomething()\">Click me</button>. Or: const btn = document.createElement('button'); btn.textContent = 'Click'; btn.addEventListener('click', fn); document.body.appendChild(btn);"
 *how*to*change*color*	echo "element.style.backgroundColor = 'red'; or element.style.color = '#00ff00'; CSS colors: names (red, blue), hex (#ff0000), rgb(255,0,0), hsl(0,100%,50%)."
@@ -1841,29 +1808,26 @@ who*is*peter*steeves	echo "Peter Steeves. DePaul professor. LIVINGLEDGER entry."
 # === LANGUAGES (what the formation actually uses) ===
 *what*is*python*	echo "Interpreted language. Ships on most Linux/macOS. Use it with no pip: python3 -c, python3 -m http.server, python3 -m json.tool. The standard library is huge — urllib, json, sqlite3, csv, os, subprocess. No pip needed for most tasks."
 *python*without*pip*	echo "python3 -m http.server (web server), python3 -m json.tool (format JSON), python3 -c 'import urllib.request; ...' (fetch URLs), python3 -m sqlite3 (database). The stdlib replaces most pip packages."
-*what*is*c*	echo "Compiled language that maps almost directly to machine instructions. No runtime, no garbage collector. malloc/free, pointers, structs. The kernel, shells, and most system tools are written in C."
+what*is*c*language	echo "Compiled language that maps almost directly to machine instructions. No runtime, no garbage collector. malloc/free, pointers, structs. The kernel, shells, and most system tools are written in C."
 *what*is*rust*	echo "Systems language with compile-time memory safety — no garbage collector, no use-after-free, no data races. Ownership model replaces malloc/free. Steep learning curve, very reliable binaries. cargo is the build tool."
 *what*is*deno*	echo "JavaScript/TypeScript runtime by the creator of Node.js. Secure by default (explicit permissions for network/file/env). Single binary, no node_modules. Built-in TypeScript, formatter, linter, test runner."
+what*is*mongodb	echo "MongoDB — document database. subtract uses SQLite for structured data and plain files for documents. SQLite handles more than people think."
 *what*is*go*	echo "Compiled language from Google. Fast compilation, static binary output, built-in concurrency (goroutines). No generics drama anymore. Good for CLI tools and network services. go build produces one file."
 *what*is*lua*	echo "Tiny embeddable scripting language. 200KB runtime. Used in games (LOVE2D, Roblox), nginx (OpenResty), neovim. Simple syntax, tables as the one data structure."
 # === SHELL SCRIPTING FUNDAMENTALS ===
 *what*is*set*-e*	echo "set -e — exit immediately if any command fails (non-zero exit). set -u — error on undefined variables. set -o pipefail — pipe fails if any stage fails. Combined: set -euo pipefail at the top of every script."
 *what*is*pipefail*	echo "set -o pipefail — a pipeline's exit code is the rightmost command that failed, not just the last command. Without it, 'false | true' succeeds. Always use with set -e."
+what*is*bootstrap	echo "Bootstrap — CSS/JS component framework. subtract uses vanilla HTML + CSS. The browser has flexbox, grid, and custom properties natively."
 *what*is*trap*	echo "trap 'cleanup' EXIT — run cleanup function when the script exits (success or failure). trap '' SIGINT ignores Ctrl-C. trap 'echo caught' SIGTERM handles termination. Essential for temp file cleanup."
 *what*is*heredoc*	echo "<<EOF ... EOF — inline multi-line text. cat <<EOF sends to stdout. <<'EOF' prevents variable expansion. <<-EOF strips leading tabs. Used for embedding config, SQL, multi-line strings in scripts."
 *what*is*exit*code*	echo "Every command returns 0 (success) or 1-255 (failure). \$? holds the last command's exit code. if command; then uses exit code directly. exit 1 in a script signals failure to the caller."
 *what*is*process*substitution*	echo "<(command) — bash treats command output as a file. diff <(sort file1) <(sort file2). Avoids temp files. Only in bash/zsh, not sh."
 *what*is*command*substitution*	echo "\$(command) — captures command output as a string. today=\$(date +%F). Replaces backticks. Can nest: echo \$(basename \$(pwd))."
 *what*is*parameter*expansion*	echo "Shell string manipulation without external tools. \${var#prefix} strip prefix, \${var%suffix} strip suffix, \${var/old/new} replace, \${var:-default} default value, \${#var} length."
-*what*is*stdin*	echo "File descriptor 0 — standard input. Where a program reads from by default. Pipe data in: echo hello | cat. Redirect from file: command < file."
-*what*is*stdout*	echo "File descriptor 1 — standard output. Where a program writes normal output. Redirect: command > file. Append: command >> file. Pipe: command | next."
-*what*is*stderr*	echo "File descriptor 2 — standard error. Where a program writes error messages. Redirect: command 2> errors.log. Merge with stdout: command 2>&1. Discard: command 2>/dev/null."
-*what*is*dev*null*	echo "/dev/null — the bit bucket. Writes vanish, reads return EOF. command > /dev/null discards stdout. command 2>/dev/null discards errors. command &>/dev/null discards both."
-*what*is*xargs*	echo "Builds and executes commands from stdin. find . -name '*.log' | xargs rm. -I{} for placement: ... | xargs -I{} cp {} /backup/. -P4 for parallel. -0 for null-delimited (with find -print0)."
-*what*is*tee*	echo "Reads stdin, writes to both stdout and a file. command | tee output.log shows output AND saves it. tee -a appends. Useful for logging while watching."
 # === SSH AND SIGNING ===
-*what*is*ssh*keygen*	echo "Generates, manages, and converts SSH keys. ssh-keygen -t ed25519 creates a key pair. -Y sign signs files. -Y verify verifies signatures. The tool subtract's entire trust chain is built on."
 *what*is*ssh*keygen*sign*	echo "ssh-keygen -Y sign -f ~/.ssh/YOURKEY_ed25519 -n namespace FILENAME.txt — signs a file with your SSH key. Creates FILENAME.txt.sig. Namespace scopes what the signature means (e.g. subtract.ing). Default key is ~/.ssh/id_ed25519 if you didn't name yours."
+*what*is*ssh*keygen*verify*	echo "ssh-keygen -Y verify -f allowed_signers -I identity -n namespace -s file.sig < file — checks a signature against a list of trusted keys. Returns 0 if valid."
+*what*is*ssh*keygen*	echo "Generates, manages, and converts SSH keys. ssh-keygen -t ed25519 creates a key pair. -Y sign signs files. -Y verify verifies signatures. The tool subtract's entire trust chain is built on."
 how*sign*file*	echo "ssh-keygen -Y sign -f ~/.ssh/YOURKEY_ed25519 -n namespace FILENAME.txt — creates FILENAME.txt.sig. Default key: ~/.ssh/id_ed25519"
 how*sign*	echo "ssh-keygen -Y sign -f ~/.ssh/YOURKEY_ed25519 -n namespace FILENAME.txt — creates FILENAME.txt.sig. Default key: ~/.ssh/id_ed25519"
 how*create*key*	echo "ssh-keygen -t ed25519 — creates ~/.ssh/id_ed25519 (private) and ~/.ssh/id_ed25519.pub (public). It will ask for a filename and passphrase. Press enter for defaults."
@@ -1872,49 +1836,32 @@ how*generate*key*	echo "ssh-keygen -t ed25519 — creates ~/.ssh/id_ed25519 (pri
 what*is*signing*namespace*	echo "The -n flag in ssh-keygen -Y sign scopes what a signature means. A signature with -n subtract.ing only verifies under that namespace. Prevents a signature for one domain being replayed as proof for another."
 what*is*namespace*sign*	echo "The -n flag in ssh-keygen -Y sign scopes what a signature means. A signature with -n subtract.ing only verifies under that namespace. Prevents cross-domain signature replay."
 why*sign*	echo "Signing proves who authored a file and that it hasn't changed. Without it, any file could be modified in transit or by another process. ssh-keygen -Y verify checks the signature against authorized_signers — if it passes, the file is what the signer intended."
-what*is*subtract*	echo "Shell translation infrastructure. Type intent, get command, learn command, stop needing translation. https://subtract.ing/subtracting.html"
-*what*is*ssh*keygen*verify*	echo "ssh-keygen -Y verify -f allowed_signers -I identity -n namespace -s file.sig < file — checks a signature against a list of trusted keys. Returns 0 if valid."
 *what*is*authorized*signers*	echo "A file listing trusted signing keys: 'email@domain ssh-ed25519 AAAA...'. Used by ssh-keygen -Y verify to decide whose signatures to trust. subtract ships one at subtract.ing/authorized_signers."
 *what*is*ssh*agent*	echo "Daemon that holds your private keys in memory so you don't type passphrases repeatedly. eval \$(ssh-agent) starts it. ssh-add loads a key. ssh-add -l lists loaded keys. Forwarding: ssh -A."
 *what*is*ssh*config*	echo "~/.ssh/config — aliases, per-host settings, key selection. Host myserver / HostName 10.0.0.5 / User admin / IdentityFile ~/.ssh/mykey. Then: ssh myserver."
 *what*is*known*hosts*	echo "~/.ssh/known_hosts — fingerprints of servers you've connected to. Prevents MITM attacks. ssh-keygen -R host removes an entry after a server rebuild."
-*what*is*scp*	echo "Secure copy over SSH. scp file user@host:/path copies a file. scp -r for directories. Being replaced by rsync (incremental, resumable) but simpler for one-off copies."
 # === SCHEDULING AND DAEMONS ===
-*what*is*cron*	echo "Time-based job scheduler. crontab -e to edit. Format: min hour day month weekday command. */5 * * * * = every 5 minutes. @reboot = on boot. Runs as the user who owns the crontab."
 *what*is*crontab*	echo "crontab -e edits your cron jobs. crontab -l lists them. crontab -r removes all. Each line: minute hour day month weekday command. Use absolute paths — cron has a minimal PATH."
-*what*is*at*	echo "Run a command once at a future time. echo 'backup.sh' | at 2am. at now + 1 hour. atq lists pending jobs. atrm removes one. One-shot alternative to cron."
-*what*is*systemd*	echo "Linux init system and service manager. systemctl start/stop/enable/status servicename. Unit files in /etc/systemd/system/. journalctl for logs. Manages dependencies, restarts, timers."
+*what*is*cron*	echo "Time-based job scheduler. crontab -e to edit. Format: min hour day month weekday command. */5 * * * * = every 5 minutes. @reboot = on boot. Runs as the user who owns the crontab."
+what is at	echo "Run a command once at a future time. echo 'backup.sh' | at 2am. at now + 1 hour. atq lists pending jobs. atrm removes one. One-shot alternative to cron."
 *what*is*systemctl*	echo "Controls systemd services. systemctl status nginx, systemctl restart sshd, systemctl enable --now service (start + auto-start on boot). systemctl list-units --type=service."
 *what*is*launchd*	echo "macOS init system and service manager. Replaces cron, init, inetd. Plist files in ~/Library/LaunchAgents (user) or /Library/LaunchDaemons (system). launchctl load/unload/list."
 *what*is*launchctl*	echo "Controls launchd services on macOS. launchctl list shows loaded jobs. launchctl load ~/Library/LaunchAgents/com.foo.plist. bootstrap/bootout for modern syntax. disable gui/uid/label persists across reboots."
 *what*is*a*plist*	echo "Property list — XML or binary config file on macOS. LaunchAgents use them to define daemons: Label, ProgramArguments, RunAtLoad, KeepAlive, StandardOutPath. plutil to validate."
 # === DATA FORMATS ===
-*what*is*json*	echo "JavaScript Object Notation — {\"key\": \"value\", \"list\": [1,2,3]}. Human-readable, language-independent. The lingua franca of APIs. Parse with jq (shell), json.loads (Python), JSON.parse (JS)."
 *what*is*jsonl*	echo "JSON Lines — one JSON object per line. Easy to append (>>), stream (tail -f), and process line-by-line. grep works on it. subtract's session logs use JSONL."
 *what*is*tsv*	echo "Tab-separated values. Like CSV but tabs instead of commas — no quoting hell. cut -f2 extracts column 2. awk -F'\\t' processes it. lookdown.tsv is a TSV file."
 *what*is*jq*	echo "Command-line JSON processor. jq '.key' extracts a field. jq '.[] | .name' iterates arrays. jq -r for raw strings. jq -c for compact. Pipe curl output through it: curl -s url | jq ."
-*what*is*csv*	echo "Comma-separated values. Simple tabular data. Quoting rules are a nightmare — if a field contains a comma or newline, it must be quoted. Use TSV when you control the format."
-*what*is*yaml*	echo "YAML — indentation-based config format. Used by Docker Compose, Kubernetes, GitHub Actions. Gotchas: 'no' is boolean false, 0o10 is octal 8, trailing spaces break things. Norway problem."
 *what*is*toml*	echo "Tom's Obvious Minimal Language — config format. [sections], key = \"value\", arrays = [1, 2, 3]. Used by Cargo (Rust), pyproject.toml (Python). Less surprising than YAML."
 # === MONITORING AND LOGS ===
-*what*is*inotifywait*	echo "Watches filesystem events. inotifywait -m -e modify /path — blocks until the file changes, prints the event. Loop it for a file watcher. inotifywait -r for recursive. Linux only (inotify-tools package)."
 *what*is*inotify*	echo "Linux kernel subsystem that reports filesystem events — create, modify, delete, move. inotifywait is the CLI tool. Programs use inotify_init/inotify_add_watch syscalls. macOS equivalent: fswatch (kqueue)."
-*what*is*journalctl*	echo "Reads systemd's journal. journalctl -u nginx shows nginx logs. -f follows. --since '1 hour ago' filters by time. -p err shows errors only. --no-pager for scripts. Replaces /var/log on systemd systems."
 *what*is*log*rotation*	echo "Prevents logs from filling disk. logrotate runs daily via cron — rotates, compresses, deletes old logs. Config in /etc/logrotate.d/. size 100M, rotate 7, compress, daily."
 # === LOCAL INFERENCE STACK ===
-*what*is*ollama*	echo "CLI tool for running language models locally. ollama pull qwen2.5:7b downloads a model. ollama run starts interactive chat. API on localhost:11434. Uses llama.cpp under the hood."
-*what*is*llama*cpp*	echo "C/C++ inference engine for language models. Runs GGUF files on CPU or GPU. Serves OpenAI-compatible API on a port. Fast, portable, no Python dependency. What ollama wraps."
-*what*is*quantization*	echo "Reducing model precision from 16-bit to 8-bit or 4-bit. Smaller file, less RAM, slightly lower quality. Q4_K_M is a good balance. A 70B model at Q4 fits in 40GB RAM."
 *what*is*a*model*file*	echo "A file containing a neural network's weights — the numbers the model learned during training. GGUF format for llama.cpp, safetensors for PyTorch/HuggingFace. Ranges from 1GB (3B) to 140GB (70B)."
-*what*is*inference*	echo "Running a trained model to produce output. Input goes in, tokens come out. Local inference: your hardware, no network. Cloud inference: someone else's hardware, API call. Cost is per-token."
-*what*is*context*window*	echo "How many tokens a model can see at once — its working memory. 4K, 8K, 128K, 1M tokens. Longer context = more RAM. Past the window, the model forgets. Prompt + response must fit."
 # === FORMATION TOOLS (configured and in use) ===
-*what*is*tailscale*	echo "Mesh VPN built on WireGuard. tailscale up joins the network. Every device gets a stable IP and DNS name. No port forwarding, no firewall rules. Nodes find each other through a coordination server."
-*what*is*wireguard*	echo "Kernel-level VPN. Fast, simple, small codebase. One interface, one key pair, one config file. Tailscale builds on it. wg show displays current tunnels."
 *what*is*tmux*	echo "Terminal multiplexer — multiple shells in one window. tmux new -s name, Ctrl-b d to detach, tmux attach -t name to reattach. Survives SSH disconnects. Ctrl-b % splits vertical, Ctrl-b \" splits horizontal."
 *what*is*adb*	echo "Android Debug Bridge — CLI tool to control Android devices over USB or network. adb shell opens a shell. adb push/pull copies files. adb install installs APKs. adb connect IP:5555 for wireless."
 *what*is*chromecast*	echo "Google Cast protocol. Devices listen on ports 8008/8009. catt is the CLI tool: catt cast url, catt cast_site url. Cast V2 protocol uses protobuf over TLS."
-*what*is*jellyfin*	echo "Open-source media server — the free Plex. Scans media libraries, provides metadata, transcodes for devices. Web UI on port 8096. No account required, no cloud dependency."
 *what*is*sonarr*	echo "TV show manager — monitors for new episodes, sends downloads to a client, renames and organizes files. API on port 8989. Pairs with a download client (SABnzbd, qBittorrent)."
 *what*is*radarr*	echo "Movie manager — same pattern as Sonarr but for films. Monitors wanted list, grabs releases, renames to library format. API on port 7878."
 *what*is*prowlarr*	echo "Indexer manager for Sonarr/Radarr. Aggregates search across indexers, syncs them to the *arr stack. One place to manage all sources. API on port 9696."
@@ -1924,16 +1871,12 @@ what*is*subtract*	echo "Shell translation infrastructure. Type intent, get comma
 *what*is*porkbun*	echo "Domain registrar with API. No Cloudflare lock-in. DNS management, WHOIS privacy included. API for programmatic DNS record updates. Supports ALIAS/ANAME records."
 *what*is*kiwix*serve*	echo "HTTP server for ZIM files — offline Wikipedia, Stack Exchange, Gutenberg, etc. kiwix-serve --port 8080 *.zim. Search and browse without internet. Fits on a USB drive."
 # === NETWORKING TOOLS ===
-*what*is*ping*	echo "Sends ICMP echo request, measures round-trip time. ping -c4 8.8.8.8. Tests if a host is reachable. If ping works but browser doesn't, it's DNS."
 *what*is*traceroute*	echo "Shows the path packets take to a destination — every router hop. traceroute 8.8.8.8. mtr combines traceroute + ping for continuous monitoring. Diagnoses where packets get slow or lost."
 *what*is*dig*	echo "DNS lookup tool. dig example.com shows A records. dig +short for just the answer. dig @8.8.8.8 to query a specific resolver. dig -x IP for reverse lookup. Replaces nslookup."
-*what*is*ss*	echo "Socket statistics — replacement for netstat. ss -tlnp shows listening TCP ports with process names. ss -s for summary. Faster than netstat on busy machines."
+what is ss	echo "Socket statistics — replacement for netstat. ss -tlnp shows listening TCP ports with process names. ss -s for summary. Faster than netstat on busy machines."
 *what*is*ip*command*	echo "Swiss army knife for network config on Linux. ip addr (show addresses), ip route (show routes), ip link (show interfaces). Replaces ifconfig, route, arp."
-*what*is*iptables*	echo "Linux packet filter / firewall. iptables -L lists rules. Chains: INPUT, OUTPUT, FORWARD. Targets: ACCEPT, DROP, REJECT. Being replaced by nftables but still everywhere."
 *what*is*nat*	echo "Network Address Translation — maps private IPs (192.168.x.x) to one public IP. Your router does this. Every device at home shares one internet address. Port forwarding punches holes for inbound traffic."
-*what*is*dhcp*	echo "Dynamic Host Configuration Protocol — automatically assigns IP addresses to devices on a network. Your router runs a DHCP server. Lease expires, device asks again. Static IP: configure the device directly."
 *what*is*arp*	echo "Address Resolution Protocol — maps IP addresses to MAC addresses on a local network. arp -a shows the table. Only works within the same subnet. The glue between IP and Ethernet."
-*what*is*mac*address*	echo "Hardware address burned into every network interface — 48 bits, hex notation (aa:bb:cc:dd:ee:ff). Unique per device. Used for local network delivery. ip link show displays yours."
 # === SUBTRACT POSITION (what the primitive is) ===
 what*is*react	echo "React — JavaScript UI library from Meta. Wraps document.createElement + DOM diffing. subtract uses vanilla JS and the DOM directly. The browser is the framework."
 what*is*next*js	echo "Next.js — React framework adding SSR, routing, bundling. Wraps HTTP server + file-based routing. subtract serves static files from busybox httpd. No build step."
@@ -1952,10 +1895,6 @@ what*is*cursor	echo "Cursor — AI-native code editor. Wraps VS Code + cloud inf
 what*is*vscode	echo "VS Code — Microsoft's editor built on Electron (Chromium + Node.js). subtract uses the terminal. If you need an editor: vim, nano, or helix. No Electron."
 what*is*obsidian	echo "Obsidian — Electron-based markdown notes with graph view. Wraps the filesystem. subtract uses plain text files, grep, and find. Your filesystem is already a knowledge graph."
 what*is*notion	echo "Notion — SaaS workspace. Your notes live on their servers. subtract uses local text files. You own your files. grep replaces search. git replaces version history."
-what*is*docker	echo "Docker — container runtime. Wraps kernel namespaces, cgroups, and overlay filesystems. Name the primitive before reaching for the wrapper."
-what*is*kubernetes	echo "Kubernetes — container orchestrator. Wraps cgroups, namespaces, iptables, and etcd. subtract's reflex: what kernel primitives does it wrap? Those still work without it."
-what*is*terraform	echo "Terraform — infrastructure as code. Wraps cloud provider APIs into HCL declarations. subtract's position: if you can curl the API, you don't need the wrapper."
-what*is*ansible	echo "Ansible — configuration management over SSH. Wraps ssh + shell commands into YAML playbooks. subtract uses ssh and shell commands directly."
 what*is*webpack	echo "Webpack — JavaScript module bundler. subtract serves files directly. The browser has native ES modules (import/export). No bundler needed for most projects."
 what*is*npm	echo "npm — Node.js package manager. subtract's position: no package managers. Vendor dependencies or use the standard library. npm install is a supply chain decision."
 what*is*pip	echo "pip — Python package manager. subtract's position: use python3 standard library (urllib, json, sqlite3, csv, os, subprocess). No pip needed for most tasks."
@@ -1963,7 +1902,6 @@ what*is*homebrew	echo "Homebrew — macOS package manager. subtract's position: 
 what*is*node*js	echo "Node.js — server-side JavaScript runtime. Wraps V8 + libuv. subtract uses Deno when JS is needed (secure by default, single binary) or python3 (already installed)."
 what*is*electron	echo "Electron — desktop apps via Chromium + Node.js. Each Electron app ships a full browser. subtract's position: use the terminal, or serve HTML to the browser you already have."
 what*is*tailwind	echo "Tailwind — utility CSS framework. Wraps CSS properties into class names. subtract uses CSS directly. The browser already speaks CSS."
-what*is*bootstrap	echo "Bootstrap — CSS/JS component framework. subtract uses vanilla HTML + CSS. The browser has flexbox, grid, and custom properties natively."
 what*is*graphql	echo "GraphQL — query language for APIs. Wraps REST into a schema + resolver layer. subtract uses curl and JSON. If one endpoint returns too much data, fix the endpoint."
 what*is*rest*api	echo "REST — architectural style for APIs using HTTP methods. Not a framework. curl speaks it natively. This is the primitive GraphQL wraps."
 what*is*firebase	echo "Firebase — Google's backend-as-a-service. Your data on their servers, their SDK in your code. subtract uses SQLite locally and plain HTTP APIs."
@@ -1972,11 +1910,9 @@ what*is*vercel	echo "Vercel — deployment platform for Next.js. subtract deploy
 what*is*netlify	echo "Netlify — static site hosting with CI/CD. subtract uses scp to a server running busybox httpd. Git push + a cron job replaces the CI pipeline."
 what*is*heroku	echo "Heroku — PaaS for deploying apps. subtract deploys with scp and systemd. Your server, your process manager, no platform."
 what*is*clojure	echo "Clojure — Lisp on the JVM. subtract's position: good language, heavy runtime. If you need a Lisp, check if your task fits in bash or python3 first."
-what*is*closure*compiler	echo "Google Closure Compiler — JavaScript optimizer/minifier. subtract serves unminified JS. The network is fast enough. Readability over bytes."
 what*is*sass	echo "Sass — CSS preprocessor with variables, nesting, mixins. CSS now has custom properties (variables) and nesting natively. The browser caught up."
 what*is*less	echo "Less — CSS preprocessor. Same story as Sass: CSS now has custom properties and nesting. The preprocessor layer is no longer needed."
 what*is*redis	echo "Redis — in-memory key-value store. subtract's position: for local use, a file or SQLite. Redis solves distributed caching problems most projects don't have."
-what*is*mongodb	echo "MongoDB — document database. subtract uses SQLite for structured data and plain files for documents. SQLite handles more than people think."
 what*is*postgres	echo "PostgreSQL — relational database. The real thing when you need it. subtract uses SQLite until SQLite isn't enough, then Postgres. Skip the middle layers."
 #
 # === OPERATIONS (parameterized single-command recipes) ===
@@ -1984,7 +1920,6 @@ read file *	f="${input##*file }"; cat "$f" 2>/dev/null | head -200 || echo "file
 show*contents*of*	f="${input##*of }"; cat "$f" 2>/dev/null | head -200 || echo "file not found: $f"
 run script *	f="${input##* }"; bash "$f" 2>&1 | head -100
 execute script *	f="${input##* }"; bash "$f" 2>&1 | head -100
-make*executable*	f="${input##* }"; chmod +x "$f" && echo "done: $f is now executable"
 edit*replace*with*in*	old="${input#*replace }"; old="${old% with *}"; rest="${input##* with }"; new="${rest% in *}"; f="${rest##* in }"; sed -i.bak "s|$old|$new|g" "$f" && echo "replaced '$old' with '$new' in $f" || echo "failed"
 append*to*	line="${input#*append }"; line="${line% to *}"; f="${input##* to }"; printf '%s\n' "$line" >> "$f" && echo "appended to $f"
 delete*line*from*	pattern="${input#*delete }"; pattern="${pattern% from *}"; f="${input##* from }"; sed -i.bak "/$pattern/d" "$f" && echo "deleted lines matching '$pattern' from $f"
@@ -2031,6 +1966,7 @@ status*of*service*	s="${input##* }"; systemctl status "$s" 2>/dev/null || launch
 *tie*tie*	echo "Use the Four-in-Hand method by looping the wide end around the narrow end, or watch a video tutorial."
 *remove*coffee*stain*	echo "Blot with cold water, then apply dish soap or a mixture of vinegar and water."
 *change*flat*tire*	echo "Loosen lug nuts, jack up the car, replace the tire, tighten lug nuts, and lower the car."
+sew*button*back*	echo "Thread the needle through the button holes and secure it with a knot on the inside."
 *sew*button*	echo "Thread needle, pass through fabric and button hole, wrap thread around the base, and knot."
 *unclog*toilet*	echo "Use a plunger with a strong seal, or use a toilet auger to break the blockage."
 *clean*microwave*	echo "Heat a bowl of water and lemon juice for 5 minutes, then wipe the steam away with a cloth."
@@ -2075,6 +2011,7 @@ status*of*service*	s="${input##* }"; systemctl status "$s" 2>/dev/null || launch
 *why*check*engine*light*	echo "It indicates a fault in the engine or emissions system; use an OBD-II scanner to find the code."
 *check*tire*pressure*	echo "Use a tire pressure gauge on the valve stem while the tire is cold."
 *signs*dead*battery*	echo "Slow engine crank, dimming headlights, or electrical components failing to work."
+remove*bathroom*mold*natural	echo "Use white vinegar or a tea tree oil solution to kill spores."
 *remove*mold*	echo "Clean with a mixture of vinegar and water, or use a bleach-based cleaner."
 *often*wash*bed*sheet*	echo "It is recommended to wash sheets once a week."
 *often*water*succulent*	echo "Water only when the soil is completely dry, typically every 2-3 weeks."
@@ -2085,11 +2022,6 @@ status*of*service*	s="${input##* }"; systemctl status "$s" 2>/dev/null || launch
 *connect*bluetooth*	echo "Enable Bluetooth on both devices, put one in pairing mode, and select it on the other."
 *set*up*wifi*	echo "Connect your router to the modem, plug it in, and follow the manufacturer's instructions to configure settings."
  deficiency, or poor lighting."
-*kill*weed*naturally*	echo "Use boiling water, vinegar, or manual pulling to remove weeds without chemicals."
-*best*soil*rose*	echo "Roses thrive in well-draining, fertile soil rich in organic matter with a slightly acidic pH."
-*write*check*	echo "Enter the date, recipient name, amount in words and figures, your signature, and the memo."
-*connect*bluetooth*	echo "Enable Bluetooth on both devices, put one in pairing mode, and select it from the other device's list."
-*set*up*wifi*	echo "Connect your router to the modem, power it on, and follow the setup instructions via the manufacturer's app or web interface."
 
 # --- return to primitives (food preservation, growing, mending, cleaning, fixing) ---
 cut*brisket*	echo "Slice against the grain for maximum tenderness."
@@ -2100,6 +2032,7 @@ can*vegetable*storage*	echo "Blanch vegetables first, then pack into sterilized 
 make*pickle*vinegar*	echo "Boil a brine of vinegar, water, salt, and sugar, then pour over cucumbers in a jar."
 make*homemade*jerky*	echo "Thinly slice seasoned meat and dehydrate it at a low temperature until dry but flexible."
 cut*beef*tenderloin*	echo "Cut into thick steaks or strips against the grain."
+*preserve*fruit*jar*	echo "Boil fruit in syrup and process in a boiling water bath to create a vacuum seal."
 preserve*fruit*	echo "Use methods like canning, freezing, drying, or making jams."
 make*kombucha*	echo "Steep tea with sugar, add a SCOBY, and ferment for one to two weeks."
 dry*herb*storage*	echo "Hang them in a cool, dark place or use a food dehydrator."
@@ -2120,8 +2053,6 @@ remove*stain*baking*soda	echo "Sprinkle baking soda on the stain, let sit, then 
 natural*laundry*detergent*	echo "Mix grated soap bars, washing soda, and borax in a large container."
 clean*oven*baking*soda	echo "Spread a baking soda paste over the interior, let sit overnight, then wipe clean."
 unclog*sink*vinegar*baking*soda	echo "Pour baking soda down the drain, follow with vinegar, let fizz, then flush with hot water."
-remove*bathroom*mold*natural	echo "Use white vinegar or a tea tree oil solution to kill spores."
-sharpen*kitchen*knife*	echo "Use a whetstone with water, moving the blade at a consistent angle."
 fix*wobbly*chair*	echo "Tighten all screws and bolts or add felt pads to the bottom of the legs."
 sharpen*garden*shear*	echo "Use a diamond file or whetstone along the beveled edge."
 fix*hole*wall*	echo "Apply spackle, let dry, sand smooth, and repaint."
@@ -2130,7 +2061,6 @@ tighten*loose*door*handle*	echo "Tighten the set screw or replace the mounting s
 sharpen*axe*	echo "Use a mill file on the edge, following the existing bevel."
 fix*leaking*faucet*	echo "Replace the worn-out washer or O-ring inside the handle."
 mend*hole*cloth*	echo "Use a needle and matching thread to sew around the edges of the hole."
-sew*button*back*	echo "Thread the needle through the button holes and secure it with a knot on the inside."
 fix*ripped*seam*pant*	echo "Use a sewing machine or hand stitch along the seam line."
 mend*sweater*invisible*	echo "Use a needle to weave matching yarn back into the knit pattern."
 upcycle*old*cloth*	echo "Turn old items into new products like rags, shorts, or bags."
@@ -2145,13 +2075,10 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *spatchcock*	echo "Remove the backbone with kitchen shears, flip the bird breast-side up, and press flat. Cooks in about half the time and browns evenly."
 # --- lindy skills (timeless knowledge, viral rediscovery) ---
 *butcher*chicken*	echo "Remove feathers, pluck, remove head and feet, then carefully skin and section the carcass."
-*darn*sock*	echo "Use a darning needle and thread to weave new yarn across the hole in a grid pattern."
 *fire*flint*steel*	echo "Strike the steel against the flint to shower sparks onto fine tinder like char cloth or dry grass."
 *tide*chart*	echo "Identify high and low tide times and observe the ebb and flow patterns for your location."
 *ferment*cabbage*sauerkraut*	echo "Pack shredded cabbage with salt in a jar, ensuring it is submerged in its own brine."
 *knead*bread*dough*	echo "Push the dough away with the heel of your hand, fold it back, rotate, and repeat until smooth."
-*preserve*fruit*jar*	echo "Boil fruit in syrup and process in a boiling water bath to create a vacuum seal."
-*make*butter*cream*	echo "Shake or churn heavy cream vigorously until the fat solids separate from the liquid buttermilk."
 *dry*herbs*	echo "Hang bundles upside down in a cool, dark, well-ventilated area."
 *debone*fish*	echo "Follow the central bone structure with a sharp knife, slicing along the spine to lift the fillet."
 *render*animal*fat*	echo "Heat fat pieces slowly over low heat until the liquid oil separates from the solids."
@@ -2171,7 +2098,6 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *compost*kitchen*scrap*	echo "Layer green nitrogen-rich scraps with brown carbon-rich materials in a ventilated bin."
 *identify*garden*weed*	echo "Observe leaf shape, stem structure, and flowering patterns to distinguish weeds from crops."
 *prune*fruit*tree*	echo "Cut back dead or overlapping branches at an angle just above a bud."
-*save*vegetable*seed*	echo "Allow fruit to ripen fully, extract the seeds, dry them, and store in a cool place."
 *rotate*crop*	echo "Change the location of plant families each season to prevent nutrient depletion."
 *read*weather*cloud*	echo "Observe cloud shapes; high wispy clouds often precede approaching weather changes."
 *plant*flower*bulb*	echo "Dig a hole three times as deep as the bulb and plant with the pointed end up."
@@ -2187,7 +2113,6 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *use*spirit*level*	echo "Place the tool on the surface and adjust until the bubble is centered."
 *tighten*loose*screw*	echo "Select the correct screwdriver size and turn clockwise until snug."
 *polish*wood*furniture*	echo "Apply a small amount of wax or oil with a soft cloth using circular motions."
-*make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric using an oven or iron to create reusable wraps."
 *mill*grain*	echo "Crush dried grains using a stone mill or grinder to produce flour."
 *press*oil*seed*	echo "Apply heavy pressure to crushed seeds using a press to extract oil."
 *cure*egg*salt*	echo "Submerge eggs in a heavy brine of salt and water for several weeks."
@@ -2302,8 +2227,8 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *baseball*	echo "Baseball is a bat-and-ball sport played in spring and summer, viewable through sports networks and streaming."
 *wimbledon*	echo "Wimbledon is an annual tennis tournament held in summer in London, broadcast on major sports networks."
 *halftime show*	echo "A halftime show is a musical or entertainment performance during the break of a sporting event."
-*playoff*	echo "A playoff is a series of games played at the end of a season to determine a champion."
 *soccer playoff*	echo "Soccer playoffs are knockout or group stages held after the regular season to decide a winner."
+*playoff*	echo "A playoff is a series of games played at the end of a season to determine a champion."
 *home run*	echo "A home run is a scoring play in baseball where a batter hits the ball out of the field."
 *eurovision*	echo "Eurovision is an annual international song contest — massive outside the US, watched by 160+ million people across Europe. It is not related to American Idol. Think Olympic-scale patriotic singing competition between countries."
 *hollywood*	echo "Hollywood is the center of the American film industry located in Los Angeles."
@@ -2343,14 +2268,14 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *dmv*	echo "The DMV is a government agency for driver licensing and vehicle registration, which manages road safety and compliance."
 *tax return*	echo "A tax return is a document filed to report income and taxes, used to manage public funding and personal obligations."
 *mortgage*	echo "A mortgage is a loan used to purchase real estate, where the property serves as collateral."
-*lease*	echo "A lease is a legal contract for renting property or equipment for a specified period."
+what*is*a*lease	echo "A lease is a legal contract for renting property or equipment for a specified period."
 *resume*	echo "A resume is a document summarizing your work experience, skills, and education for job applications."
 
 # --- canonical films (IMDB top 250 — why it matters, not just what it is) ---
 *Shawshank*Redemption*	echo "A man seeks hope and friendship while serving a life sentence in prison. It's a profound story about the strength of the human spirit."
+*Godfather*Part*II*	echo "The rise of a new Don and the origin of the family dynasty. It's a sprawling masterpiece of crime and tragedy."
 *Godfather*	echo "A crime family patriarch passes control to his reluctant son. It is a legendary epic of power, loyalty, and family."
 *Dark*Knight*	echo "A masked vigilante faces his greatest challenge in a chaotic city. It's a gripping, high-stakes superhero thriller."
-*Godfather*Part*II*	echo "The rise of a new Don and the origin of the family dynasty. It's a sprawling masterpiece of crime and tragedy."
 *12*Angry*Men*	echo "Twelve jurors must decide a boy's fate in a tense, single-room drama. It's a masterclass in logic and justice."
 *Schindler*s*List*	echo "A businessman risks everything to save lives during the Holocaust. It's a moving testament to humanity in the darkest times."
 *Return*of*the*King*	echo "The final battle for Middle-earth as the ring's destruction nears. It is a grand, epic conclusion to an unforgettable journey."
@@ -2415,7 +2340,9 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *Reservoir*Dogs*	echo "A group of criminals go on a heist that goes horribly wrong. It's a sharp, high-tension crime thriller."
 *The*Hunt*	echo "A man's life is destroyed by a false accusation in a small community. It's a harrowing study of paranoia and social justice."
 *Joker*	echo "A struggling comedian descends into madness and becomes a symbol of chaos. It's a dark, intense character study."
+*Upanishads*	echo "They are late Vedic texts that explore the nature of reality and the soul."
 *Up*	echo "An elderly man travels to South America in a house lifted by balloons. It's a touching, adventurous tale of love and discovery."
+*Clockwork Orange*	echo "It explores themes of free will and state-enforced morality."
 *Clockwork*Orange*	echo "A delinquent undergoes a controversial conditioning process to curb his violence. It's a provocative, surreal masterpiece."
 *WALL*E*	echo "A lonely robot on a deserted Earth discovers life and love. It's a charming, visually stunning sci-fi adventure."
 *Taxi*Driver*	echo "A lonely veteran drifts through the decaying streets of New York. It's a gritty, intense character study."
@@ -2442,7 +2369,6 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *Mad*Max*Fury*Road*	echo "A woman rebels against a tyrant in a post-apocalyptic wasteland. It's a high-octane, visually breathtaking action epic."
 *Dunkirk*	echo "Soldiers face a desperate evacuation during WWII. It's an intense, visceral experience of survival."
 *Grand*Budapest*Hotel*	echo "A legendary concierge and his protégé get caught in a caper. It's a visually stunning, whimsical adventure."
-*Groundhog*Day*	echo "A man finds himself reliving the same day over and over. It's a funny, heartwarming, and philosophical comedy."
 *Ratatouille*	echo "A rat dreams of becoming a chef in a famous Parisian restaurant. It's a charming, delicious animated tale."
 *Finding*Nemo*	echo "A clownfish journeys across the ocean to find his lost son. It's an adventurous, heartwarming animated classic."
 *Shrek*	echo "An ogre goes on a quest to rescue a princess and get his swamp back. It's a funny, subversive fairy tale."
@@ -2477,6 +2403,7 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *Third*Man*	echo "A man investigates the mysterious death of his friend in post-war Vienna. It's a stylish, atmospheric noir."
 *Charade*	echo "A woman is pursued by criminals after her husband's death. It's a witty, charming romantic thriller."
 *North*by*Northwest*	echo "An innocent man is mistaken for a spy and hunted across the country. It's a fast-paced, classic thriller."
+*To Kill a Mockingbird*	echo "It examines racial injustice and morality in the American South."
 *To*Kill*a*Mockingbird*	echo "A lawyer defends a Black man in the racially charged South. It's a profound, moving classic of justice."
 *The*Graduate*	echo "A recent college graduate finds himself in a complicated affair. It's a witty, iconic coming-of-age tale."
 *Easy*Rider*	echo "Two bikers travel across the American South. It's a definitive, counter-culture classic."
@@ -2484,9 +2411,8 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *Deer*Hunter*	echo "Friends' lives are forever changed by the trauma of the Vietnam War. It's a heavy, powerful epic."
 *Apocalypse*Now*	echo "A soldier goes on a journey into the heart of darkness during the Vietnam War. It's a surreal, epic masterpiece."
 *Platoon*	echo "A young soldier experiences the brutal reality of the Vietnam War. It's a visceral, intense war drama."
-*The*Thing*	echo "Researchers in Antarctica are hunted by a shape-shifting alien. It's a masterclass in tension and practical effects."
+*The Thing*	echo "Researchers in Antarctica are hunted by a shape-shifting alien. It's a masterclass in tension and practical effects."
 *Exorcist*	echo "Two priests attempt to save a young girl from demonic possession. It's a legendary, terrifying horror classic."
-*Halloween*	echo "A masked killer escapes an asylum and returns to his hometown. It's a defining slasher horror masterpiece."
 *Nightmare*on*Elm*Street*	echo "A killer stalks teenagers in their dreams. It's a creative and terrifying horror classic."
 *Scream*	echo "A masked killer uses horror movie tropes to hunt teenagers. It's a clever, meta-slasher masterpiece."
 *Blair*Witch*	echo "Three filmmakers disappear while investigating a local legend. It's a groundbreaking found-footage horror."
@@ -2524,6 +2450,7 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *Worst*Person*	echo "A woman navigates the complexities of love and career in modern Oslo. It's a relatable, poignant contemporary drama."
 *Aftersun*	echo "A woman reflects on a holiday she took with her father years ago. It's a deeply moving, quiet masterpiece."
 *Whale*	echo "A reclusive English teacher attempts to reconnect with his estranged daughter. It's an intense, emotional character study."
+*Origins of Totalitarianism*	echo "It examines the rise of totalitarian regimes in the 20th century."
 *Tar*	echo "A world-renowned conductor faces the consequences of her power and ambition. It's a sharp, intense psychological drama."
 *Decision*to*Leave*	echo "A detective falls for a mysterious widow during a murder investigation. It's a beautiful, seductive noir."
 *Anatomy*of*a*Fall*	echo "A woman is suspected of her husband's death in a gripping courtroom drama. It's a complex, thought-provoking mystery."
@@ -2536,7 +2463,6 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *Society*of*the*Snow*	echo "The harrowing true story of survivors of an Andean plane crash. It's an intense, incredible tale of survival."
 *Holdovers*	echo "A grumpy teacher and a student are forced to stay at school over Christmas. It's a heartwarming, witty character study."
 *Perfect*Days*	echo "A man finds beauty and peace in his simple daily routine in Tokyo. It's a quiet, meditative, and beautiful film."
-*Godzilla*Minus*One*	echo "Post-war Japan faces a terrifying new threat from the deep. It's a powerful story of survival and redemption."
 
 # --- canonical books and documents (what it is, why it matters, culturally neutral) ---
 *Bible*	echo "It is a collection of sacred texts for Christianity and a foundational work of Western literature."
@@ -2549,7 +2475,6 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *Iliad*	echo "It is an epic poem about the Trojan War and a foundational work of Western literature."
 *Aeneid*	echo "It is an epic poem following the journey of Aeneas, foundational to Roman identity."
 *Book of Job*	echo "It is a biblical book that explores the complex relationship between suffering and faith."
-*Upanishads*	echo "They are late Vedic texts that explore the nature of reality and the soul."
 *Popol Vuh*	echo "It is the creation myth of the Kʼicheʼ Maya people and a key text of Mesoamerican culture."
 *Book of Mormon*	echo "It is a sacred text for members of The Church of Jesus Christ of Latter-day Saints."
 *Guru Granth Sahib*	echo "It is the central religious scripture of Sikhism."
@@ -2574,6 +2499,8 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *Apology*	echo "It is the defense speech of Socrates during his trial."
 *Essays*	echo "It is a collection of personal reflections and observations."
 *Myth of Sisyphus*	echo "It explores the concept of the absurd in existentialist thought."
+manifesto	echo "The Conscience of a Hacker (The Mentor, 1986). 'We explore... and you call us criminals. We exist without skin color, without nationality, without religious bias... and you call us criminals. Yes, I am a criminal. My crime is that of curiosity.'"
+*hacker*manifesto*	echo "The Conscience of a Hacker (The Mentor, 1986). 'We explore... and you call us criminals. We exist without skin color, without nationality, without religious bias... and you call us criminals. Yes, I am a criminal. My crime is that of curiosity.'"
 *Communist Manifesto*	echo "It outlines the theory of class struggle and revolutionary communism."
 *Wealth of Nations*	echo "It examines the principles of free markets and economic growth."
 *Common Sense*	echo "It was a pamphlet that argued for American independence from Great Britain."
@@ -2581,7 +2508,6 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *Federalist Papers*	echo "They are a series of essays arguing for the ratification of the U.S. Constitution."
 *Wretched of the Earth*	echo "It analyzes the psychological and social effects of colonization."
 *Orientalism*	echo "It critiques Western representations and perceptions of the Middle East and Asia."
-*Origins of Totalitarianism*	echo "It examines the rise of totalitarian regimes in the 20th century."
 *Discipline and Punish*	echo "It explores the history of social control and the modern prison system."
 *Democracy in America*	echo "It observes the social and political landscape of the 19th-century United States."
 *Theory of Moral Sentiments*	echo "It explores the foundations of human sympathy and morality."
@@ -2603,13 +2529,11 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *Brave New World*	echo "It portrays a dystopian future driven by technological and biological control."
 *Fahrenheit 451*	echo "It explores a society where books are banned and burned."
 *Animal Farm*	echo "It is an allegory about the corruption of revolutionary ideals."
-*We*	echo "It depicts a dystopian society of mathematical precision and control."
+*We by Zamyatin*	echo "It depicts a dystopian society of mathematical precision and control."
 *Never Let Me Go*	echo "It explores themes of humanity and mortality through science fiction."
 *Handmaid's Tale*	echo "It depicts a dystopian theocracy."
-*Clockwork Orange*	echo "It explores themes of free will and state-enforced morality."
 *Catch-22*	echo "It satirizes the absurdity of bureaucracy and war."
 *Lord of the Flies*	echo "It explores human nature through a group of stranded children."
-*To Kill a Mockingbird*	echo "It examines racial injustice and morality in the American South."
 *Great Gatsby*	echo "It explores the American Dream and social class."
 *Grapes of Wrath*	echo "It depicts the struggles of migrant workers during the Great Depression."
 *Moby-Dick*	echo "It tells the story of a captain's obsession with a white whale."
@@ -2641,7 +2565,6 @@ make*beeswax*wrap*	echo "Melt beeswax onto cotton fabric scraps using an oven or
 *In Search of Lost Time*	echo "It explores memory and the nature of time."
 *The Stranger*	echo "It explores themes of existential detachment."
 *Waiting for Godot*	echo "It is an absurdist play about the search for meaning."
-*Metamorphosis*	echo "It tells the story of a man who transforms into an insect."
 *The Trial*	echo "It depicts a man caught in a surreal, bureaucratic legal system."
 *Heart of Darkness*	echo "It explores the darkness of the human soul during colonialism."
 *Siddhartha*	echo "It follows a man's spiritual journey in ancient India."
