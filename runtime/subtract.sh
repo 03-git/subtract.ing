@@ -1310,7 +1310,8 @@ __subtract_route_by_mode() {
 
     mode=$(__subtract_get_mode)
     if [ -z "$mode" ]; then
-        mode=$(__subtract_prompt_mode)
+        mode="r"
+        __subtract_set_mode "$mode"
     fi
 
     # auto-override to read mode after claude -p (conversation follow-up)
