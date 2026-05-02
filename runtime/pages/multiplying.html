@@ -56,7 +56,8 @@
   .card{border:2px solid #333;margin-bottom:.5rem;border-radius:4px;background:#0f0f3a}
   .card-q{padding:.4rem .6rem;font-size:.75rem;color:#00bfff;cursor:pointer;border-bottom:1px solid #222;user-select:none}
   .card-q:hover{color:#ff0}
-  .card-a{padding:.6rem;font-size:1.1rem;white-space:pre-wrap;word-break:break-word;max-height:20rem;overflow-y:auto;color:#fff}
+  .card-a{padding:.6rem;font-size:1.1rem;white-space:pre-wrap;word-break:break-word;color:#fff;display:none}
+  .card-a.expanded{display:block;position:fixed;top:0;left:0;right:0;bottom:0;overflow-y:auto;background:#0a0a2e;z-index:50;padding:2rem;font-size:1.3rem}
   .card-a.cooking{color:#ff0}
   .card.collapsed .card-a{display:none}
   .answer-status{font-size:.7rem;opacity:.35;padding:0 1rem .75rem}
@@ -201,11 +202,25 @@ function handleKey(e) {
   }
 }
 
+const PROGRAMS = {
+  'yes no':'yes-no.html','yes-no':'yes-no.html','subtract-program yes-no':'yes-no.html',
+  'questions':'wh-flashcards.html','flashcards':'wh-flashcards.html','wh-flashcards':'wh-flashcards.html','subtract-program wh-flashcards':'wh-flashcards.html',
+  'sight words':'sight-words-spanish.html','words':'sight-words-spanish.html','palabras':'sight-words-spanish.html','subtract-program sight-words-spanish':'sight-words-spanish.html',
+  'follow':'one-step.html','one step':'one-step.html','directions':'one-step.html','subtract-program one-step':'one-step.html',
+  'practicar':'yes-no.html?lang=es',
+  'draw':'coloring.html','color':'coloring.html','coloring':'coloring.html','art':'coloring.html',
+};
+
 async function submitIntent(isNewThread) {
   const el = document.getElementById('intent');
   const text = el.value.trim();
   if (!text) return;
   el.value = '';
+
+  const lower = text.toLowerCase().replace(/[^a-z0-9 -]/g,'').trim();
+  const prog = PROGRAMS[lower];
+  if (prog) { location.href = prog; return; }
+  for (const [k,v] of Object.entries(PROGRAMS)) { if (lower.includes(k)) { location.href = v; return; } }
 
   if (isNewThread) currentThread = newThreadId();
 
@@ -371,6 +386,9 @@ function finish(item) {
   item.qel.querySelector('.q-status').textContent = 'done';
   const cardA = item.card.querySelector('.card-a');
   cardA.classList.remove('cooking');
+  var prev = document.querySelector('.card-a.expanded');
+  if (prev) prev.classList.remove('expanded');
+  cardA.classList.add('expanded');
 
   const label = sourceLabel(item.source);
   if (label) {
@@ -418,6 +436,14 @@ function updateStatus() {
 }
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'F5' || (e.ctrlKey && e.key === 'r')) { e.preventDefault(); location.reload(); }
+  if (e.key === 'Escape') {
+    var exp = document.querySelector('.card-a.expanded');
+    if (exp) { exp.classList.remove('expanded'); } else { location.href = 'multiplying.html'; }
+  }
+});
 </script>
 </body>
 </html>

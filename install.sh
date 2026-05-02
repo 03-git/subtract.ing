@@ -15,7 +15,7 @@ else
     MODE="web"
 fi
 
-mkdir -p "$SUBTRACT_DIR" "$SUBTRACT_DIR/hooks" "$SUBTRACT_DIR/bin" "$SUBTRACT_DIR/pages"
+mkdir -p "$SUBTRACT_DIR" "$SUBTRACT_DIR/hooks" "$SUBTRACT_DIR/bin" "$SUBTRACT_DIR/pages" "$SUBTRACT_DIR/clinical" "$SUBTRACT_DIR/log/clinical"
 
 fetch() {
     if [ "$MODE" = "local" ]; then
@@ -85,7 +85,14 @@ if [ -n "$TTYD_BIN" ] && [ ! -f "$SUBTRACT_DIR/bin/ttyd" ]; then
 fi
 
 fetch "runtime/bin/shell-web" "$SUBTRACT_DIR/bin/shell-web"
-chmod +x "$SUBTRACT_DIR/bin/shell-web"
+fetch "runtime/bin/subtract-shell" "$SUBTRACT_DIR/bin/subtract-shell"
+fetch "runtime/bin/subtract-program" "$SUBTRACT_DIR/bin/subtract-program"
+chmod +x "$SUBTRACT_DIR/bin/shell-web" "$SUBTRACT_DIR/bin/subtract-shell" "$SUBTRACT_DIR/bin/subtract-program"
+
+# clinical data (don't overwrite user edits)
+for prog in yes-no one-step wh-flashcards sight-words-spanish; do
+    [ ! -f "$SUBTRACT_DIR/clinical/$prog.json" ] && fetch "runtime/clinical/$prog.json" "$SUBTRACT_DIR/clinical/$prog.json"
+done
 
 # pages
 fetch "runtime/pages/subtracting.html" "$SUBTRACT_DIR/pages/subtracting.html"
