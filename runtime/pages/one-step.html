@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>one step directions</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#000;color:#fff;font-family:ui-monospace,Menlo,Consolas,monospace;overflow:hidden}
+.trial{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:1.5rem}
+.icon{font-size:6rem}
+.question{font-size:1.8rem;font-weight:bold;text-align:center;padding:0 2rem}
+.category{font-size:.9rem;opacity:.4;margin-top:.5rem}
+.prompt{font-size:1.4rem;color:#ff6}
+.buttons{display:flex;gap:2rem;margin-top:1rem}
+.buttons button{font:bold 2rem monospace;padding:1.2rem 3rem;border:3px solid #555;background:#111;color:#fff;cursor:pointer;border-radius:8px;min-width:8rem}
+.buttons button:hover{border-color:#fff}
+.feedback{position:fixed;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:8rem;font-weight:bold;z-index:10}
+.feedback.correct{background:#4c4;color:#fff}
+.feedback.incorrect{background:#c44;color:#fff}
+.summary{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:1.5rem}
+.summary .score{font-size:3rem;font-weight:bold}
+.summary .correct{color:#4c4}
+.summary .incorrect{color:#c44}
+.summary .total{font-size:1.5rem;opacity:.7}
+.summary button{font:bold 1.2rem monospace;padding:.8rem 2rem;border:2px solid #555;background:#111;color:#fff;cursor:pointer;border-radius:6px;margin-top:1rem}
+.summary button:hover{border-color:#fff}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="trial hidden" id="trial">
+  <div class="icon" id="icon"></div>
+  <div class="question" id="question"></div>
+  <div class="category" id="category"></div>
+  <div class="prompt">did they do it?</div>
+  <div class="buttons">
+    <button onclick="answer('y')">yes</button>
+    <button onclick="answer('n')">no</button>
+  </div>
+</div>
+<div class="feedback hidden" id="feedback"></div>
+<div class="summary hidden" id="summary">
+  <div>session complete</div>
+  <div class="score correct" id="scoreCorrect"></div>
+  <div class="score incorrect" id="scoreIncorrect"></div>
+  <div class="total" id="scoreTotal"></div>
+  <button onclick="location='multiplying.html'">back</button>
+  <button onclick="location.reload()">again</button>
+</div>
+<script>
+var trials=[],idx=0,correct=0,incorrect=0,log=[];
+var lang=new URLSearchParams(location.search).get('lang')||'en';
+
+fetch('clinical/one-step.json').then(function(r){return r.json()}).then(function(d){
+  var keys=Object.keys(d);
+  for(var k=0;k<keys.length;k++){
+    var cat=keys[k],items=d[cat];
+    for(var i=0;i<items.length;i++) trials.push({cat:cat,item:items[i]});
+  }
+  for(var i=trials.length-1;i>0;i--){var j=Math.random()*i|0;var t=trials[i];trials[i]=trials[j];trials[j]=t;}
+  showTrial();
+});
+
+function showTrial(){
+  if(idx>=trials.length){showSummary();return;}
+  var t=trials[idx];
+  document.getElementById('icon').textContent=t.item.icon;
+  document.getElementById('question').textContent=lang==='es'?t.item.es:t.item.en;
+  document.getElementById('category').textContent=t.cat;
+  document.getElementById('trial').classList.remove('hidden');
+  document.getElementById('feedback').classList.add('hidden');
+  if(window.speechSynthesis){var u=new SpeechSynthesisUtterance(lang==='es'?t.item.es:t.item.en);u.lang=lang==='es'?'es':'en';speechSynthesis.speak(u);}
+}
+
+function answer(resp){
+  var t=trials[idx];
+  var isCorrect=resp==='y';
+  var fb=document.getElementById('feedback');
+  fb.className='feedback '+(isCorrect?'correct':'incorrect');
+  fb.textContent=isCorrect?'✓':'✗';
+  fb.classList.remove('hidden');
+  if(isCorrect)correct++;else incorrect++;
+  log.push({time:new Date().toISOString(),program:'one-step',category:t.cat,stimulus:lang==='es'?t.item.es:t.item.en,response:resp,result:isCorrect?'correct':'incorrect'});
+  idx++;
+  setTimeout(showTrial,2000);
+}
+
+function showSummary(){
+  document.getElementById('trial').classList.add('hidden');
+  document.getElementById('feedback').classList.add('hidden');
+  document.getElementById('scoreCorrect').textContent='✓ '+correct;
+  document.getElementById('scoreIncorrect').textContent='✗ '+incorrect;
+  document.getElementById('scoreTotal').textContent='total: '+(correct+incorrect);
+  document.getElementById('summary').classList.remove('hidden');
+  try{fetch('log',{method:'POST',headers:{'Content-Type':'text/plain'},body:log.map(function(e){return JSON.stringify(e)}).join('\n')+'\n'}).catch(function(){});}catch(e){}
+}
+
+document.addEventListener('keydown',function(e){
+  if(document.getElementById('trial').classList.contains('hidden'))return;
+  if(e.key==='y')answer('y');
+  if(e.key==='n')answer('n');
+});
+document.addEventListener("keydown",function(e){if(e.key==="F5"||(e.ctrlKey&&e.key==="r")){e.preventDefault();location.reload();}if(e.key==="Escape"){location.href="multiplying.html";}});
+</script>
+</body>
+</html>

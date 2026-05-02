@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+Q="$*"
+[ -z "$Q" ] && { echo "usage: hosuni <question>"; exit 1; }
+SAFE=$(printf '%s' "$Q" | sed 's/"/\\"/g')
+RAW=$(printf '{"input":"%s","channel":"cli-%d"}' "$SAFE" "$$" | ~/.subtract/runtime/hosuni.sh 2>/dev/null)
+printf '%s\n' "$(printf '%s' "$RAW" | jq -r '.response // .error // "no response"')"

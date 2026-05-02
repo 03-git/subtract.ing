@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>yes or no</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#000;color:#fff;font-family:ui-monospace,Menlo,Consolas,monospace;overflow:hidden}
+#home{position:fixed;top:1rem;left:1rem;font:bold 1rem monospace;background:none;border:1px solid #333;color:#555;padding:.4rem .8rem;cursor:pointer;border-radius:4px;z-index:20}
+#home:hover{color:#fff;border-color:#fff}
+.trial{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:1.5rem}
+.icon{font-size:6rem}
+.question{font-size:1.8rem;font-weight:bold;text-align:center;padding:0 2rem}
+.prompt{font-size:1.4rem;color:#ff6}
+.buttons{display:flex;gap:2rem;margin-top:1rem}
+.buttons button{font:bold 2rem monospace;padding:1.2rem 3rem;border:3px solid #555;background:#111;color:#fff;cursor:pointer;border-radius:8px;min-width:8rem}
+.buttons button:hover,.buttons button:focus{border-color:#fff}
+.fb{position:fixed;top:0;left:0;width:100%;height:100%;display:none;align-items:center;justify-content:center;font-size:8rem;font-weight:bold;z-index:10;flex-direction:column}
+.summary{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:1.5rem}
+.summary .score{font-size:3rem;font-weight:bold}
+.summary .correct{color:#4c4}
+.summary .incorrect{color:#c44}
+.summary .total{font-size:1.5rem;opacity:.7}
+.summary button{font:bold 1.2rem monospace;padding:.8rem 2rem;border:2px solid #555;background:#111;color:#fff;cursor:pointer;border-radius:6px;margin-top:1rem}
+.summary button:hover{border-color:#fff}
+.hidden{display:none}
+</style>
+</head>
+<body tabindex="0" id="body">
+<button id="home" onclick="location.href='multiplying.html'">back</button>
+<div class="trial" id="trial" style="display:none">
+  <div class="icon" id="icon"></div>
+  <div class="question" id="question"></div>
+  <div class="prompt">yes or no?</div>
+  <div class="buttons">
+    <button onclick="answer('yes')">yes</button>
+    <button onclick="answer('no')">no</button>
+  </div>
+</div>
+<div class="fb" id="fb"></div>
+<div id="summary" style="display:none" class="summary">
+  <div>session complete</div>
+  <div class="score correct" id="scoreCorrect"></div>
+  <div class="score incorrect" id="scoreIncorrect"></div>
+  <div class="total" id="scoreTotal"></div>
+  <button onclick="location.href='multiplying.html'">back</button>
+  <button onclick="location.reload()">again</button>
+</div>
+<script>
+var data=[],order=[],idx=0,correct=0,incorrect=0,log=[];
+var lang=new URLSearchParams(location.search).get('lang')||'en';
+var trial=document.getElementById('trial');
+var fb=document.getElementById('fb');
+var summary=document.getElementById('summary');
+
+document.getElementById('body').focus();
+
+fetch('clinical/yes-no.json').then(function(r){return r.json()}).then(function(d){
+  data=d;
+  order=[];
+  for(var i=0;i<d.length;i++) order.push(i);
+  for(var i=order.length-1;i>0;i--){var j=Math.random()*i|0;var t=order[i];order[i]=order[j];order[j]=t;}
+  showTrial();
+}).catch(function(e){ document.body.textContent='failed to load: '+e; });
+
+function showTrial(){
+  if(idx>=order.length){showSummary();return;}
+  var item=data[order[idx]];
+  document.getElementById('icon').textContent=item.icon;
+  document.getElementById('question').textContent=lang==='es'?item.es:item.en;
+  trial.style.display='flex';
+  fb.style.display='none';
+  document.getElementById('body').focus();
+  if(window.speechSynthesis){
+    var u=new SpeechSynthesisUtterance(lang==='es'?item.es:item.en);
+    u.lang=lang==='es'?'es':'en';
+    speechSynthesis.speak(u);
+  }
+}
+
+function answer(resp){
+  var item=data[order[idx]];
+  var expected=item.a.toLowerCase();
+  var isCorrect=resp===expected;
+  trial.style.display='none';
+  fb.style.display='flex';
+  if(isCorrect){
+    fb.style.background='#4c4';
+    fb.textContent='✓';
+  } else {
+    fb.style.background='#c44';
+    fb.textContent='✗  '+item.a;
+  }
+  if(isCorrect)correct++;else incorrect++;
+  log.push({time:new Date().toISOString(),program:'yes-no',stimulus:lang==='es'?item.es:item.en,response:resp,expected:item.a,result:isCorrect?'correct':'incorrect'});
+  idx++;
+  setTimeout(showTrial,2000);
+}
+
+function showSummary(){
+  trial.style.display='none';
+  fb.style.display='none';
+  summary.style.display='flex';
+  document.getElementById('scoreCorrect').textContent='✓ '+correct;
+  document.getElementById('scoreIncorrect').textContent='✗ '+incorrect;
+  document.getElementById('scoreTotal').textContent='total: '+(correct+incorrect);
+  try{
+    var body=log.map(function(e){return JSON.stringify(e)}).join('\n')+'\n';
+    fetch('log',{method:'POST',headers:{'Content-Type':'text/plain'},body:body}).catch(function(){});
+  }catch(e){}
+}
+
+document.addEventListener('keydown',function(e){
+  if(trial.style.display==='none')return;
+  if(e.key==='y')answer('yes');
+  if(e.key==='n')answer('no');
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='F5'||(e.ctrlKey&&e.key==='r')){e.preventDefault();location.reload();}
+  if(e.key==='Escape'){location.href='multiplying.html';}
+});
+</script>
+</body>
+</html>
