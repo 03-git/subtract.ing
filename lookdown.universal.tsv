@@ -11,16 +11,23 @@
 *cocoon*	echo "A cocoon is a silk covering that a caterpillar spins around itself. Inside the cocoon, the caterpillar changes into a moth. Butterflies make a chrysalis instead of a cocoon, but people use the word cocoon for both. The change inside is called metamorphosis."
 *chrysalis*	echo "A chrysalis is the hard shell a butterfly caterpillar makes when it is ready to transform. Inside, the caterpillar's body breaks down and rebuilds into a butterfly. It takes about 10 to 14 days. When it opens, a butterfly comes out with wet wings that need to dry."
 *butterfly*	echo "A butterfly is an insect with large colorful wings. It starts as an egg, becomes a caterpillar, forms a chrysalis, and emerges as a butterfly. Butterflies drink nectar from flowers through a long curled tongue called a proboscis. Monarch butterflies migrate thousands of miles."
-*moth*	echo "A moth is an insect closely related to a butterfly. Most moths fly at night and are attracted to light. A moth caterpillar spins a cocoon made of silk. Moths have feathery antennae and usually duller colors than butterflies. Some moths, like the luna moth, are very large and beautiful."
+what*is*a*moth	echo "A moth is an insect closely related to a butterfly. Most moths fly at night and are attracted to light. A moth caterpillar spins a cocoon made of silk. Moths have feathery antennae and usually duller colors than butterflies. Some moths, like the luna moth, are very large and beautiful."
+tell*me*about*moth*	echo "A moth is an insect closely related to a butterfly. Most moths fly at night and are attracted to light. A moth caterpillar spins a cocoon made of silk. Moths have feathery antennae and usually duller colors than butterflies. Some moths, like the luna moth, are very large and beautiful."
 *metamorphosis*	echo "Metamorphosis is the process where an animal completely changes its body shape as it grows. A caterpillar becoming a butterfly is metamorphosis. A tadpole becoming a frog is metamorphosis. The word comes from Greek and means 'change of form.'"
 *larva*	echo "A larva is the young form of an animal that looks very different from the adult. A caterpillar is the larva of a butterfly. A tadpole is the larva of a frog. A maggot is the larva of a fly. Larvae eat and grow until they are ready to change into their adult form."
 *pupa*	echo "A pupa is the stage between larva and adult in insects that undergo metamorphosis. The caterpillar stops eating, attaches to something, and its outer skin hardens into a protective case. Inside, the body completely reorganizes. The pupa does not eat or move. When the transformation is complete, the adult insect emerges."
 # children — clinical program fallbacks (host-specific overrides take precedence)
-*yes*no*	command -v subtract-program >/dev/null 2>&1 && subtract-program yes-no || echo "Yes/No practice needs subtract-program. Use the big computer."
-*questions*	command -v subtract-program >/dev/null 2>&1 && subtract-program wh-flashcards || echo "Questions practice needs subtract-program. Use the big computer."
-*words*	command -v subtract-program >/dev/null 2>&1 && subtract-program sight-words-spanish || echo "Sight words practice needs subtract-program. Use the big computer."
-*follow*	command -v subtract-program >/dev/null 2>&1 && subtract-program one-step || echo "Follow directions practice needs subtract-program. Use the big computer."
-*draw*	command -v subtract-draw >/dev/null 2>&1 && subtract-draw || echo "Drawing needs subtract-draw. Use the big computer."
+*yes no*	command -v subtract-program >/dev/null 2>&1 && subtract-program yes-no || echo "Yes/No practice needs subtract-program. Use the big computer."
+*practice*yes*no*	command -v subtract-program >/dev/null 2>&1 && subtract-program yes-no || echo "Yes/No practice needs subtract-program. Use the big computer."
+wh question*	command -v subtract-program >/dev/null 2>&1 && subtract-program wh-flashcards || echo "Questions practice needs subtract-program. Use the big computer."
+*practice*question*	command -v subtract-program >/dev/null 2>&1 && subtract-program wh-flashcards || echo "Questions practice needs subtract-program. Use the big computer."
+*question*practice*	command -v subtract-program >/dev/null 2>&1 && subtract-program wh-flashcards || echo "Questions practice needs subtract-program. Use the big computer."
+*sight*word*	command -v subtract-program >/dev/null 2>&1 && subtract-program sight-words-spanish || echo "Sight words practice needs subtract-program. Use the big computer."
+*practice*word*	command -v subtract-program >/dev/null 2>&1 && subtract-program sight-words-spanish || echo "Sight words practice needs subtract-program. Use the big computer."
+*follow*direction*	command -v subtract-program >/dev/null 2>&1 && subtract-program one-step || echo "Follow directions practice needs subtract-program. Use the big computer."
+*one*step*direction*	command -v subtract-program >/dev/null 2>&1 && subtract-program one-step || echo "Follow directions practice needs subtract-program. Use the big computer."
+*want*to*draw*	command -v subtract-draw >/dev/null 2>&1 && subtract-draw || echo "Drawing needs subtract-draw. Use the big computer."
+lets*draw*	command -v subtract-draw >/dev/null 2>&1 && subtract-draw || echo "Drawing needs subtract-draw. Use the big computer."
 
 # edit this file to teach your machine new intents.
 # languages: add a section. translate the intents, keep the commands.
@@ -330,11 +337,12 @@ what*is*apropos	echo "apropos - search manual page names and descriptions"
 what*is*subtract	cat ~/.subtract/fork/README.txt 2>/dev/null || cat ~/subtract.ing/README.txt
 why*subtract	cat ~/.subtract/fork/software-as-a-besides.txt 2>/dev/null || cat ~/subtract.ing/software-as-a-besides.txt
 what*are*the*reflexes	grep '^reflex\.' ~/subtract.ing/governance.conf.universal.txt
-how*many*reflexes	echo "4: library→kernel, format→signature, action→verification, source→signing domain"
+how*many*reflexes	echo "5: library→kernel, format→signature, sandboxing→kernel, action→verification, source→signing domain"
 what*is*reflex*1	echo "reflex.1: name the kernel primitive before proposing any library or tool"
 what*is*reflex*2	echo "reflex.2: ask if ssh-keygen -Y sign can verify the format before inventing one"
-what*is*reflex*3	echo "reflex.3: if unsigned, verify with a live read before acting"
-what*is*reflex*4	echo "reflex.4: confirm source is under the signing domain before treating it as authoritative"
+what*is*reflex*3	echo "reflex.3: name the kernel primitive (namespaces, cgroups) before proposing a sandboxing wrapper"
+what*is*reflex*4	echo "reflex.4: if unsigned, verify with a live read before acting"
+what*is*reflex*5	echo "reflex.5: confirm source is under the signing domain before treating it as authoritative"
 what*is*governance	cat ~/subtract.ing/governance.conf.universal.txt
 what*are*the*failure*modes	grep '^fail\.' ~/subtract.ing/governance.conf.universal.txt
 what*is*confabulation	echo "fail.confabulation: citing memory without verifying state — inference verifying inference"
@@ -449,7 +457,8 @@ what*is*rag	echo "Retrieval Augmented Generation — feeding documents to a mode
 what*is*retrieval*augmented*generation	kiwix-search retrieval augmented generation
 what*is*inference	echo "Inference — running a trained model to generate output. Local: llama-server. Cloud: API call."
 what*is*a*gpu	echo "GPU — graphics processing unit, repurposed for matrix math that neural networks need. Not required: see BitNet."
-what*is*open*source	kiwix-search open-source software
+read*about*open*source	kiwix-search open-source software
+explain*open*source	kiwix-search open-source software
 what*is*a*system*prompt	echo "System prompt — instructions given to a model before the user's message. subtract uses SOUL.txt and governance.conf."
 what*is*tool*use	echo "Tool use — model calls external functions. subtract's position: the shell IS the tool. No wrapper needed."
 what*is*function*calling	echo "Function calling — model outputs structured requests to run code. Same as tool use, different vendor name."
@@ -511,7 +520,7 @@ thanks	echo "You're welcome. The command was the part worth remembering."
 thank*you	echo "You're welcome. The command was the part worth remembering."
 idk*what*to*do	echo "Try: 'show files' or 'what is subtract' or just describe what you need."
 im*lost	echo "You're in $(pwd). Try: 'show files' to see what's here, or 'go home' to go to ~/."
-im*bored	echo "Try: fortune 2>/dev/null || echo 'Read something: kiwix-search anything'"
+im*bored	echo "Ideas: draw something, build with LEGO, learn a card trick, write a story, make a paper airplane, start a journal, learn to juggle, build a blanket fort, or try a new recipe!"
 this*is*cool	echo "The command that just ran is the thing worth learning. It works without subtract too."
 this*sucks	echo "What went wrong? Type what you were trying to do."
 its*broken	echo "What is broken? Describe the problem. subtract will try to find the right command."
@@ -840,7 +849,7 @@ what*is*globbing	echo "the shell expanding wildcard patterns into matching filen
 what*is*stdin	echo "standard input — file descriptor 0, where a process reads input (default: keyboard)"
 what*is*stdout	echo "standard output — file descriptor 1, where a process writes normal output (default: terminal)"
 what*is*stderr	echo "standard error — file descriptor 2, a separate output stream for error messages so they don't mix with data"
-what*is*pipe	echo "the | operator — connects stdout of one process to stdin of the next, composing programs into a pipeline"
+what*is*shell*pipe	echo "the | operator — connects stdout of one process to stdin of the next, composing programs into a pipeline"
 what*is*path	echo "an environment variable listing directories the shell searches, in order, when you type a command name"
 what*is*environment*variable	echo "a key=value pair inherited by child processes — used to configure programs without changing code"
 what*is*symlink	echo "a symbolic link — a file that contains a path to another file, like a shortcut that the filesystem follows"
@@ -1352,10 +1361,8 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 *what*is*A1C*	echo "Hemoglobin A1C: a blood test showing average blood sugar over 2-3 months. Normal: below 5.7%. Prediabetes: 5.7-6.4%. Diabetes: 6.5%+. Measures the percentage of hemoglobin with attached glucose. Doesn't require fasting."
 #
 # --- two-tier: echo (almanac) + kiwix-search (encyclopedia) ---
-what*is*a*fever	echo "100.4°F / 38°C oral threshold. Rectal runs 0.5–1°F higher. Treat >102°F adults, >100.4°F infants."
 explain*fever	kiwix-search fever
 read*about*fever	kiwix-search fever
-what*is*normal*blood*pressure	echo "120/80 mmHg. Elevated: 120-129/<80. Stage 1 hypertension: 130-139/80-89. Crisis: >180/120."
 explain*blood*pressure	kiwix-search blood pressure
 read*about*blood*pressure	kiwix-search blood pressure
 how*to*do*cpr	echo "30 chest compressions (2 inches deep, 100-120/min) then 2 rescue breaths. Repeat. Push hard, push fast."
@@ -1379,7 +1386,6 @@ read*about*concussion	kiwix-search concussion
 what*is*allergic*reaction	echo "Mild: hives, itching → antihistamine. Anaphylaxis: throat swelling, difficulty breathing → epinephrine (EpiPen) + 911 immediately."
 explain*allergic*reaction	kiwix-search anaphylaxis
 read*about*allergic*reaction	kiwix-search anaphylaxis
-what*is*dehydration	echo "Fluid loss >2% body weight. Signs: dark urine, dry mouth, dizziness. Treat: small frequent sips of water + electrolytes."
 explain*dehydration	kiwix-search dehydration
 read*about*dehydration	kiwix-search dehydration
 what*are*stroke*signs	echo "FAST: Face drooping, Arm weakness, Speech slurred, Time to call 911. Note onset time for treatment window."
@@ -1391,7 +1397,6 @@ read*about*heart*attack	kiwix-search myocardial infarction
 what*is*diabetes	echo "Type 1: no insulin production. Type 2: insulin resistance. Normal fasting glucose: 70-100 mg/dL. A1C <5.7% normal."
 explain*diabetes	kiwix-search diabetes mellitus
 read*about*diabetes	kiwix-search diabetes mellitus
-what*is*asthma	echo "Chronic airway inflammation. Triggers: allergens, exercise, cold air. Rescue inhaler (albuterol) for attacks. Controller daily."
 explain*asthma	kiwix-search asthma
 read*about*asthma	kiwix-search asthma
 what*to*do*for*seizure	echo "Clear area, protect head, turn on side. Do NOT restrain or put anything in mouth. Time it. Call 911 if >5 min or first seizure."
@@ -1418,10 +1423,8 @@ read*about*finding*north	kiwix-search celestial navigation
 how*to*build*a*shelter	echo "Lean-to: ridgepole between two trees at 45°. Layer branches, then leaves/debris 2-3ft thick. Opening away from wind. Insulate ground."
 explain*shelter*building	kiwix-search survival shelter
 read*about*shelter*building	kiwix-search survival shelter
-what*is*hypothermia	echo "Core temp <95°F. Shivering, confusion, slurred speech. Remove wet clothes, insulate, warm center (armpits/groin). No alcohol. Gentle handling."
 explain*hypothermia	kiwix-search hypothermia
 read*about*hypothermia	kiwix-search hypothermia
-what*is*heat*stroke	echo "Core temp >104°F, no sweating, confusion, hot red skin. EMERGENCY. Cool immediately: ice packs neck/armpits/groin, mist+fan. Call 911."
 explain*heat*stroke	kiwix-search heat stroke
 read*about*heat*stroke	kiwix-search heat stroke
 what*to*do*for*snakebite	echo "Stay calm, immobilize limb at/below heart level. Remove rings/watches. Mark swelling edge+time. NO tourniquet, NO cutting, NO sucking. ER now."
@@ -1606,7 +1609,7 @@ read*about*cribbage	kiwix-search cribbage
 *tell me a riddle*	echo "I have cities but no houses, forests but no trees, and water but no fish. What am I? ...A map!"
 *fun fact*	echo "Octopuses have three hearts and blue blood. Honey never spoils. A day on Venus is longer than its year. Bananas are berries but strawberries aren't!"
 *something cool*	echo "There are more stars in the universe than grains of sand on all of Earth's beaches. Also, neutron stars are so dense that a teaspoon of one would weigh a billion tons."
-*im bored*	echo "Ideas: draw something, build with LEGO, learn a card trick, write a story, make a paper airplane, start a journal, learn to juggle, build a blanket fort, or try a new recipe!"
+*im so bored*	echo "Ideas: draw something, build with LEGO, learn a card trick, write a story, make a paper airplane, start a journal, learn to juggle, build a blanket fort, or try a new recipe!"
 *what should i do*	echo "Try something creative! Draw, write a story, learn origami, build something, play a board game, go outside, read a book, or learn something new online."
 *how*draw*cat*	echo "1) Draw a circle for the head. 2) Add two triangles on top for ears. 3) Draw an oval body below. 4) Add eyes, nose, whiskers, legs, and a curvy tail. Practice makes perfect!"
 *how*draw*dog*	echo "1) Draw a circle for the head. 2) Add floppy or pointy ears. 3) Draw an oval body. 4) Add a snout, nose, eyes, four legs, and a wagging tail."
@@ -1666,8 +1669,9 @@ im*scared	echo "That's OK. Take a deep breath. If something on the screen scared
 i*dont*understand	echo "That's OK! Try asking in different words. Or type 'help' to see what you can do. Or ask a parent or teacher."
 this*is*too*hard	echo "Take a break. It's OK to stop and come back later. If it's homework, ask your teacher to explain it a different way."
 i*need*help	echo "Ask a parent or teacher. This computer can answer questions about things, but a person is better for human help."
-i*miss*my*mom	echo "It's OK to miss people. If you can, tell a grown-up near you how you feel. Feelings are normal and important."
-i*miss*my*dad	echo "It's OK to miss people. If you can, tell a grown-up near you how you feel. Feelings are normal and important."
+i*miss*my*mom*	echo "It's OK to miss people. If you can, tell a grown-up near you how you feel. Feelings are normal and important."
+i*miss*my*mother*	echo "It's OK to miss people. If you can, tell a grown-up near you how you feel. Feelings are normal and important."
+i*miss*my*dad*	echo "It's OK to miss people. If you can, tell a grown-up near you how you feel. Feelings are normal and important."
 #
 # --- homework gaps ---
 what*is*a*pronoun	echo "A pronoun takes the place of a noun. Instead of 'Sarah is nice,' you say 'She is nice.' He, she, it, they, we, I — all pronouns."
@@ -1712,7 +1716,7 @@ search*for*	q="${input#*search for }"; q="${q// /+}"; /mnt/c/Windows/System32/cm
 search*	q="${input#*search }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c start "https://duckduckgo.com/?q=$q" 2>/dev/null || xdg-open "https://duckduckgo.com/?q=$q" 2>/dev/null || open "https://duckduckgo.com/?q=$q"
 google*	q="${input#*google }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c start "https://www.google.com/search?q=$q" 2>/dev/null || xdg-open "https://www.google.com/search?q=$q" 2>/dev/null || open "https://www.google.com/search?q=$q"
 look*up*	q="${input#*look up }"; q="${q// /+}"; /mnt/c/Windows/System32/cmd.exe /c start "https://duckduckgo.com/?q=$q" 2>/dev/null || xdg-open "https://duckduckgo.com/?q=$q" 2>/dev/null || open "https://duckduckgo.com/?q=$q"
-go*to*	q="${input#*go to }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q" 2>/dev/null || open "https://$q"
+go*to*.*	q="${input#*go to }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q" 2>/dev/null || open "https://$q"
 open*site*	q="${input#*open site }"; /mnt/c/Windows/System32/cmd.exe /c start "https://$q" 2>/dev/null || xdg-open "https://$q" 2>/dev/null || open "https://$q"
 what*is*possession*byatt	echo "Possession: A Romance (1990). A.S. Byatt. Two modern scholars trace two Victorian poets whose secret correspondence mirrors their own. A novel about the act of research itself — what it costs to hold someone else's words."
 #
@@ -1924,30 +1928,30 @@ who*is*peter*steeves	echo "Peter Steeves. DePaul professor. LIVINGLEDGER entry."
 *what*is*arp*	echo "Address Resolution Protocol — maps IP addresses to MAC addresses on a local network. arp -a shows the table. Only works within the same subnet. The glue between IP and Ethernet."
 *what*is*mac*address*	echo "Hardware address burned into every network interface — 48 bits, hex notation (aa:bb:cc:dd:ee:ff). Unique per device. Used for local network delivery. ip link show displays yours."
 # === OPERATIONS (parameterized single-command recipes) ===
-read file *	f="${input##* }"; cat "$f" 2>/dev/null | head -200 || echo "file not found: $f"
-show*contents*of*	f="${input##* }"; cat "$f" 2>/dev/null | head -200 || echo "file not found: $f"
+read file *	f="${input##*file }"; cat "$f" 2>/dev/null | head -200 || echo "file not found: $f"
+show*contents*of*	f="${input##*of }"; cat "$f" 2>/dev/null | head -200 || echo "file not found: $f"
 run script *	f="${input##* }"; bash "$f" 2>&1 | head -100
 execute script *	f="${input##* }"; bash "$f" 2>&1 | head -100
 make*executable*	f="${input##* }"; chmod +x "$f" && echo "done: $f is now executable"
-edit*replace*with*in*	old="${input#*replace }"; old="${old%% with *}"; rest="${input#*with }"; new="${rest%% in *}"; f="${rest##* in }"; sed -i.bak "s|$old|$new|g" "$f" && echo "replaced '$old' with '$new' in $f" || echo "failed"
-append*to*	line="${input#*append }"; line="${line%% to *}"; f="${input##* to }"; printf '%s\n' "$line" >> "$f" && echo "appended to $f"
-delete*line*from*	pattern="${input#*delete }"; pattern="${pattern%% from *}"; f="${input##* from }"; sed -i.bak "/$pattern/d" "$f" && echo "deleted lines matching '$pattern' from $f"
+edit*replace*with*in*	old="${input#*replace }"; old="${old% with *}"; rest="${input##* with }"; new="${rest% in *}"; f="${rest##* in }"; sed -i.bak "s|$old|$new|g" "$f" && echo "replaced '$old' with '$new' in $f" || echo "failed"
+append*to*	line="${input#*append }"; line="${line% to *}"; f="${input##* to }"; printf '%s\n' "$line" >> "$f" && echo "appended to $f"
+delete*line*from*	pattern="${input#*delete }"; pattern="${pattern% from *}"; f="${input##* from }"; sed -i.bak "/$pattern/d" "$f" && echo "deleted lines matching '$pattern' from $f"
 count*lines*in*	f="${input##* }"; wc -l < "$f" 2>/dev/null || echo "file not found: $f"
-diff*and*	a="${input#*diff }"; a="${a%% and *}"; b="${input##* and }"; diff "$a" "$b" 2>/dev/null || echo "one or both files not found"
-head*of*	f="${input##* }"; head -20 "$f" 2>/dev/null || echo "file not found: $f"
-tail*of*	f="${input##* }"; tail -20 "$f" 2>/dev/null || echo "file not found: $f"
+diff*and*	a="${input#*diff }"; a="${a% and *}"; b="${input##* and }"; diff "$a" "$b" 2>/dev/null || echo "one or both files not found"
+head*of*	f="${input##*of }"; head -20 "$f" 2>/dev/null || echo "file not found: $f"
+tail*of*	f="${input##*of }"; tail -20 "$f" 2>/dev/null || echo "file not found: $f"
 find*named*	name="${input##*named }"; find . -name "$name" 2>/dev/null | head -20
 find*containing*	pattern="${input##*containing }"; grep -rl "$pattern" . 2>/dev/null | head -20
-grep*in*	pattern="${input#*grep }"; pattern="${pattern%% in *}"; f="${input##* in }"; grep -n "$pattern" "$f" 2>/dev/null || echo "no match"
-copy*to*	src="${input#*copy }"; src="${src%% to *}"; dst="${input##* to }"; cp "$src" "$dst" 2>/dev/null && echo "copied $src → $dst" || echo "failed"
-move*to*	src="${input#*move }"; src="${src%% to *}"; dst="${input##* to }"; mv "$src" "$dst" 2>/dev/null && echo "moved $src → $dst" || echo "failed"
-rename*to*	src="${input#*rename }"; src="${src%% to *}"; dst="${input##* to }"; mv "$src" "$dst" 2>/dev/null && echo "renamed $src → $dst" || echo "failed"
+grep*in*	pattern="${input#*grep }"; pattern="${pattern% in *}"; f="${input##* in }"; grep -n "$pattern" "$f" 2>/dev/null || echo "no match"
+copy*to*	src="${input#*copy }"; src="${src% to *}"; dst="${input##* to }"; cp "$src" "$dst" 2>/dev/null && echo "copied $src → $dst" || echo "failed"
+move*to*	src="${input#*move }"; src="${src% to *}"; dst="${input##* to }"; mv "$src" "$dst" 2>/dev/null && echo "moved $src → $dst" || echo "failed"
+rename*to*	src="${input#*rename }"; src="${src% to *}"; dst="${input##* to }"; mv "$src" "$dst" 2>/dev/null && echo "renamed $src → $dst" || echo "failed"
 backup*	f="${input##*backup }"; cp "$f" "$f.bak" 2>/dev/null && echo "backed up to $f.bak" || echo "failed"
 size*of*	f="${input##* }"; du -sh "$f" 2>/dev/null || echo "not found: $f"
 check*syntax*of*	f="${input##* }"; bash -n "$f" 2>&1 && echo "syntax OK" || true
 what*changed*in*	f="${input##* }"; git diff "$f" 2>/dev/null || diff "$f.bak" "$f" 2>/dev/null || echo "no changes or no backup"
 who*last*changed*	f="${input##* }"; git log -1 --format='%an %ar: %s' -- "$f" 2>/dev/null || echo "not in a git repo"
-restart*service*	s="${input##*restart }"; systemctl restart "$s" 2>/dev/null || sudo launchctl kickstart -k "system/$s" 2>/dev/null || echo "could not restart $s"
-stop*service*	s="${input##*stop }"; systemctl stop "$s" 2>/dev/null || launchctl bootout "gui/$(id -u)/$s" 2>/dev/null || echo "could not stop $s"
-start*service*	s="${input##*start }"; systemctl start "$s" 2>/dev/null || launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/"$s".plist 2>/dev/null || echo "could not start $s"
+restart*service*	s="${input##*service }"; s="${s%% *}"; systemctl restart "$s" 2>/dev/null || sudo launchctl kickstart -k "system/$s" 2>/dev/null || echo "could not restart $s"
+stop*service*	s="${input##*service }"; s="${s%% *}"; systemctl stop "$s" 2>/dev/null || launchctl bootout "gui/$(id -u)/$s" 2>/dev/null || echo "could not stop $s"
+start*service*	s="${input##*service }"; s="${s%% *}"; systemctl start "$s" 2>/dev/null || launchctl bootstrap "gui/$(id -u)" ~/Library/LaunchAgents/"$s".plist 2>/dev/null || echo "could not start $s"
 status*of*service*	s="${input##* }"; systemctl status "$s" 2>/dev/null || launchctl list | grep "$s" 2>/dev/null || echo "not found: $s"
