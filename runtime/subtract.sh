@@ -464,7 +464,7 @@ __subtract_ask_local() {
     local payload result
 
     local escaped_prompt; escaped_prompt=$(printf "%s" "$prompt" | jq -Rs .)
-    payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":500}"
+    payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":262144}"
     if [ -n "$inference_host" ] && [ "$inference_host" != "localhost" ]; then
         result=$(ssh -o ConnectTimeout=5 "$inference_host" \
             "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' -d '${payload}'" 2>/dev/null)
@@ -501,7 +501,7 @@ __subtract_ask_cloud() {
             payload=$(jq -n --arg q "$input" '{
                 model: "grok-4.20-0309-reasoning",
                 messages: [{role: "user", content: ("Answer concisely: " + $q)}],
-                max_tokens: 4096
+                max_tokens: 262144
             }')
             result=$(curl -s -X POST https://api.x.ai/v1/chat/completions \
                 -H "Authorization: Bearer $xai_key" \
@@ -531,7 +531,7 @@ __subtract_generate() {
     local prompt="Translate to a single bash command. Output ONLY the command, nothing else. No explanation. No markdown. No code fences. /no_think Input: ${input}"
     local payload result
 
-    payload=$(printf '{"messages":[{"role":"user","content":"%s"}],"max_tokens":500}' "$prompt")
+    payload=$(printf '{"messages":[{"role":"user","content":"%s"}],"max_tokens":262144}' "$prompt")
 
     # remote inference: SSH to host and curl llama-server there
     if [ -n "$inference_host" ] && [ "$inference_host" != "localhost" ]; then
@@ -1194,7 +1194,7 @@ ${transcript_text}"
 
     local escaped_prompt payload inference_host inference_port
     escaped_prompt=$(printf '%s' "$prompt" | jq -Rs .)
-    payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":2048}"
+    payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":262144}"
     inference_host=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null)
     inference_port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
     [ -z "$inference_port" ] && inference_port="8083"
@@ -1230,7 +1230,7 @@ __subtract_write() {
 
     local escaped_prompt payload inference_host inference_port
     escaped_prompt=$(printf '%s' "$prompt" | jq -Rs .)
-    payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":4096}"
+    payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":262144}"
     inference_host=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null)
     inference_port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
     [ -z "$inference_port" ] && inference_port="8083"

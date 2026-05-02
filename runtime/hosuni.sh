@@ -88,7 +88,7 @@ execute_tool() {
 
     log_daemon "tool: $name (arg: $(echo "$input" | head -c 100))"
     local output
-    output=$(HOSUNI_ARG="$input" perl -e 'alarm shift; exec @ARGV' "$TOOL_TIMEOUT" bash -c "$template 2>/dev/null" 2>/dev/null | head -c 4096) || true
+    output=$(HOSUNI_ARG="$input" perl -e 'alarm shift; exec @ARGV' "$TOOL_TIMEOUT" bash -c "$template 2>/dev/null" 2>/dev/null | head -c 65536) || true
     output=${output:-"no results"}
     echo "$output"
 }
@@ -100,10 +100,10 @@ call_inference() {
     local payload
     if [ "$tools" = "[]" ]; then
         payload=$(jq -n --argjson msgs "$messages" \
-            '{messages: $msgs, max_tokens: 2048, stream: false}')
+            '{messages: $msgs, max_tokens: 262144, stream: false}')
     else
         payload=$(jq -n --argjson msgs "$messages" --argjson tools "$tools" \
-            '{messages: $msgs, max_tokens: 2048, stream: false, tools: $tools}')
+            '{messages: $msgs, max_tokens: 262144, stream: false, tools: $tools}')
     fi
 
     log_daemon "payload: $(echo "$payload" | jq -c '{msg_count: (.messages | length), has_tools: (.tools != null), first_role: .messages[0].role}' 2>/dev/null)"
