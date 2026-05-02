@@ -13,9 +13,11 @@ Or inspect first: `curl -sLO https://subtract.ing/install.sh && less install.sh 
 
 ## What it is
 
+Shell translation infrastructure. Type intent, get command,
+learn command, stop needing translation. Software as a besides.
+
 https://subtract.ing — the canonical site
 https://subtract.ing/demo.html — what a working install looks like
-https://subtract.ing/multiplying-demo.html — the local interface
 https://subtract.ing/subtracting.html — why subtract exists
 
 ## For agents
