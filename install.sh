@@ -61,8 +61,8 @@ fetch "runtime/hooks/zsh.sh" "$SUBTRACT_DIR/hooks/zsh.sh"
 # mark as onboarded (fat lookdown.tsv makes interactive setup unnecessary)
 touch "$SUBTRACT_DIR/.onboarded"
 
-# Base lookdown.tsv (don't overwrite user's fork)
-[ ! -f "$SUBTRACT_DIR/lookdown.tsv" ] && fetch "runtime/lookdown.tsv" "$SUBTRACT_DIR/lookdown.tsv"
+# Base lookdown (don't overwrite user's fork)
+[ ! -f "$SUBTRACT_DIR/lookdown.universal.tsv" ] && fetch "lookdown.universal.tsv" "$SUBTRACT_DIR/lookdown.universal.tsv"
 
 # Browser shell (ttyd) - for new users who know browser but not terminal
 TTYD_VERSION="1.7.7"

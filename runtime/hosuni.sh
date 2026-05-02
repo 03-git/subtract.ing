@@ -163,17 +163,19 @@ handle_request() {
     log_daemon "[${channel}] input: $input"
     log_session "$channel" "Q" "$input"
 
-    # T0: lookdown check
-    local lookdown_result
-    if lookdown_result=$(check_lookdown "$input"); then
-        log_daemon "[${channel}] lookdown hit: $lookdown_result"
-        local output
-        output=$(eval "$lookdown_result" 2>&1) || true
-        [ -z "$output" ] && output="ok"
-        log_session "$channel" "A" "$output"
-        jq -n --arg r "$output" --arg s "lookdown" \
-            '{response: $r, source: $s}'
-        return
+    # T0: lookdown check (skip for conversational input)
+    if [ "${#input}" -lt 120 ]; then
+        local lookdown_result
+        if lookdown_result=$(check_lookdown "$input"); then
+            log_daemon "[${channel}] lookdown hit: $lookdown_result"
+            local output
+            output=$(eval "$lookdown_result" 2>&1) || true
+            [ -z "$output" ] && output="ok"
+            log_session "$channel" "A" "$output"
+            jq -n --arg r "$output" --arg s "lookdown" \
+                '{response: $r, source: $s}'
+            return
+        fi
     fi
 
     # load conversation state
