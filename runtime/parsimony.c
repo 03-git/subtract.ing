@@ -17,7 +17,7 @@
  *
  * Build:
  *   cc -o parsimony parsimony.c -I/path/to/llama.cpp/include \
- *      -L/path/to/llama.cpp/build/src -lllama -lm -lpthread
+ *      -L/path/to/llama.cpp/lib -lllama -lggml -lm -lpthread
  *
  * Usage:
  *   coproc INF { ./parsimony model.gguf; }
@@ -34,6 +34,7 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "ggml-backend.h"
 #include "llama.h"
 
 #define MAX_INPUT        65536
@@ -193,9 +194,10 @@ int main(int argc, char **argv) {
     }
 
     llama_backend_init();
+    ggml_backend_load_all();
 
     struct llama_model_params mp = llama_model_default_params();
-    struct llama_model *model = llama_load_model_from_file(model_path, mp);
+    struct llama_model *model = llama_model_load_from_file(model_path, mp);
     if (!model) {
         fprintf(stderr, "failed to load: %s\n", model_path);
         return 1;
@@ -205,10 +207,10 @@ int main(int argc, char **argv) {
     cp.n_ctx     = n_ctx;
     cp.n_batch   = 512;
     cp.n_threads = n_threads;
-    struct llama_context *ctx = llama_new_context_with_model(model, cp);
+    struct llama_context *ctx = llama_init_from_model(model, cp);
     if (!ctx) {
         fprintf(stderr, "failed to create context\n");
-        llama_free_model(model);
+        llama_model_free(model);
         return 1;
     }
 
@@ -266,7 +268,7 @@ int main(int argc, char **argv) {
         }
 
         int prompt_len = llama_chat_apply_template(
-            model, NULL, chat, (size_t)chat_n, true,
+            NULL, chat, (size_t)chat_n, true,
             prompt_buf, sizeof(prompt_buf));
         if (prompt_len < 0 || prompt_len >= (int)sizeof(prompt_buf)) {
             printf("{\"error\":\"template failed\"}\n");
@@ -275,9 +277,10 @@ int main(int argc, char **argv) {
         }
         prompt_buf[prompt_len] = '\0';
 
+        const struct llama_vocab *vocab = llama_model_get_vocab(model);
         llama_token tokens[MAX_PROMPT_TOKENS];
         int n_tokens = llama_tokenize(
-            model, prompt_buf, prompt_len,
+            vocab, prompt_buf, prompt_len,
             tokens, MAX_PROMPT_TOKENS, true, true);
         if (n_tokens < 0) {
             printf("{\"error\":\"tokenize failed (prompt too long)\"}\n");
@@ -293,7 +296,7 @@ int main(int argc, char **argv) {
         if (max_gen > n_ctx - n_tokens)
             max_gen = n_ctx - n_tokens;
 
-        llama_kv_cache_clear(ctx);
+        llama_memory_clear(llama_get_memory(ctx), true);
         llama_sampler_reset(smpl);
 
         if (llama_decode(ctx, llama_batch_get_one(tokens, n_tokens)) < 0) {
@@ -308,11 +311,11 @@ int main(int argc, char **argv) {
         for (int i = 0; i < max_gen; i++) {
             llama_token id = llama_sampler_sample(smpl, ctx, -1);
 
-            if (llama_token_is_eog(model, id)) break;
+            if (llama_vocab_is_eog(vocab, id)) break;
 
             char piece[256];
             int plen = llama_token_to_piece(
-                model, id, piece, sizeof(piece), 0, true);
+                vocab, id, piece, sizeof(piece), 0, true);
             if (plen > 0 && ri + plen < MAX_RESPONSE - 1) {
                 memcpy(response_buf + ri, piece, plen);
                 ri += plen;
@@ -338,7 +341,7 @@ int main(int argc, char **argv) {
 
     llama_sampler_free(smpl);
     llama_free(ctx);
-    llama_free_model(model);
+    llama_model_free(model);
     llama_backend_free();
     return 0;
 }
