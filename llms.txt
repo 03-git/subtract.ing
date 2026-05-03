@@ -113,3 +113,4 @@ SHA256:
   d2b28b22622102b687d4e2f0438e6c3258b5bfa6c07a191cbf17ccb2ea64a167  variance-lab-handler-methodology.txt
   4d00699f59c4d15b1fecdcfd2042ab12c78221f87240a23125f4dbaa51d30358  subtracting.html
   8041a0a2af5ca2c7feb51c625af7022df9079b60e85bb109f4959e05ac3cdab9  SOUL.txt
+  ba19c0b99e2e156ca9f8533d699834b3b3fb09afb042a0ed648b0eb242496fab  lookdown.universal.tsv
