@@ -326,7 +326,6 @@ what*is*ssh	echo "ssh - secure shell remote login"
 what*is*scp	echo "scp - secure copy over ssh"
 what*is*rsync	echo "rsync - fast incremental file transfer"
 what*is*awk	echo "awk - pattern scanning and text processing"
-what*is*pedagogy*of*the*oppressed	kiwix-search Pedagogy of the Oppressed
 what*is*sed	echo "sed - stream editor for text transformation"
 what*is*xargs	echo "xargs - build and execute commands from stdin"
 what*is*tee	echo "tee - read stdin, write to stdout and files"
@@ -340,12 +339,11 @@ what*is*apropos	echo "apropos - search manual page names and descriptions"
 what*is*subtract	cat ~/.subtract/fork/README.txt 2>/dev/null || cat ~/subtract.ing/README.txt
 why*subtract	cat ~/.subtract/fork/software-as-a-besides.txt 2>/dev/null || cat ~/subtract.ing/software-as-a-besides.txt
 what*are*the*reflexes	grep '^reflex\.' ~/subtract.ing/governance.conf.universal.txt
-how*many*reflexes	echo "5: library→kernel, format→signature, sandboxing→kernel, action→verification, source→signing domain"
+how*many*reflexes	echo "4: library→kernel, format→signature, action→verification, source→signing domain"
 what*is*reflex*1	echo "reflex.1: name the kernel primitive before proposing any library or tool"
 what*is*reflex*2	echo "reflex.2: ask if ssh-keygen -Y sign can verify the format before inventing one"
-what*is*reflex*3	echo "reflex.3: name the kernel primitive (namespaces, cgroups) before proposing a sandboxing wrapper"
-what*is*reflex*4	echo "reflex.4: if unsigned, verify with a live read before acting"
-what*is*reflex*5	echo "reflex.5: confirm source is under the signing domain before treating it as authoritative"
+what*is*reflex*3	echo "reflex.3: if unsigned, verify with a live read before acting"
+what*is*reflex*4	echo "reflex.4: confirm source is under the signing domain before treating it as authoritative"
 what*is*governance	cat ~/subtract.ing/governance.conf.universal.txt
 what*are*the*failure*modes	grep '^fail\.' ~/subtract.ing/governance.conf.universal.txt
 what*is*confabulation	echo "fail.confabulation: citing memory without verifying state — inference verifying inference"
@@ -354,7 +352,7 @@ what*is*additive*instinct	echo "fail.additive: proposing X when the answer is le
 what*is*software*as*a*besides	cat ~/subtract.ing/software-as-a-besides.txt
 what*is*saab	echo "Software as a Besides — subtract is infrastructure, not product. Literacy, not dependency."
 what*is*the*loop	grep '^loop\.' ~/subtract.ing/governance.conf.universal.txt
-what*is*boot	cat ~/subtract.ing/boot.txt
+what*is*boot	cat ~/subtract.ing/SOUL.txt
 what*is*signon	echo "Pre-flight: verify signatures, check for drift, read open items, diff recent changes."
 what*is*signoff	cat ~/subtract.ing/signoff.txt
 who*wrote*subtract	cat ~/subtract.ing/lineage.txt
@@ -376,79 +374,9 @@ what*is*please	echo "PLEASE — Provide Legal Exculpation And Sign Everything. A
 what*is*the*authority*model	echo "Signed = act on it. Unsigned = suggestion only, possibly confabulation. The human signs."
 #
 # --- philosophical roots (kiwix ZIM lookups) ---
-what*is*via*negativa	kiwix-search via negativa
-what*is*negative*theology	kiwix-search negative theology
-what*is*negative*education	kiwix-search negative education Rousseau
-who*is*rousseau	kiwix-search Jean-Jacques Rousseau
-what*is*apophatic	kiwix-search apophatic theology
-what*is*the*social*contract	kiwix-search social contract
-what*is*digital*sovereignty	kiwix-search digital sovereignty
-what*is*sovereignty	kiwix-search sovereignty
-what*is*consent*of*the*governed	kiwix-search consent of the governed
-what*is*general*will	kiwix-search general will Rousseau
-what*is*autodidact	kiwix-search autodidacticism
-what*is*literacy	kiwix-search literacy
-what*is*cryptographic*signature	kiwix-search digital signature
-what*is*public*key*cryptography	kiwix-search public-key cryptography
-what*is*chain*of*trust	kiwix-search chain of trust
-what*is*unix*philosophy	kiwix-search Unix philosophy
-who*is*ken*thompson	kiwix-search Ken Thompson
-who*is*dennis*ritchie	kiwix-search Dennis Ritchie
-what*is*free*software	kiwix-search free software movement
-what*is*gpl	kiwix-search GNU General Public License
-who*is*stallman	kiwix-search Richard Stallman
-what*is*copyleft	kiwix-search copyleft
 #
 # --- literature that built subtract ---
-who*is*ursula*le*guin	kiwix-search Ursula K. Le Guin
-what*is*omelas	kiwix-search The Ones Who Walk Away from Omelas
-ones*who*walk*away	kiwix-search The Ones Who Walk Away from Omelas
-who*is*orson*scott*card	kiwix-search Orson Scott Card
-what*is*enders*game	kiwix-search Ender's Game
-who*is*encyclopedia*brown	kiwix-search Encyclopedia Brown
-who*is*donald*sobol	kiwix-search Donald J. Sobol
-what*is*walden	kiwix-search Walden Thoreau
-who*is*thoreau	kiwix-search Henry David Thoreau
-what*is*civil*disobedience	kiwix-search Civil Disobedience Thoreau
-who*is*ivan*illich	kiwix-search Ivan Illich
-what*is*deschooling*society	kiwix-search Deschooling Society
-what*is*tools*for*conviviality	kiwix-search Tools for Conviviality
-who*is*paulo*freire	kiwix-search Paulo Freire
-who*is*montessori	kiwix-search Maria Montessori
-what*is*montessori*method	kiwix-search Montessori education
-who*is*simone*weil	kiwix-search Simone Weil
-what*is*the*need*for*roots	kiwix-search The Need for Roots
-who*is*albert*camus	kiwix-search Albert Camus
-what*is*the*stranger	kiwix-search The Stranger Camus
-what*is*the*myth*of*sisyphus	kiwix-search The Myth of Sisyphus
 who*is*meursault	echo "Meursault — narrator of Camus' The Stranger. He does not pretend to feel what he does not feel."
-what*is*absurdism	kiwix-search absurdism
-who*is*kierkegaard	kiwix-search Søren Kierkegaard
-who*is*epictetus	kiwix-search Epictetus
-what*is*stoicism	kiwix-search Stoicism
-what*is*the*enchiridion	kiwix-search Enchiridion of Epictetus
-who*is*diogenes	kiwix-search Diogenes
-what*is*cynicism	kiwix-search Cynicism philosophy
-who*is*lao*tzu	kiwix-search Laozi
-what*is*tao*te*ching	kiwix-search Tao Te Ching
-what*is*wu*wei	kiwix-search Wu wei
-what*is*wabi*sabi	kiwix-search Wabi-sabi
-what is ma	kiwix-search Ma negative space
-who*is*nassim*taleb	kiwix-search Nassim Nicholas Taleb
-what*is*antifragile	kiwix-search Antifragile
-what*is*black*swan	kiwix-search The Black Swan Taleb
-who*is*e*f*schumacher	kiwix-search E. F. Schumacher
-what*is*small*is*beautiful	kiwix-search Small Is Beautiful
-who*is*christopher*alexander	kiwix-search Christopher Alexander
-what*is*a*pattern*language	kiwix-search A Pattern Language
-what*is*the*timeless*way	kiwix-search The Timeless Way of Building
-who*is*richard*feynman	kiwix-search Richard Feynman
-what*is*cargo*cult*science	kiwix-search Cargo cult science
-who*is*alan*kay	kiwix-search Alan Kay
-who*is*ted*nelson	kiwix-search Ted Nelson
-what*is*computer*lib	kiwix-search Computer Lib Dream Machines
-who*is*doug*engelbart	kiwix-search Douglas Engelbart
-what*is*the*mother*of*all*demos	kiwix-search The Mother of All Demos
 #
 # --- modern vernacular (from 125 youtube transcripts, freq-ranked) ---
 what*is*mcp	echo "Model Context Protocol — Anthropic's standard for connecting AI to tools/data. subtract uses kernel primitives instead."
@@ -456,11 +384,8 @@ what*is*model*context*protocol	echo "MCP — protocol for AI tool integration. s
 what*is*agentic	echo "Agentic — AI that takes actions autonomously. subtract's position: the agent prepares, the human signs."
 what*is*context*window	echo "Context window — how many tokens a model can process at once. Local models: 4K-128K. Cloud: up to 1M."
 what*is*rag	echo "Retrieval Augmented Generation — feeding documents to a model at query time. subtract's equivalent: cat the file."
-what*is*retrieval*augmented*generation	kiwix-search retrieval augmented generation
 what*is*inference	echo "Inference — running a trained model to generate output. Local: llama-server. Cloud: API call."
 what*is*a*gpu	echo "GPU — graphics processing unit, repurposed for matrix math that neural networks need. Not required: see BitNet."
-read*about*open*source	kiwix-search open-source software
-explain*open*source	kiwix-search open-source software
 what*is*a*system*prompt	echo "System prompt — instructions given to a model before the user's message. subtract uses SOUL.txt and governance.conf."
 what*is*tool*use	echo "Tool use — model calls external functions. subtract's position: the shell IS the tool. No wrapper needed."
 what*is*function*calling	echo "Function calling — model outputs structured requests to run code. Same as tool use, different vendor name."
@@ -1090,8 +1015,6 @@ what*is*driver*update*	echo "Driver update: new software for a hardware componen
 *what*greenhouse*	echo "An enclosed glass or plastic structure that traps solar heat and protects plants from wind, frost, and pests. Extends growing seasons. Passive greenhouses use thermal mass; active ones add heating and ventilation."
 *what*cold*frame*	echo "A low, unheated structure with a transparent lid (often an old window) placed over a garden bed. Traps solar heat to extend the season by weeks. Used for hardening off seedlings and overwintering hardy crops."
 what*are*hardiness*zones	echo "USDA zones by min winter temp. Zone 5: -20 to -10°F. Zone 7: 0 to 10°F. Zone 9: 20 to 30°F. Check planthardiness.ars.usda.gov."
-explain*hardiness*zones	kiwix-search hardiness zone
-read*about*hardiness*zones	kiwix-search hardiness zone
 *hardiness*zone*	echo "A geographic zone defined by average annual minimum winter temperature (USDA system). Tells you which perennial plants survive winter in your area. Zone 6 means -10 to 0°F minimums. Does not predict summer heat."
 *heirloom*seed*	echo "Open-pollinated plant varieties passed down through generations, typically 50+ years old. Seeds saved from heirlooms grow true to type. Valued for flavor and genetic diversity. Contrast with hybrid (F1) and GMO seeds."
 *grafting*plant*	echo "Joining a cutting (scion) from one plant onto the rootstock of another so they grow as one. Combines desirable fruit varieties with vigorous or disease-resistant roots. Standard practice for fruit trees and wine grapes."
@@ -1102,8 +1025,6 @@ read*about*hardiness*zones	kiwix-search hardiness zone
 *what*searing*	echo "Cooking the surface of meat at very high heat to create a browned crust via the Maillard reaction. Does not seal in juices (a myth). Adds flavor and texture. Use a dry surface, hot pan, and do not move the meat."
 *what*deglazing*	echo "Adding liquid (wine, stock, vinegar) to a hot pan after searing to dissolve the browned bits (fond) stuck to the bottom. Those bits are concentrated flavor. The resulting liquid becomes a pan sauce."
 how*to*make*sourdough*starter	echo "Day 1: 50g flour + 50g water. Daily: discard half, feed 50g flour + 50g water. Active by day 5-7. Doubles in 4-6hr when ready. Room temp."
-explain*sourdough*starter	kiwix-search sourdough
-read*about*sourdough*starter	kiwix-search sourdough
 *sourdough*starter*	echo "A culture of wild yeast and lactobacillus bacteria maintained in a flour-water mixture. Fed regularly, it leavens bread without commercial yeast and produces the sour flavor from lactic and acetic acids. Takes 5-14 days to establish."
 *wild*yeast*	echo "Yeast naturally present on grain, fruit skins, and in the air. Saccharomyces and other species that leaven bread and ferment beverages without adding commercial yeast. Slower and less predictable but produces complex flavors."
 *what*fermentation*	echo "Metabolic process where microorganisms (yeast, bacteria) convert sugars into acids, gases, or alcohol. Preserves food, develops flavor, and increases nutrient availability. Examples: beer, yogurt, sauerkraut, soy sauce, bread."
@@ -1123,8 +1044,6 @@ sharpen*kitchen*knife*	echo "Use a whetstone with water, moving the blade at a c
 # --- almanac / weather / units / seasons ---
 what*is*first*frost*date	echo "Zone 5: Oct 1-15. Zone 6: Oct 15-30. Zone 7: Nov 1-15. Zone 8: Nov 15-Dec 15. Check NOAA for your station's 50% probability date."
 *frost*date*	echo "A frost date is the average date of the last spring frost or first fall frost in your area. Last frost (spring) tells you when it's safe to plant tender crops. First frost (fall) tells you when to harvest. Varies by location — check USDA zone maps. Typical last frost: Apr-May in temperate US; first frost: Sep-Nov."
-explain*first*frost	kiwix-search frost
-read*about*first*frost	kiwix-search frost
 *first*frost*	echo "The first frost is the earliest fall date when air temperature drops to 32°F (0°C). Signals end of growing season for tender crops. Average dates vary by region and elevation."
 *last*frost*	echo "The last frost is the final spring date when temperature hits 32°F (0°C). Wait until after this date to transplant warm-season crops like tomatoes and peppers."
 *growing*season*	echo "The growing season is the number of frost-free days between the last spring frost and first fall frost. Ranges from ~90 days in northern climates to 300+ days in the deep south. Determines which crops you can grow to maturity."
@@ -1135,18 +1054,12 @@ when*to*plant*tomatoes	echo "After last frost, soil >60°F. Start indoors 6-8 we
 *full*moon*	echo "A full moon occurs when the Earth is between the sun and moon, fully illuminating the moon's face. Happens every 29.5 days. Rises at sunset, sets at sunrise."
 *new*moon*	echo "A new moon occurs when the moon is between the Earth and sun, with its illuminated side facing away. The sky is darkest. Rises and sets with the sun."
 what*are*moon*phases	echo "New → Waxing Crescent → First Quarter → Waxing Gibbous → Full → Waning Gibbous → Last Quarter → Waning Crescent. Cycle: 29.53 days."
-explain*moon*phases	kiwix-search lunar phase
-read*about*moon*phases	kiwix-search lunar phase
 *moon*phase*	echo "The moon cycles through 8 phases every 29.5 days: new moon → waxing crescent → first quarter → waxing gibbous → full moon → waning gibbous → last quarter → waning crescent → new moon."
 *harvest*moon*	echo "The harvest moon is the full moon nearest the autumnal equinox (around Sep 22). It rises near sunset for several nights in a row, giving farmers extra light to bring in crops."
 *blue*moon*	echo "A blue moon is the second full moon in a single calendar month, occurring roughly every 2.5 years. Older definition: the third full moon in a season that has four. The moon does not actually turn blue."
 when*is*the*solstice	echo "Summer solstice: ~June 20-21 (longest day). Winter solstice: ~Dec 21-22 (shortest day). Northern hemisphere. Reversed in south."
-explain*solstice	kiwix-search solstice
-read*about*solstice	kiwix-search solstice
 *solstice*	echo "A solstice is when the sun reaches its highest or lowest point in the sky. Summer solstice (~Jun 21): longest day. Winter solstice (~Dec 21): shortest day. Marks the start of summer and winter."
 when*is*the*equinox	echo "Vernal equinox: ~March 20. Autumnal equinox: ~Sept 22. Day and night roughly equal. Marks astronomical spring/fall."
-explain*equinox	kiwix-search equinox
-read*about*equinox	kiwix-search equinox
 *equinox*	echo "An equinox is when the sun crosses the celestial equator, making day and night roughly equal (~12 hours each). Vernal equinox ~Mar 20, autumnal equinox ~Sep 22."
 *daylight*saving*	echo "Daylight saving time shifts clocks forward 1 hour in spring ('spring forward') and back in fall ('fall back'). In the US: second Sunday in March (forward), first Sunday in November (back). Not observed everywhere."
 *when*do*clocks*change*	echo "In the US, clocks spring forward the second Sunday in March and fall back the first Sunday in November. EU: last Sundays of March and October."
@@ -1190,8 +1103,6 @@ read*about*equinox	kiwix-search equinox
 *root*cellar*	echo "A root cellar is an underground or semi-underground storage space that stays cool (32-40°F) and humid (85-95%). Used to store root vegetables, apples, and preserves through winter without refrigeration."
 *growing*degree*day*	echo "Growing degree days (GDD) track accumulated warmth for crop development. GDD = (daily high + daily low) / 2 − base temp (usually 50°F). Corn needs ~2,700 GDD to mature; peas ~1,200."
 what*are*degree*days	echo "GDD = (daily high + daily low)/2 − base temp. Corn base: 50°F. Accumulate daily from planting. Corn silking: ~1400 GDD."
-explain*degree*days	kiwix-search growing degree day
-read*about*degree*days	kiwix-search growing degree day
 *degree*day*	echo "Degree days measure accumulated heat above a base temperature over time. Used to predict crop maturity, pest emergence, and heating/cooling needs. One degree day = one degree above base for one day."
 *sunrise*sunset*	echo "Sunrise and sunset times vary by latitude, longitude, and date. Check: date +%Y-%m-%d && curl -s 'wttr.in/?format=%S+%s' (shows sunrise and sunset for your location)."
 *what*phase*is*the*moon*	echo "Current moon phase: curl -s 'wttr.in/Moon' | head -24"
@@ -1240,8 +1151,6 @@ what*are*common*torque*specs	echo "1/4-20: 75 in-lb. 5/16-18: 132 in-lb. 3/8-16:
 *what*torque*	echo "Torque = force × distance. 1 ft·lb = 1.35582 N·m. 1 N·m = 0.7376 ft·lb"
 *thread*pitch*	echo "Thread pitch: distance between threads. UNC = Unified National Coarse (e.g., 1/4-20 = 20 TPI). Metric = mm pitch (e.g., M6×1.0 = 1.0mm pitch). UNC is default in US, metric everywhere else"
 *what*UNC*metric*	echo "UNC: Unified National Coarse, measured in TPI (threads per inch). Metric: measured in mm pitch. Common: 1/4-20 UNC ≈ M6×1.0, 5/16-18 ≈ M8×1.25, 3/8-16 ≈ M10×1.5, 1/2-13 ≈ M12×1.75"
-explain*drill*bit*sizes	kiwix-search drill bit sizes
-read*about*drill*bit*sizes	kiwix-search drill bit sizes
 *drill*bit*size*	echo "Common drill bits: #7=0.201in (1/4-20 tap), #29=0.136in (#8-32 tap), F=0.257in (5/16-18 tap), 5/16=0.3125in (3/8-16 tap), 27/64=0.4219in (1/2-13 tap). Metric: 5mm for M6, 6.8mm for M8, 8.5mm for M10, 10.2mm for M12"
 *nail*size*penny*	echo "Nail penny sizes: 2d=1in, 4d=1.5in, 6d=2in, 8d=2.5in, 10d=3in, 12d=3.25in, 16d=3.5in, 20d=4in, 40d=5in, 60d=6in. 'd' = penny. 16d common nail is the standard framing nail"
 what*is*joist*span	echo "2×8 SPF #2 at 16in OC: ~12ft floor span. 2×10: ~15ft. 2×12: ~18ft. Check local code tables. Dead+live load 50 psf typical."
@@ -1250,8 +1159,6 @@ what*is*joist*span	echo "2×8 SPF #2 at 16in OC: ~12ft floor span. 2×10: ~15ft.
 what*is*on*center*spacing	echo "16in OC standard for walls/floors. 24in OC for some walls, roof rafters. Measure center-to-center of framing members."
 *what*on*center*	echo "On-center (OC): measurement from center of one framing member to center of the next. Standard spacing: 16in OC for walls/floors, 24in OC for some walls/rafters"
 what*is*omit*needless*words	echo "Strunk Rule 17: 'Vigorous writing is concise.' Cut: the fact that, who is, which was, the question as to whether, there is/are, it is...that."
-explain*omit*needless*words	kiwix-search The Elements of Style
-read*about*omit*needless*words	kiwix-search The Elements of Style
 *omit*needless*word*	echo "Omit needless words. Vigorous writing is concise. Every word should tell. Not 'the question as to whether' but 'whether'. Not 'the fact that' but 'since/because'. Not 'in a hasty manner' but 'hastily'."
 *active*voice*passive*voice*	echo "Active voice: subject acts (The dog bit the man). Passive voice: subject receives (The man was bitten). Use active by default — it is direct and vigorous. Passive is acceptable when the actor is unknown or the receiver matters more."
 what*is*parallel*construction	echo "Match grammatical form in lists/pairs. Wrong: 'to sing, dancing, and played.' Right: 'to sing, to dance, and to play.' Applies to correlatives (both/and, not only/but also)."
@@ -1370,8 +1277,6 @@ what*are*poker*hand*rankings	echo "Royal flush > straight flush > four of a kind
 *what*temperature*is*a*fever*	echo "100.4°F (38°C) or higher is generally considered a fever. Normal body temp averages 98.6°F (37°C) but varies by person, time of day, and measurement site. Seek care for fever above 103°F or lasting more than 3 days."
 *what*is*a*fever*	echo "Body temperature elevated above the normal range, typically above 100.4°F (38°C). A fever is the immune system's response to infection — it's a symptom, not a disease. Treat the cause; manage discomfort if needed."
 *signs*of*dehydration*	echo "Thirst, dark yellow urine, dry mouth/lips, headache, fatigue, dizziness. Severe: sunken eyes, rapid pulse, low blood pressure, confusion, no tears when crying (in children). Skin turgor test: pinched skin tents instead of snapping back."
-explain*dehydration	kiwix-search dehydration
-read*about*dehydration	kiwix-search dehydration
 *dehydration*	echo "Insufficient body water. Signs: dark urine, dry mouth, thirst, dizziness, fatigue, reduced urine output. Severe: rapid heartbeat, confusion, fainting. Causes: inadequate intake, vomiting, diarrhea, heat, exertion. Treat: drink water and electrolytes."
 *what*is*anemia*	echo "Low red blood cell count or hemoglobin, reducing oxygen delivery. Symptoms: fatigue, pallor, shortness of breath, dizziness. Causes: iron deficiency (most common), B12/folate deficiency, chronic disease, blood loss. Diagnosed by CBC blood test."
 *what*is*an*antibiotic*	echo "A drug that kills or inhibits bacteria. Does NOT work on viruses (colds, flu, COVID). Types: penicillins, cephalosporins, macrolides, fluoroquinolones. Always complete the full course. Overuse drives resistance."
@@ -1390,134 +1295,34 @@ read*about*dehydration	kiwix-search dehydration
 *what*is*A1C*	echo "Hemoglobin A1C: a blood test showing average blood sugar over 2-3 months. Normal: below 5.7%. Prediabetes: 5.7-6.4%. Diabetes: 6.5%+. Measures the percentage of hemoglobin with attached glucose. Doesn't require fasting."
 #
 # --- two-tier: echo (almanac) + kiwix-search (encyclopedia) ---
-explain*fever	kiwix-search fever
-read*about*fever	kiwix-search fever
-explain*blood*pressure	kiwix-search blood pressure
-read*about*blood*pressure	kiwix-search blood pressure
 how*to*do*cpr	echo "30 chest compressions (2 inches deep, 100-120/min) then 2 rescue breaths. Repeat. Push hard, push fast."
-explain*cpr	kiwix-search cardiopulmonary resuscitation
-read*about*cpr	kiwix-search cardiopulmonary resuscitation
 what*to*do*for*choking	echo "Conscious adult: 5 back blows then 5 abdominal thrusts (Heimlich). Repeat until clear or unconscious."
-explain*choking	kiwix-search choking
-read*about*choking	kiwix-search choking
 how*to*stop*bleeding	echo "Direct pressure with clean cloth. Elevate above heart. Tourniquet 2-3in above wound only if life-threatening."
-explain*bleeding	kiwix-search hemorrhage
-read*about*bleeding	kiwix-search hemorrhage
 how*to*treat*burns	echo "Cool running water 10-20 min. No ice, no butter. Cover loosely. Seek help for burns >3in or on face/joints/genitals."
-explain*burns	kiwix-search burn (injury)
-read*about*burns	kiwix-search burn (injury)
 what*to*do*for*broken*bone	echo "Immobilize above and below fracture. Splint in position found. Ice for swelling. Do not straighten. Seek ER."
-explain*broken*bone	kiwix-search bone fracture
-read*about*broken*bone	kiwix-search bone fracture
 what*is*a*concussion	echo "Mild TBI from head impact. Signs: headache, confusion, nausea, light sensitivity. No sleep restriction myth. Watch 24-48h."
-explain*concussion	kiwix-search concussion
-read*about*concussion	kiwix-search concussion
 what*is*allergic*reaction	echo "Mild: hives, itching → antihistamine. Anaphylaxis: throat swelling, difficulty breathing → epinephrine (EpiPen) + 911 immediately."
-explain*allergic*reaction	kiwix-search anaphylaxis
-read*about*allergic*reaction	kiwix-search anaphylaxis
 what*are*stroke*signs	echo "FAST: Face drooping, Arm weakness, Speech slurred, Time to call 911. Note onset time for treatment window."
-explain*heat*stroke	kiwix-search heat stroke
-explain*stroke	kiwix-search stroke
-read*about*heat*stroke	kiwix-search heat stroke
-read*about*stroke	kiwix-search stroke
 what*are*heart*attack*signs	echo "Chest pressure/squeezing, jaw/arm/back pain, shortness of breath, cold sweat, nausea. Chew aspirin 325mg, call 911."
-explain*heart*attack	kiwix-search myocardial infarction
-read*about*heart*attack	kiwix-search myocardial infarction
 what*is*diabetes	echo "Type 1: no insulin production. Type 2: insulin resistance. Normal fasting glucose: 70-100 mg/dL. A1C <5.7% normal."
-explain*diabetes	kiwix-search diabetes mellitus
-read*about*diabetes	kiwix-search diabetes mellitus
-explain*asthma	kiwix-search asthma
-read*about*asthma	kiwix-search asthma
 what*to*do*for*seizure	echo "Clear area, protect head, turn on side. Do NOT restrain or put anything in mouth. Time it. Call 911 if >5 min or first seizure."
-explain*seizure	kiwix-search epileptic seizure
-read*about*seizure	kiwix-search epileptic seizure
-explain*bowline	kiwix-search bowline
-read*about*bowline	kiwix-search bowline
-explain*square*knot	kiwix-search reef knot
-read*about*square*knot	kiwix-search reef knot
-explain*clove*hitch	kiwix-search clove hitch
-read*about*clove*hitch	kiwix-search clove hitch
 how*to*start*a*fire	echo "Tinder (dry grass/bark shavings) → kindling (pencil-thick sticks) → fuel (arm-thick wood). Teepee or log cabin lay. Shield from wind."
-explain*fire*starting	kiwix-search fire making
-read*about*fire*starting	kiwix-search fire making
-explain*water*purification	kiwix-search water purification
-read*about*water*purification	kiwix-search water purification
 how*to*find*north	echo "Stick shadow: mark tip, wait 15 min, mark again. Line between marks runs E-W, perpendicular is N-S. Night: Polaris at end of Little Dipper handle."
-explain*finding*north	kiwix-search celestial navigation
-read*about*finding*north	kiwix-search celestial navigation
-explain*shelter*building	kiwix-search survival shelter
-read*about*shelter*building	kiwix-search survival shelter
-explain*hypothermia	kiwix-search hypothermia
-read*about*hypothermia	kiwix-search hypothermia
 what*to*do*for*snakebite	echo "Stay calm, immobilize limb at/below heart level. Remove rings/watches. Mark swelling edge+time. NO tourniquet, NO cutting, NO sucking. ER now."
-explain*snakebite	kiwix-search snake bite
-read*about*snakebite	kiwix-search snake bite
-explain*signaling*for*help	kiwix-search distress signal
-read*about*signaling*for*help	kiwix-search distress signal
 wire*gauge*for*20*amp	echo "12 AWG copper (20A). 14 AWG = 15A. 10 AWG = 30A. Romex NM-B for residential. Derate for long runs >50ft or bundling."
-explain*wire*gauge	kiwix-search American wire gauge
-read*about*wire*gauge	kiwix-search American wire gauge
 drill*bit*for*quarter*bolt	echo "1/4-20 tap drill: #7 (0.201in). Clearance hole: 17/64in. For lag bolt pilot hole: 5/32in softwood, 3/16in hardwood."
-explain*torque*specs	kiwix-search torque
-read*about*torque*specs	kiwix-search torque
 how*to*calculate*board*feet	echo "Thickness(in) × Width(in) × Length(ft) / 12. Example: 2×6×8ft = 8 board feet. Nominal dimensions, not actual."
-explain*board*foot	kiwix-search board foot
-read*about*board*foot	kiwix-search board foot
-explain*on*center*spacing	kiwix-search wall stud
-read*about*on*center*spacing	kiwix-search wall stud
-explain*joist*span	kiwix-search joist
-read*about*joist*span	kiwix-search joist
 what*are*common*nail*sizes	echo "8d=2.5in, 10d=3in, 16d=3.5in. 'd' = penny. Framing: 16d common. Sheathing: 8d. Finish: 6d-8d finish nails. Ring shank for decking."
-explain*nail*sizes	kiwix-search nail (fastener)
-read*about*nail*sizes	kiwix-search nail (fastener)
 what*are*pipe*thread*sizes	echo "NPT: 1/2in pipe = 0.84in OD, 14 TPI. 3/4in = 1.05in OD, 14 TPI. Use Teflon tape on male threads. 1.5-3 wraps clockwise."
-explain*pipe*threads	kiwix-search national pipe thread
-read*about*pipe*threads	kiwix-search national pipe thread
-explain*planting*tomatoes	kiwix-search tomato cultivation
-read*about*planting*tomatoes	kiwix-search tomato cultivation
 what*time*is*sunrise	echo "Varies by latitude/date. Rough guide 40°N: Jun 21 ~5:30am, Dec 21 ~7:15am, equinoxes ~6:45am. Use NOAA solar calculator for exact."
-explain*sunrise	kiwix-search sunrise
-read*about*sunrise	kiwix-search sunrise
 when*to*harvest*garlic	echo "When lower 3-4 leaves brown, upper 4-5 still green. Usually mid-July zone 5-7. Stop watering 2 weeks before. Cure 2-4 weeks in shade."
-explain*harvesting*garlic	kiwix-search garlic
-read*about*harvesting*garlic	kiwix-search garlic
 how*to*make*a*roux	echo "Equal parts fat and flour by weight. Melt butter, whisk in flour. White: 2 min. Blond: 5 min. Dark: 15-20 min. Low-medium heat, constant stirring."
-explain*roux	kiwix-search roux
-read*about*roux	kiwix-search roux
 how*to*proof*bread	echo "Bulk ferment: 75-78°F, 4-6hr or until doubled. Shape, then cold retard 12-16hr in fridge. Poke test: indent springs back slowly = ready."
-explain*bread*proofing	kiwix-search proofing (baking)
-read*about*bread*proofing	kiwix-search proofing (baking)
-explain*knife*sharpening	kiwix-search sharpening
-read*about*knife*sharpening	kiwix-search sharpening
-explain*cast*iron*seasoning	kiwix-search cast iron cookware
-read*about*cast*iron*seasoning	kiwix-search cast iron cookware
-explain*smoking*meat	kiwix-search smoking (cooking)
-read*about*smoking*meat	kiwix-search smoking (cooking)
-explain*canning	kiwix-search canning
-read*about*canning	kiwix-search canning
-explain*fermentation	kiwix-search fermentation
-read*about*fermentation	kiwix-search fermentation
 what*is*active*vs*passive*voice	echo "Active: subject acts (The dog bit the man). Passive: subject receives (The man was bitten). Prefer active. Use passive when actor is unknown or irrelevant."
-explain*active*passive*voice	kiwix-search active voice
-read*about*active*passive*voice	kiwix-search active voice
-explain*parallel*construction	kiwix-search parallelism (grammar)
-read*about*parallel*construction	kiwix-search parallelism (grammar)
-explain*dangling*modifier	kiwix-search dangling modifier
-read*about*dangling*modifier	kiwix-search dangling modifier
 what*is*a*comma*splice	echo "Two independent clauses joined by only a comma. Wrong: 'It's cold, I need a coat.' Fix: semicolon, period, or conjunction. 'It's cold; I need a coat.'"
-explain*comma*splice	kiwix-search comma splice
-read*about*comma*splice	kiwix-search comma splice
-explain*poker*hands	kiwix-search poker hand
-read*about*poker*hands	kiwix-search poker hand
 how*do*chess*pieces*move	echo "King:1 any dir. Queen:any dist any dir. Rook:straight lines. Bishop:diagonals. Knight:L-shape (2+1), jumps. Pawn:forward 1 (2 from start), captures diagonal."
-explain*chess*pieces	kiwix-search chess piece
-read*about*chess*pieces	kiwix-search chess piece
 how*to*play*go	echo "Black/white alternate placing stones on intersections. Surround territory. Capture by filling all liberties. Komi: white gets 6.5 points. Most territory wins."
-explain*go	kiwix-search go (game)
-read*about*go	kiwix-search go (game)
 how*to*score*cribbage	echo "15s=2pts each combo. Pairs=2. Runs=1/card. Flush=4-5. Nobs (J matching starter)=1. Go=1. Last card=1. 31=2. Game to 121."
-explain*cribbage	kiwix-search cribbage
-read*about*cribbage	kiwix-search cribbage
 # --- kids / gaming / homework / curiosity ---
 *what*skeleton*minecraft*	echo "Skeletons are hostile mobs in Minecraft that shoot arrows at you. They spawn in the dark, burn in sunlight, and drop bones and arrows."
 can*i*play*minecraft*on*this	echo "Yes! Install with: sudo apt install minecraft-launcher (or download from minecraft.net). You need a Minecraft account."
@@ -1697,9 +1502,6 @@ what*is*possession*byatt	echo "Possession: A Romance (1990). A.S. Byatt. Two mod
 # --- livingledger: formation authors and professors ---
 what*is*tender*buttons	echo "Tender Buttons (1914). Gertrude Stein. Pre-freshman summer reading, DePaul honors program. The governor's honest response: nope."
 who*is*ted*st*martin	echo "Ted St. Martin. The Art of Shooting Baskets. The first man page the governor read on a driveway with a basketball. LIVINGLEDGER entry."
-who*is*gertrude*stein	kiwix-search Gertrude Stein
-who*is*as*byatt	kiwix-search A. S. Byatt
-who*is*byatt	kiwix-search A. S. Byatt
 who*is*william*mcneill	echo "William McNeill. DePaul honors Introduction to Philosophy. The entry point. His journals are the earliest documented layer of the governor's self-as-first-trust-root. LIVINGLEDGER."
 who*is*sylvia*escarcega	echo "Sylvia Escarcega. DePaul. Part of the formation cohort across discipline and time. LIVINGLEDGER."
 who*is*charles*block	echo "Charles Block. Berkeley, possibly U of Chicago. Recommended Edinburgh Divinity for post-grad on the Nogales trip. The governor scoffed at divinity. The architecture arrived anyway. LIVINGLEDGER."
@@ -2021,7 +1823,6 @@ remove*bathroom*mold*natural	echo "Use white vinegar or a tea tree oil solution 
 *write*check*	echo "Write the date, recipient's name, amount in numbers and words, and sign the bottom."
 *connect*bluetooth*	echo "Enable Bluetooth on both devices, put one in pairing mode, and select it on the other."
 *set*up*wifi*	echo "Connect your router to the modem, plug it in, and follow the manufacturer's instructions to configure settings."
- deficiency, or poor lighting."
 
 # --- return to primitives (food preservation, growing, mending, cleaning, fixing) ---
 cut*brisket*	echo "Slice against the grain for maximum tenderness."
