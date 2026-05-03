@@ -8,9 +8,10 @@
  *
  * Wire format (input, one JSON line per request):
  *   {"messages":[{"role":"...","content":"..."},...],"max_tokens":N}
- *   OpenAI chat-completions-shaped. ASCII-clean. No nested objects
- *   in content, no JSON inside JSON. Caller flattens with jq -c
- *   if needed. Lines exceeding MAX_INPUT are drained and rejected.
+ *   OpenAI chat-completions-shaped. UTF-8 bytes, no \uXXXX escapes.
+ *   No nested objects in content, no JSON inside JSON. Caller
+ *   flattens with jq -c if needed (jq emits UTF-8 by default).
+ *   Lines exceeding MAX_INPUT are drained and rejected.
  *
  * Wire format (output, one JSON line per response):
  *   {"choices":[{"message":{"role":"assistant","content":"..."},"finish_reason":"stop"}]}
