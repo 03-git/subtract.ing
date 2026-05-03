@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # hosuni — tool-use daemon for local inference
 # listens on a port via nc. receives JSON, checks lookdown,
-# routes inference through squared, parses tool calls,
-# executes, loops, logs. pure bash + jq + curl.
+# routes inference through parsimony (coproc via named pipes),
+# parses tool calls, executes, loops, logs. pure bash + jq.
+# falls back to curl if parsimony pipes not present.
 #
 # run:   hosuni.sh [port]
 # call:  echo '{"input":"list files","channel":"terminal"}' | nc localhost 8091
@@ -17,6 +18,9 @@ INFERENCE_HOST=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null || echo "localho
 INFERENCE_PORT=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null || echo "8085")
 RESEARCH_PORT=$(cat "$SUBTRACT_DIR/research_port" 2>/dev/null || echo "")
 RESEARCH_HOST=$(cat "$SUBTRACT_DIR/research_host" 2>/dev/null || echo "")
+PARSIMONY_IN="$SUBTRACT_DIR/.parsimony.in"
+PARSIMONY_OUT="$SUBTRACT_DIR/.parsimony.out"
+PARSIMONY_LOCK="$SUBTRACT_DIR/.parsimony.lock"
 LOOKDOWN_NODE="$SUBTRACT_DIR/lookdown.$(hostname).tsv"
 LOOKDOWN_UNIVERSAL="$SUBTRACT_DIR/lookdown.universal.tsv"
 TOOLS_FILE="$HOSUNI_DIR/tools.tsv"
@@ -111,6 +115,19 @@ call_inference() {
     if [ "$INFERENCE_HOST" != "localhost" ] && [ -n "$INFERENCE_HOST" ]; then
         response=$(echo "$payload" | ssh -o ConnectTimeout=5 "$INFERENCE_HOST" \
             "curl -s -m 300 -X POST http://localhost:${INFERENCE_PORT}/v1/chat/completions -H 'Content-Type: application/json' -d @-" 2>/dev/null)
+    elif [ -p "$PARSIMONY_IN" ] && [ -p "$PARSIMONY_OUT" ]; then
+        local compact; compact=$(echo "$payload" | jq -c .)
+        local _lock_tries=0
+        while ! mkdir "$PARSIMONY_LOCK" 2>/dev/null; do
+            _lock_tries=$((_lock_tries + 1))
+            [ "$_lock_tries" -ge 60 ] && { response='{"error":"inference lock timeout"}'; break; }
+            sleep 0.5
+        done
+        if [ -d "$PARSIMONY_LOCK" ]; then
+            trap 'rmdir "$PARSIMONY_LOCK" 2>/dev/null' RETURN
+            printf '%s\n' "$compact" > "$PARSIMONY_IN"
+            read -r response < "$PARSIMONY_OUT"
+        fi
     else
         response=$(curl -s --connect-timeout 10 -m 300 \
             -X POST "http://localhost:${INFERENCE_PORT}/v1/chat/completions" \
@@ -208,6 +225,7 @@ ${context}"
 
         # check if inference returned anything
         local content; content=$(echo "$response" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+        [[ "$content" == "<|channel>thought"* ]] && content="${content#*"<channel|>"}"
         local tool_calls; tool_calls=$(echo "$response" | jq -r '.choices[0].message.tool_calls // empty' 2>/dev/null)
         local finish; finish=$(echo "$response" | jq -r '.choices[0].finish_reason // empty' 2>/dev/null)
 
@@ -271,6 +289,7 @@ ${context}"
             INFERENCE_PORT="$saved_port"
             INFERENCE_HOST="$saved_host"
             local research_content; research_content=$(echo "$research_resp" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+            [[ "$research_content" == "<|channel>thought"* ]] && research_content="${research_content#*"<channel|>"}"
             if [ -n "$research_content" ]; then
                 content="$research_content"
                 source="research"
@@ -297,7 +316,11 @@ ${context}"
 # --- listener ---
 
 log_daemon "hosuni starting (stdin/stdout mode)"
-log_daemon "inference: ${INFERENCE_HOST}:${INFERENCE_PORT}"
+if [ -p "$PARSIMONY_IN" ] && [ -p "$PARSIMONY_OUT" ]; then
+    log_daemon "inference: parsimony (pipes)"
+else
+    log_daemon "inference: ${INFERENCE_HOST}:${INFERENCE_PORT} (curl)"
+fi
 log_daemon "lookdown: $LOOKDOWN_NODE $LOOKDOWN_UNIVERSAL"
 log_daemon "tools: $TOOLS_FILE"
 
