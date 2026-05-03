@@ -34,7 +34,33 @@ subtract's T0.5 tier consults (`help -m`, `help -s`). Kept
 `command_not_found_handle` a stable public hook rather than letting
 it become an implementation detail.
 
+**coproc** (Ramey, bash 4.0, 2009). Bidirectional pipe between the
+shell and a background process, exposed as file descriptors. subtract
+uses coproc to hold a loaded model in memory and talk to it through
+stdin/stdout — inference as a Unix filter. The concept is David Korn's
+(ksh88, 1988); Ramey brought it to bash.
+
 Fox wrote the substrate. Ramey kept it reachable. subtract needs both.
+
+## David Korn — coprocesses
+
+Wrote ksh at AT&T Bell Labs. Released ksh88 in 1988 with coprocesses:
+a background process connected to the shell via bidirectional pipes,
+addressed through `|&`, `print -p`, and `read -p`. The idea that a shell could hold
+a long-running conversation with a subprocess — not just pipe output
+through it — originated here.
+
+Ramey reimplemented the concept as `coproc` in bash 4.0 (2009). subtract
+depends on the bash form, but the design is Korn's.
+
+## Doug McIlroy — pipes
+
+Proposed the pipe primitive in a written memo (October 11, 1964).
+Ken Thompson implemented it in Unix V3 in February 1973. Every tier
+of subtract's routing chain — T0 through T4 — composes through pipes.
+Named pipes (FIFOs), which subtract uses to connect hosuni to
+parsimony across process boundaries, are the filesystem-visible
+extension of McIlroy's original idea.
 
 ---
 
@@ -52,6 +78,18 @@ Fox, Brian J. 1989b–. GNU Readline Library. Boston: Free Software
 Fox, Brian J. 1989c–. GNU History Library. Boston: Free Software
     Foundation.
     https://tiswww.case.edu/php/chet/readline/history.html
+
+Korn, David G. 1994. "ksh — An Extensible High Level Language."
+    Proceedings of the USENIX 1994 Very High Level Languages Symposium.
+    https://www.in-ulm.de/~mascheck/various/whatshell/ksh94.pdf
+
+McIlroy, M. Douglas. 1964. Internal Bell Labs memo (October 11)
+    proposing stream-processing programs connected by pipes.
+    Implemented by Ken Thompson in Unix V3 (February 1973).
+
+Ritchie, Dennis M. 1984. "The Evolution of the Unix Time-sharing
+    System." AT&T Bell Laboratories Technical Journal 63 (8): 1577–93.
+    https://www.bell-labs.com/usr/dmr/www/hist.html
 
 Woolsey, R. James, and Brian J. Fox. 2017. "To Protect Voting, Use
     Open-Source Software." *New York Times,* August 3.
