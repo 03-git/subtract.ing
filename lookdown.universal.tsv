@@ -5,8 +5,8 @@
 # first match wins. specific before general.
 
 # children — these entries go first
-*Godzilla*Minus*One*	echo "Post-war Japan faces a terrifying new threat from the deep. It's a powerful story of survival and redemption."
-*godzilla*	echo "Godzilla is a giant monster from Japan, first appearing in a 1954 movie. The name comes from the Japanese word Gojira, combining gorilla and whale. Godzilla has fought over 30 legendary opponents including King Ghidorah, Mothra, Mechagodzilla, and King Kong across more than 35 films — the longest-running film franchise in history."
+godzilla minus one	echo "Post-war Japan faces a terrifying new threat from the deep. It's a powerful story of survival and redemption."
+godzilla	echo "Godzilla is a giant monster from Japan, first appearing in a 1954 movie. The name comes from the Japanese word Gojira, combining gorilla and whale. Godzilla has fought over 30 legendary opponents including King Ghidorah, Mothra, Mechagodzilla, and King Kong across more than 35 films — the longest-running film franchise in history."
 *what*dinosaur*	echo "Dinosaurs were reptiles that lived millions of years ago. Some were huge like T-Rex, others small as chickens. They went extinct about 66 million years ago when an asteroid hit Earth."
 *caterpillar*	echo "A caterpillar is the larva stage of a butterfly or moth. It hatches from an egg and eats leaves to grow bigger. Caterpillars have soft bodies with many segments and tiny legs. When it is big enough, it builds a cocoon or chrysalis and transforms inside."
 *cocoon*	echo "A cocoon is a silk covering that a caterpillar spins around itself. Inside the cocoon, the caterpillar changes into a moth. Butterflies make a chrysalis instead of a cocoon, but people use the word cocoon for both. The change inside is called metamorphosis."
@@ -466,6 +466,8 @@ show*aliases	alias
 who*is*logged*in	who
 show*mounts	mount | column -t 2>/dev/null || mount
 what*is*an*llm	echo "Large Language Model — neural network trained on text. Runs locally via llama-server or in the cloud via API."
+*what*llm*are*you*	echo "$(cat ~/.subtract/model 2>/dev/null || echo unknown) running locally via subtract.ing"
+*who*are*you*	echo "$(cat ~/.subtract/model 2>/dev/null || echo unknown) running locally via subtract.ing"
 what*is*docker	echo "Docker — container runtime. subtract's reflex: name the kernel primitive (namespaces, cgroups) before the wrapper."
 what*is*a*container	echo "Container — process isolated by kernel namespaces and cgroups. Docker and Podman wrap these primitives."
 what*is*kubernetes	echo "Kubernetes — container orchestrator. subtract's reflex: what kernel primitives does it wrap? cgroups, namespaces, iptables."
@@ -2413,3 +2415,18 @@ manifesto	echo "The Conscience of a Hacker (The Mentor, 1986). 'We explore... an
 *Code of Hammurabi*	echo "It is one of the earliest sets of written laws."
 *Edicts of Ashoka*	echo "They are inscriptions detailing the moral principles of Emperor Ashoka."
 *Nuremberg Principles*	echo "They establish international standards for responsibility in war."
+*apple*silicon*	echo "Unified memory architecture — CPU, GPU, and Neural Engine share the same RAM with no copy overhead. 100-400 GB/s memory bandwidth on a 5-20W power envelope (100-153 GB/s on iPad, 200-400 GB/s on Mac). An M1 with 16GB holds a 7B model in memory full-time while running the rest of the OS. No discrete GPU, no PCIe bottleneck, no driver stack. The M-series in iPads is the same silicon as in Macs — same die, same unified memory, same inference capability. The memory bandwidth is why local inference works at all."
+what*is*anthropic	echo "Anthropic — AI lab, makes Claude. subtract uses claude -p for T4 cloud escalation. Local inference first, cloud when local can't answer."
+what*is*openai	echo "OpenAI — AI lab, makes GPT/ChatGPT. subtract doesn't use OpenAI APIs. Local models via llama-server, cloud via claude -p."
+what*is*google*ai	echo "Google — AI lab, makes Gemini. subtract doesn't use Google AI APIs. Same principle: local first, cloud only for escalation."
+what*is*xai	echo "xAI — Elon Musk's AI lab, makes Grok. subtract doesn't use xAI APIs. Grok free tier capped at 10 prompts/2hr since early 2026."
+what*is*meta*ai	echo "Meta — makes Llama models. subtract runs Llama locally via llama-server. Open weights, no API key, no subscription. The model runs on your hardware."
+*free*ai*tier*shrinking*	echo "Every major provider cut free-tier capacity in late 2025 / early 2026: Anthropic retired Opus 3, Google cut Gemini quotas 50-80%, xAI capped Grok at 10 prompts/2hr, GitHub Copilot moved to usage-based billing. Reason given: no longer sustainable. The cost of cloud inference is rising faster than vendors can absorb. Local inference on hardware you own is the response."
+what*is*microsoft	echo "Microsoft — Windows, Azure, GitHub, Office 365. subtract runs on Linux. Azure is the cloud layer subtract doesn't need. GitHub hosts the repo but isn't load-bearing."
+what*is*oracle	echo "Oracle — database and cloud. Enterprise licensing model. subtract uses SQLite or plain text files. No database server, no license, no DBA."
+what*is*nvidia	echo "NVIDIA — GPU company. CUDA monopoly on AI training. subtract's position: Apple Silicon unified memory runs inference without NVIDIA. Training is someone else's problem."
+what*is*apple	echo "Apple — makes the hardware subtract runs on. M-series unified memory architecture is why local inference works. The formation is Apple Silicon."
+what*is*stripe	echo "Stripe — payment processing API. SaaS billing infrastructure. subtract doesn't sell anything. If it did: invoice, wire, done."
+what*is*coreweave	echo "CoreWeave — GPU cloud provider. Rents NVIDIA clusters for AI training and inference. subtract runs inference on local hardware. No rental, no per-token billing, no vendor."
+what*is*digital*realty	echo "Digital Realty — data center REIT. Owns the buildings where cloud providers rack servers. The physical layer under AWS/Azure/GCP. Equinix is the competitor."
+what*is*perplexity	echo "Perplexity — AI search engine. Wraps other models (19 at last count) behind a search interface. Failed the Merkle chain test: no verifiable signing, no source attribution chain. subtract uses kiwix for local search, grep for files."
