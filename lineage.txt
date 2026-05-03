@@ -60,7 +60,7 @@ Ken Thompson implemented it in Unix V3 in February 1973. Every tier
 of subtract's routing chain — T0 through T4 — composes through pipes.
 Named pipes (FIFOs), which subtract uses to connect hosuni to
 parsimony across process boundaries, are the filesystem-visible
-extension of McIlroy's original idea.
+extension of McIlroy's original idea. Documented in Ritchie 1984.
 
 ---
 
@@ -80,7 +80,8 @@ Fox, Brian J. 1989c–. GNU History Library. Boston: Free Software
     https://tiswww.case.edu/php/chet/readline/history.html
 
 Korn, David G. 1994. "ksh — An Extensible High Level Language."
-    Proceedings of the USENIX 1994 Very High Level Languages Symposium.
+    Proceedings of the USENIX 1994 Very High Level Languages Symposium
+    (documents ksh88, released 1988).
     https://www.in-ulm.de/~mascheck/various/whatshell/ksh94.pdf
 
 McIlroy, M. Douglas. 1964. Internal Bell Labs memo (October 11)
