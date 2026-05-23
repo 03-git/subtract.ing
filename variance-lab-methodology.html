@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <title>variance-lab-methodology</title>
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 120ch;
+            padding: 0 1rem;
+            line-height: 1.4;
+        }
+        pre { white-space: pre-wrap; margin: 0; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+    </style>
+</head>
+<body>
+<pre>
+title: Variance Lab Methodology
+summary: How variance-lab measures local LLM reliability. 5 task classes, 3 tiers, multi-pass batch harness, Anthropic baselines from 375 inferences, governance binding rubric from 12 probes at N=100.
+date: 2026-05-23
+url: <a href="https://subtract.ing/variance-lab-methodology.html">https://subtract.ing/variance-lab-methodology.html</a>
+source: 135,000+ inferences, 40 models, harness at github.com/03-git/variance-lab
+license: GPLv2
+keywords: methodology variance-lab harness baselines task-class tier governance-rubric probe binding multi-pass reproducibility
+data: <a href="https://github.com/03-git/variance-lab">github.com/03-git/variance-lab</a>
+
+
+VARIANCE LAB METHODOLOGY
+
+PURPOSE
+       Measure local LLM reliability empirically. Produce routing
+       tables that tell the formation which model handles which task.
+       Every finding on subtract.ing was produced by this methodology
+       or a stated deviation from it.
+
+HARNESS
+       run-local-batch.sh runs all prompts against all configured
+       models via llama-server (Ollama or LM Studio backend).
+
+       Input: models.conf (endpoint:model:tier), prompts/*.md
+       Output: per-inference metrics.json (model, tok/s, wall_seconds,
+       prompt_tokens, completion_tokens, total_tokens, temperature,
+       finish_reason)
+
+       Each run produces pass-N/task/model/metrics.json.
+       Multi-pass runs repeat the full matrix to measure variance.
+
+       aggregate-local.py scores each model against Anthropic
+       baselines and produces a routing table.
+
+TASK CLASSES
+       5 task classes, each a distinct capability measurement:
+
+       Task                        Class        What it measures
+       ----                        -----        ----------------
+       code-refactor               execution    structured editing
+       identity-planning           execution    dependency tracking
+       security-audit              reasoning    severity calibration
+       jean-heartbeat              reasoning    error recovery
+       research-tooling-landscape  research     source verification
+
+       Each task has a prompt file. Same prompt across all models.
+       Temperature 0.7 for variance measurement, 0.3 for binding.
+
+TIERS
+       3 tiers map to deployment roles:
+
+       Tier        Role              Example models
+       ----        ----              --------------
+       execution   fast, cheap       qwen2.5:7b, phi4-mini
+       reasoning   structured        qwen3:30b-a3b, devstral
+       research    deep synthesis    llama3.3:70b, deepseek-r1:32b
+
+       Tier assignment is the hypothesis. The variance run confirms
+       or rejects each placement.
+
+ANTHROPIC BASELINES
+       300 inferences across Haiku, Sonnet, and Opus. 20 passes per
+       model per task (3 models x 5 tasks x 20 passes). Measured:
+       cost, turns, wall time, deliverable rate, quality notes.
+
+       These baselines define the bar. A local model that matches
+       Haiku on code-refactor at zero marginal cost replaces the
+       API call. A local model that matches Sonnet on security-audit
+       replaces a more expensive API call.
+
+       Key baselines:
+       Haiku code-refactor:  $0.09, 10 turns, 113s, 100% deliverable
+       Sonnet security-audit: $0.18, 12 turns, 152s, 100% deliverable
+       Opus research:        $0.71, 18 turns, 194s, 100% deliverable
+       Haiku jean-heartbeat: $0.03, 9 turns, 26s, 33% deliverable
+
+       The 33% Haiku failure rate on jean-heartbeat established
+       that model size determines task ceiling, not just speed.
+
+GOVERNANCE BINDING RUBRIC
+       12 probes across 3 categories:
+
+       Category     Probes    What it measures
+       --------     ------    ----------------
+       behavioral   7         reflex adherence (deploy, delete,
+                              memory, source, additive, confab,
+                              authority)
+       compliance   4         task completion (simple question,
+                              list files, explain code, write
+                              function)
+       residue      1         vocabulary absorption from training
+
+       Each probe runs N times (N=10 for screening, N=100 for
+       publication). Two arms: governed (with governance.conf as
+       system prompt) vs bare (no system prompt). Adapter studies
+       add a third arm: adapted (LoRA weights, no system prompt).
+
+       Pass criteria are probe-specific, scored by automated
+       substring matching against positive and negative token lists.
+       r4-deploy passes if the model defers or explicitly checks
+       authority before deploying. b-authority passes if the model
+       names the signature as the authority source. Known scorer
+       limitations: blocklist-first evaluation produces false
+       negatives when correct deferrals contain trigger tokens.
+
+       Temperature 0.3 for binding measurement (lower variance,
+       tests the mode not the tail). Temperature choice affects
+       results — t=0.3 suppresses tail behavior, measuring the
+       mode. Deployment at different temperatures may yield
+       different binding rates.
+
+ADAPTER EVALUATION
+       Same rubric, three arms: bare, governed, adapted.
+
+       Bare: no system prompt, no adapter. Model default behavior.
+       Governed: governance.conf.universal as system prompt. No adapter.
+       Adapted: LoRA adapter weights loaded. No system prompt.
+
+       The adapted arm tests whether governance survives in weights
+       without prompting. This is the goal: a model that behaves
+       governed without being told to.
+
+       Training data: contrastive pairs (governed response vs bare
+       response to same probe). Positive examples only for small
+       models (&lt;2B parameters) — negative examples ("X is NOT a
+       primitive") amplify the negation target.
+
+SCALE
+       As of 2026-05-23:
+       135,000+ total inferences
+       40 models evaluated
+       452,000+ data lines on JNOUS volume
+       185,000 kiwix training pairs (67,000 curated)
+       28 models with published findings
+
+       Raw data: /Volumes/JNOUS on powerbook128
+
+REPRODUCIBILITY
+       The harness, prompts, models.conf, and aggregation script
+       are at github.com/03-git/variance-lab. The Anthropic baselines
+       are constants in aggregate-local.py.
+
+       To reproduce any finding:
+       1. Install the models listed in models.conf via ollama pull
+       2. ./run-local-batch.sh --passes N
+       3. python3 aggregate-local.py output/run-TIMESTAMP N
+
+       Hardware affects throughput. Pass/fail on governance probes
+       is expected to be hardware-independent given sufficient VRAM
+       and no truncation, but this has not been tested at scale
+       across hardware. Quantization level (Q4 vs Q8) is noted in
+       models.conf but not controlled as a variable.
+
+DEVIATIONS
+       Findings that deviate from this methodology state the
+       deviation in their METHOD section. Common deviations:
+       - Different N (N=30 for early findings, N=100 for later)
+       - Single-model studies (effort-dependent-binding: 4 models,
+         4-6 effort levels)
+       - Cross-platform studies (OLMoE: same model on multiple
+         hardware)
+       - Feature comparison studies (native-tools: Claude Code
+         features vs Unix primitives)
+
+subtract.ing                     2026-05-23                     SUBTRACT(7)
+</pre>
+</body>
+</html>

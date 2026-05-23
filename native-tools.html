@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <title>native-tools</title>
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 120ch;
+            padding: 0 1rem;
+            line-height: 1.4;
+        }
+        pre { white-space: pre-wrap; margin: 0; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+    </style>
+</head>
+<body>
+<pre>
+title: Native Tools vs Primitives
+summary: 9 Claude Code features tested against Unix primitives. 6 resolved: 2 primitive wins, 1 feature justified, 1 marginally justified, 1 invalidated, 1 not justified. 3 unresolved.
+date: 2026-05-23
+url: <a href="https://subtract.ing/native-tools.html">https://subtract.ing/native-tools.html</a>
+source: 9 features, controlled comparison on Rousseau (M1 Max)
+license: GPLv2
+keywords: native-tools primitives Claude-Code effort MCP loop skills review simplify while-sleep wrapper
+data: <a href="https://raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/">raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/</a>
+
+
+NATIVE TOOLS VS PRIMITIVES
+
+RESULT
+       9 Claude Code features tested against Unix primitives.
+       2 primitive wins, 1 feature justified, 1 marginally justified,
+       1 invalidated, 1 not justified, 2 blocked, 1 not tested.
+
+       Of the 6 resolved features, all wrap IPC, timers, or diff.
+       Wrappers add LLM judgment at the cost of determinism and
+       auditability. LLM judgment is net positive for semantic
+       tasks (simplify) and net negative for deterministic tasks
+       (loop, mcp).
+
+       Feature       Finding                 Primitive
+       -------       -------                 ---------
+       effort        INVALIDATED             --model flag
+       mcp           PRIMITIVE WINS          llama-server tool API
+       loop          PRIMITIVE WINS          while/sleep
+       skills        NOT JUSTIFIED           cat + CLAUDE.md
+       review        MARGINALLY JUSTIFIED    diff + grep
+       simplify      FEATURE JUSTIFIED       xargs -P + grep
+       compact       BLOCKED                 session discipline
+       multi-session NOT TESTED              tmux
+       routines      BLOCKED                 crontab
+
+EFFORT: INVALIDATED
+       /effort adjusts reasoning depth within the same model. Does not
+       change which model runs. The spec assumed it routed to different
+       tiers. It does not. Model routing via --model flag achieves the
+       intended behavior directly.
+
+MCP: PRIMITIVE WINS
+       llama-server exposes OpenAI-compatible tool-calling API with
+       built-in tools: read_file, write_file, edit_file, apply_diff,
+       file_glob_search, grep_search, exec_shell_command.
+
+       qwen3-32b successfully chains 3-step tool sequences via
+       llama-server's native API. Note: this comparison tests
+       llama-server tool-calling vs MCP as a transport, not
+       Claude Code tool-calling quality. MCP is JSON-RPC wrapper
+       around capability llama-server already has.
+
+LOOP: PRIMITIVE WINS
+       /loop charges 1800 tokens/min with 60s minimum interval.
+       while/sleep costs 0 tokens, any interval, full log preserved.
+
+       Primitive: 0 tokens, any interval, sovereign.
+       Feature: 1800 tokens/min, 60s min, state in platform.
+
+SKILLS: NOT JUSTIFIED
+       Skills are markdown files. cat works on them. Glob finds them
+       in 0.02s. The feature adds indirection without capability gain.
+
+REVIEW: MARGINALLY JUSTIFIED
+       git diff + grep catches most issues. Feature catches quoting
+       bugs in shell scripts that grep cannot express. Justified for
+       shell scripts. Primitive sufficient for simple diffs.
+
+SIMPLIFY: FEATURE JUSTIFIED
+       grep/sed miss semantic patterns (loop-to-reduce, dead code,
+       function reuse). Feature caught them, 60% line reduction,
+       0 human minutes vs 8. Feature justified.
+
+METHOD
+       Controlled comparison on Rousseau (M1 Max Studio 64GB).
+       Each feature tested against its Unix primitive equivalent.
+       Measured: tokens, wall time, human effort, quality score.
+
+subtract.ing                     2026-05-23                     SUBTRACT(7)
+</pre>
+</body>
+</html>

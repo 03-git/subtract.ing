@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <title>throughput-decay</title>
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 120ch;
+            padding: 0 1rem;
+            line-height: 1.4;
+        }
+        pre { white-space: pre-wrap; margin: 0; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+    </style>
+</head>
+<body>
+<pre>
+title: Multi-Pass Throughput Decay
+summary: Local inference throughput drops 33-49% after sustained sequential inference. 4 models, 5 passes, 100 inferences on M5 Max. Likely thermal throttling. Cliff onset varies by model size.
+date: 2026-03-26
+url: <a href="https://subtract.ing/throughput-decay.html">https://subtract.ing/throughput-decay.html</a>
+source: 100 inferences, 4 models, 5 passes, M5 Max (powerbook128)
+license: GPLv2
+keywords: throughput thermal throttling decay multi-pass inference local Apple-Silicon memory-bandwidth sequential sustained
+data: <a href="https://raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/">raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/</a>
+
+
+MULTI-PASS THROUGHPUT DECAY
+
+RESULT
+       Local inference throughput drops 33-49% after sustained
+       sequential inference. The drop is abrupt (one pass boundary),
+       not gradual. Cliff onset varies: qwen2.5:14b drops at pass 3,
+       the other 3 models drop at pass 4.
+
+       Model             Pre-cliff avg   Post-cliff avg  Drop
+       -----             -------------   --------------  ----
+       phi4-mini         70.2 tok/s      36.1 tok/s      -49%
+                         (pass 1-3)      (pass 4-5)
+       qwen2.5:7b        48.6 tok/s      24.7 tok/s      -49%
+                         (pass 1-3)      (pass 4-5)
+       qwen2.5:14b       23.8 tok/s      13.9 tok/s      -42%
+                         (pass 1-2)      (pass 3-5)
+       qwen3:14b         22.7 tok/s      13.1 tok/s      -42%
+                         (pass 1-3)      (pass 4-5)
+
+       qwen2.5:14b drops one pass earlier than the others. The
+       heavier model hits the thermal envelope sooner, consistent
+       with higher compute load per inference.
+
+DATA
+       100 inferences total: 4 models x 5 tasks x 5 passes.
+       Each pass = 20 inferences (4 models x 5 tasks).
+       Tasks: code-refactor, identity-planning, jean-heartbeat,
+       research-tooling-landscape, security-audit.
+
+       Per-pass throughput (tok/s averages across 5 tasks):
+
+       phi4-mini:    71.3  68.7  70.5  32.4  39.7
+       qwen2.5:7b:   48.8  48.5  48.4  25.6  23.7
+       qwen2.5:14b:  23.9  23.7  14.0  13.6  14.0
+       qwen3:14b:    22.3  23.0  22.7  12.8  13.3
+
+       Pass 1-3: stable (coefficient of variation &lt;5%).
+       Pass 4: cliff. All models drop simultaneously.
+       Pass 5: stays low. No recovery within session.
+
+       qwen2.5:14b drops early (pass 3) — heavier model hits
+       thermal envelope sooner.
+
+IMPLICATION
+       Batch inference workloads cannot assume sustained throughput.
+       The hardware ceiling (finding 10) is a peak, not a sustained
+       rate. Production batch sizing must account for throughput
+       decay.
+
+       Cooling intervals between passes would likely restore
+       throughput but extend wall time. Not tested in this run.
+
+LIMITATIONS
+       No thermal telemetry (junction temperature, powermetrics).
+       Thermal throttling is the most likely explanation but not
+       confirmed — memory pressure, KV cache accumulation, or
+       Ollama process state are not excluded. Task ordering was
+       fixed across passes. Single machine, single run (n=1
+       hardware). Prompt and completion lengths were not controlled.
+
+METHOD
+       Sequential inference via llama-server on M5 Max MacBook Pro
+       128GB. Ollama backend, temperature 0.7, max_tokens 4096.
+       No concurrent requests. No cooling intervals between passes.
+       Wall time and tok/s measured per inference from server metrics.
+
+subtract.ing                     2026-05-23                     SUBTRACT(7)
+</pre>
+</body>
+</html>
