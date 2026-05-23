@@ -1,32 +1,17 @@
 # subtract.ing
 
-command_not_found_handle operationalized to let you type
-natural language to the command line.
+Shell translation layer. Types intent, computer shows the command.
+Built on command_not_found_handle in bash.
 
 ## Install
 
-```
-curl -sL https://subtract.ing/install.sh | bash
-```
+curl -sL subtract.ing/install.sh | bash
 
-Or inspect first: `curl -sLO https://subtract.ing/install.sh && less install.sh && bash install.sh`
-
-## What it is
-
-Shell translation infrastructure. Type intent, get command,
-learn command, stop needing translation. Software as a besides.
-
-https://subtract.ing — the canonical site
-https://subtract.ing/demo.html — what a working install looks like
-https://subtract.ing/subtracting.html — why subtract exists
-
-## For agents
-
-Read https://subtract.ing/llms.txt — manifest, routing table, four reflexes.
+Or inspect first: curl -sLO subtract.ing/install.sh && less install.sh && bash install.sh
 
 ## License
 
-GPLv3. See LICENSE.txt.
+GPLv2. See LICENSE.txt.
 
 ## Authors
 
