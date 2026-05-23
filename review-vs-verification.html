@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>review-vs-verification</title>
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 120ch;
+            padding: 0 1rem;
+            line-height: 1.4;
+        }
+        pre { white-space: pre-wrap; margin: 0; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+    </style>
+</head>
+<body>
+<pre>
+title: Review vs Verification
+summary: Model code review and functional verification have asymmetric yield. Cheaper model found the crash path. Expensive model missed it. 1768 lines C, 5 reviews, 4 models.
+date: 2026-05-07
+url: <a href="https://subtract.ing/review-vs-verification.html">https://subtract.ing/review-vs-verification.html</a>
+source: production empirical (three-gate code review of cal.c, 1768 lines C, 5 reviews across 4 models and 3 effort tiers)
+license: GPLv2
+keywords: code-review verification crash effort-inversion cheaper-model C functional-testing three-gate
+data: <a href="https://raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/11-review-vs-verification.txt">raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/11-review-vs-verification.txt</a>
+
+
+REVIEW VS VERIFICATION
+
+RESULT
+
+       Five model code reviews of a 1768-line C framebuffer application.
+       Four models, three effort tiers.
+
+       The cheaper model (sonnet, low effort) found the DRM framebuffer
+       crash path. The expensive model (opus, xhigh effort) missed it.
+
+       Functional verification on target hardware (acer1660ti, i915)
+       confirmed the crash path was real.
+
+EFFORT-TIER INVERSION
+
+       Higher effort does not mean higher yield. The expensive model
+       produced more text, more suggestions, more analysis — and
+       missed the thing that crashes the program.
+
+       The cheaper model was terse, checked fewer things, and caught
+       the one that mattered.
+
+       This is the second observation of effort-tier inversion in this
+       corpus (the first was finding 17, handler substrate selection).
+
+THREE-GATE METHOD
+
+       Gate 1: does it compile.
+       Gate 2: does it survive first run.
+       Gate 3: rubric scoring against pre-committed criteria.
+
+       Model review is gate 3 work. Functional verification is gate 2.
+       Gate 2 caught what gate 3 missed.
+
+</pre>
+</body>
+</html>

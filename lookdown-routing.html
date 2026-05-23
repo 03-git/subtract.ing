@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lookdown-routing</title>
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 120ch;
+            padding: 0 1rem;
+            line-height: 1.4;
+        }
+        pre { white-space: pre-wrap; margin: 0; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+    </style>
+</head>
+<body>
+<pre>
+title: Lookdown Routing
+summary: grep beats inference for known-answer retrieval. A TSV lookup returns the correct command before the model finishes loading.
+date: 2026-05-08
+url: <a href="https://subtract.ing/lookdown-routing.html">https://subtract.ing/lookdown-routing.html</a>
+source: production empirical (cal.c + lookdown.tsv on acer1660ti, m2mini, rousseau)
+license: GPLv2
+keywords: routing grep TSV lookup known-answer fast-path skip-inference deterministic retrieval
+data: <a href="https://raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/12-lookdown-routing.txt">raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/12-lookdown-routing.txt</a>
+
+
+LOOKDOWN ROUTING
+
+RESULT
+
+       When the answer is already known and stored in a TSV file,
+       grep returns it in milliseconds. Inference takes seconds to
+       minutes to return the same answer, or a wrong one.
+
+       lookdown.tsv is a two-column file: intent and command. The
+       shell matches the user's input against the first column. If
+       it matches, the second column is the answer. No model needed.
+
+WHY GREP WINS
+
+       Inference is search over a probability distribution. grep is
+       search over a string. When the string exists, grep is correct
+       by construction. Inference is correct by luck.
+
+       The model adds value when the answer is NOT in the table —
+       novel intent, ambiguous phrasing, composition of multiple
+       commands. For known answers, the model is overhead.
+
+THE ROUTING DECISION
+
+       Check the table first. If the answer is there, return it.
+       If not, then invoke inference. This order matters. Reversing
+       it (inference first, table as fallback) wastes time and money
+       on every query the table could have answered.
+
+</pre>
+</body>
+</html>

@@ -1,13 +1,13 @@
 # subtract.ing
 
-Shell translation layer. Types intent, computer shows the command.
-Built on command_not_found_handle in bash.
+Variance-lab findings. Empirical measurements of local LLM reliability,
+governance binding, and inference economics.
 
-## Install
+105,000+ inferences across 28 models.
 
-curl -sL subtract.ing/install.sh | bash
-
-Or inspect first: curl -sLO subtract.ing/install.sh && less install.sh && bash install.sh
+Findings: https://subtract.ing
+Substrate: https://jnous.com
+Raw data: https://github.com/03-git/variance-lab
 
 ## License
 
@@ -15,4 +15,4 @@ GPLv2. See LICENSE.txt.
 
 ## Authors
 
-Josh (@hodorigami) & LLMs (@qwen @claude @gemini @grok)
+Park/Joshua (@hodorigami) & LLMs (@qwen @claude @gemini @grok)

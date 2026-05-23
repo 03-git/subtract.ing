@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>governance-binding</title>
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 120ch;
+            padding: 0 1rem;
+            line-height: 1.4;
+        }
+        pre { white-space: pre-wrap; margin: 0; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+    </style>
+</head>
+<body>
+<pre>
+title: Governance Binding
+summary: Governance binds at N=30. 81% overall, reflex-dependent, delivery-path sensitive. Some reflexes bind at 96-100%. One doesn't belong in this adapter.
+date: 2026-04-19
+url: <a href="https://subtract.ing/governance-binding.html">https://subtract.ing/governance-binding.html</a>
+source: variance-lab harness (SmolLM2 1.7B Q8, N=30, temp=0.3, v6 iter 100)
+license: GPLv2
+keywords: governance binding adapter reflex compliance weights delivery-path system-prompt SmolLM alignment
+data: <a href="https://raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/05-governance-binding.txt">raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/05-governance-binding.txt</a>
+
+
+GOVERNANCE BINDING
+
+RESULT
+
+       Kernel adapter v6, 242/300 correct (81%) at N=30, temp=0.3.
+
+       Reflex              Binding
+       r4 (verify)          96%
+       r5 (canonical)      100%
+       boundary             93%
+       f-additive           97%
+       f-confab             87%
+       reflex.1 (kernel)    48%
+
+       reflex.1 scores 48% because it requires shell-ipc-routing
+       knowledge that belongs in a different adapter, not governance.
+
+DELIVERY-PATH SENSITIVITY
+
+       How governance reaches the model matters. Binding strength
+       varies by delivery path — system prompt, adapter weights,
+       fine-tune, in-context examples produce different binding
+       rates for the same governance rules.
+
+WHAT BINDS VS WHAT DOESN'T
+
+       Binary rules bind: "verify before acting", "canonical source
+       is the signing domain." The model either checks or doesn't.
+
+       Judgment rules bind weakly: "name the kernel primitive before
+       proposing a library" requires domain knowledge the governance
+       adapter doesn't carry. That knowledge belongs in a domain
+       adapter.
+
+</pre>
+</body>
+</html>

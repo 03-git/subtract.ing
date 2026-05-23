@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://subtract.ing/sitemap.xml

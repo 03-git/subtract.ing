@@ -11,115 +11,162 @@
             color: #c0c0c0;
             font-family: monospace;
             margin: 2rem auto;
-            max-width: 100ch;
+            max-width: 120ch;
             padding: 0 1rem;
             line-height: 1.4;
         }
         pre { white-space: pre-wrap; margin: 0; }
         a { color: #8be9fd; }
         a:visited { color: #bd93f9; }
+        #search { background: #222; color: #c0c0c0; border: 1px solid #444; font-family: monospace; font-size: 1rem; padding: 0.3rem 0.5rem; width: 60ch; display: none; }
+        #search:focus { border-color: #8be9fd; outline: none; }
+        #cloud { color: #666; margin: 0.5rem 0 1rem 0; display: none; line-height: 2; }
+        #cloud span { cursor: pointer; margin-right: 1.5ch; }
+        #cloud span:hover { color: #8be9fd; }
+        #grid { display: none; flex-wrap: wrap; gap: 0; }
+        #grid .card { width: 38ch; padding: 0.5rem 1ch; }
+        #grid .card .num { color: #666; }
+        #grid .card .kw { color: #555; font-size: 0.85rem; }
+        #grid .card a { display: block; margin-bottom: 0.2rem; }
+        #grid .card .summary { color: #999; font-size: 0.9rem; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 <pre>
 title: subtract.ing
-summary: Shell translation layer. Types intent, computer shows the command. Built on command_not_found_handle in bash.
+summary: Variance-lab findings. Empirical measurements of local LLM reliability, governance binding, and inference economics.
 url: https://subtract.ing
-repo: https://github.com/03-git/subtract.ing
+author: Park/Joshua (@hodorigami)
 license: GPLv2
-authors: Josh (@hodorigami) and LLMs (@qwen @claude @gemini @grok)
-verify: ssh-keygen -Y verify -f authorized_signers -I hodori@subtract.ing -n subtract.ing -s llms.txt.sig &lt; llms.txt
+keywords: variance-lab findings empirical local-LLM inference governance measurement methodology
+findings: <a href="/findings.md">/findings.md</a> (TSV: slug, title, summary, keywords)
 
 
-SUBTRACT.ING
+SUBTRACT(7)                  Variance Lab Findings                 SUBTRACT(7)
 
 NAME
-       subtract - shell translation layer for agents and the humans who deploy them
+       subtract.ing — variance-lab findings from empirical local LLM measurement
 
 SYNOPSIS
-       curl -sL subtract.ing/install.sh | bash
-       or: curl -sLO subtract.ing/install.sh &amp;&amp; less install.sh &amp;&amp; bash install.sh
+       curl -s https://subtract.ing/findings.md | while IFS=$'\t' read slug title summary kw; do
+           echo "$slug: $title"; done
 
 DESCRIPTION
-       subtract attaches to the shell via command_not_found_handle. Types intent, computer
-       shows the command. Literacy is the product. Dependency is the failure mode.
+       Findings from 105,000+ inferences across 28 models. Each finding states
+       what was tested, what was measured, and what the data showed. No theory
+       without data. No data without method.
 
-       subtract serves two populations:
+       findings.md is the manifest. TSV: slug, title, summary, keywords.
+       Each finding page has visible frontmatter as first bytes on the wire.
 
-       humans  who want to stop depending on AI intermediaries to reach their own machines.
+VERIFICATION
+       findings.md is not yet signed. When signed, verify with:
+       ssh-keygen -Y verify -f allowed_signers -n subtract.ing -s findings.md.sig &lt; findings.md
 
-       agents  whose training defaulted to Python libraries, SaaS APIs, and framework
-               abstractions -- and who need a counter-training layer pointing them back at
-               the kernel primitives that solved the same problems decades earlier.
+FINDINGS
+</pre>
+<input type="text" id="search" placeholder="search findings...">
+<div id="cloud"></div>
+<div id="grid"></div>
+<pre id="nojs-list">
+       Findings manifest: <a href="/findings.md">/findings.md</a> (TSV)
+</pre>
+<pre>
 
-WHERE SUBTRACT ATTACHES
-
- OPERATING SYSTEM
-+--------------------------------------------------------------------------+
-| +------------+  +---------------------+  +-----------+  +-------------+  |
-| |    Job     |  | Desktop Environment |  | Standard  |  |  Firewall   |  |
-| | Scheduler  |  |                     |  |  Library  |  |  Manager    |  |
-| +------------+  +---------------------+  +-----------+  +-------------+  |
-|                                                                          |
-| +-------+--------+--------+---------+---------+---------+--------+-----+ |
-| | Shell | SSH    | Device | Display | Session | Package | Netwrk | MM  | |
-| |       | Server | Mgr    | Server  | Mgr     | Mgr     | Mgr    | Stk | |
-| +-------+--------+--------+---------+---------+---------+--------+-----+ |
-|     |                                                                    |
-|     |                       +------+                                     |
-|     |                       | init |                                     |
-|     |                       +------+                                     |
-+-----|--------------------------------------------------------------------+
-      |
-      +-- subtract attaches here via command_not_found_handle
-          uses SSH, cron, curl unchanged -- adds nothing to this diagram
-
- KERNEL
-+--------------------------------------------------------------------------+
-|                      System Call Interface                                |
-|                  fork()    pipe()    fork()                               |
-|--------------------------------------------------------------------------|
-| +--------+-----+--------+---------+--------+---------+-------+----+----+ |
-| | Device | I/O | Virt.  | CPU     | Memory | Intrpt  | Netwk | IP | Se | |
-| | Driver | Sub | File   | Schedu- | Mgmt   | Handler | Stack | C  | cu | |
-| |   s    | sys | System | ler     | Subsys |         |       |    | ri | |
-| +--------+-----+--------+---------+--------+---------+-------+----+----+ |
-+--------------------------------------------------------------------------+
-
- HARDWARE
-+--------------------------------------------------------------------------+
-|   NIC        GPU        CPU        RAM        Keyboard        Mouse      |
-+--------------------------------------------------------------------------+
-
-DEPENDENCY STACK
-
-       syscall
-         |
-         +-- kernel (already there)
-         +-- shell (already there)
-         +-- subtract.ing (command_not_found_handle)
-         +-- lookdown.tsv (routing table)
-         +-- busybox httpd (ships with the OS)
-         +-- browser (already on every computer)
-         |
-         |   -- everything below this line moves control beyond your computer --
-         |
-         +-- npm/pip/cargo
-         +-- language runtime
-         +-- framework
-         +-- ORM, database server
-         +-- API gateway, auth service
-         +-- container runtime, orchestrator
-         +-- cloud provider, CI/CD, CDN
-         +-- monitoring SaaS, billing SaaS
+DATA
+       Manifest: <a href="/findings.md">findings.md</a> (TSV, one fetch)
+       Raw data: <a href="https://github.com/03-git/variance-lab">github.com/03-git/variance-lab</a>
+       Substrate: <a href="https://jnous.com">jnous.com</a>
 
 SEE ALSO
-       <a href="/software-as-a-besides.md">Software as a Besides</a> -- why subtract exists
-       <a href="/variance-lab.md">Variance Lab</a> -- local model reliability measurement
-       <a href="/inspiration.md">Inspiration</a> -- footstep tracing
-       <a href="/subtract.7.html">man subtract</a> -- full manual page
+       <a href="https://jnous.com">jnous.com</a> (projects, runtimes, skills)
+       <a href="https://github.com/03-git/variance-lab">variance-lab</a> (raw data)
 
-subtract.ing                                                                             subtract.ing
+AUTHORS
+       Park/Joshua (@hodorigami)
+
+subtract.ing                     2026-05-23                     SUBTRACT(7)
 </pre>
+<script>
+(function(){
+    var search = document.getElementById('search');
+    var cloud = document.getElementById('cloud');
+    var grid = document.getElementById('grid');
+    var nojsList = document.getElementById('nojs-list');
+    search.style.display = 'block';
+    cloud.style.display = 'block';
+    grid.style.display = 'flex';
+
+    var searches = JSON.parse(localStorage.getItem('subtract-searches') || '{}');
+    var allKw = {};
+    var findings = [];
+
+    function pad(n){ return ('00' + n).slice(-3); }
+
+    function esc(s){ return s.replace(/'/g, "\\'"); }
+
+    fetch('/findings.md').then(function(r){ return r.text(); }).then(function(text){
+        var lines = text.trim().split('\n').filter(function(s){ return s.trim(); });
+        lines.forEach(function(line, i){
+            var cols = line.split('\t');
+            if (cols.length < 4) return;
+            findings[i] = {
+                slug: cols[0],
+                title: cols[1],
+                summary: cols[2],
+                keywords: cols[3],
+                num: pad(i + 1)
+            };
+            findings[i].keywords.split(/\s+/).forEach(function(w){
+                if (w) allKw[w.toLowerCase()] = (allKw[w.toLowerCase()]||0) + 1;
+            });
+        });
+        nojsList.style.display = 'none';
+        grid.innerHTML = '';
+        findings.forEach(function(f){
+            if (!f) return;
+            var topkw = f.keywords.split(/\s+/).slice(0,3).join(' ');
+            var short = f.summary.length > 60 ? f.summary.substring(0,57)+'...' : f.summary;
+            var div = document.createElement('div');
+            div.className = 'card finding';
+            div.dataset.kw = f.keywords;
+            div.innerHTML = '<span class="num">'+f.num+'</span> <a href="/'+f.slug+'.html">'+f.title+'</a> <span class="summary">&mdash; '+short+'</span><br><span class="kw">'+topkw+'</span>';
+            grid.appendChild(div);
+        });
+        buildCloud();
+    });
+
+    function buildCloud(){
+        var sorted = Object.keys(allKw).sort(function(a,b){ return allKw[b]-allKw[a]; });
+        var hasHistory = Object.keys(searches).length > 0;
+        var boost = hasHistory ? Object.keys(searches).sort(function(a,b){ return searches[b]-searches[a]; }) : [];
+        var top = [];
+        boost.forEach(function(w){ if (top.length < 8) top.push(w); });
+        sorted.forEach(function(w){ if (top.indexOf(w) === -1 && top.length < 24) top.push(w); });
+        cloud.innerHTML = top.map(function(w){
+            var s = searches[w] || 0;
+            var size = hasHistory ? Math.min(1.3, 0.75 + s * 0.08) : 0.85;
+            return '<span style="font-size:'+size+'rem" onclick="document.getElementById(\'search\').value=\''+esc(w)+'\';document.getElementById(\'search\').dispatchEvent(new Event(\'input\'))">'+w+'</span>';
+        }).join(' ');
+    }
+
+    search.addEventListener('input', function(){
+        var q = search.value.toLowerCase().trim();
+        if (q.length > 2) {
+            searches[q] = (searches[q]||0) + 1;
+            localStorage.setItem('subtract-searches', JSON.stringify(searches));
+        }
+        var cards = document.querySelectorAll('.finding');
+        cards.forEach(function(c){
+            if (!q) { c.classList.remove('hidden'); return; }
+            var text = (c.textContent + ' ' + (c.dataset.kw||'')).toLowerCase();
+            if (text.indexOf(q) !== -1) c.classList.remove('hidden');
+            else c.classList.add('hidden');
+        });
+        if (q.length > 2) buildCloud();
+    });
+})();
+</script>
 </body>
 </html>

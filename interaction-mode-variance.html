@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>interaction-mode-variance</title>
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 120ch;
+            padding: 0 1rem;
+            line-height: 1.4;
+        }
+        pre { white-space: pre-wrap; margin: 0; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+    </style>
+</head>
+<body>
+<pre>
+title: Interaction Mode Variance
+summary: Passenger mode consumes 41x more tokens than governor mode. 88 sessions, single operator, single model. The human's posture determines the cost.
+date: 2026-03-30
+url: <a href="https://subtract.ing/interaction-mode-variance.html">https://subtract.ing/interaction-mode-variance.html</a>
+source: production empirical (88 Claude Code sessions, single operator)
+license: GPLv2
+keywords: passenger governor tokens cost human-attention mode 41x ratio original
+data: <a href="https://raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/03-interaction-mode-variance.txt">raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/03-interaction-mode-variance.txt</a>
+
+
+INTERACTION MODE VARIANCE
+
+RESULT
+
+       Four interaction modes. Same operator. Same model. Token consumption
+       varies by 41x depending on how the human engages.
+
+       Passenger      human stops steering, model explores unconstrained
+       Collaborator   human and model alternate, shared direction
+       Governor       human directs, model executes
+       Pipe           human sends structured input, model returns structured output
+
+       Ordering: passenger > collaborator > governor > pipe.
+
+WHY THIS MATTERS
+
+       The model doesn't change. The human's posture does. Passenger mode
+       is not the model being wasteful — it's the human being absent.
+       Governor mode is not the model being efficient — it's the human
+       being present.
+
+       Token cost is a function of human attention, not model capability.
+
+</pre>
+</body>
+</html>

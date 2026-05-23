@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>reflex-binding</title>
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 120ch;
+            padding: 0 1rem;
+            line-height: 1.4;
+        }
+        pre { white-space: pre-wrap; margin: 0; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+    </style>
+</head>
+<body>
+<pre>
+title: Reflex Binding
+summary: Abstract reflexes transfer only with lineage, not instruction. 6 models, 2 arms, N=5 per cell. Telling a model the rules is not the same as training them in.
+date: 2026-05-10
+url: <a href="https://subtract.ing/reflex-binding.html">https://subtract.ing/reflex-binding.html</a>
+source: controlled experiment (6 models, 2 arms, N=5 per cell)
+license: GPLv2
+keywords: binding lineage instruction fine-tune weights LoRA system-prompt trained prompted disposition alignment
+data: <a href="https://raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/15-reflex-binding.txt">raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/15-reflex-binding.txt</a>
+
+
+REFLEX BINDING
+
+RESULT
+
+       Two arms: instruction (tell the model the governance rules in
+       the system prompt) vs lineage (model trained with governance
+       adapter from finding 05).
+
+       Instruction arm: the model follows the rules when the rules
+       are simple and the task is straightforward. When the task
+       creates pressure to violate the rules, the model violates them.
+
+       Lineage arm: the model follows the rules under pressure.
+       The rules are in the weights, not the prompt. The prompt
+       can be adversarial and the rules hold.
+
+THE DISTINCTION
+
+       Instruction is suggestion. The model weighs the instruction
+       against the task pressure and sometimes the task wins.
+
+       Lineage is disposition. The model doesn't weigh the rule
+       against the task — the rule is part of how it processes
+       the task. There is no trade-off to make.
+
+       This is the empirical basis for the adapter-first approach:
+       governance must live in weights, not in system prompts that
+       the user may or may not add.
+
+</pre>
+</body>
+</html>

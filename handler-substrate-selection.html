@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>handler-substrate-selection</title>
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 120ch;
+            padding: 0 1rem;
+            line-height: 1.4;
+        }
+        pre { white-space: pre-wrap; margin: 0; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+    </style>
+</head>
+<body>
+<pre>
+title: Handler Substrate Selection
+summary: Three-gate methodology for picking which model runs handler.sh. 240 trials, 3 models. nano-4b wins (TC 3.05, 6.5s wall). The 14b model cannot dispatch at all — 0% tool calls, confabulates output.
+date: 2026-05-10
+url: <a href="https://subtract.ing/handler-substrate-selection.html">https://subtract.ing/handler-substrate-selection.html</a>
+source: production empirical (240 trials, 3 models, three-gate methodology)
+license: GPLv2
+keywords: handler model-selection tool-call function-calling dispatch gate nano confabulation small-model
+data: <a href="https://raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/17-handler-substrate-selection.txt">raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/17-handler-substrate-selection.txt</a>
+
+
+HANDLER SUBSTRATE SELECTION
+
+RESULT
+
+       Three candidate models for the subtract.sh handler dispatch layer:
+
+       nano-4b            TC 3.05    6.5s wall     dispatches
+       openreasoning-14b  TC 0       confabulates  0% tool calls
+       super-49b          TC higher  34x slower    dispatches
+
+       nano-4b wins. It dispatches tool calls reliably at 6.5 seconds
+       wall clock. super-49b technically scores higher but takes 34x
+       longer — the marginal quality is not worth the wait.
+
+       openreasoning-14b cannot dispatch at all. Zero tool calls across
+       all trials. It reasons about what it would do, then confabulates
+       the output instead of calling the tool. More parameters, more
+       reasoning, worse result.
+
+THREE-GATE METHOD
+
+       Gate 1: does it produce a tool call at all.
+       Gate 2: is the tool call syntactically valid.
+       Gate 3: does the tool call produce the correct result.
+
+       A model that fails gate 1 cannot be rescued by prompt
+       engineering. The failure is structural — it doesn't know
+       how to emit tool-call format. No amount of instruction
+       fixes that. Pick a different model.
+
+</pre>
+</body>
+</html>

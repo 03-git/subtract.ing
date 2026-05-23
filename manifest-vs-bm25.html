@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>manifest-vs-bm25</title>
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 120ch;
+            padding: 0 1rem;
+            line-height: 1.4;
+        }
+        pre { white-space: pre-wrap; margin: 0; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+    </style>
+</head>
+<body>
+<pre>
+title: Manifest vs BM25
+summary: Manifest-routed retrieval beats BM25 for small-corpus QA. The routing table knows which document answers the question. BM25 guesses.
+date: 2026-05-10
+url: <a href="https://subtract.ing/manifest-vs-bm25.html">https://subtract.ing/manifest-vs-bm25.html</a>
+source: controlled experiment (subtract.ing + Lua 5.4 corpora, qwen2.5-7b + sonnet-4-6, four-scorer blind evaluation)
+license: GPLv2
+keywords: retrieval BM25 RAG small-corpus curated routing document-selection human-curated
+data: <a href="https://raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/13-manifest-vs-bm25.txt">raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/13-manifest-vs-bm25.txt</a>
+
+
+MANIFEST VS BM25
+
+RESULT
+
+       Two retrieval methods. Same corpus. Same questions. Same models
+       scoring the answers.
+
+       Manifest routing: a human-curated table maps question categories
+       to documents. The system looks up which document to read before
+       reading it.
+
+       BM25: term-frequency ranking across the corpus. The system
+       searches all documents and picks the best-matching passages.
+
+       Manifest wins. It retrieves the right document because a human
+       already decided which document answers which kind of question.
+       BM25 retrieves the most lexically similar passage, which is
+       not always the right one.
+
+WHY
+
+       Small corpora don't have enough documents for statistical
+       retrieval to distinguish signal from noise. BM25 works when
+       thousands of documents compete and term frequency is meaningful.
+       With dozens of documents, a routing table that says "questions
+       about X go to document Y" is more reliable than term counting.
+
+       The manifest is cheaper to build than it looks. The human
+       already knows which documents answer which questions — that's
+       why they wrote them.
+
+</pre>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>http2-vs-http1</title>
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 120ch;
+            padding: 0 1rem;
+            line-height: 1.4;
+        }
+        pre { white-space: pre-wrap; margin: 0; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+    </style>
+</head>
+<body>
+<pre>
+title: HTTP/2 vs HTTP/1.1
+summary: HTTP/2 multiplexing delivers 2.1x throughput for local inference concurrency. 70 validated measurements, gemma-4-26B-A4B on Apple Silicon.
+date: 2026-04-25
+url: <a href="https://subtract.ing/http2-vs-http1.html">https://subtract.ing/http2-vs-http1.html</a>
+source: production empirical (70 measurements, 3 conditions, gemma-4-26B-A4B, M1 Max 64GB)
+license: GPLv2
+keywords: HTTP/2 HTTP/1.1 multiplexing llama-server local-inference concurrency throughput protocol Apple-Silicon
+data: <a href="https://raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/07-http2-vs-http1.txt">raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/07-http2-vs-http1.txt</a>
+
+
+HTTP/2 VS HTTP/1.1 FOR LOCAL INFERENCE
+
+RESULT
+
+       Local inference server (llama-server) behind HTTP/2 multiplexing
+       delivers 2.1x aggregate throughput versus HTTP/1.1 at equivalent
+       concurrency.
+
+       70 validated measurements across 3 conditions. Same model, same
+       hardware, same prompts. The only variable is the wire protocol.
+
+WHY
+
+       HTTP/1.1 serializes requests per connection. Multiple concurrent
+       inference requests queue behind each other. Opening multiple
+       connections works around this but adds overhead per connection.
+
+       HTTP/2 multiplexes streams over a single connection. Concurrent
+       requests interleave on the wire. The inference server processes
+       them in parallel without connection overhead.
+
+       The bottleneck for local inference at concurrency > 1 is not
+       compute — it's the wire protocol blocking concurrent delivery.
+
+</pre>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>authorization-gap</title>
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 120ch;
+            padding: 0 1rem;
+            line-height: 1.4;
+        }
+        pre { white-space: pre-wrap; margin: 0; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+    </style>
+</head>
+<body>
+<pre>
+title: Delegated Agent Authorization Gap
+summary: Agents fail at auth boundaries, not capability boundaries. The blocker is infrastructure, not intelligence.
+date: 2026-03-28
+url: <a href="https://subtract.ing/authorization-gap.html">https://subtract.ing/authorization-gap.html</a>
+source: production empirical
+license: GPLv2
+keywords: authorization agent failure auth OAuth MFA browser-redirect automation-blocker infrastructure headless
+data: <a href="https://raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/04-authorization-gap.txt">raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/04-authorization-gap.txt</a>
+
+
+DELEGATED AGENT AUTHORIZATION GAP
+
+RESULT
+
+       When an agent fails to complete a delegated task, the failure
+       is almost never capability. The agent knows what to do. It
+       cannot authenticate to do it.
+
+       GUI-only interfaces, OAuth browser redirects, MFA prompts,
+       session tokens that require human presence — these are the
+       actual blockers. The agent has the skill. The environment
+       withholds the key.
+
+IMPLICATION
+
+       Capability investment (bigger models, better prompts, more
+       context) does not fix authorization problems. Infrastructure
+       investment does: API endpoints, programmatic auth, pre-auth
+       keys, SSH.
+
+       Question 2 from finding 01 ("what prevents the workflow from
+       being autonomous?") surfaces this directly. The answer is
+       rarely "the agent isn't smart enough." The answer is usually
+       "the agent can't log in."
+
+</pre>
+</body>
+</html>

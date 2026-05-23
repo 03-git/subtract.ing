@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>interaction-mode-rerun</title>
+    <style>
+        body {
+            background: #111;
+            color: #c0c0c0;
+            font-family: monospace;
+            margin: 2rem auto;
+            max-width: 120ch;
+            padding: 0 1rem;
+            line-height: 1.4;
+        }
+        pre { white-space: pre-wrap; margin: 0; }
+        a { color: #8be9fd; }
+        a:visited { color: #bd93f9; }
+    </style>
+</head>
+<body>
+<pre>
+title: Interaction Mode Rerun
+summary: 52.7x passenger/governor token ratio under pre-committed rubric. N=501 qualifying sessions from 1075 JSONL files. The original 41x holds and widens.
+date: 2026-04-19
+url: <a href="https://subtract.ing/interaction-mode-rerun.html">https://subtract.ing/interaction-mode-rerun.html</a>
+source: variance-lab harness (1075 JSONL files, pre-committed rubric, 501 qualifying single-model sessions)
+license: GPLv2
+keywords: passenger governor tokens cost replication methodology pre-committed rubric 52x validation
+data: <a href="https://raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/06-interaction-mode-rerun.txt">raw.githubusercontent.com/03-git/variance-lab/refs/heads/main/findings/06-interaction-mode-rerun.txt</a>
+
+
+INTERACTION MODE RERUN
+
+RESULT
+
+       Replication of finding 03 under a pre-committed rubric.
+
+                          Means     Medians    Outlier-removed
+       Passenger/Governor  52.7x     21.6x      50.4x
+
+       Ordering holds: passenger > collaborator > governor > pipe.
+
+METHOD
+
+       Rubric committed before analysis (commit 49d86f7). Applied to
+       1075 Claude Code JSONL session files. 501 qualifying single-model
+       sessions after rubric-mandated filters. Two-pass adversarial
+       review across six Claude voters (three model generations, two
+       nodes, two effort tiers).
+
+       The original finding (N=88, 41x, means only) was flagged RERUN
+       in editorial audit because it used post-hoc mode classification.
+       This rerun pre-committed the classification rubric, expanded
+       the corpus 5.7x, and the ratio widened.
+
+WHY IT WIDENED
+
+       Larger corpus captured more extreme passenger sessions. Governor
+       mode has a natural ceiling — the human is present, directing,
+       constraining. Passenger mode has no ceiling — the model explores
+       until the context window fills or the human returns.
+
+</pre>
+</body>
+</html>
