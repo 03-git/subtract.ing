@@ -89,8 +89,7 @@ remote|curl + API|0|already there
 .PP
 Goal: fade toward computer. Less inference over time, more direct expression.
 .PP
-Every component is either "already there" or "single binary + model." Full local
-install is roughly 1.1GB.
+Every component is either "already there" or "single binary + model."
 .SH BUFFER-SUBTRACT PATTERN
 A substrate honors the pattern if and only if all six invariants hold.
 .IP 1. 4

@@ -104,17 +104,20 @@ call_inference() {
     local payload
     if [ "$tools" = "[]" ]; then
         payload=$(jq -n --argjson msgs "$messages" \
-            '{messages: $msgs, max_tokens: 262144, stream: false}')
+            '{messages: $msgs, max_tokens: 2048, stream: false}')
     else
         payload=$(jq -n --argjson msgs "$messages" --argjson tools "$tools" \
-            '{messages: $msgs, max_tokens: 262144, stream: false, tools: $tools}')
+            '{messages: $msgs, max_tokens: 2048, stream: false, tools: $tools}')
     fi
 
     log_daemon "payload: $(echo "$payload" | jq -c '{msg_count: (.messages | length), has_tools: (.tools != null), first_role: .messages[0].role}' 2>/dev/null)"
     local response
     if [ "$INFERENCE_HOST" != "localhost" ] && [ -n "$INFERENCE_HOST" ]; then
-        response=$(echo "$payload" | ssh -o ConnectTimeout=5 "$INFERENCE_HOST" \
-            "curl -s -m 300 -X POST http://localhost:${INFERENCE_PORT}/v1/chat/completions -H 'Content-Type: application/json' -d @-" 2>/dev/null)
+        local compact; compact=$(echo "$payload" | jq -c .)
+        response=$(curl -s --http2-prior-knowledge --connect-timeout 10 -m 300 \
+            -X POST "http://${INFERENCE_HOST}:${INFERENCE_PORT}/v1/chat/completions" \
+            -H "Content-Type: application/json" \
+            -d "$compact" 2>/dev/null)
     elif [ -p "$PARSIMONY_IN" ] && [ -p "$PARSIMONY_OUT" ]; then
         local compact; compact=$(echo "$payload" | jq -c .)
         local _lock_tries=0
@@ -125,8 +128,12 @@ call_inference() {
         done
         if [ -d "$PARSIMONY_LOCK" ]; then
             trap 'rmdir "$PARSIMONY_LOCK" 2>/dev/null' RETURN
-            printf '%s\n' "$compact" > "$PARSIMONY_IN"
-            read -r response < "$PARSIMONY_OUT"
+            if ! timeout 10 bash -c 'printf "%s\n" "$1" > "$2"' -- "$compact" "$PARSIMONY_IN"; then
+                rmdir "$PARSIMONY_LOCK" 2>/dev/null
+                response='{"error":"parsimony write timeout"}'
+            else
+                read -r response < "$PARSIMONY_OUT"
+            fi
         fi
     else
         response=$(curl -s --connect-timeout 10 -m 300 \
@@ -199,10 +206,14 @@ handle_request() {
     local messages; messages=$(load_messages "$channel")
     # inject system prompt as first message on first turn
     local user_content="$input"
-    local msg_count; msg_count=$(echo "$messages" | jq 'length')
-    if [ "$msg_count" -eq 0 ] && [ -n "$SYSTEM_MSG" ]; then
-        messages=$(echo "$messages" | jq --arg sys "$SYSTEM_MSG" \
-            '[{"role":"system","content":$sys}]')
+    local msg_count; msg_count=$(echo "$messages" | jq "length" 2>/dev/null); [[ "$msg_count" =~ ^[0-9]+$ ]] || msg_count=0
+    if [ "$msg_count" -eq 0 ]; then
+        if [ "$channel" = "subtract-recovery" ]; then
+            messages=$(echo "$messages" | jq '[{"role":"system","content":"Answer the question briefly and directly."}]')
+        elif [ -n "$SYSTEM_MSG" ]; then
+            messages=$(echo "$messages" | jq --arg sys "$SYSTEM_MSG" \
+                '[{"role":"system","content":$sys}]')
+        fi
     fi
     [ -n "$context" ] && user_content="${user_content}
 
@@ -212,7 +223,7 @@ ${context}"
         '. + [{"role":"user","content":$content}]')
 
     # load tools
-    local tools; tools=$(load_tools)
+    local tools; if [ "$channel" = "subtract-recovery" ]; then tools="[]"; else tools=$(load_tools); fi
 
     # inference loop (tool calls may require multiple turns)
     local max_rounds=5 round=0
@@ -224,10 +235,26 @@ ${context}"
         log_daemon "[${channel}] round $round raw: $(echo "$response" | jq -c '.choices[0].message | {content: (.content // null), tool_calls: (.tool_calls // null) | length, finish: .finish_reason}' 2>/dev/null || echo 'PARSE_FAIL')"
 
         # check if inference returned anything
-        local content; content=$(echo "$response" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+        local content; content=$(echo "$response" | jq -r ".choices[0].message.content // .choices[0].message.reasoning_content // empty" 2>/dev/null)
         [[ "$content" == "<|channel>thought"* ]] && content="${content#*"<channel|>"}"
         local tool_calls; tool_calls=$(echo "$response" | jq -r '.choices[0].message.tool_calls // empty' 2>/dev/null)
         local finish; finish=$(echo "$response" | jq -r '.choices[0].finish_reason // empty' 2>/dev/null)
+
+        # if model has content but user asked to search and model didn't call web_search, do it
+        if [ -n "$content" ] && [ -z "$tool_calls" ] && [ "$round" -eq 1 ]; then
+            local input_lower; input_lower=$(printf '%s' "$user_content" | tr '[:upper:]' '[:lower:]')
+            case "$input_lower" in
+                *"can you search"*|*"search for"*|*"search the web"*|*"look up"*|*"web search"*)
+                    local search_q; search_q=$(printf '%s' "$user_content" | sed 's/[Cc]an you search[^?]*?//; s/[Ss]earch for //; s/[Ss]earch the web[^?]*?//; s/[Ll]ook up //; s/[Ww]eb search: //')
+                    log_daemon "[${channel}] model skipped tool call, forcing web_search: $search_q"
+                    local forced_result; forced_result=$(execute_tool "web_search" "$(jq -n --arg q "$search_q" '{input:$q}')")
+                    if [ -n "$forced_result" ] && [ "$forced_result" != "no results" ]; then
+                        content="$forced_result"
+                        source="search"
+                    fi
+                    ;;
+            esac
+        fi
 
         # if local failed entirely, cloud fallback
         if [ -z "$content" ] && [ -z "$tool_calls" ] && [ "$round" -eq 1 ]; then
@@ -280,7 +307,7 @@ ${context}"
 
         # no tool calls — either we have a final response, or model returned nothing
         # if research port available and tools were used, hand off to research model
-        if [ -n "$RESEARCH_PORT" ] && [ "$round" -gt 1 ]; then
+        if [ -n "$RESEARCH_PORT" ] && [ "$RESEARCH_PORT" != "$INFERENCE_PORT" ] && [ "$round" -gt 1 ]; then
             log_daemon "[${channel}] handing off to research model on port $RESEARCH_PORT"
             local saved_port="$INFERENCE_PORT" saved_host="$INFERENCE_HOST"
             INFERENCE_PORT="$RESEARCH_PORT"
@@ -288,7 +315,7 @@ ${context}"
             local research_resp; research_resp=$(call_inference "$messages" "[]")
             INFERENCE_PORT="$saved_port"
             INFERENCE_HOST="$saved_host"
-            local research_content; research_content=$(echo "$research_resp" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+            local research_content; research_content=$(echo "$research_resp" | jq -r ".choices[0].message.content // .choices[0].message.reasoning_content // empty" 2>/dev/null)
             [[ "$research_content" == "<|channel>thought"* ]] && research_content="${research_content#*"<channel|>"}"
             if [ -n "$research_content" ]; then
                 content="$research_content"

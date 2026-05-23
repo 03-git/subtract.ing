@@ -1,0 +1,274 @@
+LOOKDOWN.txt — operational guide for lookdown entry lifecycle
+
+Canonical source: the subtract.ing repo (dual-signed, git-hosted).
+Verify: ssh-keygen -Y verify -f authorized_signers -I hodori@subtract.ing -n subtract.ing -s LOOKDOWN.txt.sig < LOOKDOWN.txt
+
+---
+
+## What lookdown is
+
+A TSV file. One file. Each line is a glob pattern and a response.
+The shell matches input against patterns top-to-bottom.
+First match wins. No model, no network, no tokens.
+
+  File:
+    lookdown.universal.tsv    one file, all nodes, canonical in repo
+
+  Format:
+    pattern<TAB>echo "response"
+    pattern<TAB>[player]<TAB>command
+    pattern<TAB>[exec]<TAB>command
+
+  There is no per-node lookdown file. One file, one ordering,
+  one audit surface. Nodes sync by git pull. The signed version wins.
+
+## How entries are created
+
+  1. F4 in subtracting.c — signs and saves if signing key is present.
+     No key → F4 bounces: "plug in your key to save."
+  2. lookdown edit at the shell — same gate: sign or reject.
+  3. Manual append + sign — for operators at a TTY.
+
+  Once an entry exists, that question is answered from disk forever.
+  The model made itself unnecessary for that question. Permanently.
+
+## Entry lifecycle
+
+  inference → F4 save (signed) → commit → push → all nodes pull
+
+  1. Inference answers a question. User presses F4.
+  2. System attempts ssh-keygen -Y sign with the user's key.
+     - Key present (USB/YubiKey plugged in) → entry written and signed.
+     - Key absent → rejected. "plug in your key to save."
+  3. No staging. No unsigned drafts. No merge. The physical token
+     gates the write. The parent is present for the save — real-time
+     review at the keyboard, not asynchronous staging.
+  4. Operator commits, pushes to repo. Nodes git pull.
+  5. lookdown-audit.sh runs for hygiene: shadows, overbroad patterns.
+  6. Post-QLoRA: entries the adapter has learned get pruned from the TSV.
+     The file shrinks over time. Signed entries are the training corpus.
+     The signature is the data quality gate.
+
+## Shell commands
+
+  lookdown edit <pattern>     find and edit/delete a specific entry
+  lookdown search <text>      search all lookdown files for text
+
+  After any lookdown match, the shell shows:
+    wrong? type: lookdown edit <pattern>
+  Type it to fix or delete the entry that just matched.
+
+## Audit
+
+  runtime/bin/lookdown-audit.sh runs shadow detection:
+
+    bash lookdown-audit.sh [universal.tsv]
+
+  Shadows: a broad pattern earlier in the file eats a specific one later.
+  Example: *up* shadows *what*is*the*movie*Up* because any input
+  matching the second also matches the first, and first match wins.
+
+  Run audit after editing. Run audit on any node before trusting
+  entries. Shadow detection runs as a pre-write gate in the sync
+  binary — a shadow blocks the write. No silent regressions.
+
+## Portable sync (the USB stick)
+
+  The stick holds three things:
+
+    signing key           authority to write
+    lookdown.universal.tsv   portable knowledge
+    adapter (QLoRA)       graduated knowledge (post-fine-tune)
+
+  Plug the stick into any machine running subtracting.c.
+  The machine loads the lookdown, loads the adapter, recognizes
+  the key. Unplug it and the machine is generic — base model
+  and binary, nothing personal. The stick IS the user.
+
+### Two modes
+
+  NFS (home network):
+    lookdown lives on the NFS server. One copy, one truth.
+    The stick carries only the signing key.
+    No diff, no merge — write() hits the NFS server.
+
+  Standalone (offline, visiting, federation):
+    lookdown lives on the stick. Portable copy.
+    Merkle diff on reconnect or on plug-in to a new machine.
+    Stick carries key + lookdown + adapter.
+
+### The sync binary
+
+  A C binary. Runs on /dev/fb0 (framebuffer) or VT100 terminal.
+  No toolkit. No ncurses. Runs before userspace is fully up.
+
+  On plug-in, it diffs local lookdown against stick lookdown
+  using a merkle tree. If roots match, nothing to do. If they
+  diverge, it presents the diverging entries for synthesis.
+
+  UI — two modes:
+
+    Default (scanning): compact list, one line per entry.
+
+      STATE   PATTERN                  RESPONSE
+      ────────────────────────────────────────────
+      [L+]    *weather*                curl wttr.in
+      [P+]    *ip*                     curl ifconfig.me
+      [C!]    *time*                   date +%H:%M | date
+
+      L+ = local only. P+ = portable only. C! = conflict.
+      j/k: navigate. L: keep local. S: keep stick. d: delete.
+
+    Conflict editing (split pane): left = local, right = stick.
+      M opens inline merge editor. Character-by-character edit
+      of pattern and response. The only place free text input
+      happens; everything else is selection.
+
+  Pre-write gates (both must pass before any write):
+    1. Shadow detection — merged result has a shadow → blocked.
+       User resolves before signing. Not optional.
+    2. Sign gate — ssh-keygen -Y sign against the stick key.
+       Key not mounted → "key not found on stick" → halted.
+       No partial write.
+
+  Write: atomic via rename(2) from a temp file. Both copies
+  (local and stick) updated. Both have the same merkle root.
+
+### Merkle tree structure
+
+  Leaf:    sha256(line_bytes) — one leaf per TSV entry, content only.
+  Tree:    binary, pair-wise hashing in file order. Left-to-right
+           = top-to-bottom. Reordering entries changes the root
+           because the tree encodes position structurally.
+  Root:    the integrity check for the entire file.
+
+  Content-only leaves allow deduplication and canonical addressing.
+  File-order tree preserves first-match-wins semantics — reorder
+  a line and the root changes, surfacing it as a divergence.
+
+  Signed artifact: ssh-keygen -Y sign on the file, with file length
+  included in the signed message. Sidecar .sig file. Closes
+  truncation without inventing a new format. Matches the man page
+  pattern: ssh-keygen -Y sign -f key -n subtract.ing filename.
+
+### Deletion detection
+
+  Requires last_sync_root — stored on both stick and local
+  (lookdown.last-sync-root). Without it, cannot distinguish
+  "deleted on stick" from "never synced to stick."
+
+  Entry present at last_sync_root, absent now → deletion.
+  Entry absent at last_sync_root, present now → addition.
+  Same entry, different content → conflict (human resolves).
+  Same content, different position → stick wins (portable authority).
+
+### QLoRA adapter lifecycle
+
+  The adapter is a derivative of the signed TSV, not an authority.
+  It does not modify lookdown. The lifecycle is one-way:
+
+    signed TSV → training → adapter → prune TSV → smaller signed TSV
+
+  The stick carries adapter + checkpoint:
+
+    lookdown.adapter-checkpoint    merkle root at last prune
+
+  On sync, the binary checks: does the local TSV's current root
+  descend from the adapter's checkpoint? If yes, consistent.
+  If no, either the adapter is stale or new entries exist.
+
+  Graduated entries (in both TSV and adapter manifest) are shown
+  as [G] in the UI. Human confirms prune. Pruned entries move to
+  lookdown.archive.tsv on the stick (audit trail). Git history
+  in the repo serves the same purpose for the canonical copy.
+
+  Stale adapter: "adapter checkpoint does not cover N local entries."
+  Informational — those entries still match from disk. Action
+  required before the next training run, not at sync time.
+
+  Coverage gap: pruning entries the adapter hasn't learned → binary
+  flags and refuses the write. User must confirm they understand
+  the gap. No silent coverage loss.
+
+## Reconciliation
+
+  NFS nodes: nothing to reconcile. One file on the server.
+
+  Standalone nodes: merkle diff on reconnect. The sync binary
+  handles it. The signed version with the later timestamp wins
+  ties. Conflicts require human resolution.
+
+  Repo: canonical. git pull distributes the signed version.
+  The stick syncs to the repo via the operator's workstation.
+
+## Security model
+
+  The permission model is authorized_signers, not /etc/passwd.
+  The signing key is the write permission. chmod is not the gate.
+
+  Read: anyone. No key needed. grep doesn't check signatures.
+  The TSV is world-readable. Anyone on the machine can query
+  lookdown and get answers. This is the point.
+
+  Write: requires a signature from a key in authorized_signers.
+  The signature IS the authorization. No signature, no authority.
+
+    authority.signed    act on it       (governance.conf)
+    authority.unsigned  do not act      suggestion only, possibly wrong
+
+  On save (F4 in subtracting.c, lookdown edit at the shell):
+    - Key present and in authorized_signers → signed, written, canonical.
+    - Key absent → rejected. "plug in your key to save."
+
+  The physical token (USB drive, YubiKey) is the key delivery
+  mechanism. Unplug it and authority is gone. A child uses the
+  machine freely — reads, queries, learns. Saving requires the
+  parent's key in the child's hand or the parent at the keyboard.
+
+  The primitive is ssh-keygen -Y. The ACL is authorized_signers.
+  No new mechanism. No role table. No permission database.
+
+## Signing
+
+  Lookdown is signed like any other artifact:
+    file.agent.sig   — agent@subtract.ing (proves which session touched it)
+    file.sig          — hodori@subtract.ing (proves human reviewed it)
+
+  Both required before push. sync-subtract.sh gates on both sigs.
+
+  Key rotation: see key-rotation.txt. The transition record covers
+  lookdown sigs the same way it covers any other artifact.
+
+## What this connects to
+
+  emile.txt       the substrate commits to per-user signing keys
+                  (commitment 2) and a shared directory non-admin users
+                  read from (commitment 3). Lookdown write authority is
+                  an instance of both: anyone reads, only recognized
+                  keys write. The signing model IS the permission model.
+                  The physical token is the key delivery mechanism.
+
+  key-rotation.txt  signing keys rotate. Lookdown signatures rotate
+                    with them. The transition record covers lookdown
+                    the same way it covers any other artifact.
+
+  SOUL.txt        hosuni answers from lookdown before inference.
+                  "The goal is literacy. The human learns the command
+                  and stops needing translation."
+
+  governance.conf   reflex 5: load-bearing content is canonical under
+                    the signing key's domain. Lookdown universal is
+                    load-bearing. The signature is the boundary.
+
+## Design review
+
+  This document was reviewed by three Claude instances on
+  2026-05-15 (opus-4-5 via emile, sonnet-4-6 via rousseau,
+  opus-4-7 via webclaude). Convergences adopted as settled.
+  Divergences resolved by the governor per the table below.
+
+  Leaf hash:        content-only (sonnet), ordered tree (opus). Hybrid.
+  Signed artifact:  ssh-keygen -Y sign on file with length (hybrid).
+  Shadow detection:  pre-write gate (sonnet). No silent regressions.
+  Archive:          archive.tsv on stick (opus), git in repo (sonnet). Both.
+  UI:               compact list default (opus), split-pane for edits (sonnet). Both.

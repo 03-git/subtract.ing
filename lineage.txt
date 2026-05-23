@@ -14,8 +14,7 @@ Three things Fox wrote that subtract depends on directly:
 
 **bash itself.** The dispatcher. `command_not_found_handle`. `case`.
 Parameter expansion. Process substitution. Every tier of subtract's
-routing is a bash construct Fox authored. subtract is GPL 3.0 because
-bash is GPL 3.0.
+routing is a bash construct Fox authored. subtract is GPLv2 — the same license as the Linux kernel.
 
 **readline** (Fox 1989b). Tab completion, `Ctrl-R` history search,
 line editing. When T0 consults `compgen` for a completion candidate,

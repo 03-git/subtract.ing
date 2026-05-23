@@ -15,12 +15,15 @@ SUBTRACT_DIR="${SUBTRACT_DIR:-$HOME/.subtract}"
 # bash hangs on unclosed quotes (what's, don't, can't) with a bare "> " prompt.
 # user doesn't know what happened. replace PS2 with an explanation.
 PS2="(unclosed quote -- press ctrl-c and rephrase without apostrophes) "
-SUBTRACT_LOOKUP_HOST="$SUBTRACT_DIR/lookdown.$(hostname -s).tsv"
-SUBTRACT_LOOKUP_UNIVERSAL="$SUBTRACT_DIR/lookdown.universal.tsv"
+SUBTRACT_LOOKDOWN="$SUBTRACT_DIR/lookdown.universal.tsv"
 SUBTRACT_SKILLS="$SUBTRACT_DIR/skills"
 SUBTRACT_KIWIX="${SUBTRACT_KIWIX:-http://localhost:8888}"
 SUBTRACT_LAST_OUTPUT=""
 SUBTRACT_MAX_CONTEXT=20
+SUBTRACT_LEDGER="${SUBTRACT_LEDGER:-/Volumes/LEDGER}"
+SUBTRACT_AGENT_KEY="$SUBTRACT_LEDGER/keys/agent_ed25519"
+_SUBTRACT_LAST_QUERY=""
+_SUBTRACT_LAST_RESPONSE=""
 
 # skills prefix patterns: procedural queries ("how do I X", "teach me X")
 # matched after T0, before kiwix. triggers grep against skills index.
@@ -52,11 +55,21 @@ __subtract_state_write() {
     local key="$1" value="$2"
     mkdir -p "$(dirname "$SUBTRACT_STATE")"
     if [ -f "$SUBTRACT_STATE" ]; then
-        # remove existing key, append new
-        grep -v "^${key}=" "$SUBTRACT_STATE" > "${SUBTRACT_STATE}.tmp" 2>/dev/null || true
-        mv "${SUBTRACT_STATE}.tmp" "$SUBTRACT_STATE"
+        awk -v k="$key" -v v="$value" '$0 !~ "^"k"=" {print} END{print k"="v}' "$SUBTRACT_STATE" > "${SUBTRACT_STATE}.tmp" && mv "${SUBTRACT_STATE}.tmp" "$SUBTRACT_STATE"
+    else
+        echo "${key}=${value}" > "$SUBTRACT_STATE"
     fi
-    echo "${key}=${value}" >> "$SUBTRACT_STATE"
+}
+
+__subtract_ledger_mounted() {
+    [ -r "$SUBTRACT_AGENT_KEY" ]
+}
+
+__subtract_require_ledger() {
+    if ! __subtract_ledger_mounted; then
+        echo "[ledger not mounted — read-only mode]"
+        return 1
+    fi
 }
 
 __subtract_is_intent() {
@@ -254,7 +267,7 @@ __subtract_skills() {
             n=$((n+1))
         done <<< "$candidates"
         # cache for "show N" retrieval
-        echo "$candidates" > ${TMPDIR:-/tmp}/.subtract-skills-lastmatch.${USER:-$$}
+        echo "$candidates" > "${TMPDIR:-/tmp}/.subtract-skills-lastmatch.$(tty 2>/dev/null | tr "/" "_")"
         echo "list:${count}"$'\n'"${list}"
         return 0
     fi
@@ -282,18 +295,16 @@ __subtract_lookup_file() {
             tag="stdout"
             cmd="$rest"
         fi
-        echo "${tag}	${cmd}"
+        echo "${tag}	${cmd}	${pattern}	${SUBTRACT_LOOKDOWN}"
         return 0
-    done < "$lookdown_file"
+    done < "$SUBTRACT_LOOKDOWN"
     return 1
 }
 
 __subtract_lookup() {
-    local result lookdown_file
-    for lookdown_file in "$SUBTRACT_LOOKUP_HOST" "$SUBTRACT_LOOKUP_UNIVERSAL"; do
-        [ -f "$lookdown_file" ] || continue
-        result=$(__subtract_lookup_file "$1") && { echo "$result"; return 0; }
-    done
+    [ -f "$SUBTRACT_LOOKDOWN" ] || return 1
+    local result
+    result=$(__subtract_lookup_file "$1") && { echo "$result"; return 0; }
     return 1
 }
 
@@ -376,7 +387,7 @@ __subtract_apropos() {
     # count and format
     local count
     count=$(echo "$results" | wc -l | tr -d ' ')
-    rm -f "${TMPDIR:-/tmp}/.subtract-apropos-lastmatch.${USER:-$$}"
+    rm -f "${TMPDIR:-/tmp}/.subtract-apropos-lastmatch.$(tty 2>/dev/null | tr "/" "_")"
 
     local list="" n=1
     while IFS= read -r line; do
@@ -384,7 +395,7 @@ __subtract_apropos() {
         cmd_name=$(echo "$line" | awk '{print $1}')
         desc=$(echo "$line" | sed 's/^[^-]*- //')
         list="${list}${n}. ${cmd_name} - ${desc}"$'\n'
-        echo "$cmd_name" >> "${TMPDIR:-/tmp}/.subtract-apropos-lastmatch.${USER:-$$}"
+        echo "$cmd_name" >> "${TMPDIR:-/tmp}/.subtract-apropos-lastmatch.$(tty 2>/dev/null | tr "/" "_")"
         n=$((n+1))
     done <<< "$results"
 
@@ -457,25 +468,47 @@ __subtract_ask_local() {
     local inference_host inference_port
     inference_host=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null)
     inference_port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
-    [ -z "$inference_port" ] && inference_port="8081"
+    [ -z "$inference_port" ] && inference_port="8086"
 
     local input="$1"
     local prompt="Answer concisely. ${input}"
     local payload result
 
+    # YouTube pre-fetch: grab transcript if URL present
+    local yt_url="" _yt_cap_re='(https?://[^ ]*(youtube\.com|youtu\.be)[^ ]*)'
+    if [[ "$input" =~ $_yt_cap_re ]]; then
+        yt_url="${match[1]:-${BASH_REMATCH[1]}}"
+        local yt_file yt_text
+        yt_file=$("$HOME/scripts/yt-transcript.sh" "$yt_url" 2>/dev/null)
+        if [ -f "$yt_file" ]; then
+            yt_text=$(cat "$yt_file")
+            input="${input//$yt_url/}"
+            prompt="Answer concisely in plain language. ${input}
+
+---
+TRANSCRIPT:
+${yt_text}"
+        fi
+    fi
+
+    local research_port; research_port=$(cat "$SUBTRACT_DIR/research_port" 2>/dev/null)
+    local target_port="$inference_port"
+    [ -n "$research_port" ] && [ -n "$yt_text" ] && target_port="$research_port"
+
     local escaped_prompt; escaped_prompt=$(printf "%s" "$prompt" | jq -Rs .)
-    payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":262144}"
+    payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":262144,\"stop\":[\"<|im_end|>\",\"<|endoftext|>\"]}"
     if [ -n "$inference_host" ] && [ "$inference_host" != "localhost" ]; then
-        result=$(ssh -o ConnectTimeout=5 "$inference_host" \
-            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' -d '${payload}'" 2>/dev/null)
+        result=$(printf '%s' "$payload" | ssh -o ConnectTimeout=5 "$inference_host" \
+            "curl -s http://localhost:${target_port}/v1/chat/completions -H 'Content-Type: application/json' -d @-" 2>/dev/null)
     else
-        curl -s --connect-timeout 1 "http://localhost:${inference_port}/v1/models" &>/dev/null || return 1
+        curl -s --connect-timeout 1 "http://localhost:${target_port}/v1/models" &>/dev/null || return 1
         result=$(curl -s --connect-timeout 10 -X POST -H "Content-Type: application/json" \
-            -d "$payload" "http://localhost:${inference_port}/v1/chat/completions" 2>/dev/null)
+            -d "$payload" "http://localhost:${target_port}/v1/chat/completions" 2>/dev/null)
     fi
 
     [ -z "$result" ] && return 1
-    result=$(echo "$result" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+    result=$(printf '%s' "$result" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+    result="${result#*<channel|>}"; [[ "$result" == "<|channel>"* ]] && result="${result#*$'\n'}"
     [ -z "$result" ] && return 1
     echo "$result"
 }
@@ -507,7 +540,7 @@ __subtract_ask_cloud() {
                 -H "Authorization: Bearer $xai_key" \
                 -H "Content-Type: application/json" \
                 -d "$payload" 2>/dev/null)
-            result=$(echo "$result" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+            result=$(printf '%s' "$result" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
             ;;
         *)
             return 1
@@ -525,18 +558,20 @@ __subtract_generate() {
     local inference_host inference_port
     inference_host=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null)
     inference_port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
-    [ -z "$inference_port" ] && inference_port="8081"
+    [ -z "$inference_port" ] && inference_port="8086"
 
     local input="$1"
     local prompt="Translate to a single bash command. Output ONLY the command, nothing else. No explanation. No markdown. No code fences. /no_think Input: ${input}"
     local payload result
 
-    payload=$(printf '{"messages":[{"role":"user","content":"%s"}],"max_tokens":262144}' "$prompt")
+    local escaped_prompt
+    escaped_prompt=$(printf '%s' "$prompt" | jq -Rs .)
+    payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":262144,\"stop\":[\"<|im_end|>\",\"<|endoftext|>\"]}"
 
     # remote inference: SSH to host and curl llama-server there
     if [ -n "$inference_host" ] && [ "$inference_host" != "localhost" ]; then
-        result=$(ssh -o ConnectTimeout=5 "$inference_host" \
-            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' -d '${payload}'" 2>/dev/null)
+        result=$(printf '%s' "$payload" | ssh -o ConnectTimeout=5 "$inference_host" \
+            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' -d @-" 2>/dev/null)
     else
         # local inference: llama-server on localhost
         curl -s --connect-timeout 1 "http://localhost:${inference_port}/v1/models" &>/dev/null || return 1
@@ -547,7 +582,8 @@ __subtract_generate() {
     [ -z "$result" ] && return 1
 
     # extract response from OpenAI-compatible format
-    result=$(echo "$result" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+    result=$(printf '%s' "$result" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+    result="${result#*<channel|>}"; [[ "$result" == "<|channel>"* ]] && result="${result#*$'\n'}"
     [ -z "$result" ] && return 1
 
     # strip markdown fences
@@ -683,7 +719,7 @@ __subtract_kiwix() {
 
 __subtract_handle() {
     local input="$*"
-    local cmd tier tag output result
+    local cmd tier tag output result exit_code
 
     # onboard gate: if not yet configured, run onboard first (interactive only)
     if [ ! -f "$SUBTRACT_DIR/.onboarded" ] && [[ -t 0 ]]; then
@@ -706,6 +742,108 @@ __subtract_handle() {
             local dl_url="${input#* video }"
             echo "[downloading to acer:9000/videos/]"
             ssh acer "yt-dlp -o '/home/media/Games/videos/%(title)s.%(ext)s' '$dl_url'" 2>&1
+            _SUBTRACT_FROM_HANDLER=1
+            return 0
+            ;;
+        "lookdown")
+            echo "usage: lookdown edit | lookdown search <text>"
+            echo "  lookdown edit  — fix or delete the last lookdown match"
+            echo "  lookdown search <text> — search all lookdown files"
+            _SUBTRACT_FROM_HANDLER=1
+            return 0
+            ;;
+        "lookdown search "*)
+            local lq="${input_lower#lookdown search }"
+            if [ -f "$SUBTRACT_LOOKDOWN" ]; then
+                local matches
+                matches=$(grep -in "$lq" "$SUBTRACT_LOOKDOWN" 2>/dev/null) || true
+                if [ -n "$matches" ]; then
+                    echo "[$(basename "$SUBTRACT_LOOKDOWN")]"
+                    echo "$matches"
+                fi
+            fi
+            _SUBTRACT_FROM_HANDLER=1
+            return 0
+            ;;
+        "lookdown edit "*)
+            __subtract_require_ledger || { _SUBTRACT_FROM_HANDLER=1; return 0; }
+            local lq="${input#lookdown edit }"
+            local lf="$SUBTRACT_LOOKDOWN" found=0
+            if [ -f "$lf" ]; then
+                local matches
+                matches=$(grep -inF "$lq" "$lf" 2>/dev/null) || { echo "no matches for: $lq"; return 0; }
+                [ -z "$matches" ] && { echo "no matches for: $lq"; return 0; }
+                local count
+                count=$(echo "$matches" | wc -l | tr -d ' ')
+                found=1
+                echo "[$(basename "$lf")] $count match(es):"
+                echo "$matches" | nl -ba
+                printf 'line # to edit (or d# to delete, enter to skip): '
+                read -r choice < /dev/tty
+                case "$choice" in
+                    d[0-9]*)
+                        local dnum="${choice#d}"
+                        local target_line
+                        target_line=$(echo "$matches" | sed -n "${dnum}p" | cut -d: -f1)
+                        if [ -n "$target_line" ]; then
+                            echo "delete: $(sed -n "${target_line}p" "$lf")"
+                            printf '[y/n] '
+                            read -r confirm < /dev/tty
+                            if [ "$confirm" = "y" ]; then
+                                sed -i.bak "${target_line}d" "$lf"
+                                echo "deleted line $target_line"
+                            else
+                                echo "aborted"
+                            fi
+                        fi
+                        ;;
+                    [0-9]*)
+                        local target_line
+                        target_line=$(echo "$matches" | sed -n "${choice}p" | cut -d: -f1)
+                        if [ -n "$target_line" ]; then
+                            echo "current: $(sed -n "${target_line}p" "$lf")"
+                            printf 'new entry (pattern<tab>response, enter to skip): '
+                            read -r newentry < /dev/tty
+                            if [ -n "$newentry" ]; then
+                                local escaped
+                                escaped=$(printf '%s' "$newentry" | sed 's/[&/\]/\\&/g')
+                                sed -i.bak "${target_line}s/.*/${escaped}/" "$lf"
+                                echo "updated line $target_line"
+                            fi
+                        fi
+                        ;;
+                    *) ;;
+                esac
+            fi
+            [ "$found" -eq 0 ] && echo "no matches for: $lq"
+            _SUBTRACT_FROM_HANDLER=1
+            return 0
+            ;;
+        "teach")
+            __subtract_require_ledger || { _SUBTRACT_FROM_HANDLER=1; return 0; }
+            if [ -z "$_SUBTRACT_LAST_QUERY" ] || [ -z "$_SUBTRACT_LAST_RESPONSE" ]; then
+                echo "[teach] no inference response to save. ask something first."
+                _SUBTRACT_FROM_HANDLER=1
+                return 0
+            fi
+            local pattern response escaped_response
+            pattern=$(__subtract_lower "$_SUBTRACT_LAST_QUERY")
+            response="$_SUBTRACT_LAST_RESPONSE"
+            echo "[teach] save to lookdown:"
+            echo "  pattern:  $pattern"
+            echo "  response: $(echo "$response" | head -3)"
+            [ "$(echo "$response" | wc -l)" -gt 3 ] && echo "  ... ($(echo "$response" | wc -l | tr -d ' ') lines)"
+            printf '[y/n] '
+            read -r confirm < /dev/tty
+            if [ "$confirm" = "y" ]; then
+                escaped_response=$(printf '%s' "$response" | sed 's/"/\\"/g' | tr '\n' ' ')
+                printf '%s\techo "%s"\n' "$pattern" "$escaped_response" >> "$SUBTRACT_LOOKDOWN"
+                echo "[T0] saved. next time this resolves instantly."
+                _SUBTRACT_LAST_QUERY=""
+                _SUBTRACT_LAST_RESPONSE=""
+            else
+                echo "aborted."
+            fi
             _SUBTRACT_FROM_HANDLER=1
             return 0
             ;;
@@ -780,7 +918,7 @@ TMPL
                 _SUBTRACT_FROM_HANDLER=1
                 return 0
             fi
-            local lastmatch="${TMPDIR:-/tmp}/.subtract-skills-lastmatch.${USER:-$$}"
+            local lastmatch="${TMPDIR:-/tmp}/.subtract-skills-lastmatch.$(tty 2>/dev/null | tr "/" "_")"
             if [ -f "$lastmatch" ]; then
                 local match
                 match=$(sed -n "${num}p" "$lastmatch")
@@ -804,7 +942,7 @@ TMPL
                 _SUBTRACT_FROM_HANDLER=1
                 return 0
             fi
-            local lastmatch="${TMPDIR:-/tmp}/.subtract-apropos-lastmatch.${USER:-$$}"
+            local lastmatch="${TMPDIR:-/tmp}/.subtract-apropos-lastmatch.$(tty 2>/dev/null | tr "/" "_")"
             if [ -f "$lastmatch" ]; then
                 local match
                 match=$(sed -n "${num}p" "$lastmatch")
@@ -824,7 +962,7 @@ TMPL
         [0-9]|[0-9][0-9])
             # bare number: select from apropos results
             local num="$input_lower"
-            local lastmatch="${TMPDIR:-/tmp}/.subtract-apropos-lastmatch.${USER:-$$}"
+            local lastmatch="${TMPDIR:-/tmp}/.subtract-apropos-lastmatch.$(tty 2>/dev/null | tr "/" "_")"
             if [ -f "$lastmatch" ]; then
                 local match
                 match=$(sed -n "${num}p" "$lastmatch")
@@ -892,12 +1030,18 @@ TMPL
 
     # --- routing chain: T0(raw) > T0(stripped) > Skills > T0.5(man) > T0.5(apropos) > Kiwix > T1 > T2 > T4 ---
 
+    case "$input_lower" in lookdown*) ;; *) _SUBTRACT_LAST_PATTERN="" ;; esac
+
     # T0 pass 1: exact lookup on raw input
     result=$(__subtract_lookup "$input")
     if [ -n "$result" ]; then
         tier="T0"
         tag="${result%%	*}"
-        cmd="${result#*	}"
+        local _rest="${result#*	}"
+        _SUBTRACT_LAST_LOOKDOWN="${_rest##*	}"
+        _rest="${_rest%	*}"
+        _SUBTRACT_LAST_PATTERN="${_rest##*	}"
+        cmd="${_rest%	*}"
     fi
 
     # T0 pass 2: strip skills prefix, re-lookup
@@ -910,7 +1054,11 @@ TMPL
             if [ -n "$result" ]; then
                 tier="T0"
                 tag="${result%%	*}"
-                cmd="${result#*	}"
+                local _rest="${result#*	}"
+                _SUBTRACT_LAST_LOOKDOWN="${_rest##*	}"
+                _rest="${_rest%	*}"
+                _SUBTRACT_LAST_PATTERN="${_rest##*	}"
+                cmd="${_rest%	*}"
             fi
         fi
     fi
@@ -1085,7 +1233,7 @@ TMPL
                 # subtract-canvas outputs ACTION: lines on stdout when user taps
                 local action
                 output=$(eval "$cmd" 2>&1)
-                local exit_code=$?
+                exit_code=$?
                 if [ $exit_code -eq 0 ] && [ -n "$output" ]; then
                     action=$(echo "$output" | subtract-canvas -)
                 else
@@ -1105,12 +1253,15 @@ TMPL
             *)
                 local _subtract_tmp="${TMPDIR:-/tmp}/.subtract_out.$$"
                 eval "$cmd" > "$_subtract_tmp" 2>&1
-                local exit_code=$?
+                exit_code=$?
                 cat "$_subtract_tmp"
                 if [ $exit_code -eq 0 ]; then
                     SUBTRACT_LAST_OUTPUT="output of '$cmd': $(__subtract_truncate "$(cat "$_subtract_tmp")")"
                 fi
                 rm -f "$_subtract_tmp"
+                if [ "$tier" = "T0" ] && [ "$tag" = "stdout" ] && [ -n "$_SUBTRACT_LAST_PATTERN" ] && [[ -t 1 ]]; then
+                    printf '\033[2m%s\033[0m\n' "wrong? type: lookdown edit $_SUBTRACT_LAST_PATTERN"
+                fi
                 ;;
         esac
         _SUBTRACT_FROM_HANDLER=1
@@ -1177,37 +1328,34 @@ Answer concisely, using context if relevant."
     fi
 
     # YouTube pre-fetch
-    local url transcript_file transcript_text
-    if [[ "$input" =~ (https?://[^ ]*(youtube\.com|youtu\.be)[^ ]*) ]]; then
-        url="${BASH_REMATCH[1]}"
+    local url transcript_file transcript_text _yt_cap_re='(https?://[^ ]*(youtube\.com|youtu\.be)[^ ]*)'
+    if [[ "$input" =~ $_yt_cap_re ]]; then
+        url="${match[1]:-${BASH_REMATCH[1]}}"
         transcript_file=$("$HOME/scripts/yt-transcript.sh" "$url" 2>/dev/null)
         if [ -f "$transcript_file" ]; then
             transcript_text=$(cat "$transcript_file")
             input="${input//$url/}"
             prompt="${prompt}
 
+Respond in plain language, not JSON or code blocks.
 ---
 TRANSCRIPT:
 ${transcript_text}"
         fi
     fi
 
-    local escaped_prompt payload inference_host inference_port
+    local escaped_prompt payload inference_host target_port
     escaped_prompt=$(printf '%s' "$prompt" | jq -Rs .)
-    payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":262144}"
+    payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":262144,\"stop\":[\"<|im_end|>\",\"<|endoftext|>\"]}"
     inference_host=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null)
-    inference_port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
-    [ -z "$inference_port" ] && inference_port="8083"
+    local inference_port; inference_port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
+    local research_port; research_port=$(cat "$SUBTRACT_DIR/research_port" 2>/dev/null)
+    [ -z "$inference_port" ] && inference_port="8086"
+    target_port="$inference_port"
+    [ -n "$research_port" ] && [ -n "$transcript_text" ] && target_port="$research_port"
 
-    if [ -n "$inference_host" ] && [ "$inference_host" != "localhost" ]; then
-        result=$(echo "$payload" | ssh -o ConnectTimeout=5 "$inference_host" \
-            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' -d @-" 2>/dev/null \
-            | jq -r '.choices[0].message.content // empty' 2>/dev/null)
-    elif curl -s --connect-timeout 1 "http://localhost:${inference_port}/v1/models" &>/dev/null; then
-        result=$(curl -s --connect-timeout 30 -X POST -H "Content-Type: application/json" \
-            -d "$payload" "http://localhost:${inference_port}/v1/chat/completions" 2>/dev/null \
-            | jq -r '.choices[0].message.content // empty' 2>/dev/null)
-    fi
+    # route through hosuni for tool-use loop
+    result=$(printf '{"input":%s,"channel":"terminal"}' "$escaped_prompt" | bash "$SUBTRACT_DIR/hosuni.sh" 2>/dev/null)
 
     if [ -z "$result" ]; then
         result=$(__subtract_ask_cloud "$input")
@@ -1215,6 +1363,8 @@ ${transcript_text}"
 
     if [ -n "$result" ]; then
         echo "$result"
+        _SUBTRACT_LAST_QUERY="$input"
+        _SUBTRACT_LAST_RESPONSE="$result"
         printf "%s\tQ\t%s\n%s\tA\t%s\n" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$input" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$result" >> "${session}.log"
     else
         echo "no model available"
@@ -1230,20 +1380,21 @@ __subtract_write() {
 
     local escaped_prompt payload inference_host inference_port
     escaped_prompt=$(printf '%s' "$prompt" | jq -Rs .)
-    payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":262144}"
+    payload="{\"messages\":[{\"role\":\"user\",\"content\":${escaped_prompt}}],\"max_tokens\":262144,\"stop\":[\"<|im_end|>\",\"<|endoftext|>\"]}"
     inference_host=$(cat "$SUBTRACT_DIR/inference_host" 2>/dev/null)
     inference_port=$(cat "$SUBTRACT_DIR/inference_port" 2>/dev/null)
-    [ -z "$inference_port" ] && inference_port="8083"
+    [ -z "$inference_port" ] && inference_port="8086"
 
     if [ -n "$inference_host" ] && [ "$inference_host" != "localhost" ]; then
-        result=$(echo "$payload" | ssh -o ConnectTimeout=5 "$inference_host" \
-            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' -d @-" 2>/dev/null \
-            | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+        result=$(printf '%s' "$payload" | ssh -o ConnectTimeout=5 "$inference_host" \
+            "curl -s http://localhost:${inference_port}/v1/chat/completions -H 'Content-Type: application/json' -d @-" 2>/dev/null)
     elif curl -s --connect-timeout 1 "http://localhost:${inference_port}/v1/models" &>/dev/null; then
         result=$(curl -s --connect-timeout 60 -X POST -H "Content-Type: application/json" \
-            -d "$payload" "http://localhost:${inference_port}/v1/chat/completions" 2>/dev/null \
-            | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+            -d "$payload" "http://localhost:${inference_port}/v1/chat/completions" 2>/dev/null)
     fi
+
+    [ -n "$result" ] && result=$(printf '%s' "$result" | jq -r '.choices[0].message.content // empty' 2>/dev/null)
+    if [ -n "$result" ]; then result="${result#*<channel|>}"; [[ "$result" == "<|channel>"* ]] && result="${result#*$'\n'}"; fi
 
     if [ -z "$result" ]; then
         result=$(__subtract_ask_cloud "$input")
@@ -1273,8 +1424,8 @@ __subtract_route_by_mode() {
         "mode") echo "[mode: $(__subtract_get_mode)]"; return 0 ;;
     esac
 
-    # Single word, no match — welcome instead of reject
-    if [[ ! "$input" =~ \  ]] && [[ "$input" =~ ^[a-z] ]]; then
+    # Single word, no match — welcome instead of reject (but let URLs through)
+    if [[ ! "$input" =~ \  ]] && [[ "$input" =~ ^[a-z] ]] && [[ ! "$input" =~ ^https?:// ]]; then
         echo "Hi. Type what you want in plain words. Try:"
         echo "  what files are here"
         echo "  what time is it"
@@ -1283,29 +1434,37 @@ __subtract_route_by_mode() {
         return 127
     fi
 
+    # YouTube URLs always route to read (transcript pre-fetch + research model)
+    local _yt_re='https?://[^ ]*(youtube\.com|youtu\.be)'
+    if [[ "$input" =~ $_yt_re ]]; then
+        __subtract_read "$input"
+        _SUBTRACT_FROM_HANDLER=1
+        return 0
+    fi
+
     # question detection: interrogative input gets a conversational answer
     local input_lower
     input_lower=$(__subtract_lower "$input")
     local first_word="${input_lower%% *}"
     case "$first_word" in
         can|could|do|does|did|will|would|shall|should|is|are|was|were|has|have|what|where|when|who|why|how)
-            local answer
-            answer=$(__subtract_ask_local "$input")
-            if [ -n "$answer" ]; then
-                echo "$answer"
-                _SUBTRACT_FROM_HANDLER=1
-                return 0
-            fi
+            __subtract_read "$input"
+            _SUBTRACT_FROM_HANDLER=1
+            return 0
             ;;
     esac
     if [[ "$input" == *"?" ]]; then
-        local answer
-        answer=$(__subtract_ask_local "$input")
-        if [ -n "$answer" ]; then
-            echo "$answer"
-            _SUBTRACT_FROM_HANDLER=1
-            return 0
-        fi
+        __subtract_read "$input"
+        _SUBTRACT_FROM_HANDLER=1
+        return 0
+    fi
+
+    # active session context → route to read (conversational follow-up)
+    local _session_file; _session_file=$(__subtract_session_file)
+    if [ -s "${_session_file}.log" ]; then
+        __subtract_read "$input"
+        _SUBTRACT_FROM_HANDLER=1
+        return 0
     fi
 
     mode=$(__subtract_get_mode)
