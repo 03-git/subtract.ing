@@ -1,3 +1,8 @@
+# sig receipts are local dotfiles
+*.sig
+*.agent.sig
+*.bak
+
 # editor/OS junk
 .DS_Store
 Thumbs.db
